@@ -1,1 +1,1 @@
-"# AdvEquity" 
+# AdvEquity
