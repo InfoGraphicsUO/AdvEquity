@@ -1,0 +1,41 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100vh;
+}
+
+
+.search_query {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    /* display: flex; */
+    gap: 6px;
+}
+
+.search_query input {
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+.search_query button {
+    background-color: #007acc;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.search_query button:hover {
+    background-color: #005fa3;
+}
