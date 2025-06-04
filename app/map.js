@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   fullExtentButton.addEventListener('click', () => {
-    map.flyTo({center:  [-96, 37.5], zoom: 3.6});
+    map.fitBounds([[ -126, 24], [-66, 50]]);
   });
 });
 
@@ -18,10 +18,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjM
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/dark-v11',
-  zoom: 3.6,
+  // zoom: 3.6,
   maxZoom : 6, 
   minZoom : 2, 
-  center: [-96, 37.5],
+  // center: [-96, 37.5],
+  bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
+  fitBoundsOptions: {
+    padding: 15 // padding to keep the bounds away from the edge of the map
+  },
   parallels: [29.5, 45.5]
 });
 
@@ -115,7 +119,7 @@ map.on('mouseleave', 'state-fills', () => {
     const clickedFeature = e.features[0];
 
     const coords = clickedFeature.geometry.coordinates;
-    console.log(JSON.stringify(coords, null, 1));
+    // console.log(JSON.stringify(coords, null, 1));
     const bounds = new mapboxgl.LngLatBounds();
 
     function extendBounds(coordinates) {
