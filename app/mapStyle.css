@@ -2,11 +2,14 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-family: sans-serif;
 }
 
 #map {
   width: 100%;
-  height: 100vh;
+  height: 50vh;
+  min-height: 500px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 #mapWidgets {
@@ -15,7 +18,6 @@ body, html {
     left: 10px;
     z-index: 10;
     background: rgba(255,255,255,0.8);
-
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
