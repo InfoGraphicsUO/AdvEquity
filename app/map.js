@@ -1,10 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.querySelector('.search_query input');
   const searchButton = document.querySelector('.search_query button');
+  const fullExtentButton = document.querySelector('#full_extent');
 
   searchButton.addEventListener('click', () => {
     const userInput = searchInput.value;
     console.log('User input:', userInput);
+  });
+
+  fullExtentButton.addEventListener('click', () => {
+    map.flyTo({center:  [-96, 37.5], zoom: 3.6});
   });
 });
 
@@ -12,7 +17,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjM
 
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v12',
+  style: 'mapbox://styles/mapbox/dark-v11',
   zoom: 3.6,
   maxZoom : 6, 
   minZoom : 2, 

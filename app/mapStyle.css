@@ -9,13 +9,13 @@ body, html {
   height: 100vh;
 }
 
-
-.search_query {
+#mapWidgets {
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: white;
+    background: rgba(255,255,255,0.8);
+
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
@@ -23,12 +23,17 @@ body, html {
     gap: 6px;
 }
 
+.search_query{
+    margin-bottom: 4px;
+}
+
+
 .search_query input {
     padding: 4px 8px;
     font-size: 14px;
 }
 
-.search_query button {
+button {
     background-color: #007acc;
     color: white;
     border: none;
@@ -36,6 +41,6 @@ body, html {
     cursor: pointer;
 }
 
-.search_query button:hover {
+button:hover {
     background-color: #005fa3;
 }
