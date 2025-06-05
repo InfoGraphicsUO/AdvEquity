@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
   fullExtentButton.addEventListener('click', () => {
     map.fitBounds([[ -126, 24], [-66, 50]]);
     // remove district layer if it exists
-    if (map.getLayer("district-lines-or")){
-      map.removeLayer('district-lines-or');
+    if (map.getLayer("district-lines")){
+      map.removeLayer('district-lines');
+      map.removeLayer('district-fills');
     }
     hideGraphs();
 
@@ -83,14 +84,14 @@ hiddenLayers.forEach(layerId => {
       layout: {},
       paint: {
         'line-color': '#627BC1',
-        'line-width': 2
+        'line-width': 1
       }
     });
 
     map.addSource('oregon_districts', {
-    type: 'geojson',
-    data: '/assets/data/geojson/oregon_districts.geojson'
-  });
+      type: 'geojson',
+      data: '/assets/data/geojson/oregon_districts.geojson'
+    });
 
   map.on('mousemove', 'state-fills', (e) => {
     if (map.getZoom() >= 4) {  // adjust 4 to whatever zoom level you consider "state level"
@@ -162,23 +163,67 @@ hiddenLayers.forEach(layerId => {
     if(clickedFeature.id == 41){
       // add district lines
       map.addLayer({
-        id: 'district-lines-or',
+        id: 'district-lines',
         type: 'line',
         source: 'oregon_districts',
         paint: {
           'line-color': '#627BC1',
-          'line-width': 2
+          'line-width': 0.75
         }
-      }, 'state-fills'); // Layer position good
+      }, 'state-fills'); // Layer position 
 
-      // show graphs
-      showGraphs();
+      map.addLayer({
+        id: 'district-fills',
+        type: 'fill',
+        source: 'oregon_districts',
+        promoteId: 'GEOID',  // use GEOID as the unique ID
+        layout: {},
+        paint: {
+          'fill-color': '#627BC1',
+          'fill-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1,
+            0
+          ]
+        },
+      });
 
-      // set graph container info about the current state
-      // add code as needed
-    }
-  });
-});
+
+      // map.on('mousemove', 'district-fills', (e) => {
+      //   const feature = e.features[0];
+      //   const fid = feature.properties.GEOID;
+      //   const id = feature.properties.GEOID;
+      //   console.log('Hovered GEOID:', id);
+
+      //   if (!fid) return;
+
+      //   if (hoveredPolygonId !== null) {
+      //     map.setFeatureState(
+      //       { source: 'oregon_districts', id: hoveredPolygonId },
+      //       { hover: false }
+      //     );
+      //   }
+
+      //   hoveredPolygonId = e.features[0].id;
+
+      //   map.setFeatureState(
+      //     { source: 'oregon_districts', id: hoveredPolygonId },
+      //     { hover: true }
+      //   );
+      // });
+
+            // show graphs
+            showGraphs();
+
+            // set graph container info about the current state
+            // add code as needed
+
+
+
+          }
+        });
+      });
 
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'
