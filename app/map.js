@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fullExtentButton.addEventListener('click', () => {
     map.fitBounds([[ -126, 24], [-66, 50]]);
-    map.removeLayer('district-lines-or');
+    // remove district layer if it exists
+    if (map.getLayer("district-lines-or")){
+      map.removeLayer('district-lines-or');
+    }
     hideGraphs();
 
   });

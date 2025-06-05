@@ -51,3 +51,7 @@ button:hover {
   background: #f4f4f4;
   padding: 1em;
 }
+
+h2{
+  flex: 1;
+}

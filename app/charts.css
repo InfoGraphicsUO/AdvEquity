@@ -1,11 +1,17 @@
-    #graphContainer {
-      display: none; /* use flex */
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    .chart {
-      width: 150px;
-      height: 150px;
-    }
+#graphContainer {
+  display: none; /* use flex */
+  flex-wrap: wrap;
+  flex-direction: column; /* Stack children vertically */
+  gap: 10px;
+  padding: 20px;
+  background: #f4f4f4;
+}
+.chart-row {
+  display: flex;          /* Arrange charts in a row */
+  flex-wrap: wrap;        /* Allow wrapping to new lines if necessary */
+  gap: 10px;              /* Optional: space between charts */
+}
+.chart {
+  width: 150px;
+  height: 150px;
+}
