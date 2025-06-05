@@ -1,8 +1,18 @@
+:root {
+  --darkgrey: #a1a1a1;
+  --lightgrey: #bdbfbf;
+  --green: #808c73;
+  --yellow: #e5de54;
+  --black: #303333;
+
+}
+
+
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: sans-serif;
+    font-family: jaf-bernina-sans, sans-serif;
     background-color: rgb(141, 141, 142)
 }
 .map-header {
@@ -54,10 +64,10 @@ iframe {
 
 p{
     font-weight: 600;
+    text-align: left;
 }
 
 #title h1{
     color:white;
     text-decoration: underline solid yellow;
-
 }

@@ -1,8 +1,17 @@
+:root {
+  --darkgrey: #a1a1a1;
+  --lightgrey: #bdbfbf;
+  --green: #808c73;
+  --yellow: #e5de54;
+  --black: #303333;
+  --offwhite: #f4f4f4;
+}
+
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: sans-serif;
+  font-family: jaf-bernina-sans, sans-serif;
 }
 
 #map {
@@ -17,7 +26,7 @@ body, html {
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: rgba(255,255,255,0.8);
+    background: var(--lightgrey);
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
@@ -36,19 +45,19 @@ body, html {
 }
 
 button {
-    background-color: #007acc;
-    color: white;
+    background-color: var(--green);
+    color: var(--offwhite);
     border: none;
     padding: 5px 10px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #005fa3;
+    background-color:var(--darkgrey);
 }
 
 #infoContainer{
-  background: #f4f4f4;
+  background: var(--offwhite);
   padding: 1em;
 }
 

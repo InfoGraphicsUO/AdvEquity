@@ -1,65 +1,53 @@
 const config = { displayModeBar: false };
 
-    const layoutBase = {
-      margin: { l: 10, r: 10, b: 10, t: 10 },
-      paper_bgcolor: '#f4f4f4',
-      plot_bgcolor: '#f4f4f4',
-      xaxis: { visible: false },
-      yaxis: { visible: false }
-    };
+const layout = {
+  margin: { l: 20, r: 5, t: 5, b: 20 },
+  paper_bgcolor: getComputedStyle(document.documentElement).getPropertyValue('--lightgrey').trim(),
+  plot_bgcolor: getComputedStyle(document.documentElement).getPropertyValue('--lightgrey').trim(),
+  xaxis: {
+    tickvals: [2011, 2021],
+    tickfont: { size: 8 },
+    showgrid: false,
+    showline: false,
+    ticks: '',
+    fixedrange: true
+  },
+  yaxis: {
+    tickvals: [0, 100],
+    tickfont: { size: 8 },
+    showgrid: false,
+    showline: false,
+    ticks: '',
+    fixedrange: true
+  },
+  showlegend: false
+};
 
-    // Scatter Plot: black points with 1 yellow accent
-    Plotly.newPlot('scatter', [
-      {
-        x: [1, 2],
-        y: [2, 6],
-        mode: 'markers',
-        type: 'scatter',
-        marker: { color: 'black', size: 10 }
-      },
-      {
-        x: [3],
-        y: [3],
-        mode: 'markers',
-        type: 'scatter',
-        marker: { color: 'yellow', size: 10 }
-      }
-    ], layoutBase, config);
+    const colorBlack = getComputedStyle(document.documentElement).getPropertyValue('--black').trim();
+    const colorYellow = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim();
 
-    // Bar Chart: black bars, 1 yellow bar
-    Plotly.newPlot('bar', [{
-      x: ['A', 'B', 'C'],
-      y: [5, 2, 3],
-      type: 'bar',
-      marker: {
-        color: ['black', 'yellow', 'black']
-      }
-    }], {
-      ...layoutBase,
-      bargap: 0.2,
-      xaxis: { visible: false, range: [-0.5, 2.5] },
-      yaxis: { visible: false, range: [0, 6] }
-    }, config);
+    function createLongitudinalChart(containerId, values, stateAvg) {
+      Plotly.newPlot(containerId, [
+        {
+          x: [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021],
+          y: values,
+          mode: 'lines+markers',
+          line: { color: colorBlack },
+          marker: { color: colorBlack, size: 4 },
+          type: 'scatter'
+        },
+        {
+          x: [2011, 2021],
+          y: [stateAvg, stateAvg],
+          mode: 'lines',
+          line: { color: colorYellow, width: 2, dash: 'dot' },
+          type: 'scatter'
+        }
+      ], layout, config);
+    }
 
-    // Line Chart: all black
-    Plotly.newPlot('line', [{
-      x: [0, 1, 2],
-      y: [1, 3, 2],
-      type: 'scatter',
-      mode: 'lines',
-      line: { color: 'black', width: 2 }
-    }], layoutBase, config);
-
-    // Pie Chart: gray, yellow, black
-    Plotly.newPlot('pie', [{
-      values: [10, 20, 30],
-      labels: ['Gray', 'Yellow', 'Black'],
-      type: 'pie',
-      marker: {
-        colors: ['gray', 'yellow', 'black']
-      },
-      textinfo: 'none'
-    }], {
-      margin: { l: 0, r: 0, b: 0, t: 0 },
-      paper_bgcolor: '#f4f4f4'
-    }, config);
+    // Sample region-specific data + state average
+    createLongitudinalChart('chart1', [45, 50, 55, 52, 60, 58, 62, 61, 65, 67, 70], 60);
+    createLongitudinalChart('chart2', [30, 32, 35, 36, 40, 41, 43, 45, 46, 48, 50], 42);
+    createLongitudinalChart('chart3', [70, 72, 68, 71, 74, 76, 77, 78, 80, 82, 84], 75);
+    createLongitudinalChart('chart4', [55, 53, 56, 54, 58, 59, 60, 61, 62, 63, 65], 57);

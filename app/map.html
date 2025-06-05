@@ -7,6 +7,9 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
+    <!-- AdvancEDEquity Fonts (Berina Sans) hosted on Jmerson's Adobe Typekit -->
+  <link rel="stylesheet" href="https://use.typekit.net/dkj5qyr.css">
+
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script> <!--  for charts -->
 
   <link rel="stylesheet" href="mapStyle.css" />
@@ -28,12 +31,23 @@
 
   <div id="graphContainer">
      <h2>Information about <span id="currentState">Oregon</span></h2>
+    <!--Legend -->
+    <div class="legend-row">
+      <div class="legend-item">
+        <span class="legend-color region-line"></span>
+        <span>Measure over time</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color state-line"></span>
+        <span>State average</span>
+      </div>
+    </div>
     <div class="chart-row">
-      <!-- Containers for charts -->
-      <div id="scatter" class="chart"></div>
-      <div id="bar" class="chart"></div>
-      <div id="line" class="chart"></div>
-      <div id="pie" class="chart"></div>
+    <!-- Mini chart containers -->
+      <div id="chart1" class="chart"></div>
+      <div id="chart2" class="chart"></div>
+      <div id="chart3" class="chart"></div>
+      <div id="chart4" class="chart"></div>
     </div>
   </div>
 
