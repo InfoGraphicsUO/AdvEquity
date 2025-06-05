@@ -1,0 +1,11 @@
+    #graphContainer {
+      display: none; /* use flex */
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    .chart {
+      width: 150px;
+      height: 150px;
+    }

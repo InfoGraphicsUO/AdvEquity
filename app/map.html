@@ -6,7 +6,11 @@
   <title>Mapbox Map in iframe</title>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script> <!--  for charts -->
+
   <link rel="stylesheet" href="mapStyle.css" />
+  <link rel="stylesheet" href="charts.css" />
 </head>
 <body>  
   <div id="map"></div>
@@ -17,9 +21,20 @@
     </div>
     <button id="full_extent">View US</button>
   </div>
+  <div id="infoContainer">
+    <h2>Information</h2>
+    <p><b>Info about the US. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus, facilisis viverra est elementum a. Nulla molestie nec purus sit amet hendrerit. Proin consequat luctus odio, nec varius enim. Phasellus eget luctus dui. Proin malesuada quis mi ac pellentesque. Vestibulum eget sollicitudin tortor. Aliquam nec augue lacus.  </p>
+  </div>
   <div id="graphContainer">
-    <p>This is where the graphs will go</p>
+    <h2>Information about <span id="currentState">Oregon</span></h2>
+      <!-- Containers for charts -->
+    <div id="scatter" class="chart"></div>
+    <div id="bar" class="chart"></div>
+    <div id="line" class="chart"></div>
+    <div id="pie" class="chart"></div>
   </div>
   <script src="map.js"></script>
+  <script src="charts.js"></script>
+
 </body>
 </html>

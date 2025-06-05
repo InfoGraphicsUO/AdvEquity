@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fullExtentButton.addEventListener('click', () => {
     map.fitBounds([[ -126, 24], [-66, 50]]);
+    map.removeLayer('district-lines-or');
+    hideGraphs();
+
   });
 });
 
@@ -71,44 +74,44 @@ map.on('load', () => {
     data: '/assets/data/geojson/oregon_districts.geojson'
   });
 
-map.on('mousemove', 'state-fills', (e) => {
-  if (map.getZoom() >= 4) {  // adjust 4 to whatever zoom level you consider "state level"
-    // At zoom <= 4, disable hover fills:
+  map.on('mousemove', 'state-fills', (e) => {
+    if (map.getZoom() >= 4) {  // adjust 4 to whatever zoom level you consider "state level"
+      // At zoom <= 4, disable hover fills:
+      if (hoveredPolygonId !== null) {
+        map.setFeatureState(
+          { source: 'states', id: hoveredPolygonId },
+          { hover: false }
+        );
+        hoveredPolygonId = null;
+      }
+      return; // skip hover highlight
+    }
+
+    if (e.features.length > 0) {
+      if (hoveredPolygonId !== null) {
+        map.setFeatureState(
+          { source: 'states', id: hoveredPolygonId },
+          { hover: false }
+        );
+      }
+      hoveredPolygonId = e.features[0].id;
+
+      map.setFeatureState(
+        { source: 'states', id: hoveredPolygonId },
+        { hover: true }
+      );
+    }
+  });
+
+  map.on('mouseleave', 'state-fills', () => {
     if (hoveredPolygonId !== null) {
       map.setFeatureState(
         { source: 'states', id: hoveredPolygonId },
         { hover: false }
       );
-      hoveredPolygonId = null;
     }
-    return; // skip hover highlight
-  }
-
-  if (e.features.length > 0) {
-    if (hoveredPolygonId !== null) {
-      map.setFeatureState(
-        { source: 'states', id: hoveredPolygonId },
-        { hover: false }
-      );
-    }
-    hoveredPolygonId = e.features[0].id;
-
-    map.setFeatureState(
-      { source: 'states', id: hoveredPolygonId },
-      { hover: true }
-    );
-  }
-});
-
-map.on('mouseleave', 'state-fills', () => {
-  if (hoveredPolygonId !== null) {
-    map.setFeatureState(
-      { source: 'states', id: hoveredPolygonId },
-      { hover: false }
-    );
-  }
-  hoveredPolygonId = null;
-});
+    hoveredPolygonId = null;
+  });
 
 
 
@@ -139,6 +142,7 @@ map.on('mouseleave', 'state-fills', () => {
 
         // if Oregon
     if(clickedFeature.id == 41){
+      // add district lines
       map.addLayer({
         id: 'district-lines-or',
         type: 'line',
@@ -148,6 +152,22 @@ map.on('mouseleave', 'state-fills', () => {
           'line-width': 2
         }
       }, 'state-fills'); // Layer position good
+
+      // show graphs
+      showGraphs();
+
+      // set graph container info about the current state
+      // add code as needed
     }
   });
 });
+
+function showGraphs(){
+  document.querySelector('#infoContainer').style.display = 'none'
+  document.querySelector('#graphContainer').style.display = 'flex'
+}
+
+function hideGraphs(){
+  document.querySelector('#infoContainer').style.display = 'block'
+  document.querySelector('#graphContainer').style.display = 'none'
+}
