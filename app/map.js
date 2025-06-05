@@ -38,6 +38,21 @@ const map = new mapboxgl.Map({
 let hoveredPolygonId = null;
 
 map.on('load', () => {
+
+  // hide basemap layers/labels that we don't want
+  const hiddenLayers = [
+  'country-label',
+  'continent-label',
+  'waterway-label',
+  'water-line-label',
+  'water-point-label'
+];
+
+hiddenLayers.forEach(layerId => {
+  if (map.getLayer(layerId)) {
+    map.setLayoutProperty(layerId, 'visibility', 'none');
+  }
+});
   
   map.addSource('states', {
     type: 'geojson',
