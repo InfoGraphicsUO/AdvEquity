@@ -71,9 +71,6 @@ map.on('load', () => {
     data: '/assets/data/geojson/oregon_districts.geojson'
   });
 
-
-
-
 map.on('mousemove', 'state-fills', (e) => {
   if (map.getZoom() >= 4) {  // adjust 4 to whatever zoom level you consider "state level"
     // At zoom <= 4, disable hover fills:
@@ -139,14 +136,18 @@ map.on('mouseleave', 'state-fills', () => {
       { source: 'states', id: clickedFeature.id },
       { hover: false }
       );
-    map.addLayer({
-    id: 'district-lines-or',
-    type: 'line',
-    source: 'oregon_districts',
-    paint: {
-      'line-color': '#627BC1',
-      'line-width': 2
+
+        // if Oregon
+    if(clickedFeature.id == 41){
+      map.addLayer({
+        id: 'district-lines-or',
+        type: 'line',
+        source: 'oregon_districts',
+        paint: {
+          'line-color': '#627BC1',
+          'line-width': 2
+        }
+      }, 'state-fills'); // Layer position good
     }
-  }, 'state-fills'); // Layer position good
   });
 });
