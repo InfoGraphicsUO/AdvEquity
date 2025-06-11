@@ -29,6 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
     hideGraphs();
 
   });
+
+  // Fetch the GeoJSON and build the table
+  fetch('https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson')
+    .then(response => response.json())
+    .then(data => {
+      buildOpportunityTable(data);
+    })
+    .catch(error => {
+      console.error('Error loading GeoJSON:', error);
+    });
+
 });
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjMnFtdHRyd2gzamc0In0.U_YDP6GrLeN_rwCCJ509Lw'; ///TODO THIS NEEDS TO BE HIDDEN ADD TO CREDS FILE AND GITIGNORE
@@ -301,7 +312,7 @@ function buildOpportunityTable(geojson) {
   geojson.features.forEach((feature) => {
     const props = feature.properties;
     const stateName = props.STATE_NAME;
-    const fips = props.STATEFP.padStart(2, '0'); // ensure 2-digit ID
+    const fips = props.STATE_ID.padStart(2, '0'); // ensure 2-digit ID
 
     const row = document.createElement('div');
     row.className = 'row';
