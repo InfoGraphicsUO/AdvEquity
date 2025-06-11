@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   fullExtentButton.addEventListener('click', () => {
-    //map.fitBounds([[ -126, 24], [-66, 50]]);
-    map.flyTo({ center: [-99.2, 40.0], zoom: 3 })
+    map.fitBounds([[ -126, 24], [-66, 50]]); // albers
+    //map.jumpTo({ center: [-99.2, 40.0], zoom: 3 })
     // remove district layer if it exists
     if (map.getLayer("district-lines")){
       map.removeLayer('district-lines');
@@ -26,16 +26,17 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjM
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/dark-v11',
-  maxZoom : 6, 
+  maxZoom : 10, 
   minZoom : 2, 
-  zoom: 3,
-  maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
+  // zoom: 3,
+  bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
+  // maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
   fitBoundsOptions: {
     padding: 15 // padding to keep the bounds away from the edge of the map
   },
-  projection: 'albers',
-  center: [-99.2, 40.0],
-  parallels: [27.5, 44.55]
+  // projection: 'albers',
+  // center: [-99.2, 40.0],
+  // parallels: [27.5, 44.55]
 });
 
 let hoveredPolygonId = null;
