@@ -3,6 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
 
+
+  // get CSS colors:
+  const root = document.documentElement;
+  darkgrey = getComputedStyle(root).getPropertyValue('--darkgrey');
+  lightgrey = getComputedStyle(root).getPropertyValue('--lightgrey');
+  green = getComputedStyle(root).getPropertyValue('--green');
+  yellow = getComputedStyle(root).getPropertyValue('--yellow');
+  almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack');
+  offwhite = getComputedStyle(root).getPropertyValue('--offwhite');
+
   searchButton.addEventListener('click', () => {
     const userInput = searchInput.value;
     console.log('User input:', userInput);
@@ -65,18 +75,26 @@ map.on('load', () => {
     closeOnClick: false
   });
 
+  // SOURCES
   map.addSource('states', {
     type: 'geojson',
     data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
   });
 
+  map.addSource('oregon_districts', {
+      type: 'geojson',
+      data: '/assets/data/geojson/oregon_districts.geojson',
+      promoteId: 'GEOID',  // use GEOID as the unique ID
+  });
+
+  // LAYERS
   map.addLayer({
     id: 'state-fills',
     type: 'fill',
     source: 'states',
     layout: {},
     paint: {
-      'fill-color': '#627BC1',
+      'fill-color': yellow,
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
@@ -93,15 +111,9 @@ map.on('load', () => {
       source: 'states',
       layout: {},
       paint: {
-        'line-color': '#627BC1',
+        'line-color': green,
         'line-width': 1
       }
-    });
-
-    map.addSource('oregon_districts', {
-      type: 'geojson',
-      data: '/assets/data/geojson/oregon_districts.geojson',
-      promoteId: 'GEOID',  // use GEOID as the unique ID
     });
 
   map.on('mousemove', 'state-fills', (e) => {
@@ -182,7 +194,7 @@ map.on('load', () => {
       { hover: false }
       );
 
-        // if Oregon
+    // if Oregon ( for POC)
     if(clickedFeature.id == 41){
       // add district lines
       map.addLayer({
@@ -190,7 +202,7 @@ map.on('load', () => {
         type: 'line',
         source: 'oregon_districts',
         paint: {
-          'line-color': '#627BC1',
+          'line-color': green,
           'line-width': 0.75
         }
       }, 'state-fills'); // Layer position 
@@ -201,7 +213,7 @@ map.on('load', () => {
         source: 'oregon_districts',
         layout: {},
         paint: {
-          'fill-color': '#627BC1',
+          'fill-color': yellow,
           'fill-opacity': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
@@ -271,11 +283,46 @@ map.on('load', () => {
   });
 });
 
+function buildOpportunityTable(geojson) {
+  const container = document.getElementById('us-opportunity-table');
+
+  // Create header row
+  const headerRow = document.createElement('div');
+  headerRow.className = 'row header-row';
+  headerRow.innerHTML = `
+    <div class="cell state">State</div>
+    <div class="cell ap-classes">Modal # of AP Classes (Student-Weighted)</div>
+    <div class="cell opp-11">Opportunity Estimate 2011–12</div>
+    <div class="cell opp-21">Opportunity Estimate 2021–22</div>
+  `;
+  container.appendChild(headerRow);
+
+  // Loop through GeoJSON features to create rows
+  geojson.features.forEach((feature) => {
+    const props = feature.properties;
+    const stateName = props.STATE_NAME;
+    const fips = props.STATEFP.padStart(2, '0'); // ensure 2-digit ID
+
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.id = `row-${fips}`;
+    row.innerHTML = `
+      <div class="cell state">${stateName}</div>
+      <div class="cell ap-classes" id="ap-${fips}">—</div>
+      <div class="cell opp-11" id="opp11-${fips}">—</div>
+      <div class="cell opp-21" id="opp21-${fips}">—</div>
+    `;
+
+    container.appendChild(row);
+  });
+}
+
 function fillStateDataTable(){
 
   // TO DO get values for each state and load the table
 
 }
+
 
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'

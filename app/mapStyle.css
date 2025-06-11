@@ -1,5 +1,5 @@
 :root {
-  --almostBlack: #a1a1a1;
+  --darkgrey: #a1a1a1;
   --lightgrey: #bdbfbf;
   --green: #808c73;
   --yellow: #e5de54;
@@ -53,7 +53,7 @@ button {
 }
 
 button:hover {
-    background-color:var(--almostBlack);
+    background-color:var(--darkgrey);
 }
 
 #infoContainer{
