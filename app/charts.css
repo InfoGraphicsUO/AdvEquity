@@ -11,6 +11,11 @@
   background: #f4f4f4;
   font-family: jaf-bernina-sans, sans-serif;
 }
+
+#graphContainer h2, #graphContainer h3{
+  margin: 0;
+}
+
 .chart-row {
   display: flex;          /* Arrange charts in a row */
   flex-wrap: wrap;        /* Allow wrapping to new lines if necessary */
@@ -22,31 +27,43 @@
   background: var(--lightgrey);
 }
 
-    .legend-row {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      color: var(--black);
-    }
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+.chart-caption {
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: var(--almostBlack);
+}
 
-    .legend-color {
-      width: 15px;
-      height: 3px;
-      display: inline-block;
-    }
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: var(--almostBlack);
+}
 
-    .region-line {
-      background-color: var(--black);
-    }
+.legend-row h3{
+  margin: 0;
+}
 
-    .state-line {
-      background-color: var(--yellow);
-    }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 3px;
+  display: inline-block;
+}
+
+.region-line {
+  background-color: var(--almostBlack);
+}
+
+.state-line {
+  background-color: var(--yellow);
+}

@@ -14,6 +14,7 @@
 
   <link rel="stylesheet" href="mapStyle.css" />
   <link rel="stylesheet" href="charts.css" />
+  <link rel="stylesheet" href="table.css" />
 </head>
 <body>  
   <div id="map"></div>
@@ -25,31 +26,16 @@
     <button id="full_extent">View US</button>
   </div>
   <div id="infoContainer">
-    <h2>Information</h2>
-    <p><b>Info about the US. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus, facilisis viverra est elementum a. Nulla molestie nec purus sit amet hendrerit. Proin consequat luctus odio, nec varius enim. Phasellus eget luctus dui. Proin malesuada quis mi ac pellentesque. Vestibulum eget sollicitudin tortor. Aliquam nec augue lacus.  </p>
-  </div>
+    <!-- <h2>Information</h2> -->
+    <p><b>Info about the US. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus, facilisis viverra est elementum a.</p>
+    
+    <!-- TABLE -->
+     <h3>School districts where White students are more likely to be in an Advanced Placement class, compared with Black (Hispanic) students in 2011-12 and 2021-22</h3>
 
-  <div id="graphContainer">
-     <h2>Information about <span id="currentState">Oregon</span></h2>
-    <!--Legend -->
-    <div class="legend-row">
-      <div class="legend-item">
-        <span class="legend-color region-line"></span>
-        <span>Measure over time</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color state-line"></span>
-        <span>State average</span>
-      </div>
-    </div>
-    <div class="chart-row">
-    <!-- Mini chart containers -->
-      <div id="chart1" class="chart"></div>
-      <div id="chart2" class="chart"></div>
-      <div id="chart3" class="chart"></div>
-      <div id="chart4" class="chart"></div>
-    </div>
+    <div id="us-opportunity-table"></div>
+
   </div>
+  <div id="graphContainer"></div>
 
   <script src="map.js"></script>
   <script src="charts.js"></script>

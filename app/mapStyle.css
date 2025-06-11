@@ -3,7 +3,7 @@
   --lightgrey: #bdbfbf;
   --green: #808c73;
   --yellow: #e5de54;
-  --black: #303333;
+  --almostBlack: #303333;
   --offwhite: #f4f4f4;
 }
 
@@ -65,3 +65,36 @@ h2{
   flex: 1;
   margin-bottom: 0;
 }
+
+
+.popup-content {
+  font-family: sans-serif;
+  font-size: 13px;
+}
+
+/* popup */
+.opportunity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.25em;
+}
+
+.arrow {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.arrow-up {
+  color: var(--green);
+}
+
+.arrow-down {
+  color: var(--yellow);
+}
+
+.opportunity-text {
+  line-height: 1.2;
+}
+
+/* end popup */

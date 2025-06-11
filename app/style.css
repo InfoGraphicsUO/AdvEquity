@@ -1,12 +1,11 @@
 :root {
-  --darkgrey: #a1a1a1;
+  --almostBlack: #a1a1a1;
   --lightgrey: #bdbfbf;
   --green: #808c73;
   --yellow: #e5de54;
-  --black: #303333;
+  --almostBlack: #303333;
 
 }
-
 
 body, html {
     margin: 0;
@@ -28,16 +27,21 @@ body, html {
     line-height: 100%;
 }
 
-.map-header-img {
-    background-image: url('../assets/png/head.png');
-    background-size: cover;
-    background-position: center;
-    height: 100px;
-    width: 100%;
-    display: block;
-    position: fixed;
-    top:0;
-    z-index: 99999;
+.site-header{
+    display: flex;
+    background-color: var(--almostBlack);
+    height: 130px;
+    justify-content: space-between;
+}
+
+.left-image{
+    flex-grow: 0;
+    padding: 1em;
+}
+
+.right-image{
+    height: min-content;
+    margin: 2em;
 }
 
 

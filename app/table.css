@@ -1,0 +1,63 @@
+#us-opportunity-table {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 0;
+  align-items: center;
+}
+
+.header-row {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #999;
+}
+
+.cell {
+  padding: 0 10px;
+  flex-shrink: 0;
+  overflow-wrap: break-word;
+}
+
+/* Set column widths */
+.cell.state {
+  flex-basis: 25%;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.cell.ap-classes,
+.cell.opp-11,
+.cell.opp-21 {
+  flex-basis: 25%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cell {
+    flex-basis: 100% !important;
+    padding: 4px 0;
+  }
+
+  .header-row {
+    display: none;
+  }
+}
+
+.highlighted {
+  background-color: var(--yellow);  /* highlight */
+  transition: background-color 0.3s ease;
+}
