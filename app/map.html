@@ -14,6 +14,7 @@
 
   <link rel="stylesheet" href="mapStyle.css" />
   <link rel="stylesheet" href="charts.css" />
+  <link rel="stylesheet" href="table.css" />
 </head>
 <body>  
   <div id="map"></div>
@@ -27,7 +28,40 @@
   <div id="infoContainer">
     <h2>Information</h2>
     <p><b>Info about the US. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus, facilisis viverra est elementum a. Nulla molestie nec purus sit amet hendrerit. Proin consequat luctus odio, nec varius enim. Phasellus eget luctus dui. Proin malesuada quis mi ac pellentesque. Vestibulum eget sollicitudin tortor. Aliquam nec augue lacus.  </p>
-  </div>
+    
+    <!-- TABLE -->
+    <div id="us-opportunity-table">
+      <!-- Header Row -->
+      <div class="row header-row">
+        <div class="cell state">State</div>
+        <div class="cell ap-classes">Modal # of AP Classes (Student-Weighted)</div>
+        <div class="cell opp-11">Opportunity Estimate 2011–12</div>
+        <div class="cell opp-21">Opportunity Estimate 2021–22</div>
+      </div>
+
+      <!-- Example Data Rows -->
+      <div class="row" id="row-41">  <!-- Oregon FIPS = 41 -->
+        <div class="cell state">Oregon</div>
+        <div class="cell ap-classes" id="ap-41">—</div>
+        <div class="cell opp-11" id="opp11-41">—</div>
+        <div class="cell opp-21" id="opp21-41">—</div>
+      </div>
+
+      <div class="row" id="row-06">  <!-- California FIPS = 06 -->
+        <div class="cell state">California</div>
+        <div class="cell ap-classes" id="ap-06">—</div>
+        <div class="cell opp-11" id="opp11-06">—</div>
+        <div class="cell opp-21" id="opp21-06">—</div>
+      </div>
+
+      <div class="row" id="row-48">  <!-- Texas FIPS = 48 -->
+        <div class="cell state">Texas</div>
+        <div class="cell ap-classes" id="ap-48">—</div>
+        <div class="cell opp-11" id="opp11-48">—</div>
+        <div class="cell opp-21" id="opp21-48">—</div>
+      </div>
+    </div>
+
 
   <div id="graphContainer">
      <h2>Information about <span id="currentState">Oregon</span></h2>

@@ -39,8 +39,9 @@ const map = new mapboxgl.Map({
   // parallels: [27.5, 44.55]
 });
 
-let hoveredPolygonId = null;
-let hoveredDistrictPolygonID = null;
+let hoveredPolygonId = null; // highlight state
+let previousHighlightedRowId = null; // for highlighting state in table
+let hoveredDistrictPolygonID = null; // highlight district
 
 map.on('load', () => {
 
@@ -104,42 +105,56 @@ map.on('load', () => {
     });
 
   map.on('mousemove', 'state-fills', (e) => {
-    if (map.getZoom() >= 4) {  // adjust 4 to whatever zoom level you consider "state level"
-      // At zoom <= 4, disable hover fills:
+    if (map.getZoom() >= 4) {
       if (hoveredPolygonId !== null) {
-        map.setFeatureState(
-          { source: 'states', id: hoveredPolygonId },
-          { hover: false }
-        );
+        map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
         hoveredPolygonId = null;
       }
-      return; // skip hover highlight
+
+      if (previousHighlightedRowId) {
+        const prevRow = document.getElementById(previousHighlightedRowId);
+        if (prevRow) prevRow.classList.remove('highlighted');
+        previousHighlightedRowId = null;
+      }
+
+      return;
     }
 
     if (e.features.length > 0) {
       if (hoveredPolygonId !== null) {
-        map.setFeatureState(
-          { source: 'states', id: hoveredPolygonId },
-          { hover: false }
-        );
-      }
-      hoveredPolygonId = e.features[0].id;
+        map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
 
-      map.setFeatureState(
-        { source: 'states', id: hoveredPolygonId },
-        { hover: true }
-      );
+        if (previousHighlightedRowId) {
+          const prevRow = document.getElementById(previousHighlightedRowId);
+          if (prevRow) prevRow.classList.remove('highlighted');
+        }
+      }
+
+      hoveredPolygonId = e.features[0].id;
+      map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
+
+      // Here hoveredPolygonId is the state FIPS code (like "41")
+      const rowId = 'row-' + String(hoveredPolygonId).padStart(2, '0');
+
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.classList.add('highlighted');
+        previousHighlightedRowId = rowId;
+      }
     }
   });
 
   map.on('mouseleave', 'state-fills', () => {
     if (hoveredPolygonId !== null) {
-      map.setFeatureState(
-        { source: 'states', id: hoveredPolygonId },
-        { hover: false }
-      );
+      map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
+      hoveredPolygonId = null;
     }
-    hoveredPolygonId = null;
+
+    if (previousHighlightedRowId) {
+      const prevRow = document.getElementById(previousHighlightedRowId);
+      if (prevRow) prevRow.classList.remove('highlighted');
+      previousHighlightedRowId = null;
+    }
   });
 
   map.on('click', 'state-fills', function (e) {
@@ -255,6 +270,12 @@ map.on('load', () => {
           }
   });
 });
+
+function fillStateDataTable(){
+
+  // TO DO get values for each state and load the table
+
+}
 
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'
