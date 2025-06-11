@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   fullExtentButton.addEventListener('click', () => {
+    districtPopup.remove()
     map.fitBounds([[ -126, 24], [-66, 50]]); // albers
     //map.jumpTo({ center: [-99.2, 40.0], zoom: 3 })
     // remove district layer if it exists
@@ -64,6 +65,11 @@ let hoveredPolygonId = null; // highlight state
 let previousHighlightedRowId = null; // for highlighting state in table
 let hoveredDistrictPolygonID = null; // highlight district
 
+var districtPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false
+});
+
 map.on('load', () => {
 
   // hide basemap layers/labels that we don't want
@@ -81,10 +87,7 @@ map.on('load', () => {
     }
   });
 
-  const districtPopup = new mapboxgl.Popup({
-    closeButton: false,
-    closeOnClick: false
-  });
+
 
   // SOURCES
   map.addSource('states', {
@@ -259,27 +262,57 @@ map.on('load', () => {
         );
 
         // JOIN DATA BY ID
+        // fake data:
+        const isDownward = props.AWATER % 2 === 0;  // make up/down depend on if the awater is even or odd
+        const directionArrow = isDownward ? '🡻' : '🡹';
+        const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
 
         // FILL POPUP
         // to do: fill missing values
+
         districtPopup
           .setLngLat(e.lngLat)
           .setHTML(`
-            <strong>${props.NAME}</strong><br>
-            GEOID: ${props.GEOID}<br>
-            Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
-            Number of students:<br> 
-            Number or teachers:<br> 
-
-          `
-          // ADD OTHER INFO TO THE POPUP HERE
-          )
+            <div class="popup-content">
+              <strong>${props.NAME}</strong><br>
+              Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
+              Students: xx,xxx<br> 
+              Teachers: xxx<br> 
+              <b>Opportunity Estimates</b><br>
+              <div class="opportunity-row">
+                <div class="arrow ${directionClass}">${directionArrow}</div>
+                <div class="opportunity-text">
+                  2011–12: xx<br>
+                  2021–22: xx
+                </div>
+              </div>
+            </div>
+            <!-- ADD OTHER INFO TO THE POPUP HERE -->
+          `)          
           .addTo(map);
 
         // Call any other visual update (e.g., graphs)
         showGraphs();
       });
 
+      map.on('mouseleave', 'district-fills', () => {
+        // Remove hover highlight
+        if (hoveredDistrictPolygonID !== null) {
+          map.setFeatureState(
+            { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+            { hover: false }
+          );
+          hoveredDistrictPolygonID = null;
+        }
+
+        // Close the district popup
+        if (districtPopup) {
+          districtPopup.remove();
+        }
+
+        // Optional: reset the cursor
+        map.getCanvas().style.cursor = '';
+      });
 
 
             // show graphs
