@@ -23,7 +23,7 @@ const layout = {
   showlegend: false
 };
 
-    const colorBlack = getComputedStyle(document.documentElement).getPropertyValue('--black').trim();
+    const colorBlack = getComputedStyle(document.documentElement).getPropertyValue('--almostBlack').trim();
     const colorYellow = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim();
 
     function createLongitudinalChart(containerId, values, stateAvg) {
