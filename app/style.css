@@ -29,7 +29,7 @@ body, html {
 }
 
 .map-header-img {
-    background-image: url('/assets/png/head.png');
+    background-image: url('../assets/png/head.png');
     background-size: cover;
     background-position: center;
     height: 100px;
