@@ -46,17 +46,22 @@ map.on('load', () => {
 
   // hide basemap layers/labels that we don't want
   const hiddenLayers = [
-  'country-label',
-  'continent-label',
-  'waterway-label',
-  'water-line-label',
-  'water-point-label'
-];
+    'country-label',
+    'continent-label',
+    'waterway-label',
+    'water-line-label',
+    'water-point-label'
+  ];
 
   hiddenLayers.forEach(layerId => {
     if (map.getLayer(layerId)) {
       map.setLayoutProperty(layerId, 'visibility', 'none');
     }
+  });
+
+  const districtPopup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false
   });
 
   map.addSource('states', {
@@ -137,8 +142,6 @@ map.on('load', () => {
     hoveredPolygonId = null;
   });
 
-
-
   map.on('click', 'state-fills', function (e) {
     const clickedFeature = e.features[0];
 
@@ -197,9 +200,12 @@ map.on('load', () => {
       map.on('mousemove', 'district-fills', (e) => {
         const feature = e.features[0];
         const id = feature.id;
+        const props = feature.properties;
+        console.log(props)
 
         if (!id) return;
 
+        // SET STYLE
         if (hoveredDistrictPolygonID !== null) {
           map.setFeatureState(
             { source: 'oregon_districts', id: hoveredDistrictPolygonID },
@@ -213,17 +219,29 @@ map.on('load', () => {
           { source: 'oregon_districts', id: hoveredDistrictPolygonID },
           { hover: true }
         );
+
+        // JOIN DATA BY ID
+
+        // FILL POPUP
+        // to do: fill missing values
+        districtPopup
+          .setLngLat(e.lngLat)
+          .setHTML(`
+            <strong>${props.NAME}</strong><br>
+            GEOID: ${props.GEOID}<br>
+            Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
+            Number of students:<br> 
+            Number or teachers:<br> 
+
+          `
+          // ADD OTHER INFO TO THE POPUP HERE
+          )
+          .addTo(map);
+
+        // Call any other visual update (e.g., graphs)
+        showGraphs();
       });
 
-      map.on('mouseleave', 'district-fills', () => {
-        if (hoveredDistrictPolygonID !== null) {
-          map.setFeatureState(
-            { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-            { hover: false }
-          );
-        }
-        hoveredDistrictPolygonID = null;
-      });
 
 
             // show graphs
@@ -235,8 +253,8 @@ map.on('load', () => {
 
 
           }
-        });
-      });
+  });
+});
 
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'
