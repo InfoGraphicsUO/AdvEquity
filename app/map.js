@@ -40,6 +40,7 @@ const map = new mapboxgl.Map({
 });
 
 let hoveredPolygonId = null;
+let hoveredDistrictPolygonID = null;
 
 map.on('load', () => {
 
@@ -52,12 +53,12 @@ map.on('load', () => {
   'water-point-label'
 ];
 
-hiddenLayers.forEach(layerId => {
-  if (map.getLayer(layerId)) {
-    map.setLayoutProperty(layerId, 'visibility', 'none');
-  }
-});
-  
+  hiddenLayers.forEach(layerId => {
+    if (map.getLayer(layerId)) {
+      map.setLayoutProperty(layerId, 'visibility', 'none');
+    }
+  });
+
   map.addSource('states', {
     type: 'geojson',
     data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
@@ -80,7 +81,7 @@ hiddenLayers.forEach(layerId => {
     //  filter: ['==', 'STATE_ID', "19"]
   });
 
-    map.addLayer({
+  map.addLayer({
       id: 'state-borders',
       type: 'line',
       source: 'states',
@@ -93,7 +94,8 @@ hiddenLayers.forEach(layerId => {
 
     map.addSource('oregon_districts', {
       type: 'geojson',
-      data: '/assets/data/geojson/oregon_districts.geojson'
+      data: '/assets/data/geojson/oregon_districts.geojson',
+      promoteId: 'GEOID',  // use GEOID as the unique ID
     });
 
   map.on('mousemove', 'state-fills', (e) => {
@@ -179,7 +181,6 @@ hiddenLayers.forEach(layerId => {
         id: 'district-fills',
         type: 'fill',
         source: 'oregon_districts',
-        promoteId: 'GEOID',  // use GEOID as the unique ID
         layout: {},
         paint: {
           'fill-color': '#627BC1',
@@ -189,32 +190,41 @@ hiddenLayers.forEach(layerId => {
             1,
             0
           ]
-        },
+        }
       });
 
 
-      // map.on('mousemove', 'district-fills', (e) => {
-      //   const feature = e.features[0];
-      //   const fid = feature.properties.GEOID;
-      //   const id = feature.properties.GEOID;
-      //   console.log('Hovered GEOID:', id);
+      map.on('mousemove', 'district-fills', (e) => {
+        const feature = e.features[0];
+        const id = feature.id;
 
-      //   if (!fid) return;
+        if (!id) return;
 
-      //   if (hoveredPolygonId !== null) {
-      //     map.setFeatureState(
-      //       { source: 'oregon_districts', id: hoveredPolygonId },
-      //       { hover: false }
-      //     );
-      //   }
+        if (hoveredDistrictPolygonID !== null) {
+          map.setFeatureState(
+            { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+            { hover: false }
+          );
+        }
 
-      //   hoveredPolygonId = e.features[0].id;
+        hoveredDistrictPolygonID = id;
 
-      //   map.setFeatureState(
-      //     { source: 'oregon_districts', id: hoveredPolygonId },
-      //     { hover: true }
-      //   );
-      // });
+        map.setFeatureState(
+          { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+          { hover: true }
+        );
+      });
+
+      map.on('mouseleave', 'district-fills', () => {
+        if (hoveredDistrictPolygonID !== null) {
+          map.setFeatureState(
+            { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+            { hover: false }
+          );
+        }
+        hoveredDistrictPolygonID = null;
+      });
+
 
             // show graphs
             showGraphs();
