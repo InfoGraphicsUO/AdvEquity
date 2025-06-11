@@ -58,6 +58,6 @@
 }
 
 .highlighted {
-  background-color: #d0e7ff;  /* light blue highlight */
+  background-color: var(--yellow);  /* highlight */
   transition: background-color 0.3s ease;
 }
