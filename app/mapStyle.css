@@ -1,4 +1,5 @@
 :root {
+  --verydarkgrey: #686c6c;
   --darkgrey: #a1a1a1;
   --lightgrey: #bdbfbf;
   --green: #808c73;
@@ -98,3 +99,37 @@ h2{
 }
 
 /* end popup */
+
+
+/* map legend */
+#mapLegend {
+  position: absolute;
+  color: var(--offwhite);
+  bottom: 30px;
+  left: 30px;
+  z-index: 10;
+  width: 180px;
+  display: none;
+  color: var(--offwhite)
+}
+
+#mapLegend h4 {
+  margin: 0 0 0.1rem;
+  font-size: 0.8rem;
+}
+
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  font-size: 0.75rem;
+}
+
+.map-legend-item span {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.4rem;
+  border-radius: 3px;
+}
+/* end legend */

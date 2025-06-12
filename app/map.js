@@ -6,12 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // get CSS colors:
   const root = document.documentElement;
-  darkgrey = getComputedStyle(root).getPropertyValue('--darkgrey');
-  lightgrey = getComputedStyle(root).getPropertyValue('--lightgrey');
-  green = getComputedStyle(root).getPropertyValue('--green');
-  yellow = getComputedStyle(root).getPropertyValue('--yellow');
-  almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack');
-  offwhite = getComputedStyle(root).getPropertyValue('--offwhite');
+  verydarkgrey = getComputedStyle(root).getPropertyValue('--verydarkgrey').trim();
+  darkgrey = getComputedStyle(root).getPropertyValue('--darkgrey').trim();
+  lightgrey = getComputedStyle(root).getPropertyValue('--lightgrey').trim();
+  green = getComputedStyle(root).getPropertyValue('--green').trim();
+  yellow = getComputedStyle(root).getPropertyValue('--yellow').trim();
+  almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack').trim();
+  offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
 
   searchButton.addEventListener('click', () => {
     const userInput = searchInput.value;
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fullExtentButton.addEventListener('click', () => {
     districtPopup.remove()
+    document.getElementById('mapLegend').style.display = 'none'; // hide legend
     map.fitBounds([[ -126, 24], [-66, 50]]); // albers
     //map.jumpTo({ center: [-99.2, 40.0], zoom: 3 })
     // remove district layer if it exists
@@ -185,6 +187,7 @@ map.on('load', () => {
 
   map.on('click', 'state-fills', function (e) {
     const clickedFeature = e.features[0];
+    document.getElementById('mapLegend').style.display = 'block'; // display legend
 
     const coords = clickedFeature.geometry.coordinates;
     // console.log(JSON.stringify(coords, null, 1));
@@ -210,41 +213,53 @@ map.on('load', () => {
 
     // if Oregon ( for POC)
     if(clickedFeature.id == 41){
+      map.addLayer({
+        id: 'district-fills',
+        type: 'fill',
+        source: 'oregon_districts',
+        promoteId: 'GEOID',
+        layout: {},
+        paint: {
+         'fill-color': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+           yellow, // yellow for hover
+          [
+            'match',
+            ['feature-state', 'urban_score'],
+            'NA', verydarkgrey,      // verydarkgrey for NA
+            '1', '#145214',       // green shades
+            '2', '#2c7a2c',
+            '3', '#4caf50',
+            '4', '#80e27e',
+            '5', '#b9ffb9',
+            verydarkgrey            
+          ]
+        ],
+          'fill-opacity': 1
+        }
+      });
+
       // add district lines
       map.addLayer({
         id: 'district-lines',
         type: 'line',
         source: 'oregon_districts',
         paint: {
-          'line-color': green,
-          'line-width': 0.75
-        }
-      }, 'state-fills'); // Layer position 
-
-      map.addLayer({
-        id: 'district-fills',
-        type: 'fill',
-        source: 'oregon_districts',
-        layout: {},
-        paint: {
-          'fill-color': yellow,
-          'fill-opacity': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            1,
-            0
-          ]
+          'line-color': verydarkgrey,
+          'line-width': 0.5,
+          'line-opacity': 0.9
         }
       });
+
 
 
       map.on('mousemove', 'district-fills', (e) => {
         const feature = e.features[0];
         const id = feature.id;
         const props = feature.properties;
-        console.log(props)
-
         if (!id) return;
+        console.log(props)
 
         // SET STYLE
         if (hoveredDistrictPolygonID !== null) {
@@ -255,7 +270,6 @@ map.on('load', () => {
         }
 
         hoveredDistrictPolygonID = id;
-
         map.setFeatureState(
           { source: 'oregon_districts', id: hoveredDistrictPolygonID },
           { hover: true }
@@ -317,6 +331,7 @@ map.on('load', () => {
 
             // show graphs
             showGraphs();
+            fillDistricts(map) // dummy data
 
             // set graph container info about the current state
             // add code as needed
@@ -366,6 +381,55 @@ function fillStateDataTable(){
   // TO DO get values for each state and load the table
 
 }
+
+
+function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
+  fetch('/assets/data/geojson/oregon_districts.geojson')
+    .then(response => response.json())
+    .then(data => {
+      data.features.forEach(feature => {
+        const id = feature.properties.GEOID;
+        if (!id) return;
+
+        const name = feature.properties.NAME;
+        let urbanScore = 'NA';
+
+        const urbanLike = ['Portland', 'Salem', 'Eugene', 'Beaverton', 'Hillsboro'];
+        if (urbanLike.some(city => name.includes(city))) {
+          urbanScore = String(Math.floor(Math.random() * 5) + 1); // 1-5 as string
+        } else {
+          urbanScore = Math.random() > 0.5 ? String(Math.floor(Math.random() * 5) + 1) : 'NA';
+        }
+
+        map.setFeatureState(
+          { source: districtSourceId, id: id },
+          { urban_score: urbanScore }
+        );
+      });
+
+      // update paint after all states are set
+      map.setPaintProperty('district-fills', 'fill-color', [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false],
+        '#ffff00', // example hover color (yellow)
+        [
+          'match',
+          ['feature-state', 'urban_score'],
+          'NA', darkgrey,
+          '1', '#145214',
+          '2', '#2c7a2c',
+          '3', '#4caf50',
+          '4', '#80e27e',
+          '5', '#b9ffb9',
+          verydarkgrey // fallback
+        ]
+      ])
+    .catch(error => console.error('Error fetching districts GeoJSON:', error));
+  });
+}
+
+
+
 
 
 function showGraphs(){

@@ -17,7 +17,19 @@
   <link rel="stylesheet" href="table.css" />
 </head>
 <body>  
-  <div id="map"></div>
+  <div id="map">
+    <div id="mapLegend">
+      <h4>AP Opportunity estimate</h4>
+      *dummy data
+
+<div class="map-legend-item"><span style="background:#b9ffb9"></span>5 (most opportunity)</div>
+<div class="map-legend-item"><span style="background:#80e27e"></span>4</div>
+<div class="map-legend-item"><span style="background:#4caf50"></span>3</div>
+<div class="map-legend-item"><span style="background:#2c7a2c"></span>2</div>
+<div class="map-legend-item"><span style="background:#145214"></span>1 (least opportunity)</div>
+<div class="map-legend-item"><span style="background: var(--verydarkgrey)"></span>N/A</div>
+    </div>
+
   <div id="mapWidgets">
     <div class="search_query">
       <input type="text" placeholder="Search Query Tool..." />
@@ -25,6 +37,9 @@
     </div>
     <button id="full_extent">View US</button>
   </div>
+  
+</div>
+
   <div id="infoContainer">
     <!-- <h2>Information</h2> -->
     <p><b>Info about the US. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus, facilisis viverra est elementum a.</p>
