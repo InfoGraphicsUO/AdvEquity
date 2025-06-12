@@ -73,5 +73,5 @@ p{
 
 #title h1{
     color:white;
-    text-decoration: underline solid yellow;
+    text-decoration: underline solid var(--yellow);
 }

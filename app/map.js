@@ -384,7 +384,7 @@ function fillStateDataTable(){
 
 
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
-  fetch('/assets/data/geojson/oregon_districts.geojson')
+  fetch('../assets/data/geojson/oregon_districts.geojson')
     .then(response => response.json())
     .then(data => {
       data.features.forEach(feature => {
