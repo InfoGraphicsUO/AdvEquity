@@ -33,16 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 
-<<<<<<< HEAD
 
 
   // Fetch the GeoJSON and build the table
   fillStateDataTable()
   
   /*
-=======
-  // Fetch the GeoJSON and build the table
->>>>>>> main
   fetch('https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson')
     .then(response => response.json())
     .then(data => {
@@ -51,11 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
       console.error('Error loading GeoJSON:', error);
     });
-<<<<<<< HEAD
     */
-=======
-
->>>>>>> main
 });
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjMnFtdHRyd2gzamc0In0.U_YDP6GrLeN_rwCCJ509Lw'; ///TODO THIS NEEDS TO BE HIDDEN ADD TO CREDS FILE AND GITIGNORE
@@ -123,7 +115,12 @@ map.on('load', () => {
     source: 'states',
     layout: {},
     paint: {
-      'fill-color': yellow,
+  'fill-color': [
+    'case',
+    ['==', ['get', 'STATE_ID'], '41'],
+    yellow, // Oregon hovers yellow 
+    '#cccccc'  // All others always gray
+  ],
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
@@ -172,6 +169,7 @@ map.on('load', () => {
       }
 
       hoveredPolygonId = e.features[0].id;
+      console.log('Hovered state ID:', hoveredPolygonId);
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
       // Here hoveredPolygonId is the state FIPS code (like "41")
@@ -236,11 +234,7 @@ map.on('load', () => {
          'fill-color': [
           'case',
           ['boolean', ['feature-state', 'hover'], false],
-<<<<<<< HEAD
-           green, // yellow for hover
-=======
            yellow, // yellow for hover
->>>>>>> main
           [
             'match',
             ['feature-state', 'urban_score'],
@@ -359,15 +353,9 @@ map.on('load', () => {
   });
 });
 
-<<<<<<< HEAD
 function buildOpportunityTable(geojson, stateData) {
   const container = document.getElementById('us-opportunity-table');
   container.innerHTML = '';
-=======
-function buildOpportunityTable(geojson) {
-  const container = document.getElementById('us-opportunity-table');
-
->>>>>>> main
   // Create header row
   const headerRow = document.createElement('div');
   headerRow.className = 'row header-row';
@@ -379,7 +367,6 @@ function buildOpportunityTable(geojson) {
   `;
   container.appendChild(headerRow);
 
-<<<<<<< HEAD
 const sortedFeatures = geojson.features.slice().sort((a, b) => {
 
   if (a.id === 41) return -1; // a is Oregon → comes first
@@ -389,15 +376,10 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
 
   // Loop through GeoJSON features to create rows
   sortedFeatures.forEach((feature) => {
-=======
-  // Loop through GeoJSON features to create rows
-  geojson.features.forEach((feature) => {
->>>>>>> main
     const props = feature.properties;
     const stateName = props.STATE_NAME;
     const fips = props.STATE_ID.padStart(2, '0'); // ensure 2-digit ID
 
-<<<<<<< HEAD
     // Default fallback if not Oregon
     let ap = '—';
     let opp11 = '—';
@@ -410,28 +392,19 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
       opp21 = (stateData.opp_est_2 * 100).toFixed(1) + '%' ?? '—';
     }
 
-=======
->>>>>>> main
     const row = document.createElement('div');
     row.className = 'row';
     row.id = `row-${fips}`;
     row.innerHTML = `
       <div class="cell state">${stateName}</div>
-<<<<<<< HEAD
       <div class="cell ap-classes" id="ap-${fips}">${ap}</div>
       <div class="cell opp-11" id="opp11-${fips}">${opp11}</div>
       <div class="cell opp-21" id="opp21-${fips}">${opp21}</div>
-=======
-      <div class="cell ap-classes" id="ap-${fips}">—</div>
-      <div class="cell opp-11" id="opp11-${fips}">—</div>
-      <div class="cell opp-21" id="opp21-${fips}">—</div>
->>>>>>> main
     `;
 
     container.appendChild(row);
   });
 }
-<<<<<<< HEAD
 function fillStateDataTable() {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
   const stateDataUrl = '../assets/data/json/Oregon/OR_overview.json';
@@ -453,18 +426,6 @@ function fillStateDataTable() {
 
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
   fetch('/assets/data/geojson/oregon_districts.geojson')
-=======
-
-function fillStateDataTable(){
-
-  // TO DO get values for each state and load the table
-
-}
-
-
-function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
-  fetch('/assets/data/geojson/oregon_districts.geojson') // uses repository root for github.io
->>>>>>> main
     .then(response => response.json())
     .then(data => {
       data.features.forEach(feature => {
