@@ -228,7 +228,7 @@ map.on('load', () => {
          'fill-color': [
           'case',
           ['boolean', ['feature-state', 'hover'], false],
-           yellow, // yellow for hover
+           green, // yellow for hover
           [
             'match',
             ['feature-state', 'urban_score'],
@@ -361,9 +361,12 @@ function buildOpportunityTable(geojson, stateData) {
   `;
   container.appendChild(headerRow);
 
-  const sortedFeatures = geojson.features.slice().sort((a, b) => {
-    return a.id - b.id; // numeric sort by feature.id
-  });
+const sortedFeatures = geojson.features.slice().sort((a, b) => {
+
+  if (a.id === 41) return -1; // a is Oregon → comes first
+  if (b.id === 41) return 1;  // b is Oregon → comes first
+  return Number(a.id) - Number(b.id)
+});
 
   // Loop through GeoJSON features to create rows
   sortedFeatures.forEach((feature) => {
