@@ -103,3 +103,24 @@ function initGraph() {
     </div>
   `;
 }
+function initStateOverview() {
+  const StateOverviewCharts = document.getElementById('StateOverviewCharts');
+  if (!StateOverviewCharts) return;
+
+
+  const data = [{
+    x: ['Other', 'Asian', 'Black', 'Hispanic', 'White'],
+    y: [10.29, 20.79, 14.59, 8.78, 51.14],
+    type: 'bar',
+    marker: { color: 'rgb(158,202,225)' }
+  }];
+
+  const layout = {
+    title: 'Racial Composition',
+    yaxis: { title: 'Percentage', range: [0, 60] },
+    width: 325,
+    height: 300
+  };
+
+  Plotly.newPlot('StateOverviewCharts', data, layout);
+}

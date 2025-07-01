@@ -48,6 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error loading GeoJSON:', error);
     });
     */
+   // State Overview close button and other interactions
+    const closeBtnState = document.getElementById('closeStateOverview');
+    const StateOverview = document.getElementById('StateOverviewContainer');
+
+    if (closeBtnState && StateOverview) {
+      closeBtnState.addEventListener('click', () => {
+        StateOverview.style.display = 'none';
+      });
+    }
 });
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjMnFtdHRyd2gzamc0In0.U_YDP6GrLeN_rwCCJ509Lw'; ///TODO THIS NEEDS TO BE HIDDEN ADD TO CREDS FILE AND GITIGNORE
@@ -249,7 +258,18 @@ map.on('load', () => {
         ],
           'fill-opacity': 1
         }
+      
+      
       });
+      
+      const StateOverview = document.getElementById('StateOverviewContainer');
+      if (StateOverview) {
+        StateOverview.style.display = 'block'; 
+        initStateOverview();// Make it visible
+
+      }
+
+      
 
       // add district lines
       map.addLayer({
@@ -266,6 +286,7 @@ map.on('load', () => {
 
 
       map.on('mousemove', 'district-fills', (e) => {
+        // is district fill type supposed to change on click??
         const feature = e.features[0];
         const id = feature.id;
         const props = feature.properties;
