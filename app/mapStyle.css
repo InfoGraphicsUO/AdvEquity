@@ -6,6 +6,7 @@
   --yellow: #e5de54;
   --almostBlack: #303333;
   --offwhite: #f4f4f4;
+  --darkGreen: #224722;
 }
 
 body, html {
@@ -17,7 +18,7 @@ body, html {
 
 #map {
   width: 100%;
-  height: 50vh;
+  height: 100vh - 130px;
   min-height: 500px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -101,6 +102,23 @@ h2{
 /* end popup */
 
 
+/* State Overview Container */
+#StateOverviewContainer {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left : 700px;
+    z-index: 10;
+    background: var(--lightgrey);
+    width: 40vh;
+    height: 57vh;
+    padding: 8px 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    gap: 6px;
+    opacity: 0.8;
+}
+
 /* map legend */
 #mapLegend {
   position: absolute;
@@ -110,7 +128,7 @@ h2{
   z-index: 10;
   width: 180px;
   display: none;
-  color: var(--offwhite)
+  color: var(--offwhite);
 }
 
 #mapLegend h4 {
