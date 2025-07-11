@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   darkgrey = getComputedStyle(root).getPropertyValue('--darkgrey').trim();
   lightgrey = getComputedStyle(root).getPropertyValue('--lightgrey').trim();
   green = getComputedStyle(root).getPropertyValue('--green').trim();
+  darkGreen = getComputedStyle(root).getPropertyValue('--darkGreen').trim();
   yellow = getComputedStyle(root).getPropertyValue('--yellow').trim();
   almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack').trim();
   offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaXphay1ib2FyZG1hbiIsImEiOiJjbWJmZzVhbTEwMDNjMnFtdHRyd2gzamc0In0.U_YDP6GrLeN_rwCCJ509Lw'; ///TODO THIS NEEDS TO BE HIDDEN ADD TO CREDS FILE AND GITIGNORE
+mapboxgl.accessToken = 'pk.eyJ1IjoiaW5mb2dyYXBoaWNzIiwiYSI6ImNqaTR0eHhnODBjeTUzdmx0N3U2dWU5NW8ifQ.fVbTCmIrqILIzv5QGtVJ2Q'; ///TODO THIS NEEDS TO BE HIDDEN ADD TO CREDS FILE AND GITIGNORE
 
 const map = new mapboxgl.Map({
   container: 'map',
@@ -111,13 +112,48 @@ map.on('load', () => {
     data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
   });
 
+  // oregon districts only - JSON in repo
   map.addSource('oregon_districts', {
       type: 'geojson',
       data: '/assets/data/geojson/oregon_districts.geojson',
       promoteId: 'GEOID',  // use GEOID as the unique ID
   });
 
+  // all districts - mapbox hosted tileset
+  map.addSource('SCHOOLDIST_TL24', {
+      type: 'vector',
+      url: 'mapbox://infographics.4fmvcuuh',
+      promoteId: 'GEOID',  // use GEOID as the unique ID
+  });
+
+
+
+
   // LAYERS
+  map.addLayer({
+      id: 'SCHOOLDIST_TL24_-fills',
+      type: 'fill', 
+      source: 'SCHOOLDIST_TL24', 
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
+      paint: {
+          'fill-color': 'transparent',
+      }
+  });
+
+
+  map.addLayer({
+      id: 'SCHOOLDIST_TL24-lines',
+      type: 'line', // or line
+      source: 'SCHOOLDIST_TL24', 
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
+      layout: {},
+      paint: {
+        'line-color': darkGreen,
+        'line-width': 1
+      }
+  });
+
+
   map.addLayer({
     id: 'state-fills',
     type: 'fill',
@@ -286,7 +322,6 @@ map.on('load', () => {
 
 
       map.on('mousemove', 'district-fills', (e) => {
-        // is district fill type supposed to change on click??
         const feature = e.features[0];
         const id = feature.id;
         const props = feature.properties;
