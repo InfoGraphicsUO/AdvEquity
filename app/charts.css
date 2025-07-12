@@ -3,13 +3,12 @@
 }
 
 #graphContainer {
-  display: none; /* use flex */
+  display: flex;
   flex-wrap: wrap;
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
   gap: 10px;
   padding: 20px;
   background: var(--offwhite);
-  font-family: jaf-bernina-sans, sans-serif;
 }
 
 #graphContainer h2, #graphContainer h3{
@@ -17,22 +16,30 @@
 }
 
 .chart-row {
-  display: flex;          /* Arrange charts in a row */
-  flex-wrap: wrap;        /* Allow wrapping to new lines if necessary */
-  justify-content: space-evenly;
-}
-.chart {
-  width: 150px;
-  height: 150px;
-  background: var(--lightgrey);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* or space-evenly */
+  gap: 10px;
 }
 
+.chart-block {
+  flex: 1 1 18%; /* Adjust basis to fit ~5 items per row */
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.chart {
+  width: 100%;
+  height: 150px;
+}
 
 .chart-caption {
   font-size: 0.85rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
   color: var(--almostBlack);
+  word-wrap: break-word;
+  text-align: center;
 }
 
 .legend-row {
