@@ -101,22 +101,20 @@ h2{
 
 /* end popup */
 
-
-/* State Overview Container */
 #StateOverviewContainer {
-    display: none;
-    position: absolute;
-    top: 0px;
-    left : 700px;
-    z-index: 10;
-    background: var(--lightgrey);
-    width: 40vh;
-    height: 57vh;
-    padding: 8px 12px;
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    gap: 6px;
-    opacity: 0.8;
+  display: none; /* initially hidden */
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--lightgrey);
+  width: 25%;
+  max-width: 350px;
+  height: 100%;
+  padding: 8px 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  opacity: 0.9;
+  border-radius: 4px;
 }
 
 /* map legend */
