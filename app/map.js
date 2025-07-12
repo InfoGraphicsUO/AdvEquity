@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       map.removeLayer('district-fills');
     }
     hideGraphs();
+    StateOverview.style.display = 'none'; // hide state panel
 
   });
 
