@@ -74,6 +74,10 @@ function initGraph() {
       </div>
     </div>
 <div class="chart-row">
+  <!-- Chart 1 -->
+  <div class="chart-block">
+    <div class="chart-caption">% of non-white students</div>
+    <div id="chart1" class="chart"></div>
   </div>
   <!-- Chart 2 -->
   <div class="chart-block">
@@ -105,8 +109,8 @@ function initStateOverview() {
 
 
   const data = [{
-    labels: ['Other', 'Asian', 'Black', 'Hispanic', 'White'],
-    values: [10.29, 20.79, 14.59, 8.78, 51.14],
+    labels: ['Two-or-more', 'Asian', 'Black', 'Hispanic', 'White'],
+    values: [6.1, 4.5, 1.9, 13.9, 71.7],
     type: 'pie',
     hole: 0.4, // Creates donut
     marker: {
@@ -120,8 +124,8 @@ function initStateOverview() {
     title: 'Racial Composition',
     yaxis: { title: 'Percentage', range: [0, 60] },
     width: 275,
-    height: 300,
-    // showlegend: true
+    height: 275,
+    showlegend: false
   };
 
   Plotly.newPlot('StateOverviewCharts', data, layout);
