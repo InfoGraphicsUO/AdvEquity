@@ -287,6 +287,26 @@ map.on('load', () => {
 
       map.on('mousemove', 'district-fills', (e) => {
         // is district fill type supposed to change on click??
+        const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview.json';
+        fetch(DistDataUrl)
+          .then(res => res.json())
+          .then(stateData => {
+            // Extract only the matched district
+            const hoveredDistrict = stateData.Data.find(
+              d => d.LEAID === hoveredDistrictPolygonID
+            );
+
+            if (hoveredDistrict) {
+              console.log('Matched District:', hoveredDistrict);
+
+
+            } else {
+              console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading data:', error);
+          });
         const feature = e.features[0];
         const id = feature.id;
         const props = feature.properties;
@@ -306,7 +326,7 @@ map.on('load', () => {
           { source: 'oregon_districts', id: hoveredDistrictPolygonID },
           { hover: true }
         );
-
+        console.log('Hovered district ID:', hoveredDistrictPolygonID);
         // JOIN DATA BY ID
         // fake data:
         const isDownward = props.AWATER % 2 === 0;  // make up/down depend on if the awater is even or odd

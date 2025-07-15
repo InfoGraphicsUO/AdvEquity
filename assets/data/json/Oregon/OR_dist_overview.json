@@ -1,0 +1,4530 @@
+{
+    "Data": [
+        {
+            "state": "OR",
+            "LEAID": "4100003",
+            "dist": "FALLS CITY SD 57",
+            "schools": [
+                "falls city elementary school",
+                "falls city high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 58.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 4.0,
+                "ENR_HI": 51.0,
+                "ENR_WH": 1067.0
+            },
+            "num_students": 1186.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100009",
+            "dist": "OREGON DEPARTMENT OF EDUCATION",
+            "schools": [
+                "oregon school for the deaf",
+                "four rivers community school",
+                "southwest charter school",
+                "the cottonwood school of civics and science",
+                "the ivy school",
+                "eagle charter school",
+                "bpa charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 446.0,
+                "ENR_AS": 116.0,
+                "ENR_BL": 191.0,
+                "ENR_HI": 1954.0,
+                "ENR_WH": 3353.0
+            },
+            "num_students": 6060.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100014",
+            "dist": "VALE SD 84",
+            "schools": [
+                "vale elementary school",
+                "willowcreek elementary school",
+                "vale high school",
+                "vale middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 80.0,
+                "ENR_AS": 39.0,
+                "ENR_BL": 4.0,
+                "ENR_HI": 836.0,
+                "ENR_WH": 4064.0
+            },
+            "num_students": 5023.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100015",
+            "dist": "GERVAIS SD 1",
+            "schools": [
+                "brooks elementary school",
+                "gervais elementary school",
+                "gervais middle school",
+                "gervais high school",
+                "eldriedge elementary school",
+                "douglas avenue alternative school",
+                "samuel brown academy",
+                "frontier charter academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 295.0,
+                "ENR_AS": 92.0,
+                "ENR_BL": 74.0,
+                "ENR_HI": 4388.0,
+                "ENR_WH": 2810.0
+            },
+            "num_students": 7659.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100016",
+            "dist": "YAMHILL CARLTON SD 1",
+            "schools": [
+                "yamhill carlton elementary school",
+                "yamhill carlton high school",
+                "yamhill carlton intermediate school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 294.0,
+                "ENR_AS": 69.0,
+                "ENR_BL": 42.0,
+                "ENR_HI": 595.0,
+                "ENR_WH": 5545.0
+            },
+            "num_students": 6545.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100019",
+            "dist": "HARRISBURG SD 7J",
+            "schools": [
+                "harrisburg elementary school",
+                "harrisburg high school",
+                "harrisburg middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100020",
+            "dist": "NORTH SANTIAM SD 29J",
+            "schools": [
+                "mari-linn elementary school",
+                "sublimity elementary school",
+                "stayton elementary school",
+                "stayton middle school",
+                "stayton high school",
+                "north santiam options academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 784.0,
+                "ENR_AS": 104.0,
+                "ENR_BL": 198.0,
+                "ENR_HI": 1519.0,
+                "ENR_WH": 10972.0
+            },
+            "num_students": 13577.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100021",
+            "dist": "SOUTH WASCO COUNTY SD 1",
+            "schools": [
+                "maupin elementary school",
+                "south wasco county high school",
+                "south wasco county jr/ sr high school",
+                "south wasco county jr/sr high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 168.0,
+                "ENR_AS": 0.0,
+                "ENR_BL": 3.0,
+                "ENR_HI": 124.0,
+                "ENR_WH": 1078.0
+            },
+            "num_students": 1373.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100023",
+            "dist": "HILLSBORO SD 1J",
+            "schools": [
+                "tobias elementary school",
+                "west union elementary school",
+                "brookwood elementary school",
+                "eastwood elementary school",
+                "w verne mckinney elementary school",
+                "mooberry elementary school",
+                "w l henry elementary school",
+                "butternut creek elementary school",
+                "reedville elementary school",
+                "ladd acres elementary school",
+                "witch hazel elementary school",
+                "groner elementary school",
+                "groner k-8",
+                "farmington view elementary school",
+                "north plains elementary school",
+                "century high school",
+                "r a brown middle school",
+                "j w poynter middle school",
+                "hillsboro high school",
+                "south meadows middle school",
+                "indian hills elementary school",
+                "lenox elementary school",
+                "minter bridge elementary school",
+                "glencoe high school",
+                "evergreen jr high school",
+                "jackson elementary school",
+                "miller education ctr east 9-12",
+                "miller education center 6-7-8",
+                "orenco elementary school",
+                "paul l patterson elementary school",
+                "city view charter school",
+                "liberty high school",
+                "lincoln street elementary school",
+                "rosedale elementary school",
+                "quatama elementary school",
+                "free orchards elementary school",
+                "hillsboro online academy",
+                "atfalati ridge elementary school",
+                "imlay elementary school",
+                "miller education center 9-12"
+            ],
+            "district_comp": {
+                "ENR_OTH": 8999.0,
+                "ENR_AS": 8052.0,
+                "ENR_BL": 2774.0,
+                "ENR_HI": 44759.0,
+                "ENR_WH": 55735.0
+            },
+            "num_students": 120319.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100033",
+            "dist": "Linn Benton Lincoln ESD",
+            "schools": [
+                "wake robin school",
+                "farm home school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 22.0,
+                "ENR_AS": 1.0,
+                "ENR_BL": 8.0,
+                "ENR_HI": 44.0,
+                "ENR_WH": 176.0
+            },
+            "num_students": 251.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100036",
+            "dist": "InterMountain ESD",
+            "schools": [
+                "intermountain virtual learning academy",
+                "ei/ecse program",
+                "lifeways day treatment program"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100040",
+            "dist": "KNAPPA SD 4",
+            "schools": [
+                "hilda lahti elementary school",
+                "knappa high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 159.0,
+                "ENR_AS": 23.0,
+                "ENR_BL": 13.0,
+                "ENR_HI": 258.0,
+                "ENR_WH": 2340.0
+            },
+            "num_students": 2793.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100043",
+            "dist": "ODE YCEP DISTRICT",
+            "schools": [
+                "robert s farrell high school",
+                "william p lord high school",
+                "monroe school",
+                "newbridge high school",
+                "new bridge high school",
+                "ocean dunes high school",
+                "riverside high school",
+                "south jetty high school",
+                "riverbend high school",
+                "trask river high school",
+                "three lakes high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 313.0,
+                "ENR_AS": 16.0,
+                "ENR_BL": 285.0,
+                "ENR_HI": 480.0,
+                "ENR_WH": 1197.0
+            },
+            "num_students": 2291.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100047",
+            "dist": "IONE SD R2",
+            "schools": [
+                "ione community charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 48.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 6.0,
+                "ENR_HI": 260.0,
+                "ENR_WH": 747.0
+            },
+            "num_students": 1067.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100048",
+            "dist": "NORTH WASCO COUNTY SD 21",
+            "schools": [
+                "chenowith elementary school",
+                "mosier community school",
+                "colonel wright elementary school",
+                "dry hollow elementary school",
+                "the dalles middle school",
+                "the dalles-wahtonka high school",
+                "the dalles high school",
+                "mosier middle school",
+                "wahtonka community school",
+                "riverbend community school",
+                "mid columbia child and family center",
+                "discovery high school",
+                "d21 k-12 virtual academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1236.0,
+                "ENR_AS": 167.0,
+                "ENR_BL": 118.0,
+                "ENR_HI": 6316.0,
+                "ENR_WH": 9747.0
+            },
+            "num_students": 17584.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4100640",
+            "dist": "MYRTLE POINT SD 41",
+            "schools": [
+                "myrtle crest school",
+                "myrtle point high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 811.0,
+                "ENR_AS": 11.0,
+                "ENR_BL": 31.0,
+                "ENR_HI": 256.0,
+                "ENR_WH": 2391.0
+            },
+            "num_students": 3500.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101020",
+            "dist": "ADRIAN SD 61",
+            "schools": [
+                "adrian elementary school",
+                "adrian high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 59.0,
+                "ENR_AS": 27.0,
+                "ENR_BL": 0.0,
+                "ENR_HI": 363.0,
+                "ENR_WH": 1239.0
+            },
+            "num_students": 1688.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101120",
+            "dist": "GREATER ALBANY PUBLIC SD 8J",
+            "schools": [
+                "oak grove elementary school",
+                "north albany elementary school",
+                "fir grove primary school",
+                "central elementary school",
+                "lafayette elementary school",
+                "liberty elementary school",
+                "oak elementary school",
+                "sunrise elementary school",
+                "south shore elementary school",
+                "takena elementary school",
+                "waverly elementary school",
+                "periwinkle elementary school",
+                "tangent elementary school",
+                "clover ridge elementary school",
+                "meadow ridge elementary",
+                "calapooia middle school",
+                "memorial middle school",
+                "north albany middle school",
+                "west albany high school",
+                "south albany high school",
+                "albany options school",
+                "timber ridge school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 4007.0,
+                "ENR_AS": 471.0,
+                "ENR_BL": 393.0,
+                "ENR_HI": 11413.0,
+                "ENR_WH": 38695.0
+            },
+            "num_students": 54979.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101200",
+            "dist": "ALSEA SD 7J",
+            "schools": [
+                "alsea high school",
+                "alsea charter school",
+                "alsea elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 213.0,
+                "ENR_AS": 11.0,
+                "ENR_BL": 17.0,
+                "ENR_HI": 215.0,
+                "ENR_WH": 1713.0
+            },
+            "num_students": 2169.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101230",
+            "dist": "AMITY SD 4J",
+            "schools": [
+                "amity elementary school",
+                "amity high school",
+                "amity middle school",
+                "ballston community school",
+                "eola hills charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 351.0,
+                "ENR_AS": 38.0,
+                "ENR_BL": 32.0,
+                "ENR_HI": 695.0,
+                "ENR_WH": 3970.0
+            },
+            "num_students": 5086.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101470",
+            "dist": "ARLINGTON SD 3",
+            "schools": [
+                "arlington elementary school",
+                "arlington high school",
+                "arlington community charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 51.0,
+                "ENR_AS": 7.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 89.0,
+                "ENR_WH": 745.0
+            },
+            "num_students": 894.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101560",
+            "dist": "ASHLAND SD 5",
+            "schools": [
+                "bellview elementary school",
+                "helman elementary school",
+                "walker elementary school",
+                "ashland middle school",
+                "ashland high school",
+                "john muir elementary school",
+                "john muir outdoor school",
+                "family solutions",
+                "lithia springs",
+                "willow wind community learning center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1587.0,
+                "ENR_AS": 283.0,
+                "ENR_BL": 244.0,
+                "ENR_HI": 1513.0,
+                "ENR_WH": 12012.0
+            },
+            "num_students": 15639.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101620",
+            "dist": "ASTORIA SD 1",
+            "schools": [
+                "astor elementary school",
+                "astoria middle school",
+                "astoria senior high school",
+                "lewis & clark elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 631.0,
+                "ENR_AS": 123.0,
+                "ENR_BL": 61.0,
+                "ENR_HI": 1883.0,
+                "ENR_WH": 8461.0
+            },
+            "num_students": 11159.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101660",
+            "dist": "ATHENA-WESTON SD 29RJ",
+            "schools": [
+                "athena elementary school",
+                "weston middle school",
+                "weston-mcewen high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 465.0,
+                "ENR_AS": 32.0,
+                "ENR_BL": 32.0,
+                "ENR_HI": 234.0,
+                "ENR_WH": 2505.0
+            },
+            "num_students": 3268.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101710",
+            "dist": "BAKER SD 5J",
+            "schools": [
+                "baker middle school",
+                "brooklyn primary school",
+                "south baker intermediate school",
+                "baker high school",
+                "haines elementary school",
+                "keating elementary school",
+                "eagle cap innovative high school",
+                "eagle cap innovative hs",
+                "baker web academy",
+                "baker allprep early college",
+                "baker early college",
+                "baker early learning center",
+                "baker virtual academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1798.0,
+                "ENR_AS": 318.0,
+                "ENR_BL": 244.0,
+                "ENR_HI": 1626.0,
+                "ENR_WH": 17034.0
+            },
+            "num_students": 21020.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101740",
+            "dist": "BURNT RIVER SD 30J",
+            "schools": [
+                "burnt river school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 4.0,
+                "ENR_AS": 19.0,
+                "ENR_BL": 0.0,
+                "ENR_HI": 15.0,
+                "ENR_WH": 161.0
+            },
+            "num_students": 199.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101800",
+            "dist": "BANDON SD 54",
+            "schools": [
+                "harbor lights middle school",
+                "ocean crest elementary school",
+                "bandon senior high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 563.0,
+                "ENR_AS": 59.0,
+                "ENR_BL": 12.0,
+                "ENR_HI": 204.0,
+                "ENR_WH": 3337.0
+            },
+            "num_students": 4175.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101830",
+            "dist": "BANKS SD 13",
+            "schools": [
+                "banks elementary school",
+                "banks junior high school",
+                "banks middle school",
+                "banks high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 361.0,
+                "ENR_AS": 62.0,
+                "ENR_BL": 24.0,
+                "ENR_HI": 532.0,
+                "ENR_WH": 5576.0
+            },
+            "num_students": 6555.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101920",
+            "dist": "BEAVERTON SD 48J",
+            "schools": [
+                "0cy ryles elementary school",
+                "arts & communication high school",
+                "arts and communication magnet academy",
+                "community school",
+                "school of science & technology",
+                "conestoga middle school",
+                "westview high school",
+                "aloha-huber park school",
+                "barnes elementary school",
+                "beaver acres elementary school",
+                "bethany elementary school",
+                "cedar mill elementary school",
+                "chehalem elementary school",
+                "cooper mountain elementary school",
+                "fir grove elementary school",
+                "hazeldale elementary school",
+                "hiteon elementary school",
+                "kinnaman elementary school",
+                "mckay elementary school",
+                "mckinley elementary school",
+                "montclair elementary school",
+                "oak hills elementary school",
+                "raleigh hills elementary school",
+                "raleigh park elementary school",
+                "ridgewood elementary school",
+                "rock creek elementary school",
+                "terra linda elementary school",
+                "vose elementary school",
+                "west tualatin view elementary school",
+                "william walker elementary school",
+                "cedar park middle school",
+                "five oaks middle school",
+                "meadow park middle school",
+                "mountain view middle school",
+                "highland park middle school",
+                "whitford middle school",
+                "aloha high school",
+                "beaverton high school",
+                "sunset high school",
+                "findley elementary",
+                "greenway elementary school",
+                "errol hassell elementary school",
+                "elmonica elementary school",
+                "sexton mountain elementary school",
+                "scholls heights elementary school",
+                "stoller middle school",
+                "southridge high school",
+                "jacob wismer elementary school",
+                "international school of beaverton--high",
+                "international school of beaverton",
+                "international school of beaverton--middle",
+                "health & science school",
+                "beaverton academy of science and engineering",
+                "bonny slope elementary school",
+                "springville k-8 school",
+                "terra nova high school",
+                "arco iris spanish immersion school",
+                "hope chinese charter school",
+                "mountainside high school",
+                "sato elementary school",
+                "flex online school",
+                "tumwater middle school",
+                "arts & communication middle magnet school",
+                "merlo station night school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 37701.0,
+                "ENR_BL": 7210.0,
+                "ENR_HI": 60667.0,
+                "ENR_WH": 116290.0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4101980",
+            "dist": "BEND-LAPINE ADMINISTRATIVE SD 1",
+            "schools": [
+                "elk meadow elementary school",
+                "bear creek elementary school",
+                "cascade middle school",
+                "lapine elementary school",
+                "high desert middle school",
+                "lapine middle school",
+                "juniper elementary school",
+                "r e jewell elementary school",
+                "pilot butte middle school",
+                "bend senior high school",
+                "mountain view senior high school",
+                "lapine senior high school",
+                "lava ridge elementary school",
+                "amity creek elementary school",
+                "marshall high school",
+                "buckingham elementary school",
+                "three rivers elementary school",
+                "realms (rimrock expeditionary alternative learning",
+                "realms (rimrock expeditionary alternative learning middle sc",
+                "realms middle school",
+                "highland school at kenwood elementary school",
+                "summit high school",
+                "westside village magnet school at kingston element",
+                "westside village magnet school at kingston elementary school",
+                "high lakes elementary school",
+                "sky view middle school",
+                "pine ridge elementary",
+                "ensworth elementary school",
+                "ponderosa elementary",
+                "william e miller elementary",
+                "rosland elementary",
+                "pacific crest middle school",
+                "silver rail elementary school",
+                "bend international school",
+                "desert sky montessori",
+                "skyline high school",
+                "realms high school",
+                "north star elementary",
+                "caldera high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3753.0,
+                "ENR_AS": 1311.0,
+                "ENR_BL": 756.0,
+                "ENR_HI": 11453.0,
+                "ENR_WH": 82879.0
+            },
+            "num_students": 100152.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102040",
+            "dist": "BETHEL SD 52",
+            "schools": [
+                "clear lake elementary school",
+                "danebo elementary school",
+                "fairfield elementary school",
+                "irving elementary school",
+                "malabon elementary school",
+                "cascade middle school",
+                "shasta middle school",
+                "willamette high school",
+                "meadow view school",
+                "homesource family charter",
+                "kalapuya high school",
+                "prairie mountain school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3081.0,
+                "ENR_AS": 703.0,
+                "ENR_BL": 662.0,
+                "ENR_HI": 6775.0,
+                "ENR_WH": 21834.0
+            },
+            "num_students": 33055.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102160",
+            "dist": "BLACHLY SD 90",
+            "schools": [
+                "triangle lake charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 106.0,
+                "ENR_AS": 22.0,
+                "ENR_BL": 5.0,
+                "ENR_HI": 87.0,
+                "ENR_WH": 927.0
+            },
+            "num_students": 1147.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102310",
+            "dist": "BROOKINGS-HARBOR SD 17C",
+            "schools": [
+                "azalea middle school",
+                "kalmiopsis elementary school",
+                "brookings-harbor high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2015.0,
+                "ENR_AS": 89.0,
+                "ENR_BL": 71.0,
+                "ENR_HI": 1427.0,
+                "ENR_WH": 5839.0
+            },
+            "num_students": 9441.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102490",
+            "dist": "HARNEY COUNTY SD 3",
+            "schools": [
+                "henry l slater elementary school",
+                "hines middle school",
+                "burns high school",
+                "burns alternative school",
+                "silvies river charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 554.0,
+                "ENR_AS": 20.0,
+                "ENR_BL": 11.0,
+                "ENR_HI": 364.0,
+                "ENR_WH": 4013.0
+            },
+            "num_students": 4962.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102580",
+            "dist": "BUTTE FALLS SD 91",
+            "schools": [
+                "butte falls elementary school",
+                "butte falls secondary",
+                "butte falls charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 47.0,
+                "ENR_AS": 3.0,
+                "ENR_BL": 3.0,
+                "ENR_HI": 120.0,
+                "ENR_WH": 902.0
+            },
+            "num_students": 1075.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102610",
+            "dist": "CAMAS VALLEY SD 21J",
+            "schools": [
+                "camas valley school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 102.0,
+                "ENR_AS": 2.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 63.0,
+                "ENR_WH": 1056.0
+            },
+            "num_students": 1225.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102640",
+            "dist": "CANBY SD 86",
+            "schools": [
+                "carus school",
+                "william knight elementary school",
+                "howard eccles elementary school",
+                "ninety-one school",
+                "canby high school",
+                "cecile trost elementary school",
+                "baker prairie middle school",
+                "philander lee elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1232.0,
+                "ENR_AS": 191.0,
+                "ENR_BL": 104.0,
+                "ENR_HI": 8048.0,
+                "ENR_WH": 17385.0
+            },
+            "num_students": 26960.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102780",
+            "dist": "CASCADE SD 5",
+            "schools": [
+                "aumsville elementary school",
+                "turner elementary school",
+                "cloverdale elementary school",
+                "cascade junior high school",
+                "cascade senior high school",
+                "cascade opportunity center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 723.0,
+                "ENR_AS": 215.0,
+                "ENR_BL": 75.0,
+                "ENR_HI": 2272.0,
+                "ENR_WH": 10769.0
+            },
+            "num_students": 14054.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102800",
+            "dist": "CENTENNIAL SCHOOL DISTRICT 28J",
+            "schools": [
+                "lynch meadows elementary school",
+                "meadows elementary",
+                "centennial middle school",
+                "oliver elementary school",
+                "parklane elementary school",
+                "lynch view elementary school",
+                "patrick lynch elementary",
+                "lynch wood elementary school",
+                "wood elementary",
+                "powell butte elementary school",
+                "pleasant valley elementary school",
+                "centennial high school",
+                "centenial park school",
+                "centennial park school",
+                "butler creek elementary school",
+                "centennial learning center",
+                "centennial virtual academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3271.0,
+                "ENR_AS": 4504.0,
+                "ENR_BL": 2248.0,
+                "ENR_HI": 9619.0,
+                "ENR_WH": 15924.0
+            },
+            "num_students": 35566.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102840",
+            "dist": "CENTRAL SD 13J",
+            "schools": [
+                "henry hill elementary school",
+                "independence elementary school",
+                "monmouth elementary school",
+                "talmadge middle school",
+                "central high school",
+                "ash creek elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1251.0,
+                "ENR_AS": 210.0,
+                "ENR_BL": 174.0,
+                "ENR_HI": 8184.0,
+                "ENR_WH": 9589.0
+            },
+            "num_students": 19408.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102910",
+            "dist": "CENTRAL LINN SD 552",
+            "schools": [
+                "central linn elementary school",
+                "central linn high school",
+                "central linn online academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 200.0,
+                "ENR_AS": 9.0,
+                "ENR_BL": 15.0,
+                "ENR_HI": 430.0,
+                "ENR_WH": 3133.0
+            },
+            "num_students": 3787.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4102940",
+            "dist": "CENTRAL POINT SD 6",
+            "schools": [
+                "central point elementary school",
+                "jewett elementary school",
+                "patrick elementary school",
+                "richardson elementary school",
+                "sams valley elementary school",
+                "hanby middle school",
+                "scenic middle school",
+                "crater academy of health and public services",
+                "crater school of business innovation and science",
+                "crater renaissance academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2079.0,
+                "ENR_AS": 174.0,
+                "ENR_BL": 170.0,
+                "ENR_HI": 4106.0,
+                "ENR_WH": 21376.0
+            },
+            "num_students": 27905.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103260",
+            "dist": "CLATSKANIE SD 6J",
+            "schools": [
+                "clatskanie elementary school",
+                "clatskanie middle/high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 395.0,
+                "ENR_AS": 17.0,
+                "ENR_BL": 19.0,
+                "ENR_HI": 303.0,
+                "ENR_WH": 3482.0
+            },
+            "num_students": 4216.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103265",
+            "dist": "RAINIER SD 13",
+            "schools": [
+                "hudson park elementary school",
+                "rainier jr/sr high school",
+                "north columbia academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 406.0,
+                "ENR_AS": 22.0,
+                "ENR_BL": 37.0,
+                "ENR_HI": 342.0,
+                "ENR_WH": 4848.0
+            },
+            "num_students": 5655.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103270",
+            "dist": "COLTON SD 53",
+            "schools": [
+                "colton elementary school",
+                "colton high school",
+                "colton middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 204.0,
+                "ENR_AS": 13.0,
+                "ENR_BL": 14.0,
+                "ENR_HI": 227.0,
+                "ENR_WH": 2981.0
+            },
+            "num_students": 3439.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103330",
+            "dist": "CONDON SD 25J",
+            "schools": [
+                "condon elementary school",
+                "condon high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 31.0,
+                "ENR_AS": 2.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 60.0,
+                "ENR_WH": 706.0
+            },
+            "num_students": 801.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103390",
+            "dist": "COQUILLE SD 8",
+            "schools": [
+                "coquille valley middle school",
+                "lincoln elementary school",
+                "lincoln school of early learning",
+                "coquille high school",
+                "coquille junior senior high",
+                "coquille valley intermediate school",
+                "coquille valley elementary",
+                "winter lakes school",
+                "winter lakes high",
+                "winter lakes virtual academy",
+                "winter lakes elementary",
+                "winter lakes high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1168.0,
+                "ENR_AS": 32.0,
+                "ENR_BL": 43.0,
+                "ENR_HI": 687.0,
+                "ENR_WH": 4876.0
+            },
+            "num_students": 6806.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103420",
+            "dist": "CORBETT SD 39",
+            "schools": [
+                "corbett school",
+                "corbett charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 516.0,
+                "ENR_AS": 187.0,
+                "ENR_BL": 88.0,
+                "ENR_HI": 466.0,
+                "ENR_WH": 6010.0
+            },
+            "num_students": 7267.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103480",
+            "dist": "CORVALLIS SD 509J",
+            "schools": [
+                "adams elementary school",
+                "cheldelin middle school",
+                "garfield elementary school",
+                "hoover elementary school",
+                "husky elementary school",
+                "bessie coleman elementary school",
+                "jefferson elementary school",
+                "jaguar elementary school",
+                "kathryn jones harrison elementary school",
+                "lincoln elementary school",
+                "mt view elementary school",
+                "linus pauling middle school",
+                "wilson elementary school",
+                "wildcat elementary school",
+                "letitia carson elementary school",
+                "corvallis high school",
+                "crescent valley high school",
+                "franklin school",
+                "muddy creek charter school",
+                "inavale community partners dba muddy creek charter",
+                "inavale community partners dba muddy creek charter school",
+                "corvallis online"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3342.0,
+                "ENR_AS": 2189.0,
+                "ENR_BL": 488.0,
+                "ENR_HI": 6131.0,
+                "ENR_WH": 25808.0
+            },
+            "num_students": 37958.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103540",
+            "dist": "COVE SD 15",
+            "schools": [
+                "cove charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 76.0,
+                "ENR_AS": 9.0,
+                "ENR_BL": 8.0,
+                "ENR_HI": 49.0,
+                "ENR_WH": 1577.0
+            },
+            "num_students": 1719.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103600",
+            "dist": "HARNEY COUNTY SD 4",
+            "schools": [
+                "crane elementary school",
+                "oregon family school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 101.0,
+                "ENR_AS": 37.0,
+                "ENR_BL": 23.0,
+                "ENR_HI": 101.0,
+                "ENR_WH": 1588.0
+            },
+            "num_students": 1850.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103630",
+            "dist": "HARNEY COUNTY UNION HIGH SD 1J",
+            "schools": [
+                "crane union high school",
+                "silvies river charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 569.0,
+                "ENR_AS": 154.0,
+                "ENR_BL": 74.0,
+                "ENR_HI": 165.0,
+                "ENR_WH": 2080.0
+            },
+            "num_students": 3042.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103660",
+            "dist": "COOS BAY SD 9",
+            "schools": [
+                "blossom gulch elementary school",
+                "eastside school",
+                "madison elementary school",
+                "millicoma intermediate school",
+                "millicoma school",
+                "sunset middle school",
+                "sunset school",
+                "marshfield senior high school",
+                "destinations academy",
+                "resource link charter school",
+                "marshfield junior high",
+                "lighthouse charter school",
+                "belloni on campus school",
+                "coos bay schools alternative programs"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2403.0,
+                "ENR_AS": 143.0,
+                "ENR_BL": 99.0,
+                "ENR_HI": 2605.0,
+                "ENR_WH": 13318.0
+            },
+            "num_students": 18568.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103690",
+            "dist": "CRESWELL SD 40",
+            "schools": [
+                "creslane elementary school",
+                "creswell middle school",
+                "creswell high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 597.0,
+                "ENR_AS": 53.0,
+                "ENR_BL": 48.0,
+                "ENR_HI": 903.0,
+                "ENR_WH": 5746.0
+            },
+            "num_students": 7347.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103720",
+            "dist": "CROOK COUNTY SD",
+            "schools": [
+                "crooked river elementary school",
+                "ochoco elementary school",
+                "paulina school",
+                "powell butte community charter school",
+                "crook county middle school",
+                "crook county high school",
+                "cecil sly elementary school",
+                "pioneer secondary alternative high school",
+                "insight school of oregon-charter option",
+                "barnes butte elementary",
+                "brothers elementary school",
+                "steins pillar elementary",
+                "grizzly mountain homelink",
+                "insight school of oregon - alternative option",
+                "crook county online option"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1332.0,
+                "ENR_AS": 94.0,
+                "ENR_BL": 98.0,
+                "ENR_HI": 2769.0,
+                "ENR_WH": 14253.0
+            },
+            "num_students": 18546.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103780",
+            "dist": "CROW-APPLEGATE-LORANE SD 66",
+            "schools": [
+                "applegate elementary school",
+                "crow middle/high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 102.0,
+                "ENR_AS": 19.0,
+                "ENR_BL": 16.0,
+                "ENR_HI": 35.0,
+                "ENR_WH": 1041.0
+            },
+            "num_students": 1213.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103840",
+            "dist": "CULVER SD 4",
+            "schools": [
+                "culver middle school",
+                "culver elementary school",
+                "culver high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 236.0,
+                "ENR_AS": 19.0,
+                "ENR_BL": 37.0,
+                "ENR_HI": 1214.0,
+                "ENR_WH": 2559.0
+            },
+            "num_students": 4065.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103860",
+            "dist": "DALLAS SD 2",
+            "schools": [
+                "lyle elementary school",
+                "oakdale heights elementary school",
+                "luckiamute valley charter school",
+                "whitworth elementary school",
+                "lacreole middle school",
+                "dallas high school",
+                "morrison campus alternative program",
+                "morrison campus alternative school",
+                "dallas community charter"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1849.0,
+                "ENR_AS": 214.0,
+                "ENR_BL": 161.0,
+                "ENR_HI": 1527.0,
+                "ENR_WH": 15355.0
+            },
+            "num_students": 19106.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103940",
+            "dist": "DAVID DOUGLAS SD 40",
+            "schools": [
+                "cherry park elementary school",
+                "floyd light middle school",
+                "alice ott middle school",
+                "gilbert heights elementary school",
+                "gilbert park elementary school",
+                "lincoln park elementary school",
+                "menlo park elementary school",
+                "mill park elementary school",
+                "ventura park elementary school",
+                "west powellhurst elementary school",
+                "david douglas high school",
+                "ron russell middle school",
+                "earl boyles elementary",
+                "arthur academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 5606.0,
+                "ENR_AS": 9076.0,
+                "ENR_BL": 6632.0,
+                "ENR_HI": 15551.0,
+                "ENR_WH": 23761.0
+            },
+            "num_students": 60626.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103960",
+            "dist": "DOUGLAS COUNTY SD 15",
+            "schools": [
+                "tiller elementary school",
+                "days creek charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 166.0,
+                "ENR_AS": 15.0,
+                "ENR_BL": 8.0,
+                "ENR_HI": 108.0,
+                "ENR_WH": 958.0
+            },
+            "num_students": 1255.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4103990",
+            "dist": "DAYTON SD 8",
+            "schools": [
+                "dayton jr high school",
+                "dayton grade school",
+                "dayton high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104020",
+            "dist": "DAYVILLE SD 16J",
+            "schools": [
+                "dayville school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 13.0,
+                "ENR_AS": 2.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 6.0,
+                "ENR_WH": 360.0
+            },
+            "num_students": 383.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104350",
+            "dist": "NORTH DOUGLAS SD 22",
+            "schools": [
+                "north douglas elementary school",
+                "north douglas high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 151.0,
+                "ENR_AS": 14.0,
+                "ENR_BL": 19.0,
+                "ENR_HI": 179.0,
+                "ENR_WH": 1691.0
+            },
+            "num_students": 2054.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104410",
+            "dist": "DUFUR SD 29",
+            "schools": [
+                "dufur school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 207.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 4.0,
+                "ENR_HI": 74.0,
+                "ENR_WH": 1596.0
+            },
+            "num_students": 1887.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104500",
+            "dist": "EAGLE POINT SD 9",
+            "schools": [
+                "hillside elementary school",
+                "hillside elementary",
+                "elk trail elementary school",
+                "shady cove school",
+                "white city elementary school",
+                "table rock elementary",
+                "mountain view elementary",
+                "eagle point middle school",
+                "eagle point high school",
+                "lake creek learning center",
+                "eagle rock elementary school",
+                "white mountain middle school",
+                "urceo-upper rogue center for educational opportuni",
+                "urceo-upper rogue center for educational opportunities",
+                "crater lake charter academy",
+                "crater lake academy",
+                "kids unlimited academy white city"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1336.0,
+                "ENR_AS": 171.0,
+                "ENR_BL": 178.0,
+                "ENR_HI": 7040.0,
+                "ENR_WH": 16441.0
+            },
+            "num_students": 25166.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104530",
+            "dist": "ECHO SD 5",
+            "schools": [
+                "echo school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 66.0,
+                "ENR_AS": 2.0,
+                "ENR_BL": 9.0,
+                "ENR_HI": 234.0,
+                "ENR_WH": 1361.0
+            },
+            "num_students": 1672.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104590",
+            "dist": "ELGIN SD 23",
+            "schools": [
+                "stella mayfield elementary school",
+                "elgin high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 81.0,
+                "ENR_AS": 5.0,
+                "ENR_BL": 25.0,
+                "ENR_HI": 88.0,
+                "ENR_WH": 2238.0
+            },
+            "num_students": 2437.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104620",
+            "dist": "ELKTON SD 34",
+            "schools": [
+                "elkton charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 153.0,
+                "ENR_AS": 27.0,
+                "ENR_BL": 5.0,
+                "ENR_HI": 101.0,
+                "ENR_WH": 1249.0
+            },
+            "num_students": 1535.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104700",
+            "dist": "ESTACADA SD 108",
+            "schools": [
+                "eagle creek elementary school",
+                "clackamas river elementary school",
+                "river mill elementary school",
+                "estacada junior high school",
+                "estacada middle school",
+                "estacada high school",
+                "estacada alternative high school",
+                "estacada web academy",
+                "summit learning charter",
+                "estacada early college",
+                "summit community college high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1523.0,
+                "ENR_AS": 375.0,
+                "ENR_BL": 291.0,
+                "ENR_HI": 2567.0,
+                "ENR_WH": 14024.0
+            },
+            "num_students": 18780.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104740",
+            "dist": "EUGENE SD 4J",
+            "schools": [
+                "adams elementary school",
+                "awbrey park elementary school",
+                "coburg elementary school",
+                "coburg community charter school",
+                "edgewood community elementary school",
+                "edison elementary school",
+                "gilham elementary school",
+                "howard elementary school",
+                "mccornack elementary school",
+                "river road/el camino del rio elementary school",
+                "spring creek elementary school",
+                "twin oaks elementary school",
+                "willagillespie elementary school",
+                "cal young middle school",
+                "kelly middle school",
+                "kennedy middle school",
+                "madison middle school",
+                "monroe middle school",
+                "eugene education options",
+                "roosevelt middle school",
+                "spencer butte middle school",
+                "north eugene high school",
+                "sheldon high school",
+                "south eugene high school",
+                "churchill high school",
+                "family school",
+                "charlemagne at fox hollow elementary school",
+                "charlemagne french immersion elementary school",
+                "buena vista elementary school",
+                "yujin gakuen elementary school",
+                "corridor elementary school",
+                "ridgeline montessori",
+                "village school",
+                "network charter school",
+                "cesar chavez elementary school",
+                "holt elementary school",
+                "arts and technology academy at jefferson",
+                "camas ridge community elementary",
+                "twin rivers charter school",
+                "chinese language immersion school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 11345.0,
+                "ENR_AS": 3067.0,
+                "ENR_BL": 1641.0,
+                "ENR_HI": 14066.0,
+                "ENR_WH": 66536.0
+            },
+            "num_students": 96655.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4104950",
+            "dist": "FERN RIDGE SD 28J",
+            "schools": [
+                "elmira elementary school",
+                "veneta elementary school",
+                "fern ridge middle school",
+                "elmira high school",
+                "willamette leadership academy",
+                "west lane technology learning center",
+                "west lane charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 447.0,
+                "ENR_AS": 65.0,
+                "ENR_BL": 82.0,
+                "ENR_HI": 650.0,
+                "ENR_WH": 7563.0
+            },
+            "num_students": 8807.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105080",
+            "dist": "ENTERPRISE SD 21",
+            "schools": [
+                "enterprise elementary school",
+                "enterprise high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 109.0,
+                "ENR_AS": 12.0,
+                "ENR_BL": 17.0,
+                "ENR_HI": 68.0,
+                "ENR_WH": 2278.0
+            },
+            "num_students": 2484.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105100",
+            "dist": "SIUSLAW SD 97J",
+            "schools": [
+                "siuslaw middle school",
+                "siuslaw elementary school",
+                "siuslaw high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105160",
+            "dist": "FOREST GROVE SD 15",
+            "schools": [
+                "cornelius elementary school",
+                "dilley elementary school",
+                "echo shaw elementary school",
+                "harvey clarke elementary school",
+                "joseph gale elementary school",
+                "neil armstrong middle school",
+                "forest grove high school",
+                "tom mccall upper elementary",
+                "fern hill elementary school",
+                "forest grove community school",
+                "oak grove academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1406.0,
+                "ENR_AS": 395.0,
+                "ENR_BL": 258.0,
+                "ENR_HI": 18621.0,
+                "ENR_WH": 14898.0
+            },
+            "num_students": 35578.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105250",
+            "dist": "FOSSIL SD 21J",
+            "schools": [
+                "fossil charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 261.0,
+                "ENR_AS": 61.0,
+                "ENR_BL": 68.0,
+                "ENR_HI": 55.0,
+                "ENR_WH": 3832.0
+            },
+            "num_students": 4277.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105310",
+            "dist": "FRENCHGLEN SD 16",
+            "schools": [
+                "frenchglen elementary school",
+                "carolyn whitney",
+                "silvies river charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 63.0,
+                "ENR_AS": 11.0,
+                "ENR_BL": 11.0,
+                "ENR_HI": 15.0,
+                "ENR_WH": 530.0
+            },
+            "num_students": 630.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105430",
+            "dist": "GASTON SD 511J",
+            "schools": [
+                "gaston elementary school",
+                "gaston jr/sr high school",
+                "oregon virtual education - west"
+            ],
+            "district_comp": {
+                "ENR_OTH": 146.0,
+                "ENR_AS": 34.0,
+                "ENR_BL": 43.0,
+                "ENR_HI": 399.0,
+                "ENR_WH": 2718.0
+            },
+            "num_students": 3340.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105610",
+            "dist": "GLADSTONE SD 115",
+            "schools": [
+                "john wetten elementary school",
+                "walter l kraxberger middle school",
+                "gladstone high school",
+                "gladstone center for children and families"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1030.0,
+                "ENR_AS": 133.0,
+                "ENR_BL": 165.0,
+                "ENR_HI": 1849.0,
+                "ENR_WH": 8765.0
+            },
+            "num_students": 11942.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105640",
+            "dist": "GLENDALE SD 77",
+            "schools": [
+                "glendale elementary school",
+                "glendale high school",
+                "glendale community charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 84.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 12.0,
+                "ENR_HI": 158.0,
+                "ENR_WH": 1398.0
+            },
+            "num_students": 1658.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105670",
+            "dist": "GLIDE SD 12",
+            "schools": [
+                "glide elementary school",
+                "glide middle school",
+                "glide high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 290.0,
+                "ENR_AS": 5.0,
+                "ENR_BL": 6.0,
+                "ENR_HI": 256.0,
+                "ENR_WH": 3568.0
+            },
+            "num_students": 4125.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105760",
+            "dist": "CENTRAL CURRY SD 1",
+            "schools": [
+                "riley creek elementary school",
+                "gold beach high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 443.0,
+                "ENR_AS": 27.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 165.0,
+                "ENR_WH": 2083.0
+            },
+            "num_students": 2720.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4105910",
+            "dist": "GRANTS PASS SCHOOL DISTRICT 7",
+            "schools": [
+                "allen dale elementary school",
+                "highland elementary school",
+                "lincoln elementary school",
+                "north middle school",
+                "redwood elementary school",
+                "riverside elementary school",
+                "south middle school",
+                "grants pass high school",
+                "parkside elementary",
+                "gpflex school",
+                "gladiola high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2657.0,
+                "ENR_AS": 301.0,
+                "ENR_BL": 160.0,
+                "ENR_HI": 4818.0,
+                "ENR_WH": 26549.0
+            },
+            "num_students": 34485.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106000",
+            "dist": "GRESHAM-BARLOW SD 10J",
+            "schools": [
+                "damascus middle school",
+                "deep creek - damascus k-8 school",
+                "deep creek elementary school",
+                "clear creek middle school",
+                "kelly creek elementary school",
+                "dexter mccarty middle school",
+                "east gresham elementary school",
+                "gordon russell middle school",
+                "highland elementary school",
+                "north gresham elementary school",
+                "powell valley elementary school",
+                "west gresham elementary school",
+                "east orient elementary school",
+                "west orient middle school",
+                "gresham high school",
+                "sam barlow high school",
+                "hollydale elementary school",
+                "hall elementary school",
+                "gresham arthur academy",
+                "lewis and clark montessori charter school",
+                "gresham-barlow web academy public charter school",
+                "metro east web academy",
+                "hogan cedars elementary school",
+                "springwater trail high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 6023.0,
+                "ENR_AS": 1890.0,
+                "ENR_BL": 2138.0,
+                "ENR_HI": 19373.0,
+                "ENR_WH": 41009.0
+            },
+            "num_students": 70433.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106120",
+            "dist": "HARPER SD 66",
+            "schools": [
+                "harper charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 24.0,
+                "ENR_AS": 4.0,
+                "ENR_BL": 6.0,
+                "ENR_HI": 110.0,
+                "ENR_WH": 673.0
+            },
+            "num_students": 817.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106270",
+            "dist": "HELIX SD 1",
+            "schools": [
+                "helix school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 74.0,
+                "ENR_AS": 11.0,
+                "ENR_BL": 4.0,
+                "ENR_HI": 40.0,
+                "ENR_WH": 744.0
+            },
+            "num_students": 873.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106300",
+            "dist": "HERMISTON SD 8",
+            "schools": [
+                "sandstone middle school",
+                "rocky heights elementary school",
+                "sunset elementary school",
+                "west park elementary school",
+                "armand larive middle school",
+                "hermiston high school",
+                "highland hills elementary school",
+                "desert view elementary school",
+                "innovative learning center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 558.0,
+                "ENR_AS": 389.0,
+                "ENR_BL": 285.0,
+                "ENR_HI": 16444.0,
+                "ENR_WH": 14295.0
+            },
+            "num_students": 31971.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106510",
+            "dist": "HOOD RIVER COUNTY SD",
+            "schools": [
+                "may street elementary school",
+                "mid valley elementary school",
+                "parkdale elementary school",
+                "westside elementary school",
+                "hood river middle school",
+                "wyeast middle school",
+                "cascade locks school",
+                "hood river valley high school",
+                "klahre house school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 903.0,
+                "ENR_AS": 262.0,
+                "ENR_BL": 166.0,
+                "ENR_HI": 10558.0,
+                "ENR_WH": 11829.0
+            },
+            "num_students": 23718.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106600",
+            "dist": "HUNTINGTON SD 16J",
+            "schools": [
+                "huntington school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 49.0,
+                "ENR_AS": 11.0,
+                "ENR_BL": 4.0,
+                "ENR_HI": 22.0,
+                "ENR_WH": 380.0
+            },
+            "num_students": 466.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106630",
+            "dist": "IMBLER SD 11",
+            "schools": [
+                "imbler charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 108.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 3.0,
+                "ENR_HI": 81.0,
+                "ENR_WH": 1609.0
+            },
+            "num_students": 1807.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106710",
+            "dist": "JEFFERSON SD 14J",
+            "schools": [
+                "jefferson elementary school",
+                "jefferson high school",
+                "jefferson middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 258.0,
+                "ENR_AS": 17.0,
+                "ENR_BL": 69.0,
+                "ENR_HI": 1264.0,
+                "ENR_WH": 3479.0
+            },
+            "num_students": 5087.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106740",
+            "dist": "JEFFERSON COUNTY SD 509J",
+            "schools": [
+                "madras primary school",
+                "madras elementary school",
+                "metolius elementary school",
+                "warm springs elementary school",
+                "warm springs k-8 academy",
+                "madras high school",
+                "jefferson county middle school",
+                "big muddy elementary",
+                "big muddy school",
+                "buff intermediate school",
+                "buff elementary school",
+                "bridges high school",
+                "509j on-line",
+                "preschool promise grant"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106750",
+            "dist": "JEWELL SD 8",
+            "schools": [
+                "jewell school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 66.0,
+                "ENR_AS": 0.0,
+                "ENR_BL": 4.0,
+                "ENR_HI": 99.0,
+                "ENR_WH": 711.0
+            },
+            "num_students": 880.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106780",
+            "dist": "JOHN DAY SD 3",
+            "schools": [
+                "humbolt elementary school",
+                "seneca elementary school",
+                "grant union jr/sr high school",
+                "grant union junior/senior high school",
+                "blue mountain alternative high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 126.0,
+                "ENR_AS": 9.0,
+                "ENR_BL": 29.0,
+                "ENR_HI": 144.0,
+                "ENR_WH": 3245.0
+            },
+            "num_students": 3553.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106820",
+            "dist": "JORDAN VALLEY SD 3",
+            "schools": [
+                "jordan valley elementary school",
+                "jordan valley high school",
+                "rockville elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0.0,
+                "ENR_AS": 0.0,
+                "ENR_BL": 1.0,
+                "ENR_HI": 32.0,
+                "ENR_WH": 380.0
+            },
+            "num_students": 413.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106870",
+            "dist": "JOSEPH SD 6",
+            "schools": [
+                "imnaha elementary school",
+                "joseph charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 124.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 9.0,
+                "ENR_HI": 83.0,
+                "ENR_WH": 1302.0
+            },
+            "num_students": 1524.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106900",
+            "dist": "THREE RIVERS/JOSEPHINE COUNTY SD",
+            "schools": [
+                "applegate elementary school",
+                "evergreen elementary school",
+                "fleming middle school",
+                "fruitdale elementary school",
+                "ft vannoy elementary school",
+                "jerome prairie elementary school",
+                "lincoln savage middle school",
+                "lorna byrne middle school",
+                "madrona elementary school",
+                "manzanita elementary school",
+                "williams elementary school",
+                "hidden valley high school",
+                "illinois valley high school",
+                "north valley high school",
+                "sunny wolf charter school",
+                "woodland charter school",
+                "southern oregon success academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2011.0,
+                "ENR_AS": 183.0,
+                "ENR_BL": 201.0,
+                "ENR_HI": 2802.0,
+                "ENR_WH": 23132.0
+            },
+            "num_students": 28329.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4106930",
+            "dist": "JUNCTION CITY SD 69",
+            "schools": [
+                "territorial elementary school",
+                "laurel elementary school",
+                "oaklea middle school",
+                "junction city high school",
+                "preschool promise"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107020",
+            "dist": "KLAMATH COUNTY SD",
+            "schools": [
+                "chiloquin elementary school",
+                "ferguson elementary school",
+                "gearhart elementary school",
+                "henley elementary school",
+                "keno elementary school",
+                "malin elementary school",
+                "merrill elementary school",
+                "peterson elementary school",
+                "shasta elementary school",
+                "stearns elementary school",
+                "brixner junior high school",
+                "henley middle school",
+                "chiloquin high school",
+                "henley high school",
+                "lost river high school",
+                "mazama high school",
+                "bo0za elementary school",
+                "gilchrist elementary school",
+                "bo0za junior/senior high school",
+                "gilchrist junior/senior high school",
+                "sage community school",
+                "falcon heights academy",
+                "falcon heights"
+            ],
+            "district_comp": {
+                "ENR_OTH": 4787.0,
+                "ENR_AS": 350.0,
+                "ENR_BL": 341.0,
+                "ENR_HI": 7465.0,
+                "ENR_WH": 24909.0
+            },
+            "num_students": 37852.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107080",
+            "dist": "KLAMATH FALLS CITY SCHOOLS",
+            "schools": [
+                "fairview elementary school",
+                "joseph conger elementary school",
+                "mills elementary school",
+                "pelican elementary school",
+                "ponderosa junior high school",
+                "ponderosa middle school",
+                "roosevelt elementary school",
+                "klamath union high school",
+                "eagleridge high school",
+                "link river high school",
+                "klamath learning center",
+                "klamath home learning academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2234.0,
+                "ENR_AS": 244.0,
+                "ENR_BL": 183.0,
+                "ENR_HI": 3877.0,
+                "ENR_WH": 11436.0
+            },
+            "num_students": 17974.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107200",
+            "dist": "LA GRANDE SD 1",
+            "schools": [
+                "central elementary school",
+                "greenwood elementary school",
+                "la grande middle school",
+                "island city elementary school",
+                "la grande high school",
+                "willow elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1184.0,
+                "ENR_AS": 155.0,
+                "ENR_BL": 103.0,
+                "ENR_HI": 1019.0,
+                "ENR_WH": 10912.0
+            },
+            "num_students": 13373.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107230",
+            "dist": "LAKE OSWEGO SD 7J",
+            "schools": [
+                "bryant elementary school",
+                "forest hills elementary school",
+                "lake grove elementary school",
+                "river grove elementary school",
+                "uplands elementary school",
+                "lake oswego junior high school",
+                "lake oswego middle school",
+                "waluga junior high school",
+                "lakeridge middle school",
+                "lake oswego senior high school",
+                "lakeridge high school",
+                "westridge elementary school",
+                "halli0 elementary school",
+                "oak creek elementary school",
+                "harmony academy",
+                "palisades world language school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3555.0,
+                "ENR_AS": 4047.0,
+                "ENR_BL": 354.0,
+                "ENR_HI": 2699.0,
+                "ENR_WH": 30543.0
+            },
+            "num_students": 41198.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107280",
+            "dist": "LAKE COUNTY SD 7",
+            "schools": [
+                "union elementary school",
+                "fremont/hay elementary school",
+                "lakeview senior high school",
+                "daly middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 267.0,
+                "ENR_AS": 37.0,
+                "ENR_BL": 23.0,
+                "ENR_HI": 792.0,
+                "ENR_WH": 3373.0
+            },
+            "num_students": 4492.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107380",
+            "dist": "LEBANON COMMUNITY SD 9",
+            "schools": [
+                "cascades school",
+                "green acres school",
+                "hamilton creek school",
+                "lacomb school",
+                "seven oak middle school",
+                "lebanon high school",
+                "santiam academy",
+                "riverview school",
+                "pioneer school",
+                "sand ridge charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1805.0,
+                "ENR_AS": 232.0,
+                "ENR_BL": 136.0,
+                "ENR_HI": 2455.0,
+                "ENR_WH": 20435.0
+            },
+            "num_students": 25063.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107500",
+            "dist": "LINCOLN COUNTY SD",
+            "schools": [
+                "toledo elementary school",
+                "oceanlake elementary school",
+                "sam case elementary school",
+                "yaquina view elementary",
+                "taft elementary school",
+                "crestview heights school",
+                "waldport middle school",
+                "newport intermediate school",
+                "sam case elementary",
+                "newport preparatory academy",
+                "newport middle school",
+                "newport high school",
+                "taft high school",
+                "toledo junior/senior high school",
+                "toledo senior high school",
+                "waldport high school",
+                "taft middle school",
+                "isaac newton magnet school",
+                "toledo jr. high",
+                "lincoln city career technical high school",
+                "eddyville charter school",
+                "siletz valley school",
+                "siletz valley schools",
+                "siletz valley early college academy",
+                "compass k-12 online school",
+                "olalla center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 4335.0,
+                "ENR_AS": 258.0,
+                "ENR_BL": 215.0,
+                "ENR_HI": 6464.0,
+                "ENR_WH": 19959.0
+            },
+            "num_students": 31231.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107530",
+            "dist": "LONG CREEK SD 17",
+            "schools": [
+                "long creek school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 20.0,
+                "ENR_AS": 18.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 23.0,
+                "ENR_WH": 196.0
+            },
+            "num_students": 259.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107590",
+            "dist": "LOWELL SD 71",
+            "schools": [
+                "lundy elementary school",
+                "lowell junior/senior high school",
+                "mountain view academy",
+                "bridge charter academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 358.0,
+                "ENR_AS": 29.0,
+                "ENR_BL": 84.0,
+                "ENR_HI": 328.0,
+                "ENR_WH": 3449.0
+            },
+            "num_students": 4248.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107710",
+            "dist": "MAPLETON SD 32",
+            "schools": [
+                "mapleton elementary school",
+                "mapleton jr/sr high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 185.0,
+                "ENR_AS": 11.0,
+                "ENR_BL": 7.0,
+                "ENR_HI": 38.0,
+                "ENR_WH": 751.0
+            },
+            "num_students": 992.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107740",
+            "dist": "MARCOLA SD 79J",
+            "schools": [
+                "marcola elementary school",
+                "mohawk high school",
+                "teach-nw"
+            ],
+            "district_comp": {
+                "ENR_OTH": 270.0,
+                "ENR_AS": 32.0,
+                "ENR_BL": 14.0,
+                "ENR_HI": 108.0,
+                "ENR_WH": 2276.0
+            },
+            "num_students": 2700.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4107980",
+            "dist": "MCKENZIE SD 68",
+            "schools": [
+                "mckenzie elementary school",
+                "mckenzie high school",
+                "mckenzie river community school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 108.0,
+                "ENR_AS": 8.0,
+                "ENR_BL": 20.0,
+                "ENR_HI": 100.0,
+                "ENR_WH": 956.0
+            },
+            "num_students": 1192.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108010",
+            "dist": "MCMINNVILLE SD 40",
+            "schools": [
+                "duniway middle school",
+                "columbus elementary school",
+                "memorial elementary school",
+                "newby elementary school",
+                "patton middle school",
+                "mcminnville high school",
+                "wascher elementary school",
+                "grandhaven elementary school",
+                "sue buel elementary"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1166.0,
+                "ENR_AS": 383.0,
+                "ENR_BL": 423.0,
+                "ENR_HI": 13781.0,
+                "ENR_WH": 23983.0
+            },
+            "num_students": 39736.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108040",
+            "dist": "MEDFORD SD 549C",
+            "schools": [
+                "griffin creek elementary school",
+                "hoover elementary school",
+                "howard elementary school",
+                "jackson elementary school",
+                "jacksonville elementary school",
+                "jefferson elementary school",
+                "lone pine elementary school",
+                "oak grove elementary school",
+                "kennedy elementary school",
+                "roosevelt elementary school",
+                "ruch elementary school",
+                "ruch outdoor community school",
+                "washington elementary school",
+                "wilson elementary school",
+                "hedrick middle school",
+                "mcloughlin middle school",
+                "south medford high school",
+                "north medford high school",
+                "abraham lincoln elementary",
+                "madrone trail public charter school",
+                "logos public charter school",
+                "kids unlimited academy",
+                "the valley school of southern oregon",
+                "medford online academy",
+                "central medford high school",
+                "barrier 2 bridges",
+                "medford opportunity school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 4977.0,
+                "ENR_AS": 1008.0,
+                "ENR_BL": 814.0,
+                "ENR_HI": 20494.0,
+                "ENR_WH": 55001.0
+            },
+            "num_students": 82294.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108100",
+            "dist": "SANTIAM CANYON SD 129J",
+            "schools": [
+                "santiam elementary school",
+                "santiam high school",
+                "santiam junior/senior high school",
+                "oregon connections academy",
+                "oregon charter academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1536.0,
+                "ENR_AS": 341.0,
+                "ENR_BL": 343.0,
+                "ENR_HI": 2294.0,
+                "ENR_WH": 13482.0
+            },
+            "num_students": 17996.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108160",
+            "dist": "MILTON-FREEWATER UNIFIED SD 7",
+            "schools": [
+                "ferndale elementary school",
+                "central middle school",
+                "freewater elementary school",
+                "grove elementary school",
+                "mcloughlin high school",
+                "pleasant view school",
+                "gib olinger elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 264.0,
+                "ENR_AS": 61.0,
+                "ENR_BL": 46.0,
+                "ENR_HI": 6016.0,
+                "ENR_WH": 4271.0
+            },
+            "num_students": 10658.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108280",
+            "dist": "MITCHELL SD 55",
+            "schools": [
+                "mitchell school",
+                "insight school of oregon painted hills",
+                "destinations career academy of oregon",
+                "cascade virtual academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 436.0,
+                "ENR_AS": 62.0,
+                "ENR_BL": 119.0,
+                "ENR_HI": 623.0,
+                "ENR_WH": 2437.0
+            },
+            "num_students": 3677.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108310",
+            "dist": "MOLALLA RIVER SD 35",
+            "schools": [
+                "clarkes elementary school",
+                "molalla river middle school",
+                "mulino elementary school",
+                "rural dell elementary school",
+                "molalla high school",
+                "molalla elementary school",
+                "molalla river academy",
+                "renaissance public academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1121.0,
+                "ENR_AS": 140.0,
+                "ENR_BL": 136.0,
+                "ENR_HI": 2852.0,
+                "ENR_WH": 12228.0
+            },
+            "num_students": 16477.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108430",
+            "dist": "MONROE SD 1J",
+            "schools": [
+                "monroe grade school",
+                "monroe high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 89.0,
+                "ENR_AS": 30.0,
+                "ENR_BL": 7.0,
+                "ENR_HI": 507.0,
+                "ENR_WH": 1828.0
+            },
+            "num_students": 2461.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108460",
+            "dist": "MONUMENT SD 8",
+            "schools": [
+                "monument school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 18.0,
+                "ENR_AS": 2.0,
+                "ENR_BL": 1.0,
+                "ENR_HI": 34.0,
+                "ENR_WH": 275.0
+            },
+            "num_students": 330.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108520",
+            "dist": "MORROW SD 1",
+            "schools": [
+                "a c houghton elementary school",
+                "heppner elementary school",
+                "heppner junior/senior high school",
+                "riverside junior/senior high school",
+                "sam boardman elementary school",
+                "irrigon junior/senior high school",
+                "windy river elementary school",
+                "irrigon elementary school",
+                "morrow education center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 313.0,
+                "ENR_AS": 36.0,
+                "ENR_BL": 67.0,
+                "ENR_HI": 7511.0,
+                "ENR_WH": 5782.0
+            },
+            "num_students": 13709.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108550",
+            "dist": "MT ANGEL SD 91",
+            "schools": [
+                "mt angel middle school",
+                "st marys public school",
+                "john f kennedy high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 141.0,
+                "ENR_AS": 15.0,
+                "ENR_BL": 42.0,
+                "ENR_HI": 2026.0,
+                "ENR_WH": 1933.0
+            },
+            "num_students": 4157.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108650",
+            "dist": "NEAH-KAH-NIE SD 56",
+            "schools": [
+                "garibaldi elementary school",
+                "nehalem elementary school",
+                "neah-kah-nie high school",
+                "neah-kah-nie middle school",
+                "neah-kah-nie preschool",
+                "neah-kah-nie school district preschool"
+            ],
+            "district_comp": {
+                "ENR_OTH": 359.0,
+                "ENR_AS": 62.0,
+                "ENR_BL": 31.0,
+                "ENR_HI": 625.0,
+                "ENR_WH": 3596.0
+            },
+            "num_students": 4673.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108700",
+            "dist": "NESTUCCA VALLEY SD 101J",
+            "schools": [
+                "nestucca valley elementary",
+                "nestucca k-8",
+                "nestucca high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 192.0,
+                "ENR_AS": 5.0,
+                "ENR_BL": 22.0,
+                "ENR_HI": 554.0,
+                "ENR_WH": 1592.0
+            },
+            "num_students": 2365.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108720",
+            "dist": "NEWBERG SD 29J",
+            "schools": [
+                "dundee elementary school",
+                "edwards elementary school",
+                "ewing young elementary school",
+                "mabel rush elementary school",
+                "mountain view middle school",
+                "newberg senior high school",
+                "antonia crater elementary school",
+                "chehalem valley middle school",
+                "joan austin elementary school",
+                "sitka academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1373.0,
+                "ENR_AS": 482.0,
+                "ENR_BL": 395.0,
+                "ENR_HI": 5842.0,
+                "ENR_WH": 20889.0
+            },
+            "num_students": 28981.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108820",
+            "dist": "NORTH BEND SD 13",
+            "schools": [
+                "hillcrest elementary school",
+                "north bay elementary school",
+                "north bend middle school",
+                "north bend senior high school",
+                "oregon coast technology school",
+                "oregon virtual academy",
+                "lighthouse school",
+                "lighthouse charter school",
+                "southern or adolescent study & treatment center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2795.0,
+                "ENR_AS": 445.0,
+                "ENR_BL": 368.0,
+                "ENR_HI": 2834.0,
+                "ENR_WH": 19468.0
+            },
+            "num_students": 25910.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108830",
+            "dist": "NORTH CLACKAMAS SD 12",
+            "schools": [
+                "oregon trail elementary school",
+                "ardenwald elementary school",
+                "bilquist elementary school",
+                "concord elementary school",
+                "happy valley elementary school",
+                "linwood elementary school",
+                "whitcomb elementary school",
+                "milwaukie elementary school",
+                "riverside elementary school",
+                "lewelling elementary school",
+                "sunnyside elementary school",
+                "view acres elementary school",
+                "rowe middle school",
+                "clackamas high school",
+                "milwaukie high school",
+                "putnam high school",
+                "sojourner school",
+                "mount scott elementary school",
+                "rock creek middle school",
+                "spring mountain elementary school",
+                "oak grove elementary",
+                "clackamas web academy",
+                "clackamas middle college",
+                "new urban high school",
+                "el puente",
+                "milwaukie el puente elementary school",
+                "cascade heights public charter school",
+                "milwaukie academy of the arts",
+                "scouters mountain elementary",
+                "duncan elementary school",
+                "verne a duncan elementary school",
+                "happy valley middle school",
+                "beatrice morrow cannady elementary",
+                "adrienne c. nelson high school",
+                "alder creek middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 8547.0,
+                "ENR_AS": 8184.0,
+                "ENR_BL": 1909.0,
+                "ENR_HI": 17969.0,
+                "ENR_WH": 63359.0
+            },
+            "num_students": 99968.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108880",
+            "dist": "NORTH MARION SD 15",
+            "schools": [
+                "north marion intermediate school",
+                "north marion high school",
+                "north marion middle school",
+                "north marion primary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 448.0,
+                "ENR_AS": 111.0,
+                "ENR_BL": 67.0,
+                "ENR_HI": 5235.0,
+                "ENR_WH": 5434.0
+            },
+            "num_students": 11295.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4108940",
+            "dist": "NORTH POWDER SD 8J",
+            "schools": [
+                "north powder charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 36.0,
+                "ENR_AS": 0.0,
+                "ENR_BL": 15.0,
+                "ENR_HI": 203.0,
+                "ENR_WH": 1438.0
+            },
+            "num_students": 1692.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109000",
+            "dist": "NYSSA SD 26",
+            "schools": [
+                "nyssa elementary school",
+                "nyssa middle school",
+                "nyssa high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 192.0,
+                "ENR_AS": 31.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 4581.0,
+                "ENR_WH": 2184.0
+            },
+            "num_students": 6990.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109120",
+            "dist": "OAKLAND SD 1",
+            "schools": [
+                "lincoln middle school",
+                "oakland elementary school",
+                "oakland high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 250.0,
+                "ENR_AS": 12.0,
+                "ENR_BL": 19.0,
+                "ENR_HI": 177.0,
+                "ENR_WH": 3018.0
+            },
+            "num_students": 3476.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109150",
+            "dist": "OAKRIDGE SD 76",
+            "schools": [
+                "oakridge elementary school",
+                "oakridge junior high school",
+                "oakridge high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 174.0,
+                "ENR_AS": 22.0,
+                "ENR_BL": 70.0,
+                "ENR_HI": 203.0,
+                "ENR_WH": 2763.0
+            },
+            "num_students": 3232.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109270",
+            "dist": "ONTARIO SD 8C",
+            "schools": [
+                "alameda elementary school",
+                "cairo elementary school",
+                "aiken elementary school",
+                "may roberts elementary school",
+                "pioneer elementary school",
+                "ontario middle school",
+                "ontario high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 467.0,
+                "ENR_AS": 105.0,
+                "ENR_BL": 138.0,
+                "ENR_HI": 8888.0,
+                "ENR_WH": 4686.0
+            },
+            "num_students": 14284.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109330",
+            "dist": "OREGON CITY SD 62",
+            "schools": [
+                "beavercreek elementary school",
+                "candy lane elementary school",
+                "holcomb elementary school",
+                "gaffney lane elementary school",
+                "jennings lodge elementary school",
+                "king elementary school",
+                "mt pleasant elementary school",
+                "john mcloughlin elementary school",
+                "gardiner middle school",
+                "ogden middle school",
+                "tumwata middle school",
+                "oregon city senior high school",
+                "redland elementary school",
+                "springwater environmental sciences school",
+                "oregon city service learning academy",
+                "alliance charter academy",
+                "clackamas academy of industrial sciences"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3589.0,
+                "ENR_AS": 657.0,
+                "ENR_BL": 375.0,
+                "ENR_HI": 5821.0,
+                "ENR_WH": 35727.0
+            },
+            "num_students": 46169.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109430",
+            "dist": "PAISLEY SD 11",
+            "schools": [
+                "paisley school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 77.0,
+                "ENR_AS": 38.0,
+                "ENR_BL": 13.0,
+                "ENR_HI": 68.0,
+                "ENR_WH": 993.0
+            },
+            "num_students": 1189.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109480",
+            "dist": "PARKROSE SD 3",
+            "schools": [
+                "prescott elementary school",
+                "russell academy",
+                "russell elementary",
+                "sacramento elementary school",
+                "shaver elementary school",
+                "parkrose middle school",
+                "parkrose high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2336.0,
+                "ENR_AS": 2537.0,
+                "ENR_BL": 2685.0,
+                "ENR_HI": 5107.0,
+                "ENR_WH": 6214.0
+            },
+            "num_students": 18879.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109510",
+            "dist": "PENDLETON SD 16",
+            "schools": [
+                "lincoln primary school",
+                "mckay creek elementary school",
+                "sherwood heights elementary school",
+                "washington elementary school",
+                "west hills intermediate",
+                "pendleton high school",
+                "sunridge middle school",
+                "nixyaawii community school",
+                "nixya'awii community school",
+                "hawthorne middle/high school",
+                "hawthorne alternative high school",
+                "pendleton early learning center",
+                "pendleton virtual learning academy",
+                "homestead youth and family services"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3905.0,
+                "ENR_AS": 191.0,
+                "ENR_BL": 102.0,
+                "ENR_HI": 2549.0,
+                "ENR_WH": 12471.0
+            },
+            "num_students": 19218.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109530",
+            "dist": "PERRYDALE SD 21",
+            "schools": [
+                "perrydale school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 84.0,
+                "ENR_AS": 14.0,
+                "ENR_BL": 19.0,
+                "ENR_HI": 81.0,
+                "ENR_WH": 1557.0
+            },
+            "num_students": 1755.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109600",
+            "dist": "PHILOMATH SD 17J",
+            "schools": [
+                "blodgett elementary school",
+                "kings valley charter school",
+                "philomath elementary school",
+                "philomath middle school",
+                "philomath high school",
+                "clemens primary school",
+                "philomath academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 507.0,
+                "ENR_AS": 97.0,
+                "ENR_BL": 45.0,
+                "ENR_HI": 761.0,
+                "ENR_WH": 8139.0
+            },
+            "num_students": 9549.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109630",
+            "dist": "PHOENIX-TALENT SD 4",
+            "schools": [
+                "phoenix elementary school",
+                "talent elementary school",
+                "talent middle school",
+                "phoenix high school",
+                "orchard hill elementary school",
+                "armadillo technical institute",
+                "phoenix-talent rising academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1213.0,
+                "ENR_AS": 120.0,
+                "ENR_BL": 134.0,
+                "ENR_HI": 5110.0,
+                "ENR_WH": 8648.0
+            },
+            "num_students": 15225.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109660",
+            "dist": "PILOT ROCK SD 2",
+            "schools": [
+                "pilot rock elementary school",
+                "pilot rock high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 195.0,
+                "ENR_AS": 2.0,
+                "ENR_BL": 8.0,
+                "ENR_HI": 112.0,
+                "ENR_WH": 1746.0
+            },
+            "num_students": 2063.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109720",
+            "dist": "PINE EAGLE SD 61",
+            "schools": [
+                "pine eagle charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 71.0,
+                "ENR_AS": 5.0,
+                "ENR_BL": 5.0,
+                "ENR_HI": 109.0,
+                "ENR_WH": 1017.0
+            },
+            "num_students": 1207.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4109870",
+            "dist": "PLEASANT HILL SD 1",
+            "schools": [
+                "pleasant hill elementary school",
+                "pleasant hill high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 549.0,
+                "ENR_AS": 22.0,
+                "ENR_BL": 21.0,
+                "ENR_HI": 401.0,
+                "ENR_WH": 4711.0
+            },
+            "num_students": 5704.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110020",
+            "dist": "PORT ORFORD-LANGLOIS SD 2CJ",
+            "schools": [
+                "driftwood elementary school",
+                "pacific high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 127.0,
+                "ENR_AS": 16.0,
+                "ENR_BL": 17.0,
+                "ENR_HI": 91.0,
+                "ENR_WH": 1196.0
+            },
+            "num_students": 1447.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110040",
+            "dist": "PORTLAND SD 1J",
+            "schools": [
+                "rieke elementary school",
+                "abernethy elementary school",
+                "ainsworth elementary school",
+                "alameda elementary school",
+                "arleta elementary school",
+                "astor elementary school",
+                "atkinson elementary school",
+                "rosa parks elementary school",
+                "beach elementary school",
+                "beaumont middle school",
+                "boise-eliot elementary school",
+                "boise-eliot/humboldt elementary school",
+                "bridger elementary school",
+                "bridlemile elementary school",
+                "buckman elementary school",
+                "capitol hill elementary school",
+                "chapman elementary school",
+                "chief joseph elementary school",
+                "cesar chavez k-8 school",
+                "harrison park school",
+                "creston elementary school",
+                "duniway elementary school",
+                "faubion elementary school",
+                "george middle school",
+                "glencoe elementary school",
+                "gray middle school",
+                "robert gray middle school",
+                "grout elementary school",
+                "hayhurst elementary school",
+                "beverly cleary school",
+                "hosford middle school",
+                "humboldt elementary school",
+                "irvington elementary school",
+                "james john elementary school",
+                "kelly elementary school",
+                "king elementary school",
+                "martin luther king jr elementary school",
+                "martin luther king jr. school",
+                "dr. martin luther king jr. school",
+                "lane middle school",
+                "laurelhurst elementary school",
+                "lee elementary school",
+                "lent elementary school",
+                "lewis elementary school",
+                "llewellyn elementary school",
+                "maplewood elementary school",
+                "markham elementary school",
+                "marysville elementary school",
+                "mt tabor middle school",
+                "ockley green",
+                "chief joseph/ockley green school",
+                "ockley green middle school",
+                "peninsula elementary school",
+                "richmond elementary school",
+                "rigler elementary school",
+                "roseway heights school",
+                "sabin elementary school",
+                "scott elementary school",
+                "sellwood middle school",
+                "sitton elementary school",
+                "skyline elementary school",
+                "stephenson elementary school",
+                "sunnyside environmental school",
+                "vernon elementary school",
+                "vestal elementary school",
+                "west sylvan middle school",
+                "whitman elementary school",
+                "woodlawn elementary school",
+                "woodmere elementary school",
+                "woodstock elementary school",
+                "benson polytechnic high school",
+                "cleveland high school",
+                "franklin high school",
+                "grant high school",
+                "jefferson high school",
+                "lincoln high school",
+                "metropolitan learning center",
+                "madison high school",
+                "leodis v. mcdaniel high school",
+                "wilson high school",
+                "ida b. wells-barnett high school",
+                "da vinci middle school",
+                "davinci arts middle school",
+                "winterhaven school",
+                "harriet tubman middle school",
+                "jackson middle school",
+                "forest park elementary school",
+                "opal school of the portland children's museum",
+                "head start sacajawea",
+                "head start early childhood ed",
+                "arts, communication & technology school",
+                "spanish-english international school",
+                "pursuit of wellness education at roosevelt campus",
+                "self enhancement, inc/sei academy",
+                "self enhancement inc/sei academy",
+                "emerson school",
+                "leadership and entrepreneurship public charter hig",
+                "portland village school",
+                "alliance high school",
+                "portland arthur academy charter school",
+                "creative science school",
+                "le monde french immersion public charter school",
+                "roosevelt high school",
+                "kairospdx",
+                "kairos pdx",
+                "rose city park",
+                "kellogg middle school",
+                "trillium",
+                "nickerson adt",
+                "morrison hand in hand",
+                "rosemont",
+                "white shield",
+                "clinton street school",
+                "johns landing school",
+                "parry center",
+                "online learning academy",
+                "parry center scip",
+                "wildflowers",
+                "access",
+                "access academy",
+                "pioneer schools",
+                "breakthrough",
+                "ctc southeast",
+                "ctc northeast",
+                "community transition program"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110080",
+            "dist": "POWERS SD 31",
+            "schools": [
+                "powers elementary school",
+                "powers high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 349.0,
+                "ENR_AS": 5.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 26.0,
+                "ENR_WH": 503.0
+            },
+            "num_students": 885.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110110",
+            "dist": "PRAIRIE CITY SD 4",
+            "schools": [
+                "prairie city school",
+                "oregon connections academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 121.0,
+                "ENR_AS": 13.0,
+                "ENR_BL": 21.0,
+                "ENR_HI": 131.0,
+                "ENR_WH": 1326.0
+            },
+            "num_students": 1612.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110200",
+            "dist": "PROSPECT SD 59",
+            "schools": [
+                "prospect charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 80.0,
+                "ENR_AS": 5.0,
+                "ENR_BL": 6.0,
+                "ENR_HI": 47.0,
+                "ENR_WH": 1166.0
+            },
+            "num_students": 1304.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110350",
+            "dist": "REDMOND SD 2J",
+            "schools": [
+                "john tuck elementary school",
+                "m a lynch elementary school",
+                "terrebonne community school",
+                "tumalo community school",
+                "obsidian middle school",
+                "redmond high school",
+                "elton gregory middle school",
+                "vern patrick elementary school",
+                "sage elementary school",
+                "tom mccall elementary school",
+                "redmond proficiency academy",
+                "ridgeview high school",
+                "redmond early learning center at hugh hartman",
+                "hugh hartman elementary"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2027.0,
+                "ENR_AS": 287.0,
+                "ENR_BL": 255.0,
+                "ENR_HI": 7420.0,
+                "ENR_WH": 31913.0
+            },
+            "num_students": 41902.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110410",
+            "dist": "REEDSPORT SD 105",
+            "schools": [
+                "highland elementary school",
+                "reedsport community charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 315.0,
+                "ENR_AS": 29.0,
+                "ENR_BL": 9.0,
+                "ENR_HI": 347.0,
+                "ENR_WH": 2965.0
+            },
+            "num_students": 3665.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110520",
+            "dist": "REYNOLDS SD 7",
+            "schools": [
+                "alder elementary school",
+                "fairview elementary school",
+                "glenfair elementary school",
+                "hartley elementary school",
+                "margaret scott elementary school",
+                "davis elementary school",
+                "sweetbriar elementary school",
+                "troutdale elementary school",
+                "wilkes elementary school",
+                "hauton b lee middle school",
+                "reynolds high school",
+                "reynolds middle school",
+                "woodland elementary",
+                "walt morey middle school",
+                "multisensory learning academy",
+                "multnomah learning academy",
+                "reynolds learning academy",
+                "reynolds arthur academy",
+                "salish ponds elementary school",
+                "ace academy",
+                "knova reynolds public charter school",
+                "rockwood preparatory academy",
+                "four corners program"
+            ],
+            "district_comp": {
+                "ENR_OTH": 6060.0,
+                "ENR_AS": 4727.0,
+                "ENR_BL": 5573.0,
+                "ENR_HI": 26707.0,
+                "ENR_WH": 22826.0
+            },
+            "num_students": 65893.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110530",
+            "dist": "RIDDLE SD 70",
+            "schools": [
+                "riddle elementary school",
+                "riddle high school",
+                "riddle education center"
+            ],
+            "district_comp": {
+                "ENR_OTH": 257.0,
+                "ENR_AS": 27.0,
+                "ENR_BL": 12.0,
+                "ENR_HI": 157.0,
+                "ENR_WH": 2076.0
+            },
+            "num_students": 2529.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110560",
+            "dist": "RIVERDALE SD 51J",
+            "schools": [
+                "riverdale high school",
+                "riverdale grade school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 270.0,
+                "ENR_AS": 162.0,
+                "ENR_BL": 26.0,
+                "ENR_HI": 161.0,
+                "ENR_WH": 3051.0
+            },
+            "num_students": 3670.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110680",
+            "dist": "ROGUE RIVER SD 35",
+            "schools": [
+                "rogue river elementary school",
+                "rogue river junior/senior high school",
+                "rogue river junior/senior high",
+                "rivers edge academy charter school",
+                "south valley academy",
+                "river's edge academy charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 484.0,
+                "ENR_AS": 37.0,
+                "ENR_BL": 49.0,
+                "ENR_HI": 524.0,
+                "ENR_WH": 4808.0
+            },
+            "num_students": 5902.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110710",
+            "dist": "DOUGLAS COUNTY SD 4",
+            "schools": [
+                "eastwood elementary school",
+                "fir grove elementary school",
+                "fullerton iv elementary school",
+                "green elementary school",
+                "hucrest elementary school",
+                "melrose elementary school",
+                "rose elementary school",
+                "sunnyslope elementary school",
+                "winchester elementary",
+                "john c fremont middle school",
+                "joseph lane middle school",
+                "roseburg high school",
+                "phoenix charter school",
+                "phoenix school",
+                "rose school",
+                "roseburg virtual school",
+                "roseburg alt ed"
+            ],
+            "district_comp": {
+                "ENR_OTH": 3954.0,
+                "ENR_AS": 420.0,
+                "ENR_BL": 248.0,
+                "ENR_HI": 4023.0,
+                "ENR_WH": 28054.0
+            },
+            "num_students": 36699.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110820",
+            "dist": "SALEM-KEIZER SD 24J",
+            "schools": [
+                "yoshikai elementary school",
+                "crossler middle school",
+                "houck middle school",
+                "stephens middle school",
+                "auburn elementary school",
+                "brush college elementary school",
+                "bush elementary school",
+                "candalaria elementary school",
+                "clear lake elementary school",
+                "cummings elementary school",
+                "englewood elementary school",
+                "wright elementary school",
+                "four corners elementary school",
+                "grant community school",
+                "scott elementary school",
+                "hazel green elementary school",
+                "highland elementary school",
+                "hoover elementary school",
+                "gubser elementary school",
+                "kennedy elementary school",
+                "keizer elementary school",
+                "liberty elementary school",
+                "mckinley elementary school",
+                "eyre elementary school",
+                "middle grove elementary school",
+                "morningside elementary school",
+                "myers elementary school",
+                "hayesville elementary school",
+                "pringle elementary school",
+                "richmond elementary school",
+                "rosedale elementary school",
+                "salem heights elementary school",
+                "schirle elementary school",
+                "sumpter elementary school",
+                "swegle elementary school",
+                "washington elementary school",
+                "judson middle school",
+                "leslie middle school",
+                "parrish middle school",
+                "waldo middle school",
+                "walker middle school",
+                "whiteaker middle school",
+                "mcnary high school",
+                "north salem high school",
+                "sprague high school",
+                "south salem high school",
+                "howard street charter",
+                "mckay high school",
+                "chapman hill elementary school",
+                "claggett creek middle school",
+                "weddle elementary school",
+                "lamb elementary school",
+                "hammond elementary school",
+                "hallman elementary school",
+                "miller elementary school",
+                "jane goodall environmental middle charter school",
+                "harritt elementary school",
+                "valley inquiry charter school",
+                "early college high school",
+                "roberts high school",
+                "straub middle school",
+                "kalapuya elementary school",
+                "battle creek elementary school",
+                "cesar e chavez elem",
+                "cesar e chavez elementary",
+                "west salem high school",
+                "lee elementary school",
+                "optimum learning environment charter school",
+                "forest ridge elementary school",
+                "downtown community transition program",
+                "micah community transition program",
+                "centennial community transition program",
+                "wheatland community transition program",
+                "migrant primary school",
+                "chemeketa community transition program",
+                "preschool promise",
+                "title 1 preschool",
+                "independent living community transition program",
+                "salem-keizer head start pre-k"
+            ],
+            "district_comp": {
+                "ENR_OTH": 0,
+                "ENR_AS": 0,
+                "ENR_BL": 0,
+                "ENR_HI": 0,
+                "ENR_WH": 0
+            },
+            "num_students": 0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110890",
+            "dist": "OREGON TRAIL SD 46",
+            "schools": [
+                "welches elementary school",
+                "naas elementary school",
+                "boring middle school",
+                "sandy grade school",
+                "firwood elementary school",
+                "cedar ridge middle school",
+                "sandy high school",
+                "kelso elementary school",
+                "welches middle school",
+                "oregon trail primary academy",
+                "oregon trail  academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1774.0,
+                "ENR_AS": 276.0,
+                "ENR_BL": 186.0,
+                "ENR_HI": 3661.0,
+                "ENR_WH": 19740.0
+            },
+            "num_students": 25637.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4110980",
+            "dist": "SCAPPOOSE SD 1J",
+            "schools": [
+                "grant watts elementary school",
+                "otto petersen elementary school",
+                "warren elementary school",
+                "scappoose middle school",
+                "scappoose high school",
+                "sauvie island academy",
+                "sauvie island school",
+                "south columbia family school",
+                "scappoose online academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 977.0,
+                "ENR_AS": 281.0,
+                "ENR_BL": 101.0,
+                "ENR_HI": 1051.0,
+                "ENR_WH": 11011.0
+            },
+            "num_students": 13421.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111040",
+            "dist": "SCIO SD 95",
+            "schools": [
+                "centennial elementary school",
+                "scio middle school",
+                "scio high school",
+                "lourdes school",
+                "oregon connections academy",
+                "oregon virtual education",
+                "willamette connections academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1336.0,
+                "ENR_AS": 195.0,
+                "ENR_BL": 201.0,
+                "ENR_HI": 1455.0,
+                "ENR_WH": 12641.0
+            },
+            "num_students": 15828.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111100",
+            "dist": "SEASIDE SD 10",
+            "schools": [
+                "broadway middle school",
+                "seaside middle school",
+                "cannon beach elementary",
+                "seaside heights elementary school",
+                "pacific ridge elementary school",
+                "gearhart elementary school",
+                "seaside high school",
+                "the cannon beach academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 355.0,
+                "ENR_AS": 185.0,
+                "ENR_BL": 69.0,
+                "ENR_HI": 2259.0,
+                "ENR_WH": 6282.0
+            },
+            "num_students": 9150.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111220",
+            "dist": "SHERIDAN SD 48J",
+            "schools": [
+                "faulconer-chapman school",
+                "sheridan high school",
+                "opportunity house",
+                "sheridan spartan academy",
+                "sheridan japanese school",
+                "sheridan allprep academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 671.0,
+                "ENR_AS": 50.0,
+                "ENR_BL": 73.0,
+                "ENR_HI": 763.0,
+                "ENR_WH": 3898.0
+            },
+            "num_students": 5455.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111250",
+            "dist": "SHERMAN COUNTY SD",
+            "schools": [
+                "sherman elementary school",
+                "sherman junior/senior high school",
+                "sherman county school",
+                "oregon virtual education - east"
+            ],
+            "district_comp": {
+                "ENR_OTH": 93.0,
+                "ENR_AS": 3.0,
+                "ENR_BL": 2.0,
+                "ENR_HI": 128.0,
+                "ENR_WH": 1219.0
+            },
+            "num_students": 1445.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111290",
+            "dist": "SHERWOOD SD 88J",
+            "schools": [
+                "archer glen elementary school",
+                "j clyde hopkins elementary school",
+                "hawks view elementary school",
+                "sherwood middle school",
+                "sherwood high school",
+                "middleton elementary school",
+                "sherwood charter school",
+                "edy ridge elementary school",
+                "ridges elementary school",
+                "laurel ridge middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 2091.0,
+                "ENR_AS": 843.0,
+                "ENR_BL": 252.0,
+                "ENR_HI": 2983.0,
+                "ENR_WH": 25088.0
+            },
+            "num_students": 31257.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111400",
+            "dist": "NORTH LAKE SD 14",
+            "schools": [
+                "north lake school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 104.0,
+                "ENR_AS": 15.0,
+                "ENR_BL": 12.0,
+                "ENR_HI": 91.0,
+                "ENR_WH": 1150.0
+            },
+            "num_students": 1372.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111450",
+            "dist": "SILVER FALLS SD 4J",
+            "schools": [
+                "butte creek elementary school",
+                "eugene field elementary school",
+                "mark twain elementary",
+                "mark twain middle school",
+                "silverton middle school",
+                "robert frost elementary school",
+                "evergreen elementary school",
+                "victor point elementary school",
+                "pratum elementary school",
+                "bethany charter school",
+                "scotts mills elementary school",
+                "silver crest elementary school",
+                "central howell elementary school",
+                "silverton high school",
+                "the community roots school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 887.0,
+                "ENR_AS": 149.0,
+                "ENR_BL": 174.0,
+                "ENR_HI": 3170.0,
+                "ENR_WH": 18109.0
+            },
+            "num_students": 22489.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111490",
+            "dist": "SISTERS SD 6",
+            "schools": [
+                "sisters high school",
+                "sisters elementary school",
+                "sisters middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 250.0,
+                "ENR_AS": 93.0,
+                "ENR_BL": 42.0,
+                "ENR_HI": 444.0,
+                "ENR_WH": 5853.0
+            },
+            "num_students": 6682.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111580",
+            "dist": "SOUTH LANE SD 45J3",
+            "schools": [
+                "bohemia elementary school",
+                "dorena school",
+                "harrison elementary school",
+                "latham elementary school",
+                "london school",
+                "lincoln middle school",
+                "cottage grove high school",
+                "al kennedy alternative high school",
+                "al kennedy high school",
+                "childs way charter school",
+                "academy for character education",
+                "solo academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 895.0,
+                "ENR_AS": 207.0,
+                "ENR_BL": 119.0,
+                "ENR_HI": 1734.0,
+                "ENR_WH": 13495.0
+            },
+            "num_students": 16450.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111610",
+            "dist": "SOUTH UMPQUA SD 19",
+            "schools": [
+                "canyonville school",
+                "myrtle creek elementary school",
+                "coffenberry middle school",
+                "tri city elementary school",
+                "south umpqua high school",
+                "south umpqua online academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 874.0,
+                "ENR_AS": 57.0,
+                "ENR_BL": 43.0,
+                "ENR_HI": 623.0,
+                "ENR_WH": 7030.0
+            },
+            "num_students": 8627.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111640",
+            "dist": "SPRAY SD 1",
+            "schools": [
+                "spray school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 16.0,
+                "ENR_AS": 20.0,
+                "ENR_BL": 1.0,
+                "ENR_HI": 9.0,
+                "ENR_WH": 281.0
+            },
+            "num_students": 327.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111670",
+            "dist": "SPRINGFIELD SD 19",
+            "schools": [
+                "brattain elementary school",
+                "centennial elementary school",
+                "douglas gardens elementary school",
+                "elizabeth page elementary school",
+                "guy lee elementary school",
+                "maple elementary school",
+                "moffitt elementary school",
+                "mt vernon elementary school",
+                "thurston elementary school",
+                "walterville elementary school",
+                "yolanda elementary school",
+                "briggs middle school",
+                "hamlin middle school",
+                "thurston middle school",
+                "springfield high school",
+                "thurston high school",
+                "riverbend elementary school",
+                "agnes stewart middle school",
+                "gateways high school",
+                "ridgeview elementary school",
+                "willamette leadership academy",
+                "academy of arts and academics",
+                "community transition program-springfield",
+                "two rivers dos rios elementary",
+                "online school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 5960.0,
+                "ENR_AS": 537.0,
+                "ENR_BL": 701.0,
+                "ENR_HI": 13169.0,
+                "ENR_WH": 41783.0
+            },
+            "num_students": 62150.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111720",
+            "dist": "ST HELENS SD 502",
+            "schools": [
+                "columbia city school",
+                "mcbride elementary school",
+                "st helens middle school",
+                "st helens high school",
+                "columbia county education campus",
+                "plymouth high school",
+                "st helens arthur academy",
+                "st. helens virtual academy",
+                "lewis & clark elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1395.0,
+                "ENR_AS": 142.0,
+                "ENR_BL": 138.0,
+                "ENR_HI": 1724.0,
+                "ENR_WH": 14678.0
+            },
+            "num_students": 18077.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111760",
+            "dist": "ST PAUL SD 45",
+            "schools": [
+                "st paul elementary school",
+                "st paul high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 28.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 5.0,
+                "ENR_HI": 551.0,
+                "ENR_WH": 886.0
+            },
+            "num_students": 1476.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111790",
+            "dist": "STANFIELD SD 61",
+            "schools": [
+                "stanfield elementary school",
+                "stanfield secondary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 93.0,
+                "ENR_AS": 14.0,
+                "ENR_BL": 32.0,
+                "ENR_HI": 1356.0,
+                "ENR_WH": 1613.0
+            },
+            "num_students": 3108.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111940",
+            "dist": "SUTHERLIN SD 130",
+            "schools": [
+                "east sutherlin primary school",
+                "sutherlin middle school",
+                "west sutherlin intermediate",
+                "sutherlin high school",
+                "sutherlin valley online academy"
+            ],
+            "district_comp": {
+                "ENR_OTH": 575.0,
+                "ENR_AS": 61.0,
+                "ENR_BL": 36.0,
+                "ENR_HI": 920.0,
+                "ENR_WH": 6406.0
+            },
+            "num_students": 7998.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4111970",
+            "dist": "SWEET HOME SD 55",
+            "schools": [
+                "foster elementary school",
+                "hawthorne elementary school",
+                "holley elementary school",
+                "oak heights elementary school",
+                "sweet home junior high school",
+                "sweet home high school",
+                "sweet home charter school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1088.0,
+                "ENR_AS": 102.0,
+                "ENR_BL": 45.0,
+                "ENR_HI": 774.0,
+                "ENR_WH": 11735.0
+            },
+            "num_students": 13744.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112240",
+            "dist": "TIGARD-TUALATIN SD 23J",
+            "schools": [
+                "hazelbrook middle school",
+                "tualatin high school",
+                "charles f tigard elementary school",
+                "durham elementary school",
+                "james templeton elementary school",
+                "metzger elementary school",
+                "tualatin elementary school",
+                "thomas r fowler middle school",
+                "twality middle school",
+                "tigard high school",
+                "deer creek elementary school",
+                "edward byrom elementary school",
+                "mary woodward elementary school",
+                "bridgeport elementary school",
+                "alberta rider elementary school",
+                "durham center",
+                "creekside community high school",
+                "tigard-tualatin virtual academy",
+                "multi-sensory instruction teaching children hands-",
+                "multi-sensory instruction teaching children hands-on (mitch)",
+                "cordero house",
+                "cordero residential treatment"
+            ],
+            "district_comp": {
+                "ENR_OTH": 6643.0,
+                "ENR_AS": 4159.0,
+                "ENR_BL": 1388.0,
+                "ENR_HI": 19032.0,
+                "ENR_WH": 42643.0
+            },
+            "num_students": 73865.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112320",
+            "dist": "TILLAMOOK SD 9",
+            "schools": [
+                "east elementary school",
+                "liberty elementary school",
+                "south prairie elementary school",
+                "tillamook junior high school",
+                "tillamook high school",
+                "tillamook options program school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 777.0,
+                "ENR_AS": 110.0,
+                "ENR_BL": 51.0,
+                "ENR_HI": 3452.0,
+                "ENR_WH": 8038.0
+            },
+            "num_students": 12428.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112540",
+            "dist": "UKIAH SD 80R",
+            "schools": [
+                "ukiah school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 23.0,
+                "ENR_AS": 39.0,
+                "ENR_BL": 0.0,
+                "ENR_HI": 11.0,
+                "ENR_WH": 166.0
+            },
+            "num_students": 239.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112600",
+            "dist": "UMATILLA SD 6R",
+            "schools": [
+                "clara brownell middle school",
+                "mcnary heights elementary school",
+                "umatilla high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1068.0,
+                "ENR_AS": 22.0,
+                "ENR_BL": 45.0,
+                "ENR_HI": 4719.0,
+                "ENR_WH": 2392.0
+            },
+            "num_students": 8246.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112690",
+            "dist": "UNION SD 5",
+            "schools": [
+                "union elementary school",
+                "union high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 47.0,
+                "ENR_AS": 6.0,
+                "ENR_BL": 11.0,
+                "ENR_HI": 22.0,
+                "ENR_WH": 1831.0
+            },
+            "num_students": 1917.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112930",
+            "dist": "VERNONIA SD 47J",
+            "schools": [
+                "mist elementary school",
+                "vernonia elementary school",
+                "vernonia high school",
+                "vernonia middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 295.0,
+                "ENR_AS": 31.0,
+                "ENR_BL": 13.0,
+                "ENR_HI": 192.0,
+                "ENR_WH": 2861.0
+            },
+            "num_students": 3392.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4112990",
+            "dist": "WALLOWA SD 12",
+            "schools": [
+                "wallowa high school",
+                "wallowa elementary school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 72.0,
+                "ENR_AS": 0.0,
+                "ENR_BL": 8.0,
+                "ENR_HI": 57.0,
+                "ENR_WH": 1124.0
+            },
+            "num_students": 1261.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4113080",
+            "dist": "WARRENTON-HAMMOND SD 30",
+            "schools": [
+                "warrenton grade school",
+                "warrenton high school",
+                "warrenton middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 399.0,
+                "ENR_AS": 54.0,
+                "ENR_BL": 17.0,
+                "ENR_HI": 742.0,
+                "ENR_WH": 4630.0
+            },
+            "num_students": 5842.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4113170",
+            "dist": "WEST LINN-WILSONVILLE SD 3J",
+            "schools": [
+                "cedaroak park primary school",
+                "stafford primary school",
+                "sunset primary school",
+                "athey creek middle school",
+                "west linn high school",
+                "wilsonville high school",
+                "inza r wood middle school",
+                "boeckman creek primary school",
+                "willamette primary school",
+                "rosemont ridge middle school",
+                "three rivers charter school",
+                "bolton primary school",
+                "boones ferry primary school",
+                "arts and technology high school",
+                "lowrie primary school",
+                "trillium creek primary school",
+                "meridian creek middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 4655.0,
+                "ENR_AS": 2342.0,
+                "ENR_BL": 479.0,
+                "ENR_HI": 6506.0,
+                "ENR_WH": 41562.0
+            },
+            "num_students": 55544.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4113350",
+            "dist": "WILLAMINA SD 30J",
+            "schools": [
+                "willamina elementary school",
+                "willamina high school",
+                "willamina middle school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 1447.0,
+                "ENR_AS": 8.0,
+                "ENR_BL": 37.0,
+                "ENR_HI": 409.0,
+                "ENR_WH": 3107.0
+            },
+            "num_students": 5008.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4113490",
+            "dist": "WINSTON-DILLARD SD 116",
+            "schools": [
+                "mcgovern elementary school",
+                "lookingglass elementary school",
+                "winston middle school",
+                "douglas high school",
+                "brockway elementary school",
+                "dillard alternative high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 635.0,
+                "ENR_AS": 29.0,
+                "ENR_BL": 63.0,
+                "ENR_HI": 681.0,
+                "ENR_WH": 7165.0
+            },
+            "num_students": 8573.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4113530",
+            "dist": "WOODBURN SD 103",
+            "schools": [
+                "nellie muir elementary school",
+                "washington elementary school",
+                "lincoln elementary school",
+                "french prairie middle school",
+                "heritage elementary",
+                "valor middle school",
+                "woodburn arthur academy",
+                "woodburn academy of art, science and technology",
+                "woodburn academy of art science and technology",
+                "academy of international studies (at woodburn)",
+                "woodburn success",
+                "woodburn arts and communications academy",
+                "wellness, business and sports school",
+                "wellness business and sports school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 342.0,
+                "ENR_AS": 143.0,
+                "ENR_BL": 249.0,
+                "ENR_HI": 27394.0,
+                "ENR_WH": 5287.0
+            },
+            "num_students": 33415.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4113650",
+            "dist": "YONCALLA SD 32",
+            "schools": [
+                "yoncalla elementary school",
+                "yoncalla high school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 182.0,
+                "ENR_AS": 14.0,
+                "ENR_BL": 10.0,
+                "ENR_HI": 158.0,
+                "ENR_WH": 1174.0
+            },
+            "num_students": 1538.0,
+            "opp_est": 0
+        },
+        {
+            "state": "OR",
+            "LEAID": "4180180",
+            "dist": "MULTNOMAH ESD",
+            "schools": [
+                "helensview high school",
+                "alpha high school",
+                "arata creek school",
+                "social emotional skills/behavioral health program",
+                "the creeks",
+                "functional living skills program",
+                "wheatley school",
+                "multnomah inverness school",
+                "hassolo school",
+                "counterpoint program",
+                "functional living skills",
+                "multnomah early childhood program",
+                "wynne watts school"
+            ],
+            "district_comp": {
+                "ENR_OTH": 354.0,
+                "ENR_AS": 176.0,
+                "ENR_BL": 730.0,
+                "ENR_HI": 907.0,
+                "ENR_WH": 2095.0
+            },
+            "num_students": 4262.0,
+            "opp_est": 0
+        }
+    ]
+}
