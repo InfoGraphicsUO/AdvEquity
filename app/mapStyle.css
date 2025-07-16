@@ -117,6 +117,23 @@ h2{
   border-radius: 4px;
 }
 
+/* State Overview Container */
+#StateOverviewContainer {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left : 700px;
+    z-index: 10;
+    background: var(--lightgrey);
+    width: 40vh;
+    height: 57vh;
+    padding: 8px 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    gap: 6px;
+    opacity: 0.8;
+}
+
 /* map legend */
 #mapLegend {
   position: absolute;
