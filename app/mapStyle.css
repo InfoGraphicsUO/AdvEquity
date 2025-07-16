@@ -6,6 +6,7 @@
   --yellow: #e5de54;
   --almostBlack: #303333;
   --offwhite: #f4f4f4;
+  --darkGreen: #224722;
 }
 
 body, html {
@@ -100,6 +101,21 @@ h2{
 
 /* end popup */
 
+#StateOverviewContainer {
+  display: none; /* initially hidden */
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--lightgrey);
+  width: 25%;
+  max-width: 350px;
+  height: 100%;
+  padding: 8px 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  opacity: 0.9;
+  border-radius: 4px;
+}
 
 /* State Overview Container */
 #StateOverviewContainer {

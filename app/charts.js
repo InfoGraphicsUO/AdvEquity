@@ -61,7 +61,7 @@ function initGraph() {
   if (!graphContainer) return;
 
   graphContainer.innerHTML = `
-    <h2>Factsheet about <span id="currentState">Oregon</span></h2>
+<h2>Factsheet about <span id="currentState">Oregon</span></h2>
 
     <div class="legend-row">
       <div class="legend-item">
@@ -73,34 +73,34 @@ function initGraph() {
         <span>State average</span>
       </div>
     </div>
+<div class="chart-row">
+  <!-- Chart 1 -->
+  <div class="chart-block">
+    <div class="chart-caption">% of non-white students</div>
+    <div id="chart1" class="chart"></div>
+  </div>
+  <!-- Chart 2 -->
+  <div class="chart-block">
+    <div class="chart-caption">% economically disadvantaged</div>
+    <div id="chart2" class="chart"></div>
+  </div>
+  <!-- Chart 3 -->
+  <div class="chart-block">
+    <div class="chart-caption">% taking ≥1 AP course</div>
+    <div id="chart3" class="chart"></div>
+  </div>
+  <!-- Chart 4 -->
+  <div class="chart-block">
+    <div class="chart-caption">Student–teacher ratio</div>
+    <div id="chart4" class="chart"></div>
+  </div>
+  <!-- Chart 5 -->
+  <div class="chart-block">
+    <div class="chart-caption">Modal AP courses per school</div>
+    <div id="chart5" class="chart"></div>
+  </div>
+</div>
 
-    <h3>Students</h3>
-    <div class="chart-row">
-      <div class="chart-block">
-        <div class="chart-caption">Percentage of non-white students</div>
-        <div id="chart1" class="chart"></div>
-      </div>
-      <div class="chart-block">
-        <div class="chart-caption">Percentage of economically disadvantaged students</div>
-        <div id="chart2" class="chart"></div>
-      </div>
-      <div class="chart-block">
-        <div class="chart-caption">Percentage taking ≥1 AP course</div>
-        <div id="chart3" class="chart"></div>
-      </div>
-    </div>
-
-    <h3>Teachers and Resources</h3>
-    <div class="chart-row">
-      <div class="chart-block">
-        <div class="chart-caption">Student–teacher ratio</div>
-        <div id="chart4" class="chart"></div>
-      </div>
-      <div class="chart-block">
-        <div class="chart-caption">Modal number of AP courses per school</div>
-        <div id="chart5" class="chart"></div>
-      </div>
-    </div>
   `;
 }
 function initStateOverview() {
@@ -109,17 +109,23 @@ function initStateOverview() {
 
 
   const data = [{
-    x: ['Other', 'Asian', 'Black', 'Hispanic', 'White'],
-    y: [10.29, 20.79, 14.59, 8.78, 51.14],
-    type: 'bar',
-    marker: { color: 'rgb(158,202,225)' }
+    labels: ['Two-or-more', 'Asian', 'Black', 'Hispanic', 'White'],
+    values: [6.1, 4.5, 1.9, 13.9, 71.7],
+    type: 'pie',
+    hole: 0.4, // Creates donut
+    marker: {
+      colors: ['#b3cde3','#fbb4ae','#ccebc5','#decbe4','#fed9a6']
+    },    
+    textinfo: 'label+percent',
+    hoverinfo: 'label+value+percent'
   }];
 
   const layout = {
     title: 'Racial Composition',
     yaxis: { title: 'Percentage', range: [0, 60] },
-    width: 325,
-    height: 300
+    width: 275,
+    height: 275,
+    showlegend: false
   };
 
   Plotly.newPlot('StateOverviewCharts', data, layout);
