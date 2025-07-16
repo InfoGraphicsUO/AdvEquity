@@ -329,14 +329,17 @@ map.on('load', () => {
           .then(res => res.json())
           .then(stateData => {
             // Extract only the matched district
-            const hoveredDistrict = stateData.Data.find(
-              d => d.LEAID === hoveredDistrictPolygonID
+            const hoveredDistrictData = stateData.Data.find(
+              d => d.LEAID === hoveredDistrictPolygonID,
             );
 
-            if (hoveredDistrict) {
-              console.log('Matched District:', hoveredDistrict);
+            
+             
 
-
+            if (hoveredDistrictData) {
+              console.log('Matched District:', hoveredDistrictData);
+              console.log(`num_students ${hoveredDistrictData.num_students}`)
+              // fill value into tooltip!
             } else {
               console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
             }
@@ -348,7 +351,7 @@ map.on('load', () => {
         const id = feature.id;
         const props = feature.properties;
         if (!id) return;
-        console.log(props)
+        //console.log(props)
 
         // SET STYLE
         if (hoveredDistrictPolygonID !== null) {
