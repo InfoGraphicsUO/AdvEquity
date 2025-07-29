@@ -323,37 +323,12 @@ map.on('load', () => {
 
 
       map.on('mousemove', 'district-fills', (e) => {
-        // is district fill type supposed to change on click??
-        const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview.json';
-        fetch(DistDataUrl)
-          .then(res => res.json())
-          .then(stateData => {
-            // Extract only the matched district
-            const hoveredDistrictData = stateData.Data.find(
-              d => d.LEAID === hoveredDistrictPolygonID,
-            );
-
-            
-             
-
-            if (hoveredDistrictData) {
-              console.log('Matched District:', hoveredDistrictData);
-              console.log(`num_students ${hoveredDistrictData.num_students}`)
-              // fill value into tooltip!
-            } else {
-              console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
-            }
-          })
-          .catch(error => {
-            console.error('Error loading data:', error);
-          });
         const feature = e.features[0];
         const id = feature.id;
         const props = feature.properties;
         if (!id) return;
-        //console.log(props)
 
-        // SET STYLE
+        // Clear previous hover state
         if (hoveredDistrictPolygonID !== null) {
           map.setFeatureState(
             { source: 'oregon_districts', id: hoveredDistrictPolygonID },
@@ -362,44 +337,64 @@ map.on('load', () => {
         }
 
         hoveredDistrictPolygonID = id;
+
+        // Set new hover state
         map.setFeatureState(
           { source: 'oregon_districts', id: hoveredDistrictPolygonID },
           { hover: true }
         );
+
         console.log('Hovered district ID:', hoveredDistrictPolygonID);
-        // JOIN DATA BY ID
-        // fake data:
-        const isDownward = props.AWATER % 2 === 0;  // make up/down depend on if the awater is even or odd
-        const directionArrow = isDownward ? '🡻' : '🡹';
-        const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
 
-        // FILL POPUP
-        // to do: fill missing values
+        // Fetch external district data
+        const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
+        fetch(DistDataUrl)
+          .then(res => res.json())
+          .then(stateData => {
 
-        districtPopup
-          .setLngLat(e.lngLat)
-          .setHTML(`
-            <div class="popup-content">
-              <strong>${props.NAME}</strong><br>
-              Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
-              Students: xx,xxx<br> 
-              Teachers: xxx<br> 
-              <b>Opportunity Estimates</b><br>
-              <div class="opportunity-row">
-                <div class="arrow ${directionClass}">${directionArrow}</div>
-                <div class="opportunity-text">
-                  2011–12: xx<br>
-                  2021–22: xx
+            // Find the district data matching the hovered polygon ID
+            const hoveredDistrictData = stateData.Data.find(
+              d => {
+                if (!hoveredDistrictPolygonID) return false;
+                return d.LEAID === hoveredDistrictPolygonID;
+              }
+            );
+            if (!hoveredDistrictData) {
+              console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
+              return;
+            }
+
+            const isDownward = props.AWATER % 2 === 0;
+            const directionArrow = isDownward ? '🡻' : '🡹';
+            const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
+
+            districtPopup
+              .setLngLat(e.lngLat)
+              .setHTML(`
+                <div class="popup-content">
+                  <strong>${props.NAME}</strong><br>
+                  Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
+                  Students: ${hoveredDistrictData.num_students}<br> 
+                  Teachers: ${hoveredDistrictData.num_teachers}<br> 
+                  <b>Opportunity Estimates</b><br>
+                  <div class="opportunity-row">
+                    <div class="arrow ${directionClass}">${directionArrow}</div>
+                    <div class="opportunity-text">
+                      2011–12: xx<br>
+                      2021–22: xx
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <!-- ADD OTHER INFO TO THE POPUP HERE -->
-          `)          
-          .addTo(map);
+              `)
+              .addTo(map);
 
-        // Call any other visual update (e.g., graphs)
-        showGraphs();
+            showGraphs(); //only runs when data is available
+          })
+          .catch(error => {
+            console.error('Error loading data:', error);
+          });
       });
+
 
       map.on('mouseleave', 'district-fills', () => {
         // Remove hover highlight
