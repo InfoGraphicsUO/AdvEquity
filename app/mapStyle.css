@@ -23,10 +23,23 @@ body, html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-#mapWidgets {
+#mapWidgetsQuery {
     position: absolute;
     top: 10px;
     left: 10px;
+    z-index: 10;
+    background: var(--lightgrey);
+    padding: 8px 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    /* display: flex; */
+    gap: 6px;
+}
+
+#mapWidgetsRace {
+    position: absolute;
+    top: 10px;
+    left: 301px;
     z-index: 10;
     background: var(--lightgrey);
     padding: 8px 12px;

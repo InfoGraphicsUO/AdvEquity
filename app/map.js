@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.querySelector('.search_query input');
   const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
+  const RaceSelectorHis = document.querySelector('.race-selectHis button');
+  const RaceSelectorBlk = document.querySelector('.race-selectBlk button');
 
 
   // get CSS colors:
