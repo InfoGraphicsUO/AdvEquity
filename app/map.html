@@ -7,6 +7,11 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+  <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+
+
     <!-- AdvancEDEquity Fonts (Berina Sans) hosted on Jmerson's Adobe Typekit -->
   <link rel="stylesheet" href="https://use.typekit.net/dkj5qyr.css">
 
@@ -63,9 +68,21 @@
     <!-- TABLE -->
      <h3>School districts where White students are more likely to be in an Advanced Placement class, compared with Black (Hispanic) students in 2011-12 and 2021-22</h3>
 
-    <div id="us-opportunity-table"></div>
-
+    <!--div id="us-opportunity-table"></div-->
+    <table id="us-opportunity-table" class="display nowrap" style="width:100%">
+      <thead>
+      <tr>
+      <th>State</th>
+        <th>Modal # of AP Classes (Student-Weighted)</th>
+        <th>Opportunity Estimate 2011–12</th>
+        <th>Opportunity Estimate 2021–22</th>
+      </tr>
+    </thead>
+  <tbody>
+  </tbody>
+  </table>
   </div>
+
   <div id="graphContainer"></div>
 
   <script src="map.js"></script>

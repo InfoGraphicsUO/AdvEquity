@@ -431,6 +431,56 @@ map.on('load', () => {
   });
 });
 
+function buildTableDTS(geojson, stateData) { 
+  const tableBody = document.querySelector('#us-opportunity-table tbody');
+  tableBody.innerHTML = ''; // Clear existing rows
+    const sortedFeatures = geojson.features.slice().sort((a, b) => {
+    if (a.id === 41) return -1;
+    if (b.id === 41) return 1;
+    return Number(a.id) - Number(b.id);
+  });
+
+  sortedFeatures.forEach((feature) => {
+    const props = feature.properties;
+    const stateName = props.STATE_NAME;
+    const fips = props.STATE_ID.padStart(2, '0');
+
+    // Default values
+    let ap = '—';
+    let opp11 = '—';
+    let opp21 = '—';
+
+    if (stateName === 'Oregon') {
+      ap = stateData.weighted_mean_ap?.toFixed(2) ?? '—';
+      opp11 = (stateData.opp_est_1 * 100).toFixed(1) + '%' ?? '—';
+      opp21 = (stateData.opp_est_2 * 100).toFixed(1) + '%' ?? '—';
+    }
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${stateName}</td>
+      <td>${ap}</td>
+      <td>${opp11}</td>
+      <td>${opp21}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  // Initialize or reinitialize DataTable
+  if ($.fn.DataTable.isDataTable('#us-opportunity-table')) {
+    $('#us-opportunity-table').DataTable().clear().destroy();
+  }
+
+  $('#us-opportunity-table').DataTable({
+    responsive: true,
+    autoWidth: false,
+    scrollX: true
+  });
+
+  new DataTable('#us-opportunity-table');
+}
+
+
 function buildOpportunityTable(geojson, stateData) {
   const container = document.getElementById('us-opportunity-table');
   container.innerHTML = '';
@@ -495,7 +545,7 @@ function fillStateDataTable() {
     console.log('Fetched GeoJSON:', geojson);
     console.log('Fetched State JSON:', stateData);
 
-    buildOpportunityTable(geojson, stateData);
+    buildTableDTS(geojson, stateData);
   })
   .catch(error => {
     console.error('Error loading data:', error);
