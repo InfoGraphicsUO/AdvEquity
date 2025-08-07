@@ -432,53 +432,35 @@ map.on('load', () => {
 });
 
 function buildTableDTS(geojson, stateData) { 
-  const tableBody = document.querySelector('#us-opportunity-table tbody');
-  tableBody.innerHTML = ''; // Clear existing rows
-    const sortedFeatures = geojson.features.slice().sort((a, b) => {
-    if (a.id === 41) return -1;
-    if (b.id === 41) return 1;
-    return Number(a.id) - Number(b.id);
-  });
+  const data = stateData;
+  const ustableBody = document.getElementById('us-table-body');
 
-  sortedFeatures.forEach((feature) => {
-    const props = feature.properties;
-    const stateName = props.STATE_NAME;
-    const fips = props.STATE_ID.padStart(2, '0');
+  // Clear previous table data (if needed)
+  ustableBody.innerHTML = '';
 
-    // Default values
-    let ap = '—';
-    let opp11 = '—';
-    let opp21 = '—';
+  new DataTable('#us-table');
+  // Loop through the state data and add rows dynamically
+  for (let state in data){ 
+    console.log(data[state][0]);
 
-    if (stateName === 'Oregon') {
-      ap = stateData.weighted_mean_ap?.toFixed(2) ?? '—';
-      opp11 = (stateData.opp_est_1 * 100).toFixed(1) + '%' ?? '—';
-      opp21 = (stateData.opp_est_2 * 100).toFixed(1) + '%' ?? '—';
-    }
+    // Calculate the opportunity values for 2011 and 2021
+    const opp2021 = (data[state][1].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
+    const opp2011 = (data[state][0].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
+    const ap = data[state][1].AP_num;
 
+    // Create a new table row and add data to it
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${stateName}</td>
+      <td>${state}</td>
       <td>${ap}</td>
-      <td>${opp11}</td>
-      <td>${opp21}</td>
+      <td>${opp2011}</td>
+      <td>${opp2021}</td>
     `;
-    tableBody.appendChild(row);
-  });
-
-  // Initialize or reinitialize DataTable
-  if ($.fn.DataTable.isDataTable('#us-opportunity-table')) {
-    $('#us-opportunity-table').DataTable().clear().destroy();
+    ustableBody.appendChild(row);
   }
 
-  $('#us-opportunity-table').DataTable({
-    responsive: true,
-    autoWidth: false,
-    scrollX: true
-  });
-
-  new DataTable('#us-opportunity-table');
 }
+
 
 
 function buildOpportunityTable(geojson, stateData) {
@@ -535,7 +517,7 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
 }
 function fillStateDataTable() {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-  const stateDataUrl = '../assets/data/json/Oregon/OR_overview.json';
+  const stateDataUrl = '../assets/data/json/AllStates.json';
 
   Promise.all([
     fetch(geojsonUrl).then(res => res.json()),
