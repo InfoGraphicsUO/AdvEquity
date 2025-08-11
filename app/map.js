@@ -432,14 +432,9 @@ map.on('load', () => {
 });
 
 function buildTableDTS(geojson, stateData) { 
+  // New Function to build Table using DataTables
   const data = stateData;
-  const ustableBody = document.getElementById('us-table-body');
-
-  // Clear previous table data (if needed)
-  ustableBody.innerHTML = '';
-
-  new DataTable('#us-table');
-  // Loop through the state data and add rows dynamically
+  const table = new DataTable('#us-table');
   for (let state in data){ 
     console.log(data[state][0]);
 
@@ -447,19 +442,15 @@ function buildTableDTS(geojson, stateData) {
     const opp2021 = (data[state][1].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
     const opp2011 = (data[state][0].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
     const ap = data[state][1].AP_num;
-
-    // Create a new table row and add data to it
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${state}</td>
-      <td>${ap}</td>
-      <td>${opp2011}</td>
-      <td>${opp2021}</td>
-    `;
-    ustableBody.appendChild(row);
+    table.row.add([
+      state,
+      ap,
+      opp2011,
+      opp2021
+    ]).draw();
   }
-
 }
+
 
 
 
