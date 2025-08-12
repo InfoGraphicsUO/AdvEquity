@@ -47,14 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
 
-  fetch('.../assets/data/json/state_data_with_fips.json')
-    .then(response => response.json())
-    .then(stateDataFips => {
-      setStateFillColors(map, stateDataFips);
-    })
-    .catch(error => {
-      console.error('Error loading JSON:', error);
-    });
+
 
    // State Overview close button and other interactions
     const closeBtnState = document.getElementById('closeStateOverview');
@@ -191,10 +184,20 @@ map.on('load', () => {
     //  filter: ['==', 'STATE_ID', "19"]
   });
 
-  function setStateFillColors(map, stateData, year = 2021, gapKey = 'ENR_AP_GAP_BL') {
+  function setStateFillColors(map, year = 2021, gapKey = 'ENR_AP_GAP_BL') {
   const colorStops = [];
-  for (let state in stateData){ 
-    console.log(stateData);}
+    fetch('/assets/data/json/state_data_with_fips.json')
+    .then(response => response.json())
+    .then(stateDataFips => {
+    for (let state in stateDataFips){ 
+    console.log(parseInt(stateDataFips[state]["FIPS"], 10));
+  
+  }
+    })
+    .catch(error => {
+      console.error('Error loading JSON:', error);
+    });
+
   // Object.entries(stateData).forEach(([fips, data]) => {
     // const record = data.find(d => d.YEAR === year);
     // console.log(MediaRecorder)
@@ -222,7 +225,7 @@ map.on('load', () => {
 
   // map.setPaintProperty('state-fills', 'fill-color', matchExpression);
 }
-
+setStateFillColors(map)
 
   map.addLayer({
       id: 'state-borders',
