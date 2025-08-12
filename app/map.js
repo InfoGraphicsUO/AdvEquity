@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
   almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack').trim();
   offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
 
+  // data
+
+
   searchButton.addEventListener('click', () => {
     const userInput = searchInput.value;
     console.log('User input:', userInput);
@@ -41,17 +44,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch the GeoJSON and build the table
   fillStateDataTable()
+
   
-  /*
-  fetch('https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson')
+
+  fetch('.../assets/data/json/state_data_with_fips.json')
     .then(response => response.json())
-    .then(data => {
-      buildOpportunityTable(data);
+    .then(stateDataFips => {
+      setStateFillColors(map, stateDataFips);
     })
     .catch(error => {
-      console.error('Error loading GeoJSON:', error);
+      console.error('Error loading JSON:', error);
     });
-    */
+
    // State Overview close button and other interactions
     const closeBtnState = document.getElementById('closeStateOverview');
     const StateOverview = document.getElementById('StateOverviewContainer');
@@ -163,21 +167,62 @@ map.on('load', () => {
     source: 'states',
     layout: {},
     paint: {
-  'fill-color': [
-    'case',
-    ['==', ['get', 'STATE_ID'], '41'],
-    yellow, // Oregon hovers yellow 
-    '#cccccc'  // All others always gray
-  ],
-      'fill-opacity': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        1,
-        0
-      ]
+      "fill-color": [
+      "interpolate",
+      ["linear"],
+      ["to-number", ["get", "STATE_ID"]],
+      1, "#F2F12D",
+      50, "#723122"
+    ],
+
+      // 'fill-color': [
+  //   'case',
+  //   ['==', ['get', 'STATE_ID'], '41'],
+  //   yellow, // Oregon hovers yellow 
+  //   '#cccccc'  // All others always gray
+  // ],
+      // 'fill-opacity': [
+      //   'case',
+      //   ['boolean', ['feature-state', 'hover'], false],
+      //   1,
+      //   0
+      // ]
     },
     //  filter: ['==', 'STATE_ID', "19"]
   });
+
+  function setStateFillColors(map, stateData, year = 2021, gapKey = 'ENR_AP_GAP_BL') {
+  const colorStops = [];
+  for (let state in stateData){ 
+    console.log(stateData);}
+  // Object.entries(stateData).forEach(([fips, data]) => {
+    // const record = data.find(d => d.YEAR === year);
+    // console.log(MediaRecorder)
+    // if (record && typeof record[gapKey] === 'number') {
+    //   // Clamp t between 0 and 1
+    //   const t = Math.max(0, Math.min(1, record[gapKey]));
+
+    //   // Interpolate between green (#00ff00) and yellow (#ffff00)
+    //   const r = Math.round(255 * t);
+    //   const g = 255;
+    //   const b = 0;
+    //   const color = `rgb(${r},${g},${b})`;
+
+    //   // Use the state abbreviation as the match key
+    //   colorStops.push(stateCode, color);
+    //});
+ // });
+ 
+  // const matchExpression = [
+  //   'match',
+  //   ['get', 'STATE_ID'], // This must match the property in your GeoJSON
+  //   ...colorStops,
+  //   'rgba(0,0,0,0)' // default color for unmatched
+  // ];
+
+  // map.setPaintProperty('state-fills', 'fill-color', matchExpression);
+}
+
 
   map.addLayer({
       id: 'state-borders',
@@ -218,6 +263,7 @@ map.on('load', () => {
 
       hoveredPolygonId = e.features[0].id;
       console.log('Hovered state ID:', hoveredPolygonId);
+      console.log('Hovered state ID:',e.features[0]);
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
       // Here hoveredPolygonId is the state FIPS code (like "41")
@@ -436,7 +482,7 @@ function buildTableDTS(geojson, stateData) {
   const data = stateData;
   const table = new DataTable('#us-table');
   for (let state in data){ 
-    console.log(data[state][0]);
+    //console.log(data[state][0]);
 
     // Calculate the opportunity values for 2011 and 2021
     const opp2021 = (data[state][1].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
@@ -508,7 +554,9 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
 }
 function fillStateDataTable() {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-  const stateDataUrl = '../assets/data/json/AllStates.json';
+  const stateDataUrl = '../assets/data/json/AllStates.json'; // clean up
+
+
 
   Promise.all([
     fetch(geojsonUrl).then(res => res.json()),
@@ -519,6 +567,7 @@ function fillStateDataTable() {
     console.log('Fetched State JSON:', stateData);
 
     buildTableDTS(geojson, stateData);
+    fillStateDataTable(stateData)
   })
   .catch(error => {
     console.error('Error loading data:', error);
