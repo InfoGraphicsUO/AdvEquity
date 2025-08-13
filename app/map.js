@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Fetch the GeoJSON and build the table
-  fillStateDataTable()
+  
 
   
 
@@ -151,7 +151,7 @@ map.on('load', () => {
         'line-color': darkGreen,
         'line-width': 1
       }
-  });
+  });/*
 
 
   map.addLayer({
@@ -183,49 +183,20 @@ map.on('load', () => {
     },
     //  filter: ['==', 'STATE_ID', "19"]
   });
-
-  function setStateFillColors(map, year = 2021, gapKey = 'ENR_AP_GAP_BL') {
-  const colorStops = [];
-    fetch('/assets/data/json/state_data_with_fips.json')
-    .then(response => response.json())
-    .then(stateDataFips => {
-    for (let state in stateDataFips){ 
-    console.log(parseInt(stateDataFips[state]["FIPS"], 10));
-  
+*/
+  map.addLayer({
+  id: 'state-fills',
+  type: 'fill',
+  source: 'states',
+  paint: {
+    'fill-color': 'rgba(0, 0, 0, 0)', // transparent
+    'fill-opacity': 1
   }
-    })
-    .catch(error => {
-      console.error('Error loading JSON:', error);
-    });
+});
 
-  // Object.entries(stateData).forEach(([fips, data]) => {
-    // const record = data.find(d => d.YEAR === year);
-    // console.log(MediaRecorder)
-    // if (record && typeof record[gapKey] === 'number') {
-    //   // Clamp t between 0 and 1
-    //   const t = Math.max(0, Math.min(1, record[gapKey]));
 
-    //   // Interpolate between green (#00ff00) and yellow (#ffff00)
-    //   const r = Math.round(255 * t);
-    //   const g = 255;
-    //   const b = 0;
-    //   const color = `rgb(${r},${g},${b})`;
+  fillStateDataTable(map)
 
-    //   // Use the state abbreviation as the match key
-    //   colorStops.push(stateCode, color);
-    //});
- // });
- 
-  // const matchExpression = [
-  //   'match',
-  //   ['get', 'STATE_ID'], // This must match the property in your GeoJSON
-  //   ...colorStops,
-  //   'rgba(0,0,0,0)' // default color for unmatched
-  // ];
-
-  // map.setPaintProperty('state-fills', 'fill-color', matchExpression);
-}
-setStateFillColors(map)
 
   map.addLayer({
       id: 'state-borders',
@@ -480,18 +451,12 @@ setStateFillColors(map)
   });
 });
 
-function buildTableDTS(geojson, stateData) { 
+function buildTableDTS(geojson, stateData, geojson) { 
   const data = stateData;
   const table = new DataTable('#us-table');
   for (let state in data){ 
     //console.log(data[state][0]);
 
-  for (let state in data) { 
-    // Defensive check — make sure state exists and has 2 year entries
-    if (!data[state] || !Array.isArray(data[state]) || data[state].length < 2) {
-      console.warn(`Skipping ${state} — missing data`);
-      continue;
-    }
 
     // Pull values with null/undefined guard
     const ap = data[state][1]?.AP_num ?? 'N/A';
@@ -514,7 +479,65 @@ function buildTableDTS(geojson, stateData) {
       opp2021
     ]).draw();
   }
-}}
+}
+
+function buildTableAndMap(geojson, stateData, map) {
+  const table = new DataTable('#us-table');
+  const valueMap = {}; // STATE_ID -> opp2021Val
+
+  let minVal = Infinity;
+  let maxVal = -Infinity;
+
+  // Loop through data to fill table and track min/max opp2021 values
+  for (let state in stateData) {
+    const ap = stateData[state][1]?.AP_num ?? 'N/A';
+    const opp2011Val = stateData[state][0]?.ENR_AP_GAP_BL;
+    const opp2021Val = stateData[state][1]?.ENR_AP_GAP_BL;
+
+    const opp2011 = typeof opp2011Val === 'number'
+      ? (opp2011Val * 100).toFixed(1) + '%'
+      : 'N/A';
+    const opp2021 = typeof opp2021Val === 'number'
+      ? (opp2021Val * 100).toFixed(1) + '%'
+      : 'N/A';
+
+    table.row.add([state, ap, opp2011, opp2021]);
+
+    if (typeof opp2021Val === 'number') {
+      valueMap[state] = opp2021Val;
+      if (opp2021Val < minVal) minVal = opp2021Val;
+      if (opp2021Val > maxVal) maxVal = opp2021Val;
+    }
+  }
+
+  table.draw();
+
+  // Merge opp2021 values into geojson so Mapbox can read them
+  geojson.features.forEach(f => {
+    const stateId = f.properties.STATE_ID;
+    if (valueMap[stateId] !== undefined) {
+      f.properties.opp2021 = valueMap[stateId];
+    }
+  });
+
+  if (map.getLayer('state-fills')) {
+    map.setPaintProperty('state-fills', 'fill-color', [
+      "interpolate",
+      ["linear"],
+      ["get", "opp2021"],
+      minVal, "#fff8f8ff",
+      maxVal, "#5a01eaff"
+    ]);
+  } else {
+    console.warn("Layer 'state-fills' does not exist yet");
+  }
+
+  // Push updated geojson into map source
+  if (map.getSource('states')) {
+    map.getSource('states').setData(geojson);
+  }
+}
+
 
 
 
@@ -572,7 +595,7 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
     container.appendChild(row);
   });
 }
-function fillStateDataTable() {
+function fillStateDataTable(map) {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
   const stateDataUrl = '../assets/data/json/AllStates.json'; // clean up
 
@@ -586,8 +609,8 @@ function fillStateDataTable() {
     console.log('Fetched GeoJSON:', geojson);
     console.log('Fetched State JSON:', stateData);
 
-    buildTableDTS(geojson, stateData);
-    //fillStateDataTable(
+    buildTableAndMap(geojson, stateData, map);
+    //fillStateDataTable(stateData);
   })
   .catch(error => {
     console.error('Error loading data:', error);
