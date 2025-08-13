@@ -432,16 +432,30 @@ map.on('load', () => {
 });
 
 function buildTableDTS(geojson, stateData) { 
-  // New Function to build Table using DataTables
   const data = stateData;
   const table = new DataTable('#us-table');
-  for (let state in data){ 
-    console.log(data[state][0]);
 
-    // Calculate the opportunity values for 2011 and 2021
-    const opp2021 = (data[state][1].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
-    const opp2011 = (data[state][0].ENR_AP_GAP_BL * 100).toFixed(1) + '%';
-    const ap = data[state][1].AP_num;
+  for (let state in data) { 
+    // Defensive check — make sure state exists and has 2 year entries
+    if (!data[state] || !Array.isArray(data[state]) || data[state].length < 2) {
+      console.warn(`Skipping ${state} — missing data`);
+      continue;
+    }
+
+    // Pull values with null/undefined guard
+    const ap = data[state][1]?.AP_num ?? 'N/A';
+    const opp2011Val = data[state][0]?.ENR_AP_GAP_BL;
+    const opp2021Val = data[state][1]?.ENR_AP_GAP_BL;
+
+    // Format percentages or mark N/A if missing
+    const opp2011 = typeof opp2011Val === 'number' 
+      ? (opp2011Val * 100).toFixed(1) + '%' 
+      : 'N/A';
+
+    const opp2021 = typeof opp2021Val === 'number' 
+      ? (opp2021Val * 100).toFixed(1) + '%' 
+      : 'N/A';
+
     table.row.add([
       state,
       ap,
@@ -450,6 +464,7 @@ function buildTableDTS(geojson, stateData) {
     ]).draw();
   }
 }
+
 
 
 
@@ -524,6 +539,7 @@ function fillStateDataTable() {
     console.error('Error loading data:', error);
   });
 }
+
 
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
   fetch('/assets/data/geojson/oregon_districts.geojson')
