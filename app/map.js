@@ -514,7 +514,7 @@ function buildTableDTS(geojson, stateData) {
       opp2021
     ]).draw();
   }
-}
+}}
 
 
 
@@ -587,7 +587,7 @@ function fillStateDataTable() {
     console.log('Fetched State JSON:', stateData);
 
     buildTableDTS(geojson, stateData);
-    fillStateDataTable(stateData)
+    //fillStateDataTable(
   })
   .catch(error => {
     console.error('Error loading data:', error);
