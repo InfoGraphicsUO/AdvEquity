@@ -2,8 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.querySelector('.search_query input');
   const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
-  const RaceSelectorHis = document.querySelector('.race-selectHis button');
-  const RaceSelectorBlk = document.querySelector('.race-selectBlk button');
+  const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
 
 
   // get CSS colors:
@@ -18,6 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
   offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
 
   // data
+
+  raceSelectionButton.forEach(btn => {
+  btn.addEventListener('click', function() {
+    // Remove active class from all buttons
+    raceSelectionButton.forEach(b => b.classList.remove('active'));
+
+    // Add active class to clicked button
+    this.classList.add('active');
+
+    // Determine field based on button ID
+    let fieldName;
+    if (this.id === 'race-selectBlk') {
+      fieldName = 'ENR_AP_GAP_BL';
+    } else if (this.id === 'race-selectHis') {
+      fieldName = 'ENR_AP_GAP_HI';
+    }
+
+    // Fill map
+    fillStateDataTable(map, fieldName)
+  });
+});
 
 
   searchButton.addEventListener('click', () => {
@@ -195,7 +215,7 @@ map.on('load', () => {
 });
 
 
-  fillStateDataTable(map)
+  fillStateDataTable(map, 'ENR_AP_GAP_BL') // default field to use for initial map
 
 
   map.addLayer({
@@ -236,8 +256,8 @@ map.on('load', () => {
       }
 
       hoveredPolygonId = e.features[0].id;
-      console.log('Hovered state ID:', hoveredPolygonId);
-      console.log('Hovered state ID:',e.features[0]);
+      // console.log('Hovered state ID:', hoveredPolygonId);
+      // console.log('Hovered state ID:',e.features[0]);
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
       // Here hoveredPolygonId is the state FIPS code (like "41")
@@ -481,52 +501,53 @@ function buildTableDTS(geojson, stateData, geojson) {
   }
 }
 
-function buildTableAndMap(geojson, stateData, map) {
+function buildTableAndMap(geojson, stateData, map, fieldName) {
   const table = new DataTable('#us-table');
-  const valueMap = {}; // STATE_ID -> opp2021Val
+  const valueMap = {}; // STATE_ID -> field value for 2021
 
   let minVal = Infinity;
   let maxVal = -Infinity;
 
-  // Loop through data to fill table and track min/max opp2021 values
+  // Loop through data to fill table and track min/max values
   for (let state in stateData) {
     const ap = stateData[state][1]?.AP_num ?? 'N/A';
-    const opp2011Val = stateData[state][0]?.ENR_AP_GAP_BL;
-    const opp2021Val = stateData[state][1]?.ENR_AP_GAP_BL;
+    const val2011Raw = stateData[state][0]?.[fieldName];
+    const val2021Raw = stateData[state][1]?.[fieldName];
 
-    const opp2011 = typeof opp2011Val === 'number'
-      ? (opp2011Val * 100).toFixed(1) + '%'
+    const val2011 = typeof val2011Raw === 'number'
+      ? (val2011Raw * 100).toFixed(1) + '%'
       : 'N/A';
-    const opp2021 = typeof opp2021Val === 'number'
-      ? (opp2021Val * 100).toFixed(1) + '%'
+    const val2021 = typeof val2021Raw === 'number'
+      ? (val2021Raw * 100).toFixed(1) + '%'
       : 'N/A';
 
-    table.row.add([state, ap, opp2011, opp2021]);
+    table.row.add([state, ap, val2011, val2021]);
 
-    if (typeof opp2021Val === 'number') {
-      valueMap[state] = opp2021Val;
-      if (opp2021Val < minVal) minVal = opp2021Val;
-      if (opp2021Val > maxVal) maxVal = opp2021Val;
+    if (typeof val2021Raw === 'number') {
+      valueMap[state] = val2021Raw;
+      if (val2021Raw < minVal) minVal = val2021Raw;
+      if (val2021Raw > maxVal) maxVal = val2021Raw;
     }
   }
 
   table.draw();
 
-  // Merge opp2021 values into geojson so Mapbox can read them
+  // Merge selected field's 2021 values into geojson for Mapbox
   geojson.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
     if (valueMap[stateId] !== undefined) {
-      f.properties.opp2021 = valueMap[stateId];
+      f.properties[fieldName] = valueMap[stateId];
     }
   });
 
+  // Update layer coloring based on selected field
   if (map.getLayer('state-fills')) {
     map.setPaintProperty('state-fills', 'fill-color', [
       "interpolate",
       ["linear"],
-      ["get", "opp2021"],
-      minVal, "#fff8f8ff",
-      maxVal, "#5a01eaff"
+      ["get", fieldName],
+      minVal, "#fff8f8",
+      maxVal, "#5a01ea"
     ]);
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
@@ -539,7 +560,9 @@ function buildTableAndMap(geojson, stateData, map) {
 }
 
 
+function colorMapByYear(year){
 
+}
 
 
 
@@ -595,7 +618,7 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
     container.appendChild(row);
   });
 }
-function fillStateDataTable(map) {
+function fillStateDataTable(map, field) {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
   const stateDataUrl = '../assets/data/json/AllStates.json'; // clean up
 
@@ -609,7 +632,7 @@ function fillStateDataTable(map) {
     console.log('Fetched GeoJSON:', geojson);
     console.log('Fetched State JSON:', stateData);
 
-    buildTableAndMap(geojson, stateData, map);
+    buildTableAndMap(geojson, stateData, map, field);
     //fillStateDataTable(stateData);
   })
   .catch(error => {

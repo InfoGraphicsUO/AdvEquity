@@ -71,6 +71,19 @@ button:hover {
     background-color:var(--darkgrey);
 }
 
+.race-selectBtn {
+  background-color: var(--green);
+  color: var(--offwhite);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.race-selectBtn.active {
+  background-color: var(--darkgreen); /* active style */
+  font-weight: bold;
+}
+
 #infoContainer{
   background: var(--offwhite);
   padding: 1em;
