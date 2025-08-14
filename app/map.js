@@ -89,7 +89,7 @@ const map = new mapboxgl.Map({
   minZoom : 2, 
   // zoom: 3,
   bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
-  // maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
+  maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
   fitBoundsOptions: {
     padding: 15 // padding to keep the bounds away from the edge of the map
   },
@@ -546,8 +546,8 @@ function buildTableAndMap(geojson, stateData, map, fieldName) {
       "interpolate",
       ["linear"],
       ["get", fieldName],
-      minVal, "#fff8f8",
-      maxVal, "#5a01ea"
+      minVal, "#5a6251",
+      maxVal,"#e5e8e3"
     ]);
   } else {
     console.warn("Layer 'state-fills' does not exist yet");

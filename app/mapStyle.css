@@ -26,7 +26,7 @@ body, html {
 #mapWidgetsQuery {
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 10px;
     z-index: 10;
     background: var(--lightgrey);
     padding: 8px 12px;
@@ -39,7 +39,7 @@ body, html {
 #mapWidgetsRace {
     position: absolute;
     top: 10px;
-    left: 301px;
+    left: 0px;
     z-index: 10;
     background: var(--lightgrey);
     padding: 8px 12px;
@@ -48,6 +48,7 @@ body, html {
     /* display: flex; */
     gap: 6px;
 }
+
 
 .search_query{
     margin-bottom: 4px;
@@ -71,16 +72,29 @@ button:hover {
     background-color:var(--darkgrey);
 }
 
+.race-toggle {
+  display: inline-flex;
+  border: 2px solid var(--green);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
 .race-selectBtn {
-  background-color: var(--green);
-  color: var(--offwhite);
+  background-color: transparent;
+  color: var(--black);
   border: none;
-  padding: 5px 10px;
+  padding: 4px 8px;
   cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.race-selectBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .race-selectBtn.active {
-  background-color: var(--darkgreen); /* active style */
+  background-color: var(--green);
+  color: var(--offwhite);
   font-weight: bold;
 }
 
@@ -92,6 +106,7 @@ button:hover {
 h2{
   flex: 1;
   margin-bottom: 0;
+  font-size: 1.2rem;
 }
 
 
@@ -158,6 +173,25 @@ h2{
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     gap: 6px;
     opacity: 0.8;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.legend-label {
+  font-size: 0.8rem;
+  color: var(--black);
+  margin: 0 6px;
+}
+
+.legend-gradient {
+  flex: 1;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, #5a6251, #e5e8e3);
 }
 
 /* map legend */
