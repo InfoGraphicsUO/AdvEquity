@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.querySelector('.search_query input');
   const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
+  const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
 
 
   // get CSS colors:
@@ -14,6 +15,30 @@ document.addEventListener('DOMContentLoaded', () => {
   yellow = getComputedStyle(root).getPropertyValue('--yellow').trim();
   almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack').trim();
   offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
+
+  // data
+
+  raceSelectionButton.forEach(btn => {
+  btn.addEventListener('click', function() {
+    // Remove active class from all buttons
+    raceSelectionButton.forEach(b => b.classList.remove('active'));
+
+    // Add active class to clicked button
+    this.classList.add('active');
+
+    // Determine field based on button ID
+    let fieldName;
+    if (this.id === 'race-selectBlk') {
+      fieldName = 'ENR_AP_GAP_BL';
+    } else if (this.id === 'race-selectHis') {
+      fieldName = 'ENR_AP_GAP_HI';
+    }
+
+    // Fill map
+    fillStateDataTable(map, fieldName)
+  });
+});
+
 
   searchButton.addEventListener('click', () => {
     const userInput = searchInput.value;
@@ -38,18 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Fetch the GeoJSON and build the table
-  fillStateDataTable()
   
-  /*
-  fetch('https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson')
-    .then(response => response.json())
-    .then(data => {
-      buildOpportunityTable(data);
-    })
-    .catch(error => {
-      console.error('Error loading GeoJSON:', error);
-    });
-    */
+
+  
+
+
+
    // State Overview close button and other interactions
     const closeBtnState = document.getElementById('closeStateOverview');
     const StateOverview = document.getElementById('StateOverviewContainer');
@@ -70,7 +89,7 @@ const map = new mapboxgl.Map({
   minZoom : 2, 
   // zoom: 3,
   bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
-  // maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
+  maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
   fitBoundsOptions: {
     padding: 15 // padding to keep the bounds away from the edge of the map
   },
@@ -152,7 +171,7 @@ map.on('load', () => {
         'line-color': darkGreen,
         'line-width': 1
       }
-  });
+  });/*
 
 
   map.addLayer({
@@ -161,21 +180,43 @@ map.on('load', () => {
     source: 'states',
     layout: {},
     paint: {
-  'fill-color': [
-    'case',
-    ['==', ['get', 'STATE_ID'], '41'],
-    yellow, // Oregon hovers yellow 
-    '#cccccc'  // All others always gray
-  ],
-      'fill-opacity': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        1,
-        0
-      ]
+      "fill-color": [
+      "interpolate",
+      ["linear"],
+      ["to-number", ["get", "STATE_ID"]],
+      1, "#F2F12D",
+      50, "#723122"
+    ],
+
+      // 'fill-color': [
+  //   'case',
+  //   ['==', ['get', 'STATE_ID'], '41'],
+  //   yellow, // Oregon hovers yellow 
+  //   '#cccccc'  // All others always gray
+  // ],
+      // 'fill-opacity': [
+      //   'case',
+      //   ['boolean', ['feature-state', 'hover'], false],
+      //   1,
+      //   0
+      // ]
     },
     //  filter: ['==', 'STATE_ID', "19"]
   });
+*/
+  map.addLayer({
+  id: 'state-fills',
+  type: 'fill',
+  source: 'states',
+  paint: {
+    'fill-color': 'rgba(0, 0, 0, 0)', // transparent
+    'fill-opacity': 1
+  }
+});
+
+
+  fillStateDataTable(map, 'ENR_AP_GAP_BL') // default field to use for initial map
+
 
   map.addLayer({
       id: 'state-borders',
@@ -215,7 +256,8 @@ map.on('load', () => {
       }
 
       hoveredPolygonId = e.features[0].id;
-      console.log('Hovered state ID:', hoveredPolygonId);
+      // console.log('Hovered state ID:', hoveredPolygonId);
+      // console.log('Hovered state ID:',e.features[0]);
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
       // Here hoveredPolygonId is the state FIPS code (like "41")
@@ -323,34 +365,12 @@ map.on('load', () => {
 
 
       map.on('mousemove', 'district-fills', (e) => {
-        // is district fill type supposed to change on click??
-        const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview.json';
-        fetch(DistDataUrl)
-          .then(res => res.json())
-          .then(stateData => {
-            // Extract only the matched district
-            const hoveredDistrict = stateData.Data.find(
-              d => d.LEAID === hoveredDistrictPolygonID
-            );
-
-            if (hoveredDistrict) {
-              console.log('Matched District:', hoveredDistrict);
-
-
-            } else {
-              console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
-            }
-          })
-          .catch(error => {
-            console.error('Error loading data:', error);
-          });
         const feature = e.features[0];
         const id = feature.id;
         const props = feature.properties;
         if (!id) return;
-        console.log(props)
 
-        // SET STYLE
+        // Clear previous hover state
         if (hoveredDistrictPolygonID !== null) {
           map.setFeatureState(
             { source: 'oregon_districts', id: hoveredDistrictPolygonID },
@@ -359,44 +379,64 @@ map.on('load', () => {
         }
 
         hoveredDistrictPolygonID = id;
+
+        // Set new hover state
         map.setFeatureState(
           { source: 'oregon_districts', id: hoveredDistrictPolygonID },
           { hover: true }
         );
+
         console.log('Hovered district ID:', hoveredDistrictPolygonID);
-        // JOIN DATA BY ID
-        // fake data:
-        const isDownward = props.AWATER % 2 === 0;  // make up/down depend on if the awater is even or odd
-        const directionArrow = isDownward ? '🡻' : '🡹';
-        const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
 
-        // FILL POPUP
-        // to do: fill missing values
+        // Fetch external district data
+        const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
+        fetch(DistDataUrl)
+          .then(res => res.json())
+          .then(stateData => {
 
-        districtPopup
-          .setLngLat(e.lngLat)
-          .setHTML(`
-            <div class="popup-content">
-              <strong>${props.NAME}</strong><br>
-              Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
-              Students: xx,xxx<br> 
-              Teachers: xxx<br> 
-              <b>Opportunity Estimates</b><br>
-              <div class="opportunity-row">
-                <div class="arrow ${directionClass}">${directionArrow}</div>
-                <div class="opportunity-text">
-                  2011–12: xx<br>
-                  2021–22: xx
+            // Find the district data matching the hovered polygon ID
+            const hoveredDistrictData = stateData.Data.find(
+              d => {
+                if (!hoveredDistrictPolygonID) return false;
+                return d.LEAID === hoveredDistrictPolygonID;
+              }
+            );
+            if (!hoveredDistrictData) {
+              console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
+              return;
+            }
+
+            const isDownward = props.AWATER % 2 === 0;
+            const directionArrow = isDownward ? '🡻' : '🡹';
+            const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
+
+            districtPopup
+              .setLngLat(e.lngLat)
+              .setHTML(`
+                <div class="popup-content">
+                  <strong>${props.NAME}</strong><br>
+                  Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
+                  Students: ${hoveredDistrictData.num_students}<br> 
+                  Teachers: ${hoveredDistrictData.num_teachers}<br> 
+                  <b>Opportunity Estimates</b><br>
+                  <div class="opportunity-row">
+                    <div class="arrow ${directionClass}">${directionArrow}</div>
+                    <div class="opportunity-text">
+                      2011–12: xx<br>
+                      2021–22: xx
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <!-- ADD OTHER INFO TO THE POPUP HERE -->
-          `)          
-          .addTo(map);
+              `)
+              .addTo(map);
 
-        // Call any other visual update (e.g., graphs)
-        showGraphs();
+            showGraphs(); //only runs when data is available
+          })
+          .catch(error => {
+            console.error('Error loading data:', error);
+          });
       });
+
 
       map.on('mouseleave', 'district-fills', () => {
         // Remove hover highlight
@@ -430,6 +470,101 @@ map.on('load', () => {
           }
   });
 });
+
+function buildTableDTS(geojson, stateData, geojson) { 
+  const data = stateData;
+  const table = new DataTable('#us-table');
+  for (let state in data){ 
+    //console.log(data[state][0]);
+
+
+    // Pull values with null/undefined guard
+    const ap = data[state][1]?.AP_num ?? 'N/A';
+    const opp2011Val = data[state][0]?.ENR_AP_GAP_BL;
+    const opp2021Val = data[state][1]?.ENR_AP_GAP_BL;
+
+    // Format percentages or mark N/A if missing
+    const opp2011 = typeof opp2011Val === 'number' 
+      ? (opp2011Val * 100).toFixed(1) + '%' 
+      : 'N/A';
+
+    const opp2021 = typeof opp2021Val === 'number' 
+      ? (opp2021Val * 100).toFixed(1) + '%' 
+      : 'N/A';
+
+    table.row.add([
+      state,
+      ap,
+      opp2011,
+      opp2021
+    ]).draw();
+  }
+}
+
+function buildTableAndMap(geojson, stateData, map, fieldName) {
+  const table = new DataTable('#us-table');
+  const valueMap = {}; // STATE_ID -> field value for 2021
+
+  let minVal = Infinity;
+  let maxVal = -Infinity;
+
+  // Loop through data to fill table and track min/max values
+  for (let state in stateData) {
+    const ap = stateData[state][1]?.AP_num ?? 'N/A';
+    const val2011Raw = stateData[state][0]?.[fieldName];
+    const val2021Raw = stateData[state][1]?.[fieldName];
+
+    const val2011 = typeof val2011Raw === 'number'
+      ? (val2011Raw * 100).toFixed(1) + '%'
+      : 'N/A';
+    const val2021 = typeof val2021Raw === 'number'
+      ? (val2021Raw * 100).toFixed(1) + '%'
+      : 'N/A';
+
+    table.row.add([state, ap, val2011, val2021]);
+
+    if (typeof val2021Raw === 'number') {
+      valueMap[state] = val2021Raw;
+      if (val2021Raw < minVal) minVal = val2021Raw;
+      if (val2021Raw > maxVal) maxVal = val2021Raw;
+    }
+  }
+
+  table.draw();
+
+  // Merge selected field's 2021 values into geojson for Mapbox
+  geojson.features.forEach(f => {
+    const stateId = f.properties.STATE_ID;
+    if (valueMap[stateId] !== undefined) {
+      f.properties[fieldName] = valueMap[stateId];
+    }
+  });
+
+  // Update layer coloring based on selected field
+  if (map.getLayer('state-fills')) {
+    map.setPaintProperty('state-fills', 'fill-color', [
+      "interpolate",
+      ["linear"],
+      ["get", fieldName],
+      minVal, "#5a6251",
+      maxVal,"#e5e8e3"
+    ]);
+  } else {
+    console.warn("Layer 'state-fills' does not exist yet");
+  }
+
+  // Push updated geojson into map source
+  if (map.getSource('states')) {
+    map.getSource('states').setData(geojson);
+  }
+}
+
+
+function colorMapByYear(year){
+
+}
+
+
 
 function buildOpportunityTable(geojson, stateData) {
   const container = document.getElementById('us-opportunity-table');
@@ -483,9 +618,11 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
     container.appendChild(row);
   });
 }
-function fillStateDataTable() {
+function fillStateDataTable(map, field) {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-  const stateDataUrl = '../assets/data/json/Oregon/OR_overview.json';
+  const stateDataUrl = '../assets/data/json/AllStates.json'; // clean up
+
+
 
   Promise.all([
     fetch(geojsonUrl).then(res => res.json()),
@@ -495,12 +632,14 @@ function fillStateDataTable() {
     console.log('Fetched GeoJSON:', geojson);
     console.log('Fetched State JSON:', stateData);
 
-    buildOpportunityTable(geojson, stateData);
+    buildTableAndMap(geojson, stateData, map, field);
+    //fillStateDataTable(stateData);
   })
   .catch(error => {
     console.error('Error loading data:', error);
   });
 }
+
 
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
   fetch('/assets/data/geojson/oregon_districts.geojson')

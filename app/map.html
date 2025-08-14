@@ -7,6 +7,12 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
+  <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+  <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+
+
     <!-- AdvancEDEquity Fonts (Berina Sans) hosted on Jmerson's Adobe Typekit -->
   <link rel="stylesheet" href="https://use.typekit.net/dkj5qyr.css">
 
@@ -30,7 +36,7 @@
       <div class="map-legend-item"><span style="background: var(--verydarkgrey)"></span>N/A</div>
     </div>
     
-    <div id="mapWidgets">
+    <div id="mapWidgetsQuery">
       <div class="search_query">
         <input type="text" placeholder="Search Query Tool..." />
         <button>Go</button>
@@ -46,6 +52,26 @@
       <h1>Explore Districts</h1>
         <p>Hover over districts for more information.</p>
     </div>
+
+  <div id="mapWidgetsRace">
+    <b>Map of 2021 Opportunity estimates</b><br>
+    Display data for
+    <div class="race-toggle">
+      <button id="race-selectBlk" class="race-selectBtn active" data-field="ENR_AP_GAP_BL">
+        Black Students
+      </button>
+      <button id="race-selectHis" class="race-selectBtn" data-field="ENR_AP_GAP_HI">
+        Hispanic Students
+      </button>
+    </div>
+      <!-- Legend -->
+    <div class="legend">
+      <span class="legend-label">Low</span>
+      <div class="legend-gradient"></div>
+      <span class="legend-label">High</span>
+    </div>
+  </div>
+
   
 </div> <!-- ! map -->
 
@@ -54,11 +80,35 @@
     <p><b>Info about the US. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus, facilisis viverra est elementum a.</p>
     
     <!-- TABLE -->
-     <h3>School districts where White students are more likely to be in an Advanced Placement class, compared with Black (Hispanic) students in 2011-12 and 2021-22</h3>
+     <h2>School districts where White students are more likely to be in an Advanced Placement class, compared with Black (Hispanic) students, <small>by state in 2011-12 and 2021-22</small></h2>
 
-    <div id="us-opportunity-table"></div>
+    <!--div id="us-opportunity-table"></div-->
+
+   <table id="us-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>State</th>
+                <th>Model Ap Classes</th>
+                <th>Opp Est 2011</th>
+                <th>Opp Est 2021</th>
+            </tr>
+        </thead>
+        <tbody id = "us-table-body">
+        <!--Dynamic rows here-->
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>State</th>
+                <th>Model Ap Classes</th>
+                <th>Opp Est 2011</th>
+                <th>Opp Est 2021</th>
+            </tr>
+        </tfoot>
+    </table>
 
   </div>
+
   <div id="graphContainer"></div>
 
   <script src="map.js"></script>

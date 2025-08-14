@@ -2,7 +2,7 @@
     "Data": [
         {
             "state": "OR",
-            "LEAID": 4100003,
+            "LEAID": "4100003",
             "dist": "FALLS CITY SD 57",
             "schools": [],
             "district_comp": {
@@ -19,7 +19,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100009,
+            "LEAID": "4100009",
             "dist": "OREGON DEPARTMENT OF EDUCATION",
             "schools": [],
             "district_comp": {
@@ -36,7 +36,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100014,
+            "LEAID": "4100014",
             "dist": "VALE SD 84",
             "schools": [],
             "district_comp": {
@@ -53,7 +53,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100015,
+            "LEAID": "4100015",
             "dist": "GERVAIS SD 1",
             "schools": [],
             "district_comp": {
@@ -70,7 +70,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100016,
+            "LEAID": "4100016",
             "dist": "YAMHILL CARLTON SD 1",
             "schools": [],
             "district_comp": {
@@ -87,7 +87,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100019,
+            "LEAID": "4100019",
             "dist": "HARRISBURG SD 7J",
             "schools": [],
             "district_comp": {
@@ -104,7 +104,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100020,
+            "LEAID": "4100020",
             "dist": "NORTH SANTIAM SD 29J",
             "schools": [],
             "district_comp": {
@@ -121,7 +121,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100021,
+            "LEAID": "4100021",
             "dist": "SOUTH WASCO COUNTY SD 1",
             "schools": [],
             "district_comp": {
@@ -138,7 +138,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100023,
+            "LEAID": "4100023",
             "dist": "HILLSBORO SD 1J",
             "schools": [],
             "district_comp": {
@@ -155,7 +155,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100033,
+            "LEAID": "4100033",
             "dist": "LINN BENTON LINCOLN ESD",
             "schools": [],
             "district_comp": {
@@ -172,7 +172,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100036,
+            "LEAID": "4100036",
             "dist": "INTERMOUNTAIN ESD",
             "schools": [],
             "district_comp": {
@@ -189,7 +189,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100040,
+            "LEAID": "4100040",
             "dist": "KNAPPA SD 4",
             "schools": [],
             "district_comp": {
@@ -206,7 +206,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100043,
+            "LEAID": "4100043",
             "dist": "ODE YCEP DISTRICT",
             "schools": [],
             "district_comp": {
@@ -223,7 +223,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100047,
+            "LEAID": "4100047",
             "dist": "IONE SD R2",
             "schools": [],
             "district_comp": {
@@ -240,7 +240,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100048,
+            "LEAID": "4100048",
             "dist": "NORTH WASCO COUNTY SD 21",
             "schools": [],
             "district_comp": {
@@ -257,7 +257,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4100640,
+            "LEAID": "4100640",
             "dist": "MYRTLE POINT SD 41",
             "schools": [],
             "district_comp": {
@@ -274,7 +274,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101020,
+            "LEAID": "4101020",
             "dist": "ADRIAN SD 61",
             "schools": [],
             "district_comp": {
@@ -291,7 +291,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101120,
+            "LEAID": "4101120",
             "dist": "GREATER ALBANY PUBLIC SD 8J",
             "schools": [],
             "district_comp": {
@@ -308,7 +308,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101200,
+            "LEAID": "4101200",
             "dist": "ALSEA SD 7J",
             "schools": [],
             "district_comp": {
@@ -325,7 +325,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101230,
+            "LEAID": "4101230",
             "dist": "AMITY SD 4J",
             "schools": [],
             "district_comp": {
@@ -342,7 +342,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101470,
+            "LEAID": "4101470",
             "dist": "ARLINGTON SD 3",
             "schools": [],
             "district_comp": {
@@ -359,7 +359,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101560,
+            "LEAID": "4101560",
             "dist": "ASHLAND SD 5",
             "schools": [],
             "district_comp": {
@@ -376,7 +376,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101620,
+            "LEAID": "4101620",
             "dist": "ASTORIA SD 1",
             "schools": [],
             "district_comp": {
@@ -393,7 +393,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101660,
+            "LEAID": "4101660",
             "dist": "ATHENA-WESTON SD 29RJ",
             "schools": [],
             "district_comp": {
@@ -410,7 +410,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101710,
+            "LEAID": "4101710",
             "dist": "BAKER SD 5J",
             "schools": [],
             "district_comp": {
@@ -427,7 +427,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101740,
+            "LEAID": "4101740",
             "dist": "BURNT RIVER SD 30J",
             "schools": [],
             "district_comp": {
@@ -444,7 +444,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101800,
+            "LEAID": "4101800",
             "dist": "BANDON SD 54",
             "schools": [],
             "district_comp": {
@@ -461,7 +461,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101830,
+            "LEAID": "4101830",
             "dist": "BANKS SD 13",
             "schools": [],
             "district_comp": {
@@ -478,7 +478,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101920,
+            "LEAID": "4101920",
             "dist": "BEAVERTON SD 48J",
             "schools": [],
             "district_comp": {
@@ -495,7 +495,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4101980,
+            "LEAID": "4101980",
             "dist": "BEND-LAPINE ADMINISTRATIVE SD 1",
             "schools": [],
             "district_comp": {
@@ -512,7 +512,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102040,
+            "LEAID": "4102040",
             "dist": "BETHEL SD 52",
             "schools": [],
             "district_comp": {
@@ -529,7 +529,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102160,
+            "LEAID": "4102160",
             "dist": "BLACHLY SD 90",
             "schools": [],
             "district_comp": {
@@ -546,7 +546,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102310,
+            "LEAID": "4102310",
             "dist": "BROOKINGS-HARBOR SD 17C",
             "schools": [],
             "district_comp": {
@@ -563,7 +563,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102490,
+            "LEAID": "4102490",
             "dist": "HARNEY COUNTY SD 3",
             "schools": [],
             "district_comp": {
@@ -580,7 +580,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102580,
+            "LEAID": "4102580",
             "dist": "BUTTE FALLS SD 91",
             "schools": [],
             "district_comp": {
@@ -597,7 +597,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102610,
+            "LEAID": "4102610",
             "dist": "CAMAS VALLEY SD 21J",
             "schools": [],
             "district_comp": {
@@ -614,7 +614,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102640,
+            "LEAID": "4102640",
             "dist": "CANBY SD 86",
             "schools": [],
             "district_comp": {
@@ -631,7 +631,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102780,
+            "LEAID": "4102780",
             "dist": "CASCADE SD 5",
             "schools": [],
             "district_comp": {
@@ -648,7 +648,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102800,
+            "LEAID": "4102800",
             "dist": "CENTENNIAL SCHOOL DISTRICT 28J",
             "schools": [],
             "district_comp": {
@@ -665,7 +665,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102840,
+            "LEAID": "4102840",
             "dist": "CENTRAL SD 13J",
             "schools": [],
             "district_comp": {
@@ -682,7 +682,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102910,
+            "LEAID": "4102910",
             "dist": "CENTRAL LINN SD 552",
             "schools": [],
             "district_comp": {
@@ -699,7 +699,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4102940,
+            "LEAID": "4102940",
             "dist": "CENTRAL POINT SD 6",
             "schools": [],
             "district_comp": {
@@ -716,7 +716,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103260,
+            "LEAID": "4103260",
             "dist": "CLATSKANIE SD 6J",
             "schools": [],
             "district_comp": {
@@ -733,7 +733,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103265,
+            "LEAID": "4103265",
             "dist": "RAINIER SD 13",
             "schools": [],
             "district_comp": {
@@ -750,7 +750,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103270,
+            "LEAID": "4103270",
             "dist": "COLTON SD 53",
             "schools": [],
             "district_comp": {
@@ -767,7 +767,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103330,
+            "LEAID": "4103330",
             "dist": "CONDON SD 25J",
             "schools": [],
             "district_comp": {
@@ -784,7 +784,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103390,
+            "LEAID": "4103390",
             "dist": "COQUILLE SD 8",
             "schools": [],
             "district_comp": {
@@ -801,7 +801,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103420,
+            "LEAID": "4103420",
             "dist": "CORBETT SD 39",
             "schools": [],
             "district_comp": {
@@ -818,7 +818,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103480,
+            "LEAID": "4103480",
             "dist": "CORVALLIS SD 509J",
             "schools": [],
             "district_comp": {
@@ -835,7 +835,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103540,
+            "LEAID": "4103540",
             "dist": "COVE SD 15",
             "schools": [],
             "district_comp": {
@@ -852,7 +852,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103600,
+            "LEAID": "4103600",
             "dist": "HARNEY COUNTY SD 4",
             "schools": [],
             "district_comp": {
@@ -869,7 +869,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103630,
+            "LEAID": "4103630",
             "dist": "HARNEY COUNTY UNION HIGH SD 1J",
             "schools": [],
             "district_comp": {
@@ -886,7 +886,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103660,
+            "LEAID": "4103660",
             "dist": "COOS BAY SD 9",
             "schools": [],
             "district_comp": {
@@ -903,7 +903,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103690,
+            "LEAID": "4103690",
             "dist": "CRESWELL SD 40",
             "schools": [],
             "district_comp": {
@@ -920,7 +920,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103720,
+            "LEAID": "4103720",
             "dist": "CROOK COUNTY SD",
             "schools": [],
             "district_comp": {
@@ -937,7 +937,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103780,
+            "LEAID": "4103780",
             "dist": "CROW-APPLEGATE-LORANE SD 66",
             "schools": [],
             "district_comp": {
@@ -954,7 +954,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103840,
+            "LEAID": "4103840",
             "dist": "CULVER SD 4",
             "schools": [],
             "district_comp": {
@@ -971,7 +971,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103860,
+            "LEAID": "4103860",
             "dist": "DALLAS SD 2",
             "schools": [],
             "district_comp": {
@@ -988,7 +988,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103940,
+            "LEAID": "4103940",
             "dist": "DAVID DOUGLAS SD 40",
             "schools": [],
             "district_comp": {
@@ -1005,7 +1005,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103960,
+            "LEAID": "4103960",
             "dist": "DOUGLAS COUNTY SD 15",
             "schools": [],
             "district_comp": {
@@ -1022,7 +1022,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4103990,
+            "LEAID": "4103990",
             "dist": "DAYTON SD 8",
             "schools": [],
             "district_comp": {
@@ -1039,7 +1039,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104020,
+            "LEAID": "4104020",
             "dist": "DAYVILLE SD 16J",
             "schools": [],
             "district_comp": {
@@ -1056,7 +1056,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104350,
+            "LEAID": "4104350",
             "dist": "NORTH DOUGLAS SD 22",
             "schools": [],
             "district_comp": {
@@ -1073,7 +1073,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104410,
+            "LEAID": "4104410",
             "dist": "DUFUR SD 29",
             "schools": [],
             "district_comp": {
@@ -1090,7 +1090,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104500,
+            "LEAID": "4104500",
             "dist": "EAGLE POINT SD 9",
             "schools": [],
             "district_comp": {
@@ -1107,7 +1107,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104530,
+            "LEAID": "4104530",
             "dist": "ECHO SD 5",
             "schools": [],
             "district_comp": {
@@ -1124,7 +1124,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104590,
+            "LEAID": "4104590",
             "dist": "ELGIN SD 23",
             "schools": [],
             "district_comp": {
@@ -1141,7 +1141,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104620,
+            "LEAID": "4104620",
             "dist": "ELKTON SD 34",
             "schools": [],
             "district_comp": {
@@ -1158,7 +1158,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104700,
+            "LEAID": "4104700",
             "dist": "ESTACADA SD 108",
             "schools": [],
             "district_comp": {
@@ -1175,7 +1175,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104740,
+            "LEAID": "4104740",
             "dist": "EUGENE SD 4J",
             "schools": [],
             "district_comp": {
@@ -1192,7 +1192,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4104950,
+            "LEAID": "4104950",
             "dist": "FERN RIDGE SD 28J",
             "schools": [],
             "district_comp": {
@@ -1209,7 +1209,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105080,
+            "LEAID": "4105080",
             "dist": "ENTERPRISE SD 21",
             "schools": [],
             "district_comp": {
@@ -1226,7 +1226,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105100,
+            "LEAID": "4105100",
             "dist": "SIUSLAW SD 97J",
             "schools": [],
             "district_comp": {
@@ -1243,7 +1243,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105160,
+            "LEAID": "4105160",
             "dist": "FOREST GROVE SD 15",
             "schools": [],
             "district_comp": {
@@ -1260,7 +1260,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105250,
+            "LEAID": "4105250",
             "dist": "FOSSIL SD 21J",
             "schools": [],
             "district_comp": {
@@ -1277,7 +1277,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105310,
+            "LEAID": "4105310",
             "dist": "FRENCHGLEN SD 16",
             "schools": [],
             "district_comp": {
@@ -1294,7 +1294,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105430,
+            "LEAID": "4105430",
             "dist": "GASTON SD 511J",
             "schools": [],
             "district_comp": {
@@ -1311,7 +1311,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105610,
+            "LEAID": "4105610",
             "dist": "GLADSTONE SD 115",
             "schools": [],
             "district_comp": {
@@ -1328,7 +1328,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105640,
+            "LEAID": "4105640",
             "dist": "GLENDALE SD 77",
             "schools": [],
             "district_comp": {
@@ -1345,7 +1345,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105670,
+            "LEAID": "4105670",
             "dist": "GLIDE SD 12",
             "schools": [],
             "district_comp": {
@@ -1362,7 +1362,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105760,
+            "LEAID": "4105760",
             "dist": "CENTRAL CURRY SD 1",
             "schools": [],
             "district_comp": {
@@ -1379,7 +1379,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4105910,
+            "LEAID": "4105910",
             "dist": "GRANTS PASS SCHOOL DISTRICT 7",
             "schools": [],
             "district_comp": {
@@ -1396,7 +1396,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106000,
+            "LEAID": "4106000",
             "dist": "GRESHAM-BARLOW SD 10J",
             "schools": [],
             "district_comp": {
@@ -1413,7 +1413,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106120,
+            "LEAID": "4106120",
             "dist": "HARPER SD 66",
             "schools": [],
             "district_comp": {
@@ -1430,7 +1430,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106270,
+            "LEAID": "4106270",
             "dist": "HELIX SD 1",
             "schools": [],
             "district_comp": {
@@ -1447,7 +1447,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106300,
+            "LEAID": "4106300",
             "dist": "HERMISTON SD 8",
             "schools": [],
             "district_comp": {
@@ -1464,7 +1464,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106510,
+            "LEAID": "4106510",
             "dist": "HOOD RIVER COUNTY SD",
             "schools": [],
             "district_comp": {
@@ -1481,7 +1481,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106600,
+            "LEAID": "4106600",
             "dist": "HUNTINGTON SD 16J",
             "schools": [],
             "district_comp": {
@@ -1498,7 +1498,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106630,
+            "LEAID": "4106630",
             "dist": "IMBLER SD 11",
             "schools": [],
             "district_comp": {
@@ -1515,7 +1515,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106710,
+            "LEAID": "4106710",
             "dist": "JEFFERSON SD 14J",
             "schools": [],
             "district_comp": {
@@ -1532,7 +1532,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106740,
+            "LEAID": "4106740",
             "dist": "JEFFERSON COUNTY SD 509J",
             "schools": [],
             "district_comp": {
@@ -1549,7 +1549,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106750,
+            "LEAID": "4106750",
             "dist": "JEWELL SD 8",
             "schools": [],
             "district_comp": {
@@ -1566,7 +1566,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106780,
+            "LEAID": "4106780",
             "dist": "JOHN DAY SD 3",
             "schools": [],
             "district_comp": {
@@ -1583,7 +1583,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106820,
+            "LEAID": "4106820",
             "dist": "JORDAN VALLEY SD 3",
             "schools": [],
             "district_comp": {
@@ -1600,7 +1600,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106870,
+            "LEAID": "4106870",
             "dist": "JOSEPH SD 6",
             "schools": [],
             "district_comp": {
@@ -1617,7 +1617,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106900,
+            "LEAID": "4106900",
             "dist": "THREE RIVERS/JOSEPHINE COUNTY SD",
             "schools": [],
             "district_comp": {
@@ -1634,7 +1634,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4106930,
+            "LEAID": "4106930",
             "dist": "JUNCTION CITY SD 69",
             "schools": [],
             "district_comp": {
@@ -1651,7 +1651,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107020,
+            "LEAID": "4107020",
             "dist": "KLAMATH COUNTY SD",
             "schools": [],
             "district_comp": {
@@ -1668,7 +1668,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107080,
+            "LEAID": "4107080",
             "dist": "KLAMATH FALLS CITY SCHOOLS",
             "schools": [],
             "district_comp": {
@@ -1685,7 +1685,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107200,
+            "LEAID": "4107200",
             "dist": "LA GRANDE SD 1",
             "schools": [],
             "district_comp": {
@@ -1702,7 +1702,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107230,
+            "LEAID": "4107230",
             "dist": "LAKE OSWEGO SD 7J",
             "schools": [],
             "district_comp": {
@@ -1719,7 +1719,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107280,
+            "LEAID": "4107280",
             "dist": "LAKE COUNTY SD 7",
             "schools": [],
             "district_comp": {
@@ -1736,7 +1736,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107380,
+            "LEAID": "4107380",
             "dist": "LEBANON COMMUNITY SD 9",
             "schools": [],
             "district_comp": {
@@ -1753,7 +1753,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107500,
+            "LEAID": "4107500",
             "dist": "LINCOLN COUNTY SD",
             "schools": [],
             "district_comp": {
@@ -1770,7 +1770,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107530,
+            "LEAID": "4107530",
             "dist": "LONG CREEK SD 17",
             "schools": [],
             "district_comp": {
@@ -1787,7 +1787,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107590,
+            "LEAID": "4107590",
             "dist": "LOWELL SD 71",
             "schools": [],
             "district_comp": {
@@ -1804,7 +1804,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107710,
+            "LEAID": "4107710",
             "dist": "MAPLETON SD 32",
             "schools": [],
             "district_comp": {
@@ -1821,7 +1821,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107740,
+            "LEAID": "4107740",
             "dist": "MARCOLA SD 79J",
             "schools": [],
             "district_comp": {
@@ -1838,7 +1838,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4107980,
+            "LEAID": "4107980",
             "dist": "MCKENZIE SD 68",
             "schools": [],
             "district_comp": {
@@ -1855,7 +1855,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108010,
+            "LEAID": "4108010",
             "dist": "MCMINNVILLE SD 40",
             "schools": [],
             "district_comp": {
@@ -1872,7 +1872,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108040,
+            "LEAID": "4108040",
             "dist": "MEDFORD SD 549C",
             "schools": [],
             "district_comp": {
@@ -1889,7 +1889,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108100,
+            "LEAID": "4108100",
             "dist": "SANTIAM CANYON SD 129J",
             "schools": [],
             "district_comp": {
@@ -1906,7 +1906,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108160,
+            "LEAID": "4108160",
             "dist": "MILTON-FREEWATER UNIFIED SD 7",
             "schools": [],
             "district_comp": {
@@ -1923,7 +1923,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108280,
+            "LEAID": "4108280",
             "dist": "MITCHELL SD 55",
             "schools": [],
             "district_comp": {
@@ -1940,7 +1940,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108310,
+            "LEAID": "4108310",
             "dist": "MOLALLA RIVER SD 35",
             "schools": [],
             "district_comp": {
@@ -1957,7 +1957,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108430,
+            "LEAID": "4108430",
             "dist": "MONROE SD 1J",
             "schools": [],
             "district_comp": {
@@ -1974,7 +1974,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108460,
+            "LEAID": "4108460",
             "dist": "MONUMENT SD 8",
             "schools": [],
             "district_comp": {
@@ -1991,7 +1991,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108520,
+            "LEAID": "4108520",
             "dist": "MORROW SD 1",
             "schools": [],
             "district_comp": {
@@ -2008,7 +2008,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108550,
+            "LEAID": "4108550",
             "dist": "MT ANGEL SD 91",
             "schools": [],
             "district_comp": {
@@ -2025,7 +2025,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108650,
+            "LEAID": "4108650",
             "dist": "NEAH-KAH-NIE SD 56",
             "schools": [],
             "district_comp": {
@@ -2042,7 +2042,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108700,
+            "LEAID": "4108700",
             "dist": "NESTUCCA VALLEY SD 101J",
             "schools": [],
             "district_comp": {
@@ -2059,7 +2059,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108720,
+            "LEAID": "4108720",
             "dist": "NEWBERG SD 29J",
             "schools": [],
             "district_comp": {
@@ -2076,7 +2076,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108820,
+            "LEAID": "4108820",
             "dist": "NORTH BEND SD 13",
             "schools": [],
             "district_comp": {
@@ -2093,7 +2093,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108830,
+            "LEAID": "4108830",
             "dist": "NORTH CLACKAMAS SD 12",
             "schools": [],
             "district_comp": {
@@ -2110,7 +2110,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108880,
+            "LEAID": "4108880",
             "dist": "NORTH MARION SD 15",
             "schools": [],
             "district_comp": {
@@ -2127,7 +2127,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4108940,
+            "LEAID": "4108940",
             "dist": "NORTH POWDER SD 8J",
             "schools": [],
             "district_comp": {
@@ -2144,7 +2144,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109000,
+            "LEAID": "4109000",
             "dist": "NYSSA SD 26",
             "schools": [],
             "district_comp": {
@@ -2161,7 +2161,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109120,
+            "LEAID": "4109120",
             "dist": "OAKLAND SD 1",
             "schools": [],
             "district_comp": {
@@ -2178,7 +2178,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109150,
+            "LEAID": "4109150",
             "dist": "OAKRIDGE SD 76",
             "schools": [],
             "district_comp": {
@@ -2195,7 +2195,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109270,
+            "LEAID": "4109270",
             "dist": "ONTARIO SD 8C",
             "schools": [],
             "district_comp": {
@@ -2212,7 +2212,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109330,
+            "LEAID": "4109330",
             "dist": "OREGON CITY SD 62",
             "schools": [],
             "district_comp": {
@@ -2229,7 +2229,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109430,
+            "LEAID": "4109430",
             "dist": "PAISLEY SD 11",
             "schools": [],
             "district_comp": {
@@ -2246,7 +2246,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109480,
+            "LEAID": "4109480",
             "dist": "PARKROSE SD 3",
             "schools": [],
             "district_comp": {
@@ -2263,7 +2263,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109510,
+            "LEAID": "4109510",
             "dist": "PENDLETON SD 16",
             "schools": [],
             "district_comp": {
@@ -2280,7 +2280,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109530,
+            "LEAID": "4109530",
             "dist": "PERRYDALE SD 21",
             "schools": [],
             "district_comp": {
@@ -2297,7 +2297,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109600,
+            "LEAID": "4109600",
             "dist": "PHILOMATH SD 17J",
             "schools": [],
             "district_comp": {
@@ -2314,7 +2314,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109630,
+            "LEAID": "4109630",
             "dist": "PHOENIX-TALENT SD 4",
             "schools": [],
             "district_comp": {
@@ -2331,7 +2331,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109660,
+            "LEAID": "4109660",
             "dist": "PILOT ROCK SD 2",
             "schools": [],
             "district_comp": {
@@ -2348,7 +2348,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109720,
+            "LEAID": "4109720",
             "dist": "PINE EAGLE SD 61",
             "schools": [],
             "district_comp": {
@@ -2365,7 +2365,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4109870,
+            "LEAID": "4109870",
             "dist": "PLEASANT HILL SD 1",
             "schools": [],
             "district_comp": {
@@ -2382,7 +2382,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110020,
+            "LEAID": "4110020",
             "dist": "PORT ORFORD-LANGLOIS SD 2CJ",
             "schools": [],
             "district_comp": {
@@ -2399,7 +2399,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110040,
+            "LEAID": "4110040",
             "dist": "PORTLAND SD 1J",
             "schools": [],
             "district_comp": {
@@ -2416,7 +2416,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110080,
+            "LEAID": "4110080",
             "dist": "POWERS SD 31",
             "schools": [],
             "district_comp": {
@@ -2433,7 +2433,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110110,
+            "LEAID": "4110110",
             "dist": "PRAIRIE CITY SD 4",
             "schools": [],
             "district_comp": {
@@ -2450,7 +2450,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110200,
+            "LEAID": "4110200",
             "dist": "PROSPECT SD 59",
             "schools": [],
             "district_comp": {
@@ -2467,7 +2467,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110350,
+            "LEAID": "4110350",
             "dist": "REDMOND SD 2J",
             "schools": [],
             "district_comp": {
@@ -2484,7 +2484,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110410,
+            "LEAID": "4110410",
             "dist": "REEDSPORT SD 105",
             "schools": [],
             "district_comp": {
@@ -2501,7 +2501,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110520,
+            "LEAID": "4110520",
             "dist": "REYNOLDS SD 7",
             "schools": [],
             "district_comp": {
@@ -2518,7 +2518,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110530,
+            "LEAID": "4110530",
             "dist": "RIDDLE SD 70",
             "schools": [],
             "district_comp": {
@@ -2535,7 +2535,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110560,
+            "LEAID": "4110560",
             "dist": "RIVERDALE SD 51J",
             "schools": [],
             "district_comp": {
@@ -2552,7 +2552,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110680,
+            "LEAID": "4110680",
             "dist": "ROGUE RIVER SD 35",
             "schools": [],
             "district_comp": {
@@ -2569,7 +2569,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110710,
+            "LEAID": "4110710",
             "dist": "DOUGLAS COUNTY SD 4",
             "schools": [],
             "district_comp": {
@@ -2586,7 +2586,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110820,
+            "LEAID": "4110820",
             "dist": "SALEM-KEIZER SD 24J",
             "schools": [],
             "district_comp": {
@@ -2603,7 +2603,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110890,
+            "LEAID": "4110890",
             "dist": "OREGON TRAIL SD 46",
             "schools": [],
             "district_comp": {
@@ -2620,7 +2620,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4110980,
+            "LEAID": "4110980",
             "dist": "SCAPPOOSE SD 1J",
             "schools": [],
             "district_comp": {
@@ -2637,7 +2637,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111040,
+            "LEAID": "4111040",
             "dist": "SCIO SD 95",
             "schools": [],
             "district_comp": {
@@ -2654,7 +2654,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111100,
+            "LEAID": "4111100",
             "dist": "SEASIDE SD 10",
             "schools": [],
             "district_comp": {
@@ -2671,7 +2671,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111220,
+            "LEAID": "4111220",
             "dist": "SHERIDAN SD 48J",
             "schools": [],
             "district_comp": {
@@ -2688,7 +2688,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111250,
+            "LEAID": "4111250",
             "dist": "SHERMAN COUNTY SD",
             "schools": [],
             "district_comp": {
@@ -2705,7 +2705,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111290,
+            "LEAID": "4111290",
             "dist": "SHERWOOD SD 88J",
             "schools": [],
             "district_comp": {
@@ -2722,7 +2722,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111400,
+            "LEAID": "4111400",
             "dist": "NORTH LAKE SD 14",
             "schools": [],
             "district_comp": {
@@ -2739,7 +2739,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111450,
+            "LEAID": "4111450",
             "dist": "SILVER FALLS SD 4J",
             "schools": [],
             "district_comp": {
@@ -2756,7 +2756,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111490,
+            "LEAID": "4111490",
             "dist": "SISTERS SD 6",
             "schools": [],
             "district_comp": {
@@ -2773,7 +2773,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111580,
+            "LEAID": "4111580",
             "dist": "SOUTH LANE SD 45J3",
             "schools": [],
             "district_comp": {
@@ -2790,7 +2790,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111610,
+            "LEAID": "4111610",
             "dist": "SOUTH UMPQUA SD 19",
             "schools": [],
             "district_comp": {
@@ -2807,7 +2807,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111640,
+            "LEAID": "4111640",
             "dist": "SPRAY SD 1",
             "schools": [],
             "district_comp": {
@@ -2824,7 +2824,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111670,
+            "LEAID": "4111670",
             "dist": "SPRINGFIELD SD 19",
             "schools": [],
             "district_comp": {
@@ -2841,7 +2841,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111720,
+            "LEAID": "4111720",
             "dist": "ST HELENS SD 502",
             "schools": [],
             "district_comp": {
@@ -2858,7 +2858,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111760,
+            "LEAID": "4111760",
             "dist": "ST PAUL SD 45",
             "schools": [],
             "district_comp": {
@@ -2875,7 +2875,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111790,
+            "LEAID": "4111790",
             "dist": "STANFIELD SD 61",
             "schools": [],
             "district_comp": {
@@ -2892,7 +2892,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111940,
+            "LEAID": "4111940",
             "dist": "SUTHERLIN SD 130",
             "schools": [],
             "district_comp": {
@@ -2909,7 +2909,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4111970,
+            "LEAID": "4111970",
             "dist": "SWEET HOME SD 55",
             "schools": [],
             "district_comp": {
@@ -2926,7 +2926,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112240,
+            "LEAID": "4112240",
             "dist": "TIGARD-TUALATIN SD 23J",
             "schools": [],
             "district_comp": {
@@ -2943,7 +2943,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112320,
+            "LEAID": "4112320",
             "dist": "TILLAMOOK SD 9",
             "schools": [],
             "district_comp": {
@@ -2960,7 +2960,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112540,
+            "LEAID": "4112540",
             "dist": "UKIAH SD 80R",
             "schools": [],
             "district_comp": {
@@ -2977,7 +2977,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112600,
+            "LEAID": "4112600",
             "dist": "UMATILLA SD 6R",
             "schools": [],
             "district_comp": {
@@ -2994,7 +2994,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112690,
+            "LEAID": "4112690",
             "dist": "UNION SD 5",
             "schools": [],
             "district_comp": {
@@ -3011,7 +3011,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112930,
+            "LEAID": "4112930",
             "dist": "VERNONIA SD 47J",
             "schools": [],
             "district_comp": {
@@ -3028,7 +3028,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4112990,
+            "LEAID": "4112990",
             "dist": "WALLOWA SD 12",
             "schools": [],
             "district_comp": {
@@ -3045,7 +3045,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4113080,
+            "LEAID": "4113080",
             "dist": "WARRENTON-HAMMOND SD 30",
             "schools": [],
             "district_comp": {
@@ -3062,7 +3062,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4113170,
+            "LEAID": "4113170",
             "dist": "WEST LINN-WILSONVILLE SD 3J",
             "schools": [],
             "district_comp": {
@@ -3079,7 +3079,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4113350,
+            "LEAID": "4113350",
             "dist": "WILLAMINA SD 30J",
             "schools": [],
             "district_comp": {
@@ -3096,7 +3096,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4113490,
+            "LEAID": "4113490",
             "dist": "WINSTON-DILLARD SD 116",
             "schools": [],
             "district_comp": {
@@ -3113,7 +3113,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4113530,
+            "LEAID": "4113530",
             "dist": "WOODBURN SD 103",
             "schools": [],
             "district_comp": {
@@ -3130,7 +3130,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4113650,
+            "LEAID": "4113650",
             "dist": "YONCALLA SD 32",
             "schools": [],
             "district_comp": {
@@ -3147,7 +3147,7 @@
         },
         {
             "state": "OR",
-            "LEAID": 4180180,
+            "LEAID": "4180180",
             "dist": "MULTNOMAH ESD",
             "schools": [],
             "district_comp": {
