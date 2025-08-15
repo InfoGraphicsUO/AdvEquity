@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fill map
-    fillStateDataTable(map, fieldName)
+    fillMap(map, geojsonCache, stateDataCache, fieldName);
   });
 });
 
@@ -215,7 +215,14 @@ map.on('load', () => {
 });
 
 
-  fillStateDataTable(map, 'ENR_AP_GAP_BL') // default field to use for initial map
+
+getData().then(({ geojson, stateData }) => {
+  geojsonCache = geojson;
+  stateDataCache = stateData;
+
+  buildTable(stateDataCache, 'ENR_AP_GAP_BL'); // build table with default field
+  fillMap(map, geojsonCache, stateDataCache, 'ENR_AP_GAP_BL'); // default map coloring
+});
 
 
   map.addLayer({
@@ -471,44 +478,29 @@ map.on('load', () => {
   });
 });
 
-function buildTableDTS(geojson, stateData, geojson) { 
-  const data = stateData;
-  const table = new DataTable('#us-table');
-  for (let state in data){ 
-    //console.log(data[state][0]);
+// Fetch data
+function getData() {
+  const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
+  const stateDataUrl = '../assets/data/json/AllStates.json';
 
-
-    // Pull values with null/undefined guard
-    const ap = data[state][1]?.AP_num ?? 'N/A';
-    const opp2011Val = data[state][0]?.ENR_AP_GAP_BL;
-    const opp2021Val = data[state][1]?.ENR_AP_GAP_BL;
-
-    // Format percentages or mark N/A if missing
-    const opp2011 = typeof opp2011Val === 'number' 
-      ? (opp2011Val * 100).toFixed(1) + '%' 
-      : 'N/A';
-
-    const opp2021 = typeof opp2021Val === 'number' 
-      ? (opp2021Val * 100).toFixed(1) + '%' 
-      : 'N/A';
-
-    table.row.add([
-      state,
-      ap,
-      opp2011,
-      opp2021
-    ]).draw();
-  }
+  return Promise.all([
+    fetch(geojsonUrl).then(res => res.json()),
+    fetch(stateDataUrl).then(res => res.json())
+  ])
+  .then(([geojson, stateData]) => {
+    console.log('Fetched GeoJSON:', geojson);
+    console.log('Fetched State JSON:', stateData);
+    return { geojson, stateData };
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
 }
 
-function buildTableAndMap(geojson, stateData, map, fieldName) {
+// Build table
+function buildTable(stateData, fieldName) {
   const table = new DataTable('#us-table');
-  const valueMap = {}; // STATE_ID -> field value for 2021
 
-  let minVal = Infinity;
-  let maxVal = -Infinity;
-
-  // Loop through data to fill table and track min/max values
   for (let state in stateData) {
     const ap = stateData[state][1]?.AP_num ?? 'N/A';
     const val2011Raw = stateData[state][0]?.[fieldName];
@@ -522,7 +514,19 @@ function buildTableAndMap(geojson, stateData, map, fieldName) {
       : 'N/A';
 
     table.row.add([state, ap, val2011, val2021]);
+  }
 
+  table.draw();
+}
+
+function fillMap(map, geojson, stateData, fieldName) {
+  const valueMap = {};
+  let minVal = Infinity;
+  let maxVal = -Infinity;
+
+  // Extract values & track min/max
+  for (let state in stateData) {
+    const val2021Raw = stateData[state][1]?.[fieldName];
     if (typeof val2021Raw === 'number') {
       valueMap[state] = val2021Raw;
       if (val2021Raw < minVal) minVal = val2021Raw;
@@ -530,40 +534,35 @@ function buildTableAndMap(geojson, stateData, map, fieldName) {
     }
   }
 
-  table.draw();
+  // Make a copy of geojson so we don't mutate the original
+  const geojsonCopy = JSON.parse(JSON.stringify(geojson));
 
-  // Merge selected field's 2021 values into geojson for Mapbox
-  geojson.features.forEach(f => {
+  // Merge selected field's 2021 values into copy
+  geojsonCopy.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
     if (valueMap[stateId] !== undefined) {
       f.properties[fieldName] = valueMap[stateId];
     }
   });
 
-  // Update layer coloring based on selected field
+  // Push updated geojson into map source
+  if (map.getSource('states')) {
+    map.getSource('states').setData(geojsonCopy);
+  }
+
+  // Update map coloring
   if (map.getLayer('state-fills')) {
     map.setPaintProperty('state-fills', 'fill-color', [
       "interpolate",
       ["linear"],
       ["get", fieldName],
       minVal, "#5a6251",
-      maxVal,"#e5e8e3"
+      maxVal, "#e5e8e3"
     ]);
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
   }
-
-  // Push updated geojson into map source
-  if (map.getSource('states')) {
-    map.getSource('states').setData(geojson);
-  }
 }
-
-
-function colorMapByYear(year){
-
-}
-
 
 
 function buildOpportunityTable(geojson, stateData) {
@@ -618,29 +617,27 @@ const sortedFeatures = geojson.features.slice().sort((a, b) => {
     container.appendChild(row);
   });
 }
-function fillStateDataTable(map, field) {
+
+// Fetch data (once)
+function getData() {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-  const stateDataUrl = '../assets/data/json/AllStates.json'; // clean up
+  const stateDataUrl = '../assets/data/json/AllStates.json';
 
-
-
-  Promise.all([
+  return Promise.all([
     fetch(geojsonUrl).then(res => res.json()),
     fetch(stateDataUrl).then(res => res.json())
   ])
   .then(([geojson, stateData]) => {
     console.log('Fetched GeoJSON:', geojson);
     console.log('Fetched State JSON:', stateData);
-
-    buildTableAndMap(geojson, stateData, map, field);
-    //fillStateDataTable(stateData);
+    return { geojson, stateData }; // return both so other funcs can use
   })
   .catch(error => {
     console.error('Error loading data:', error);
   });
 }
 
-
+// example function to color districts. Currently uses fake data.
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
   fetch('/assets/data/geojson/oregon_districts.geojson')
     .then(response => response.json())
