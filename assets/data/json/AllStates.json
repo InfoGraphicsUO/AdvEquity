@@ -1,0 +1,1022 @@
+{
+    "1": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.700747240556296,
+            "ENR_AP_GAP_AS": 2.65307189245828,
+            "ENR_AP_GAP_HI": 0.69055380518264,
+            "FIPS": 1,
+            "state_abbrev": "AL"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 11807.0,
+            "ENR_AP_GAP_BL": 0.6194840844794,
+            "ENR_AP_GAP_AS": 2.90728422676535,
+            "ENR_AP_GAP_HI": 0.608338396371531,
+            "FIPS": 1,
+            "state_abbrev": "AL"
+        }
+    ],
+    "2": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.577211187609024,
+            "ENR_AP_GAP_AS": 1.24656395111956,
+            "ENR_AP_GAP_HI": 0.835581762541848,
+            "FIPS": 2,
+            "state_abbrev": "AK"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 3753.0,
+            "ENR_AP_GAP_BL": 0.689744418775897,
+            "ENR_AP_GAP_AS": 1.37429631393634,
+            "ENR_AP_GAP_HI": 0.851776361993676,
+            "FIPS": 2,
+            "state_abbrev": "AK"
+        }
+    ],
+    "4": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.722428017378378,
+            "ENR_AP_GAP_AS": 2.11562892809864,
+            "ENR_AP_GAP_HI": 0.626789491873125,
+            "FIPS": 4,
+            "state_abbrev": "AZ"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 17147.0,
+            "ENR_AP_GAP_BL": 0.591312336743521,
+            "ENR_AP_GAP_AS": 2.13950721137262,
+            "ENR_AP_GAP_HI": 0.692093498360343,
+            "FIPS": 4,
+            "state_abbrev": "AZ"
+        }
+    ],
+    "5": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.651305574450112,
+            "ENR_AP_GAP_AS": 2.0919680561981,
+            "ENR_AP_GAP_HI": 0.959561284702259,
+            "FIPS": 5,
+            "state_abbrev": "AR"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 12975.0,
+            "ENR_AP_GAP_BL": 0.78502958596327,
+            "ENR_AP_GAP_AS": 2.57425784501649,
+            "ENR_AP_GAP_HI": 1.08870054356813,
+            "FIPS": 5,
+            "state_abbrev": "AR"
+        }
+    ],
+    "6": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.585272865138186,
+            "ENR_AP_GAP_AS": 1.80282412966232,
+            "ENR_AP_GAP_HI": 0.729955006185442,
+            "FIPS": 6,
+            "state_abbrev": "CA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 99507.0,
+            "ENR_AP_GAP_BL": 0.563886828756821,
+            "ENR_AP_GAP_AS": 1.73467764632645,
+            "ENR_AP_GAP_HI": 0.660717364840064,
+            "FIPS": 6,
+            "state_abbrev": "CA"
+        }
+    ],
+    "8": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.788644961554391,
+            "ENR_AP_GAP_AS": 1.52408985773,
+            "ENR_AP_GAP_HI": 0.632415771004802,
+            "FIPS": 8,
+            "state_abbrev": "CO"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 17035.0,
+            "ENR_AP_GAP_BL": 0.750238236209127,
+            "ENR_AP_GAP_AS": 1.62656140977178,
+            "ENR_AP_GAP_HI": 0.650013339534764,
+            "FIPS": 8,
+            "state_abbrev": "CO"
+        }
+    ],
+    "9": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.5750707724198,
+            "ENR_AP_GAP_AS": 1.91365808201539,
+            "ENR_AP_GAP_HI": 0.56428581472763,
+            "FIPS": 9,
+            "state_abbrev": "CT"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 15894.0,
+            "ENR_AP_GAP_BL": 0.571219176514214,
+            "ENR_AP_GAP_AS": 1.88912344162396,
+            "ENR_AP_GAP_HI": 0.513484310712827,
+            "FIPS": 9,
+            "state_abbrev": "CT"
+        }
+    ],
+    "10": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.550313840022154,
+            "ENR_AP_GAP_AS": 2.47985704455213,
+            "ENR_AP_GAP_HI": 0.712994724675224,
+            "FIPS": 10,
+            "state_abbrev": "DE"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 3076.0,
+            "ENR_AP_GAP_BL": 0.637958556348975,
+            "ENR_AP_GAP_AS": 2.24169044717055,
+            "ENR_AP_GAP_HI": 0.676537324562678,
+            "FIPS": 10,
+            "state_abbrev": "DE"
+        }
+    ],
+    "11": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.361882049864044,
+            "ENR_AP_GAP_AS": 0.774185198668051,
+            "ENR_AP_GAP_HI": 0.603218074356128,
+            "FIPS": 11,
+            "state_abbrev": "DC"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 1963.0,
+            "ENR_AP_GAP_BL": 0.480332558149818,
+            "ENR_AP_GAP_AS": 0.981351244104542,
+            "ENR_AP_GAP_HI": 0.54875361164685,
+            "FIPS": 11,
+            "state_abbrev": "DC"
+        }
+    ],
+    "12": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.634542313761307,
+            "ENR_AP_GAP_AS": 1.99061722760155,
+            "ENR_AP_GAP_HI": 0.972706603081903,
+            "FIPS": 12,
+            "state_abbrev": "FL"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 49249.0,
+            "ENR_AP_GAP_BL": 0.552561779668678,
+            "ENR_AP_GAP_AS": 2.03982630160716,
+            "ENR_AP_GAP_HI": 0.90684037178414,
+            "FIPS": 12,
+            "state_abbrev": "FL"
+        }
+    ],
+    "13": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.654800851554642,
+            "ENR_AP_GAP_AS": 2.24338957671377,
+            "ENR_AP_GAP_HI": 0.762005337980723,
+            "FIPS": 13,
+            "state_abbrev": "GA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 32538.0,
+            "ENR_AP_GAP_BL": 0.591438420207908,
+            "ENR_AP_GAP_AS": 2.50166173661742,
+            "ENR_AP_GAP_HI": 0.645376908628377,
+            "FIPS": 13,
+            "state_abbrev": "GA"
+        }
+    ],
+    "15": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.970334983859495,
+            "ENR_AP_GAP_AS": 1.12511556656882,
+            "ENR_AP_GAP_HI": 0.761758820935631,
+            "FIPS": 15,
+            "state_abbrev": "HI"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 3500.0,
+            "ENR_AP_GAP_BL": 1.06456949990073,
+            "ENR_AP_GAP_AS": 1.69089413367586,
+            "ENR_AP_GAP_HI": 0.575954379329861,
+            "FIPS": 15,
+            "state_abbrev": "HI"
+        }
+    ],
+    "16": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.920811376455283,
+            "ENR_AP_GAP_AS": 1.65440761677446,
+            "ENR_AP_GAP_HI": 0.630306949378674,
+            "FIPS": 16,
+            "state_abbrev": "ID"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 4011.0,
+            "ENR_AP_GAP_BL": 0.578584256352181,
+            "ENR_AP_GAP_AS": 1.78347174488761,
+            "ENR_AP_GAP_HI": 0.691921050388299,
+            "FIPS": 16,
+            "state_abbrev": "ID"
+        }
+    ],
+    "17": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.518242049856472,
+            "ENR_AP_GAP_AS": 2.0356896976516,
+            "ENR_AP_GAP_HI": 0.678012671610322,
+            "FIPS": 17,
+            "state_abbrev": "IL"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 37490.0,
+            "ENR_AP_GAP_BL": 0.598018335507254,
+            "ENR_AP_GAP_AS": 2.14602357547574,
+            "ENR_AP_GAP_HI": 0.854763924243883,
+            "FIPS": 17,
+            "state_abbrev": "IL"
+        }
+    ],
+    "18": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.562018705764081,
+            "ENR_AP_GAP_AS": 2.27677408957679,
+            "ENR_AP_GAP_HI": 0.707615975460324,
+            "FIPS": 18,
+            "state_abbrev": "IN"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 20030.0,
+            "ENR_AP_GAP_BL": 0.643662756980622,
+            "ENR_AP_GAP_AS": 2.36832242846101,
+            "ENR_AP_GAP_HI": 0.901389675275617,
+            "FIPS": 18,
+            "state_abbrev": "IN"
+        }
+    ],
+    "19": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.668867890307835,
+            "ENR_AP_GAP_AS": 2.16895987787965,
+            "ENR_AP_GAP_HI": 0.682870877812195,
+            "FIPS": 19,
+            "state_abbrev": "IA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 7164.0,
+            "ENR_AP_GAP_BL": 0.717175238834628,
+            "ENR_AP_GAP_AS": 2.57543579569393,
+            "ENR_AP_GAP_HI": 0.755989829718226,
+            "FIPS": 19,
+            "state_abbrev": "IA"
+        }
+    ],
+    "20": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.473418568415883,
+            "ENR_AP_GAP_AS": 1.66424654577411,
+            "ENR_AP_GAP_HI": 0.549584200246563,
+            "FIPS": 20,
+            "state_abbrev": "KS"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 6898.0,
+            "ENR_AP_GAP_BL": 0.525896877298635,
+            "ENR_AP_GAP_AS": 2.06513420973032,
+            "ENR_AP_GAP_HI": 0.509856373112192,
+            "FIPS": 20,
+            "state_abbrev": "KS"
+        }
+    ],
+    "21": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.631961693739935,
+            "ENR_AP_GAP_AS": 2.16393310330818,
+            "ENR_AP_GAP_HI": 1.01456860153724,
+            "FIPS": 21,
+            "state_abbrev": "KY"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 12117.0,
+            "ENR_AP_GAP_BL": 0.622518802309743,
+            "ENR_AP_GAP_AS": 2.58803832234999,
+            "ENR_AP_GAP_HI": 0.780256325005695,
+            "FIPS": 21,
+            "state_abbrev": "KY"
+        }
+    ],
+    "22": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.662909732654621,
+            "ENR_AP_GAP_AS": 2.90504824248185,
+            "ENR_AP_GAP_HI": 1.05878856054345,
+            "FIPS": 22,
+            "state_abbrev": "LA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 7370.0,
+            "ENR_AP_GAP_BL": 1.07083780823624,
+            "ENR_AP_GAP_AS": 2.87685369091677,
+            "ENR_AP_GAP_HI": 0.939344749403485,
+            "FIPS": 22,
+            "state_abbrev": "LA"
+        }
+    ],
+    "23": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.657399500776877,
+            "ENR_AP_GAP_AS": 2.13002450961001,
+            "ENR_AP_GAP_HI": 1.20868981477184,
+            "FIPS": 23,
+            "state_abbrev": "ME"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 5079.0,
+            "ENR_AP_GAP_BL": 0.821646918808042,
+            "ENR_AP_GAP_AS": 2.6574337590274,
+            "ENR_AP_GAP_HI": 1.00390456079686,
+            "FIPS": 23,
+            "state_abbrev": "ME"
+        }
+    ],
+    "24": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.659071380829649,
+            "ENR_AP_GAP_AS": 1.75114331935667,
+            "ENR_AP_GAP_HI": 0.733398219756519,
+            "FIPS": 24,
+            "state_abbrev": "MD"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 23891.0,
+            "ENR_AP_GAP_BL": 0.576022933682185,
+            "ENR_AP_GAP_AS": 1.8812159503492,
+            "ENR_AP_GAP_HI": 0.544314702849281,
+            "FIPS": 24,
+            "state_abbrev": "MD"
+        }
+    ],
+    "25": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.560984942893148,
+            "ENR_AP_GAP_AS": 1.79803486612034,
+            "ENR_AP_GAP_HI": 0.559728829757433,
+            "FIPS": 25,
+            "state_abbrev": "MA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 30388.0,
+            "ENR_AP_GAP_BL": 0.639778976308044,
+            "ENR_AP_GAP_AS": 2.03303415494593,
+            "ENR_AP_GAP_HI": 0.560979216826707,
+            "FIPS": 25,
+            "state_abbrev": "MA"
+        }
+    ],
+    "26": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.494097736804478,
+            "ENR_AP_GAP_AS": 2.37825994774862,
+            "ENR_AP_GAP_HI": 0.65371436101185,
+            "FIPS": 26,
+            "state_abbrev": "MI"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 28224.0,
+            "ENR_AP_GAP_BL": 0.527550869466228,
+            "ENR_AP_GAP_AS": 2.55708110495758,
+            "ENR_AP_GAP_HI": 0.711559582653804,
+            "FIPS": 26,
+            "state_abbrev": "MI"
+        }
+    ],
+    "27": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.613815748881177,
+            "ENR_AP_GAP_AS": 1.23499003329288,
+            "ENR_AP_GAP_HI": 0.567096340253769,
+            "FIPS": 27,
+            "state_abbrev": "MN"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 12497.0,
+            "ENR_AP_GAP_BL": 0.632105255170409,
+            "ENR_AP_GAP_AS": 1.25515223880311,
+            "ENR_AP_GAP_HI": 0.646188242090864,
+            "FIPS": 27,
+            "state_abbrev": "MN"
+        }
+    ],
+    "28": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.672794895224722,
+            "ENR_AP_GAP_AS": 2.81588819028562,
+            "ENR_AP_GAP_HI": 1.19092425641447,
+            "FIPS": 28,
+            "state_abbrev": "MS"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 5570.0,
+            "ENR_AP_GAP_BL": 0.909483629806667,
+            "ENR_AP_GAP_AS": 2.88412165489457,
+            "ENR_AP_GAP_HI": 0.802602448416498,
+            "FIPS": 28,
+            "state_abbrev": "MS"
+        }
+    ],
+    "29": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.586675430448613,
+            "ENR_AP_GAP_AS": 2.28429653305555,
+            "ENR_AP_GAP_HI": 0.822054218807375,
+            "FIPS": 29,
+            "state_abbrev": "MO"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 15299.0,
+            "ENR_AP_GAP_BL": 0.66826465326616,
+            "ENR_AP_GAP_AS": 2.65174778464118,
+            "ENR_AP_GAP_HI": 0.8195366443702,
+            "FIPS": 29,
+            "state_abbrev": "MO"
+        }
+    ],
+    "30": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.592426611727787,
+            "ENR_AP_GAP_AS": 1.55068847321766,
+            "ENR_AP_GAP_HI": 0.740498885213835,
+            "FIPS": 30,
+            "state_abbrev": "MT"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 2117.0,
+            "ENR_AP_GAP_BL": 0.57620399436745,
+            "ENR_AP_GAP_AS": 2.05843951943003,
+            "ENR_AP_GAP_HI": 0.696907212926287,
+            "FIPS": 30,
+            "state_abbrev": "MT"
+        }
+    ],
+    "31": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.569584517354622,
+            "ENR_AP_GAP_AS": 1.64601333971955,
+            "ENR_AP_GAP_HI": 0.571158745901694,
+            "FIPS": 31,
+            "state_abbrev": "NE"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 4136.0,
+            "ENR_AP_GAP_BL": 0.555491806381457,
+            "ENR_AP_GAP_AS": 2.03451206700991,
+            "ENR_AP_GAP_HI": 0.644105294778716,
+            "FIPS": 31,
+            "state_abbrev": "NE"
+        }
+    ],
+    "32": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.500233820910267,
+            "ENR_AP_GAP_AS": 2.05808551788461,
+            "ENR_AP_GAP_HI": 0.675811027901971,
+            "FIPS": 32,
+            "state_abbrev": "NV"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 8132.0,
+            "ENR_AP_GAP_BL": 0.513847075000909,
+            "ENR_AP_GAP_AS": 1.88618888494626,
+            "ENR_AP_GAP_HI": 0.77098684294682,
+            "FIPS": 32,
+            "state_abbrev": "NV"
+        }
+    ],
+    "33": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.669462411766285,
+            "ENR_AP_GAP_AS": 2.32581781795302,
+            "ENR_AP_GAP_HI": 0.565030901449547,
+            "FIPS": 33,
+            "state_abbrev": "NH"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 4081.0,
+            "ENR_AP_GAP_BL": 0.720768687265999,
+            "ENR_AP_GAP_AS": 3.16542844007058,
+            "ENR_AP_GAP_HI": 0.602733690206503,
+            "FIPS": 33,
+            "state_abbrev": "NH"
+        }
+    ],
+    "34": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.450249018401967,
+            "ENR_AP_GAP_AS": 2.21440201110621,
+            "ENR_AP_GAP_HI": 0.501302559111873,
+            "FIPS": 34,
+            "state_abbrev": "NJ"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 42864.0,
+            "ENR_AP_GAP_BL": 0.479183992034129,
+            "ENR_AP_GAP_AS": 2.18023097648804,
+            "ENR_AP_GAP_HI": 0.578947355739458,
+            "FIPS": 34,
+            "state_abbrev": "NJ"
+        }
+    ],
+    "35": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.627872170581945,
+            "ENR_AP_GAP_AS": 1.45705564376598,
+            "ENR_AP_GAP_HI": 0.565190892883165,
+            "FIPS": 35,
+            "state_abbrev": "NM"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 5600.0,
+            "ENR_AP_GAP_BL": 0.721906208977084,
+            "ENR_AP_GAP_AS": 1.75627537203773,
+            "ENR_AP_GAP_HI": 0.860388999025871,
+            "FIPS": 35,
+            "state_abbrev": "NM"
+        }
+    ],
+    "36": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.529317114733228,
+            "ENR_AP_GAP_AS": 2.04017651579188,
+            "ENR_AP_GAP_HI": 0.604237801109145,
+            "FIPS": 36,
+            "state_abbrev": "NY"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 44262.0,
+            "ENR_AP_GAP_BL": 0.648321943152419,
+            "ENR_AP_GAP_AS": 2.19922052837156,
+            "ENR_AP_GAP_HI": 0.662247566818892,
+            "FIPS": 36,
+            "state_abbrev": "NY"
+        }
+    ],
+    "37": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.426210241049481,
+            "ENR_AP_GAP_AS": 1.89300673691967,
+            "ENR_AP_GAP_HI": 0.542816444103684,
+            "FIPS": 37,
+            "state_abbrev": "NC"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 32285.0,
+            "ENR_AP_GAP_BL": 0.481138813655726,
+            "ENR_AP_GAP_AS": 2.54087427297533,
+            "ENR_AP_GAP_HI": 0.531394550638571,
+            "FIPS": 37,
+            "state_abbrev": "NC"
+        }
+    ],
+    "38": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.539372446394015,
+            "ENR_AP_GAP_AS": 1.39360055766461,
+            "ENR_AP_GAP_HI": 0.403784674360352,
+            "FIPS": 38,
+            "state_abbrev": "ND"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 1487.0,
+            "ENR_AP_GAP_BL": 0.704528891466401,
+            "ENR_AP_GAP_AS": 2.25470876172071,
+            "ENR_AP_GAP_HI": 0.607051475581684,
+            "FIPS": 38,
+            "state_abbrev": "ND"
+        }
+    ],
+    "39": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.506162673932413,
+            "ENR_AP_GAP_AS": 1.96702993775673,
+            "ENR_AP_GAP_HI": 0.750805986839265,
+            "FIPS": 39,
+            "state_abbrev": "OH"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 24634.0,
+            "ENR_AP_GAP_BL": 0.58132598299981,
+            "ENR_AP_GAP_AS": 2.60551478713139,
+            "ENR_AP_GAP_HI": 0.656851666699395,
+            "FIPS": 39,
+            "state_abbrev": "OH"
+        }
+    ],
+    "40": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.663120990444082,
+            "ENR_AP_GAP_AS": 2.23234683219828,
+            "ENR_AP_GAP_HI": 0.610281513646629,
+            "FIPS": 40,
+            "state_abbrev": "OK"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 10513.0,
+            "ENR_AP_GAP_BL": 0.857337189233852,
+            "ENR_AP_GAP_AS": 2.74406409987055,
+            "ENR_AP_GAP_HI": 0.943026096601712,
+            "FIPS": 40,
+            "state_abbrev": "OK"
+        }
+    ],
+    "41": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.804084748895874,
+            "ENR_AP_GAP_AS": 2.25445991375203,
+            "ENR_AP_GAP_HI": 0.761608136456995,
+            "FIPS": 41,
+            "state_abbrev": "OR"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 7501.0,
+            "ENR_AP_GAP_BL": 0.725207444744958,
+            "ENR_AP_GAP_AS": 1.84905888793498,
+            "ENR_AP_GAP_HI": 0.811755815135983,
+            "FIPS": 41,
+            "state_abbrev": "OR"
+        }
+    ],
+    "42": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.516795823198143,
+            "ENR_AP_GAP_AS": 2.18242186681975,
+            "ENR_AP_GAP_HI": 0.45407857785266,
+            "FIPS": 42,
+            "state_abbrev": "PA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 42866.0,
+            "ENR_AP_GAP_BL": 0.54373578068674,
+            "ENR_AP_GAP_AS": 2.67805759668948,
+            "ENR_AP_GAP_HI": 0.439442083628348,
+            "FIPS": 42,
+            "state_abbrev": "PA"
+        }
+    ],
+    "44": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.760392244399283,
+            "ENR_AP_GAP_AS": 2.1482628967546,
+            "ENR_AP_GAP_HI": 1.0518674191679,
+            "FIPS": 44,
+            "state_abbrev": "RI"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 3590.0,
+            "ENR_AP_GAP_BL": 0.675697214712252,
+            "ENR_AP_GAP_AS": 1.5852872506978,
+            "ENR_AP_GAP_HI": 0.621400469446355,
+            "FIPS": 44,
+            "state_abbrev": "RI"
+        }
+    ],
+    "45": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.37562417917222,
+            "ENR_AP_GAP_AS": 2.4459743908742,
+            "ENR_AP_GAP_HI": 0.682228632614851,
+            "FIPS": 45,
+            "state_abbrev": "SC"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 12023.0,
+            "ENR_AP_GAP_BL": 0.358670657938594,
+            "ENR_AP_GAP_AS": 2.51771215989221,
+            "ENR_AP_GAP_HI": 0.527705904688685,
+            "FIPS": 45,
+            "state_abbrev": "SC"
+        }
+    ],
+    "46": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.60523925444174,
+            "ENR_AP_GAP_AS": 1.4155819088262,
+            "ENR_AP_GAP_HI": 0.639216008994981,
+            "FIPS": 46,
+            "state_abbrev": "SD"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 1290.0,
+            "ENR_AP_GAP_BL": 0.603195268806911,
+            "ENR_AP_GAP_AS": 2.1592259743874,
+            "ENR_AP_GAP_HI": 0.568214929067448,
+            "FIPS": 46,
+            "state_abbrev": "SD"
+        }
+    ],
+    "47": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.673115012660583,
+            "ENR_AP_GAP_AS": 2.80108535169474,
+            "ENR_AP_GAP_HI": 0.843366223509001,
+            "FIPS": 47,
+            "state_abbrev": "TN"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 14491.0,
+            "ENR_AP_GAP_BL": 0.629545668878295,
+            "ENR_AP_GAP_AS": 3.12762567098908,
+            "ENR_AP_GAP_HI": 0.722527316861853,
+            "FIPS": 47,
+            "state_abbrev": "TN"
+        }
+    ],
+    "48": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.711044850748591,
+            "ENR_AP_GAP_AS": 2.00474183792229,
+            "ENR_AP_GAP_HI": 0.809432897551736,
+            "FIPS": 48,
+            "state_abbrev": "TX"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 94309.0,
+            "ENR_AP_GAP_BL": 0.632743519052755,
+            "ENR_AP_GAP_AS": 2.21545246139289,
+            "ENR_AP_GAP_HI": 0.823722421712623,
+            "FIPS": 48,
+            "state_abbrev": "TX"
+        }
+    ],
+    "49": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.724231180317003,
+            "ENR_AP_GAP_AS": 1.69806789100894,
+            "ENR_AP_GAP_HI": 0.792029551107188,
+            "FIPS": 49,
+            "state_abbrev": "UT"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 10950.0,
+            "ENR_AP_GAP_BL": 0.646648032750906,
+            "ENR_AP_GAP_AS": 1.93050219334407,
+            "ENR_AP_GAP_HI": 0.695478928744128,
+            "FIPS": 49,
+            "state_abbrev": "UT"
+        }
+    ],
+    "50": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.834439120803316,
+            "ENR_AP_GAP_AS": 2.54324171027843,
+            "ENR_AP_GAP_HI": 0.91146123983875,
+            "FIPS": 50,
+            "state_abbrev": "VT"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 1403.0,
+            "ENR_AP_GAP_BL": 0.550219291375088,
+            "ENR_AP_GAP_AS": 1.53175673601417,
+            "ENR_AP_GAP_HI": 1.04900049538301,
+            "FIPS": 50,
+            "state_abbrev": "VT"
+        }
+    ],
+    "51": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.508514905660697,
+            "ENR_AP_GAP_AS": 1.77711634774145,
+            "ENR_AP_GAP_HI": 0.75173034488815,
+            "FIPS": 51,
+            "state_abbrev": "VA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 29669.0,
+            "ENR_AP_GAP_BL": 0.530293104656125,
+            "ENR_AP_GAP_AS": 1.97005711855055,
+            "ENR_AP_GAP_HI": 0.541846772355886,
+            "FIPS": 51,
+            "state_abbrev": "VA"
+        }
+    ],
+    "53": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.827396139440865,
+            "ENR_AP_GAP_AS": 1.84517079133048,
+            "ENR_AP_GAP_HI": 0.666285395684382,
+            "FIPS": 53,
+            "state_abbrev": "WA"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 18537.0,
+            "ENR_AP_GAP_BL": 0.97283785151173,
+            "ENR_AP_GAP_AS": 1.98974735121184,
+            "ENR_AP_GAP_HI": 0.688710100193746,
+            "FIPS": 53,
+            "state_abbrev": "WA"
+        }
+    ],
+    "54": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.851200012358656,
+            "ENR_AP_GAP_AS": 4.27653137488741,
+            "ENR_AP_GAP_HI": 1.72620215343963,
+            "FIPS": 54,
+            "state_abbrev": "WV"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 6352.0,
+            "ENR_AP_GAP_BL": 0.77288207383142,
+            "ENR_AP_GAP_AS": 5.16561778642913,
+            "ENR_AP_GAP_HI": 1.19492062771481,
+            "FIPS": 54,
+            "state_abbrev": "WV"
+        }
+    ],
+    "55": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.444445064184204,
+            "ENR_AP_GAP_AS": 1.41233230617207,
+            "ENR_AP_GAP_HI": 0.690245646446452,
+            "FIPS": 55,
+            "state_abbrev": "WI"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 28037.0,
+            "ENR_AP_GAP_BL": 0.546879943747991,
+            "ENR_AP_GAP_AS": 1.36430107776247,
+            "ENR_AP_GAP_HI": 0.815363414104445,
+            "FIPS": 55,
+            "state_abbrev": "WI"
+        }
+    ],
+    "56": [
+        {
+            "YEAR": 2011,
+            "AP_num": 0.0,
+            "ENR_AP_GAP_BL": 0.688165806740633,
+            "ENR_AP_GAP_AS": 1.85158807037537,
+            "ENR_AP_GAP_HI": 0.609771803973172,
+            "FIPS": 56,
+            "state_abbrev": "WY"
+        },
+        {
+            "YEAR": 2021,
+            "AP_num": 1725.0,
+            "ENR_AP_GAP_BL": 0.917122826418278,
+            "ENR_AP_GAP_AS": 2.34835389120596,
+            "ENR_AP_GAP_HI": 0.871877825695906,
+            "FIPS": 56,
+            "state_abbrev": "WY"
+        }
+    ]
+}
