@@ -179,3 +179,23 @@ h2{
   border-radius: 3px;
 }
 /* end legend */
+
+.legend-StateFills {
+  width: 220px;
+  margin: 8px 0;
+  font-size: 12px;
+  color: #333;
+}
+
+.legend-gradient-StateFills {
+  height: 20px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #2166ac, #f7f7f7, #b2182b);
+  border: 1px solid #ccc;
+}
+
+.legend-labels-StateFills {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}

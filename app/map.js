@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fullExtentButton.addEventListener('click', () => {
     districtPopup.remove()
-    document.getElementById('mapLegend').style.display = 'none'; // hide legend
+    document.getElementById('mapLegend').style.display = 'block'; // hide legend
     map.fitBounds([[ -126, 24], [-66, 50]]); // albers
     //map.jumpTo({ center: [-99.2, 40.0], zoom: 3 })
     // remove district layer if it exists
@@ -151,39 +151,8 @@ map.on('load', () => {
         'line-color': darkGreen,
         'line-width': 1
       }
-  });/*
-
-
-  map.addLayer({
-    id: 'state-fills',
-    type: 'fill',
-    source: 'states',
-    layout: {},
-    paint: {
-      "fill-color": [
-      "interpolate",
-      ["linear"],
-      ["to-number", ["get", "STATE_ID"]],
-      1, "#F2F12D",
-      50, "#723122"
-    ],
-
-      // 'fill-color': [
-  //   'case',
-  //   ['==', ['get', 'STATE_ID'], '41'],
-  //   yellow, // Oregon hovers yellow 
-  //   '#cccccc'  // All others always gray
-  // ],
-      // 'fill-opacity': [
-      //   'case',
-      //   ['boolean', ['feature-state', 'hover'], false],
-      //   1,
-      //   0
-      // ]
-    },
-    //  filter: ['==', 'STATE_ID', "19"]
   });
-*/
+
   map.addLayer({
   id: 'state-fills',
   type: 'fill',
@@ -193,6 +162,7 @@ map.on('load', () => {
     'fill-opacity': 1
   }
 });
+
 
 
   fillStateDataTable(map)
@@ -368,7 +338,7 @@ map.on('load', () => {
 
         console.log('Hovered district ID:', hoveredDistrictPolygonID);
 
-        // Fetch external district data
+        // Fetch district data
         const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
         fetch(DistDataUrl)
           .then(res => res.json())
@@ -491,17 +461,18 @@ function buildTableAndMap(geojson, stateData, map) {
   // Loop through data to fill table and track min/max opp2021 values
   for (let state in stateData) {
     const ap = stateData[state][1]?.AP_num ?? 'N/A';
-    const opp2011Val = stateData[state][0]?.ENR_AP_GAP_BL;
+    const opp2011Val = stateData[state][0]?.ENR_AP_GAP_BL; //ONLY SHOWING OPP VALS FOR BLACK STUDENTS
     const opp2021Val = stateData[state][1]?.ENR_AP_GAP_BL;
-
+    const stateAbbrev = stateData[state][0]?.state_abbrev;
     const opp2011 = typeof opp2011Val === 'number'
+
       ? (opp2011Val * 100).toFixed(1) + '%'
       : 'N/A';
     const opp2021 = typeof opp2021Val === 'number'
       ? (opp2021Val * 100).toFixed(1) + '%'
       : 'N/A';
 
-    table.row.add([state, ap, opp2011, opp2021]);
+    table.row.add([stateAbbrev, ap, opp2011, opp2021]);
 
     if (typeof opp2021Val === 'number') {
       valueMap[state] = opp2021Val;
@@ -512,6 +483,7 @@ function buildTableAndMap(geojson, stateData, map) {
 
   table.draw();
 
+
   // Merge opp2021 values into geojson so Mapbox can read them
   geojson.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
@@ -521,13 +493,14 @@ function buildTableAndMap(geojson, stateData, map) {
   });
 
   if (map.getLayer('state-fills')) {
-    map.setPaintProperty('state-fills', 'fill-color', [
-      "interpolate",
-      ["linear"],
-      ["get", "opp2021"],
-      minVal, "#fff8f8ff",
-      maxVal, "#5a01eaff"
-    ]);
+  map.setPaintProperty('state-fills', 'fill-color', [
+    "interpolate",
+    ["linear"],
+    ["get", "opp2021"],
+    minVal, "#2166ac",   // dark blue (low end)
+    (minVal + maxVal) / 2, "#f7f7f7",  // light neutral (middle)
+    maxVal, "#b2182b"    // dark red (high end)
+  ]);
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
   }
