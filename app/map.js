@@ -62,12 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  // Fetch the GeoJSON and build the table
-  
-
-  
-
-
 
    // State Overview close button and other interactions
     const closeBtnState = document.getElementById('closeStateOverview');
@@ -80,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiaW5mb2dyYXBoaWNzIiwiYSI6ImNqaTR0eHhnODBjeTUzdmx0N3U2dWU5NW8ifQ.fVbTCmIrqILIzv5QGtVJ2Q'; ///TODO THIS NEEDS TO BE HIDDEN ADD TO CREDS FILE AND GITIGNORE
+mapboxgl.accessToken =  MAPBOXTOKEN
 
 const map = new mapboxgl.Map({
   container: 'map',
@@ -171,39 +165,8 @@ map.on('load', () => {
         'line-color': darkGreen,
         'line-width': 1
       }
-  });/*
-
-
-  map.addLayer({
-    id: 'state-fills',
-    type: 'fill',
-    source: 'states',
-    layout: {},
-    paint: {
-      "fill-color": [
-      "interpolate",
-      ["linear"],
-      ["to-number", ["get", "STATE_ID"]],
-      1, "#F2F12D",
-      50, "#723122"
-    ],
-
-      // 'fill-color': [
-  //   'case',
-  //   ['==', ['get', 'STATE_ID'], '41'],
-  //   yellow, // Oregon hovers yellow 
-  //   '#cccccc'  // All others always gray
-  // ],
-      // 'fill-opacity': [
-      //   'case',
-      //   ['boolean', ['feature-state', 'hover'], false],
-      //   1,
-      //   0
-      // ]
-    },
-    //  filter: ['==', 'STATE_ID', "19"]
   });
-*/
+
   map.addLayer({
   id: 'state-fills',
   type: 'fill',
@@ -505,6 +468,7 @@ function buildTable(stateData, fieldName) {
     const ap = stateData[state][1]?.AP_num ?? 'N/A';
     const val2011Raw = stateData[state][0]?.[fieldName];
     const val2021Raw = stateData[state][1]?.[fieldName];
+    const stateAbbrev = stateData[state][0]?.state_abbrev;
 
     const val2011 = typeof val2011Raw === 'number'
       ? (val2011Raw * 100).toFixed(1) + '%'
@@ -513,7 +477,7 @@ function buildTable(stateData, fieldName) {
       ? (val2021Raw * 100).toFixed(1) + '%'
       : 'N/A';
 
-    table.row.add([state, ap, val2011, val2021]);
+    table.row.add([stateAbbrev, ap, val2011, val2021]);
   }
 
   table.draw();
@@ -566,6 +530,8 @@ function fillMap(map, geojson, stateData, fieldName) {
 
 
 function buildOpportunityTable(geojson, stateData) {
+  // STUBBED OUT FUNCTION -> Replaced with build table (builds from datatables library)
+
   const container = document.getElementById('us-opportunity-table');
   container.innerHTML = '';
   // Create header row
