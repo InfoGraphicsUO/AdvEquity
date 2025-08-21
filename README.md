@@ -95,6 +95,8 @@ HTML structure for the interactive map view.
       <tr><th>State</th><th>Model Ap Classes</th><th>Opp Est 2011</th><th>Opp Est 2021</th></tr>
       <!-- Rows for states -->
     </table>
+
+    table.row.add([stateAbbrev, ap, val2011, val2021]) add rows by calling data tables api
     ```
   - Dummy Text: "Info about the US. Lorem ipsum..."
 
