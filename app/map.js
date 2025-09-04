@@ -462,7 +462,11 @@ function getData() {
 
 // Build table
 function buildTable(stateData, fieldName) {
-  const table = new DataTable('#us-table');
+  const table = new DataTable('#us-table', {
+    paging: false,
+    scrollCollapse: true,
+    scrollY: '200px',
+});
 
   for (let state in stateData) {
     const ap = stateData[state][1]?.AP_num ?? 'N/A';
@@ -529,60 +533,60 @@ function fillMap(map, geojson, stateData, fieldName) {
 }
 
 
-function buildOpportunityTable(geojson, stateData) {
-  // STUBBED OUT FUNCTION -> Replaced with build table (builds from datatables library)
+// function buildOpportunityTable(geojson, stateData) {
+//   // STUBBED OUT FUNCTION -> Replaced with build table (builds from datatables library)
 
-  const container = document.getElementById('us-opportunity-table');
-  container.innerHTML = '';
-  // Create header row
-  const headerRow = document.createElement('div');
-  headerRow.className = 'row header-row';
-  headerRow.innerHTML = `
-    <div class="cell state">State</div>
-    <div class="cell ap-classes">Modal # of AP Classes (Student-Weighted)</div>
-    <div class="cell opp-11">Opportunity Estimate 2011–12</div>
-    <div class="cell opp-21">Opportunity Estimate 2021–22</div>
-  `;
-  container.appendChild(headerRow);
+//   // const container = document.getElementById('us-opportunity-table');
+//   container.innerHTML = '';
+//   // Create header row
+//   const headerRow = document.createElement('div');
+//   headerRow.className = 'row header-row';
+//   headerRow.innerHTML = `
+//     <div class="cell state">State</div>
+//     <div class="cell ap-classes">Modal # of AP Classes (Student-Weighted)</div>
+//     <div class="cell opp-11">Opportunity Estimate 2011–12</div>
+//     <div class="cell opp-21">Opportunity Estimate 2021–22</div>
+//   `;
+//   container.appendChild(headerRow);
 
-const sortedFeatures = geojson.features.slice().sort((a, b) => {
+// const sortedFeatures = geojson.features.slice().sort((a, b) => {
 
-  if (a.id === 41) return -1; // a is Oregon → comes first
-  if (b.id === 41) return 1;  // b is Oregon → comes first
-  return Number(a.id) - Number(b.id)
-});
+//   if (a.id === 41) return -1; // a is Oregon → comes first
+//   if (b.id === 41) return 1;  // b is Oregon → comes first
+//   return Number(a.id) - Number(b.id)
+// });
 
-  // Loop through GeoJSON features to create rows
-  sortedFeatures.forEach((feature) => {
-    const props = feature.properties;
-    const stateName = props.STATE_NAME;
-    const fips = props.STATE_ID.padStart(2, '0'); // ensure 2-digit ID
+//   // Loop through GeoJSON features to create rows
+//   sortedFeatures.forEach((feature) => {
+//     const props = feature.properties;
+//     const stateName = props.STATE_NAME;
+//     const fips = props.STATE_ID.padStart(2, '0'); // ensure 2-digit ID
 
-    // Default fallback if not Oregon
-    let ap = '—';
-    let opp11 = '—';
-    let opp21 = '—';
+//     // Default fallback if not Oregon
+//     let ap = '—';
+//     let opp11 = '—';
+//     let opp21 = '—';
 
-    // Match only Oregon
-    if (props.STATE_NAME === 'Oregon') {
-      ap = stateData.weighted_mean_ap?.toFixed(2) ?? '—';
-      opp11 = (stateData.opp_est_1 * 100).toFixed(1) + '%' ?? '—';
-      opp21 = (stateData.opp_est_2 * 100).toFixed(1) + '%' ?? '—';
-    }
+//     // Match only Oregon
+//     if (props.STATE_NAME === 'Oregon') {
+//       ap = stateData.weighted_mean_ap?.toFixed(2) ?? '—';
+//       opp11 = (stateData.opp_est_1 * 100).toFixed(1) + '%' ?? '—';
+//       opp21 = (stateData.opp_est_2 * 100).toFixed(1) + '%' ?? '—';
+//     }
 
-    const row = document.createElement('div');
-    row.className = 'row';
-    row.id = `row-${fips}`;
-    row.innerHTML = `
-      <div class="cell state">${stateName}</div>
-      <div class="cell ap-classes" id="ap-${fips}">${ap}</div>
-      <div class="cell opp-11" id="opp11-${fips}">${opp11}</div>
-      <div class="cell opp-21" id="opp21-${fips}">${opp21}</div>
-    `;
+//     const row = document.createElement('div');
+//     row.className = 'row';
+//     row.id = `row-${fips}`;
+//     row.innerHTML = `
+//       <div class="cell state">${stateName}</div>
+//       <div class="cell ap-classes" id="ap-${fips}">${ap}</div>
+//       <div class="cell opp-11" id="opp11-${fips}">${opp11}</div>
+//       <div class="cell opp-21" id="opp21-${fips}">${opp21}</div>
+//     `;
 
-    container.appendChild(row);
-  });
-}
+//     container.appendChild(row);
+//   });
+// }
 
 // Fetch data (once)
 function getData() {
@@ -659,6 +663,6 @@ function showGraphs(){
 }
 
 function hideGraphs(){
-  document.querySelector('#infoContainer').style.display = 'block'
+  document.querySelector('#infoContainer').style.display = 'flex'
   document.querySelector('#graphContainer').style.display = 'none'
 }

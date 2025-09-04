@@ -11,15 +11,18 @@
 
 body, html {
   margin: 0;
-  padding: 0;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* full viewport */
+  overflow: hidden;
   font-family: jaf-bernina-sans, sans-serif;
+  line-height:1.2;
 }
 
 #map {
   width: 100%;
-  height: 100vh - 130px;
-  min-height: 500px;
+  min-height: 475px;
+  flex: 0 0 auto; /* fixed at min height, no shrinking */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -98,15 +101,26 @@ button:hover {
   font-weight: bold;
 }
 
-#infoContainer{
-  background: var(--offwhite);
-  padding: 1em;
+/* Shared styles for the lower containers */
+#infoContainer,
+#graphContainer {
+  flex: 1;               /* take up remaining space */
+  overflow: auto;        /* scroll if content is long */
+  background: #f9f9f9;
+  padding: 10px 20px 0 20px;
 }
+
+/* whichever is shown will stretch */
+#infoContainer.show,
+#graphContainer.show {
+  display: flex;         /* or block, depending on your content */
+}
+
 
 h2{
   flex: 1;
   margin-bottom: 0;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 
