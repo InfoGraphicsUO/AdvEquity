@@ -57,7 +57,15 @@
   }
 }
 
-.highlighted {
-  background-color: var(--yellow);  /* highlight */
+#us-table.dataTable tbody tr.selected td {
+  color:var(--almostBlack);
+  background-color: var(--yellow) !important;
   transition: background-color 0.3s ease;
+  box-shadow: none !important;   /* remove blue inset highlight */
+  outline: none !important;
+}
+
+#us-table.dataTable tbody td:focus {
+  box-shadow: none !important;
+  outline: none !important;
 }

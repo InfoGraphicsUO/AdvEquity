@@ -200,8 +200,14 @@ getData().then(({ geojson, stateData }) => {
     });
 
   map.on('mousemove', 'state-fills', (e) => {
-    if (map.getZoom() >= 4) {
+    if (map.getZoom() >= 2) {
+      // get out of here if this is the same state
+      if (hoveredPolygonId == e.features[0].id) return
+
+
+      //console.log(e.features[0].id)
       if (hoveredPolygonId !== null) {
+        console.log(hoveredPolygonId)
         map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
         hoveredPolygonId = null;
       }
@@ -212,32 +218,21 @@ getData().then(({ geojson, stateData }) => {
         previousHighlightedRowId = null;
       }
 
-      return;
+      // return;
     }
 
     if (e.features.length > 0) {
       if (hoveredPolygonId !== null) {
         map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
-
-        if (previousHighlightedRowId) {
-          const prevRow = document.getElementById(previousHighlightedRowId);
-          if (prevRow) prevRow.classList.remove('highlighted');
-        }
       }
 
       hoveredPolygonId = e.features[0].id;
-      // console.log('Hovered state ID:', hoveredPolygonId);
-      // console.log('Hovered state ID:',e.features[0]);
+      console.log('Hovered state ID:', hoveredPolygonId);
+      console.log('Hovered state info:',e.features[0]);
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
-      // Here hoveredPolygonId is the state FIPS code (like "41")
-      const rowId = 'row-' + String(hoveredPolygonId).padStart(2, '0');
-
-      const row = document.getElementById(rowId);
-      if (row) {
-        row.classList.add('highlighted');
-        previousHighlightedRowId = rowId;
-      }
+      // Highlight the table by hoveredPolygonId, state FIPS code (like "41")
+       highlightTableByFIPS(hoveredPolygonId) 
     }
   });
 
@@ -247,11 +242,7 @@ getData().then(({ geojson, stateData }) => {
       hoveredPolygonId = null;
     }
 
-    if (previousHighlightedRowId) {
-      const prevRow = document.getElementById(previousHighlightedRowId);
-      if (prevRow) prevRow.classList.remove('highlighted');
-      previousHighlightedRowId = null;
-    }
+    clearTableHighlights();
   });
 
   map.on('click', 'state-fills', function (e) {
@@ -466,13 +457,17 @@ function buildTable(stateData, fieldName) {
     paging: false,
     scrollCollapse: true,
     scrollY: '200px',
-});
+    columnDefs: [
+      { targets: 4, visible: false } // hide FIPS column
+    ]
+  });
 
   for (let state in stateData) {
     const ap = stateData[state][1]?.AP_num ?? 'N/A';
     const val2011Raw = stateData[state][0]?.[fieldName];
     const val2021Raw = stateData[state][1]?.[fieldName];
     const stateAbbrev = stateData[state][0]?.state_abbrev;
+    const fips = stateData[state][0]?.FIPS;
 
     const val2011 = typeof val2011Raw === 'number'
       ? (val2011Raw * 100).toFixed(1) + '%'
@@ -481,10 +476,34 @@ function buildTable(stateData, fieldName) {
       ? (val2021Raw * 100).toFixed(1) + '%'
       : 'N/A';
 
-    table.row.add([stateAbbrev, ap, val2011, val2021]);
+    // add row (note: FIPS is hidden 5th column)
+    table.row.add([stateAbbrev, ap, val2011, val2021, fips]);
   }
 
   table.draw();
+}
+
+function highlightTableByFIPS(fipsCode) {
+  const table = $('#us-table').DataTable();
+
+  // clear old selection
+  table.$('tr.selected').removeClass('selected');
+
+  // loop rows and find match in hidden FIPS column
+  table.rows().every(function() {
+    const rowData = this.data();
+    if (String(rowData[4]) === String(fipsCode)) { // column index 4 = FIPS
+      $(this.node()).addClass('selected');
+      
+      // to do: scroll into view
+      //this.scrollTo();
+    }
+  });
+}
+
+function clearTableHighlights() {
+  const table = $('#us-table').DataTable();
+  table.$('tr.selected').removeClass('selected');
 }
 
 function fillMap(map, geojson, stateData, fieldName) {
