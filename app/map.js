@@ -189,52 +189,49 @@ getData().then(({ geojson, stateData }) => {
 
 
   map.addLayer({
-      id: 'state-borders',
-      type: 'line',
-      source: 'states',
-      layout: {},
-      paint: {
-        'line-color': green,
-        'line-width': 1
-      }
-    });
+    id: 'state-borders',
+    type: 'line',
+    source: 'states',
+    layout: {},
+    paint: {
+      'line-color': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false],
+        yellow,   // when hover = true
+        green       // default
+      ],
+      'line-width': 2,
+      'line-offset': [
+      'case',
+      ['boolean', ['feature-state', 'hover'], false],
+        2, // shift only highlighted border inward
+        0   // default border no shift
+      ]
+    }
+  });
+
 
   map.on('mousemove', 'state-fills', (e) => {
-    if (map.getZoom() >= 2) {
-      // get out of here if this is the same state
-      if (hoveredPolygonId == e.features[0].id) return
+      if (!e.features.length) return;
 
+      const fips = e.features[0].id;  // FIPS is the feature id
 
-      //console.log(e.features[0].id)
-      if (hoveredPolygonId !== null) {
-        console.log(hoveredPolygonId)
-        map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
-        hoveredPolygonId = null;
-      }
+      if (hoveredPolygonId === fips) return; // already highlighted
 
-      if (previousHighlightedRowId) {
-        const prevRow = document.getElementById(previousHighlightedRowId);
-        if (prevRow) prevRow.classList.remove('highlighted');
-        previousHighlightedRowId = null;
-      }
-
-      // return;
-    }
-
-    if (e.features.length > 0) {
+      // clear previous highlight
       if (hoveredPolygonId !== null) {
         map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
       }
+      // update hoveredPolygonId with new val
+      hoveredPolygonId = fips;
 
-      hoveredPolygonId = e.features[0].id;
-      console.log('Hovered state ID:', hoveredPolygonId);
-      console.log('Hovered state info:',e.features[0]);
+      // set new highlight
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
       // Highlight the table by hoveredPolygonId, state FIPS code (like "41")
-       highlightTableByFIPS(hoveredPolygonId) 
-    }
+      highlightTableByFIPS(fips) 
   });
+
 
   map.on('mouseleave', 'state-fills', () => {
     if (hoveredPolygonId !== null) {
@@ -668,7 +665,7 @@ function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayer
           verydarkgrey // fallback
         ]
       ])
-    .catch(error => console.error('Error fetching districts GeoJSON:', error));
+    // .catch(error => console.error('Error fetching districts GeoJSON:', error));
   });
 }
 
@@ -682,6 +679,6 @@ function showGraphs(){
 }
 
 function hideGraphs(){
-  document.querySelector('#infoContainer').style.display = 'flex'
+  document.querySelector('#infoContainer').style.display = 'block'
   document.querySelector('#graphContainer').style.display = 'none'
 }
