@@ -64,6 +64,10 @@ function initGraph() {
   graphContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
 
 graphContainer.innerHTML +=`
+  XX Classes Offered in Schools <Br>
+  Opportunity estimate for 2011-12: 80.4%<br>
+  Opportunity estimate for 2021-22: 72.5% 
+
     <div class="legend-row">
       <div class="legend-item">
         <span class="legend-color region-line"></span>
@@ -85,21 +89,7 @@ graphContainer.innerHTML +=`
     <div class="chart-caption">% economically disadvantaged</div>
     <div id="chart2" class="chart"></div>
   </div>
-  <!-- Chart 3 -->
-  <div class="chart-block">
-    <div class="chart-caption">% taking ≥1 AP course</div>
-    <div id="chart3" class="chart"></div>
-  </div>
-  <!-- Chart 4 -->
-  <div class="chart-block">
-    <div class="chart-caption">Student–teacher ratio</div>
-    <div id="chart4" class="chart"></div>
-  </div>
-  <!-- Chart 5 -->
-  <div class="chart-block">
-    <div class="chart-caption">Modal AP courses per school</div>
-    <div id="chart5" class="chart"></div>
-  </div>
+
 </div>
 
   `;
