@@ -27,7 +27,7 @@
 .chart-block {
   flex: 1 1 18%; /* Adjust basis to fit ~5 items per row */
   min-width: 100px;
-  max-width: 200px;
+  max-width: 100px;
 }
 
 .chart {

@@ -118,7 +118,7 @@ button:hover {
 
 
 h2{
-  flex: 1;
+  flex: 0;
   margin-bottom: 0;
   font-size: 1.1rem;
 }

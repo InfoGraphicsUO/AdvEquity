@@ -60,9 +60,10 @@ function initGraph() {
   const graphContainer = document.getElementById('graphContainer');
   if (!graphContainer) return;
 
-  graphContainer.innerHTML = `
-<h2>Factsheet about <span id="currentState">Oregon</span></h2>
+  graphContainer.innerHTML = `<h2>Factsheet about <span id="currentState">Oregon</span></h2>`
+  graphContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
 
+graphContainer.innerHTML +=`
     <div class="legend-row">
       <div class="legend-item">
         <span class="legend-color region-line"></span>
