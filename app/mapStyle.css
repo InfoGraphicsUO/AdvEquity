@@ -103,7 +103,7 @@ button:hover {
 
 /* Shared styles for the lower containers */
 #infoContainer,
-#graphContainer {
+#factSheetContainer {
   flex: 1;               /* take up remaining space */
   overflow: auto;        /* scroll if content is long */
   background: #f9f9f9;
@@ -112,7 +112,7 @@ button:hover {
 
 /* whichever is shown will stretch */
 #infoContainer.show,
-#graphContainer.show {
+#factSheetContainer.show {
   display: flex;         /* or block, depending on your content */
 }
 

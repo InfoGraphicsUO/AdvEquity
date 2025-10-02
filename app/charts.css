@@ -2,7 +2,7 @@
   font-family: jaf-bernina-sans, sans-serif;
 }
 
-#graphContainer {
+#factSheetContainer {
   display: none;
   flex-wrap: wrap;
   flex-direction: column;
@@ -11,7 +11,7 @@
   background: var(--offwhite);
 }
 
-#graphContainer h2, #graphContainer h3{
+#factSheetContainer h2, #factSheetContainer h3{
   margin: 0;
 }
 

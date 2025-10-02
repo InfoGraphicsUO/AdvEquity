@@ -1,4 +1,4 @@
-initGraph();
+// initFactSheet();
 const config = { displayModeBar: false };
 
 const layout = {
@@ -55,45 +55,70 @@ createLongitudinalChart('chart3', [20, 23, 26, 30, 34], 27);  // % HS students t
 createLongitudinalChart('chart4', [18, 17.5, 17, 16.5, 16], 17); // student-teacher ratio
 createLongitudinalChart('chart5', [1, 2, 2, 3, 4], 2.5);         // modal AP courses per school
 
+// hard coded
+// function initFactSheet() {
+//   const factSheetContainer = document.getElementById('factSheetContainer');
+//   if (!factSheetContainer) return;
 
-function initGraph() {
-  const graphContainer = document.getElementById('graphContainer');
-  if (!graphContainer) return;
+//   factSheetContainer.innerHTML = `<h2>Factsheet about <span id="currentState">Oregon</span></h2>`
+//   factSheetContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
 
-  graphContainer.innerHTML = `<h2>Factsheet about <span id="currentState">Oregon</span></h2>`
-  graphContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
+// factSheetContainer.innerHTML +=`
+//   XX Classes Offered in Schools <Br>
+//   Opportunity estimate for 2011-12: 80.4%<br>
+//   Opportunity estimate for 2021-22: 72.5% 
+//   `;
+// }
 
-graphContainer.innerHTML +=`
-  XX Classes Offered in Schools <Br>
-  Opportunity estimate for 2011-12: 80.4%<br>
-  Opportunity estimate for 2021-22: 72.5% 
+function initFactSheet(stateData, fips, fieldName) {
+  const factSheetContainer = document.getElementById('factSheetContainer');
+  if (!factSheetContainer) return;
 
-    <div class="legend-row">
-      <div class="legend-item">
-        <span class="legend-color region-line"></span>
-        <span>Measure over time</span>
+  // find the state entry by FIPS
+  const stateEntry = Object.values(stateData).find(
+    entry => entry[0]?.FIPS === fips
+  );
+  //console.log(stateData)
+  if (!stateEntry) {
+    factSheetContainer.innerHTML = `<p>No data found for FIPS ${fips}</p>`;
+    return;
+  }
+
+  // const stateName = stateEntry[0]?.state_name ?? 'Unknown';
+  const state_abbrev = stateDataCache[fips][0].state_abbrev ?? 'Unknown';
+  const val2011Raw = stateEntry[0]?.[fieldName];
+  const val2021Raw = stateEntry[1]?.[fieldName];
+
+  const val2011 = typeof val2011Raw === 'number'
+    ? (val2011Raw * 100).toFixed(1) + '%'
+    : 'N/A';
+  const val2021 = typeof val2021Raw === 'number'
+    ? (val2021Raw * 100).toFixed(1) + '%'
+    : 'N/A';
+
+  factSheetContainer.innerHTML = `
+    <h2>Factsheet about <span id="currentState">${state_abbrev}</span></h2>
+    <div id="StateOverviewCharts"></div><br>
+
+    <b>Opportunity Estimates</b><br>
+    <div class="opportunity-row">
+      <div class="arrow ${val2011Raw > val2021Raw ? 'arrow-down' : 'arrow-up'}">
+        ${val2011Raw > val2021Raw ? '🡻' : '🡹'}
       </div>
-      <div class="legend-item">
-        <span class="legend-color state-line"></span>
-        <span>State average</span>
+      <div class="opportunity-text">
+        2011–12: ${val2011}<br>
+        2021–22: ${val2021}
       </div>
     </div>
-<div class="chart-row">
-  <!-- Chart 1 -->
-  <div class="chart-block">
-    <div class="chart-caption">% of non-white students</div>
-    <div id="chart1" class="chart"></div>
-  </div>
-  <!-- Chart 2 -->
-  <div class="chart-block">
-    <div class="chart-caption">% economically disadvantaged</div>
-    <div id="chart2" class="chart"></div>
-  </div>
+    <br>
 
-</div>
-
+    XX Classes Offered in Schools <br>
   `;
 }
+
+
+
+
 function initStateOverview() {
   const StateOverviewCharts = document.getElementById('StateOverviewCharts');
   if (!StateOverviewCharts) return;

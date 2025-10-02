@@ -1,3 +1,8 @@
+// define caches in outer scope
+let geojsonCache = null;
+let stateDataCache = null;
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.querySelector('.search_query input');
   const searchButton = document.querySelector('.search_query button');
@@ -177,8 +182,6 @@ map.on('load', () => {
   }
 });
 
-
-
 getData().then(({ geojson, stateData }) => {
   geojsonCache = geojson;
   stateDataCache = stateData;
@@ -246,6 +249,7 @@ getData().then(({ geojson, stateData }) => {
     const clickedFeature = e.features[0];
     document.getElementById('mapLegend').style.display = 'block'; // display legend
 
+      // zoom to state
     const coords = clickedFeature.geometry.coordinates;
     // console.log(JSON.stringify(coords, null, 1));
     const bounds = new mapboxgl.LngLatBounds();
@@ -266,38 +270,43 @@ getData().then(({ geojson, stateData }) => {
     map.setFeatureState(
       { source: 'states', id: clickedFeature.id },
       { hover: false }
-      );
+    );
+
+    // fill fact sheet
+    const fieldName = 'ENR_AP_GAP_BL';
+    initFactSheet(stateDataCache, clickedFeature.id, fieldName);
+
 
     // if Oregon ( for POC)
-    if(clickedFeature.id == 41){
-      map.addLayer({
-        id: 'district-fills',
-        type: 'fill',
-        source: 'oregon_districts',
-        promoteId: 'GEOID',
-        layout: {},
-        paint: {
-         'fill-color': [
-          'case',
-          ['boolean', ['feature-state', 'hover'], false],
-           yellow, // yellow for hover
-          [
-            'match',
-            ['feature-state', 'urban_score'],
-            'NA', verydarkgrey,      // verydarkgrey for NA
-            '1', '#145214',       // green shades
-            '2', '#2c7a2c',
-            '3', '#4caf50',
-            '4', '#80e27e',
-            '5', '#b9ffb9',
-            verydarkgrey            
-          ]
-        ],
-          'fill-opacity': 1
-        }
+    if(clickedFeature.id > 0){
+      // map.addLayer({
+      //   id: 'district-fills',
+      //   type: 'fill',
+      //   source: 'oregon_districts',
+      //   promoteId: 'GEOID',
+      //   layout: {},
+      //   paint: {
+      //    'fill-color': [
+      //     'case',
+      //     ['boolean', ['feature-state', 'hover'], false],
+      //      yellow, // yellow for hover
+      //     [
+      //       'match',
+      //       ['feature-state', 'urban_score'],
+      //       'NA', verydarkgrey,      // verydarkgrey for NA
+      //       '1', '#145214',       // green shades
+      //       '2', '#2c7a2c',
+      //       '3', '#4caf50',
+      //       '4', '#80e27e',
+      //       '5', '#b9ffb9',
+      //       verydarkgrey            
+      //     ]
+      //   ],
+      //     'fill-opacity': 1
+      //   }
       
       
-      });
+      // });
       
       const StateOverview = document.getElementById('StateOverviewContainer');
       if (StateOverview) {
@@ -548,6 +557,12 @@ function fillMap(map, geojson, stateData, fieldName) {
   }
 }
 
+function getStateValues(stateData, state, fieldName) {
+  const val2011Raw = stateData[state][0]?.[fieldName];
+  const val2021Raw = stateData[state][1]?.[fieldName];
+  return { val2011Raw, val2021Raw };
+}
+
 
 // function buildOpportunityTable(geojson, stateData) {
 //   // STUBBED OUT FUNCTION -> Replaced with build table (builds from datatables library)
@@ -675,10 +690,10 @@ function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayer
 
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'
-  document.querySelector('#graphContainer').style.display = 'flex'
+  document.querySelector('#factSheetContainer').style.display = 'flex'
 }
 
 function hideGraphs(){
   document.querySelector('#infoContainer').style.display = 'block'
-  document.querySelector('#graphContainer').style.display = 'none'
+  document.querySelector('#factSheetContainer').style.display = 'none'
 }
