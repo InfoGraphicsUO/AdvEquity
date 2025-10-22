@@ -46,14 +46,16 @@ function createLongitudinalChart(containerId, values, stateAvg) {
   ], layout, config);
 }
 
-// Students
-createLongitudinalChart('chart1', [45, 47, 50, 52, 55], 50);  // % non-white students
-createLongitudinalChart('chart2', [60, 61, 63, 65, 68], 63);  // % economically disadvantaged
-createLongitudinalChart('chart3', [20, 23, 26, 30, 34], 27);  // % HS students taking AP
+// // Students
+// createLongitudinalChart('chart1', [45, 47, 50, 52, 55], 50);  // % non-white students
+// createLongitudinalChart('chart2', [60, 61, 63, 65, 68], 63);  // % economically disadvantaged
+// createLongitudinalChart('chart3', [20, 23, 26, 30, 34], 27);  // % HS students taking AP
 
-// Teachers & Resources
-createLongitudinalChart('chart4', [18, 17.5, 17, 16.5, 16], 17); // student-teacher ratio
-createLongitudinalChart('chart5', [1, 2, 2, 3, 4], 2.5);         // modal AP courses per school
+// // Teachers & Resources
+// createLongitudinalChart('chart4', [18, 17.5, 17, 16.5, 16], 17); // student-teacher ratio
+// createLongitudinalChart('chart5', [1, 2, 2, 3, 4], 2.5);         // modal AP courses per school
+
+
 
 // hard coded
 // function initFactSheet() {

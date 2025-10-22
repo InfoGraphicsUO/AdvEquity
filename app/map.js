@@ -100,6 +100,7 @@ const map = new mapboxgl.Map({
 let hoveredPolygonId = null; // highlight state
 let previousHighlightedRowId = null; // for highlighting state in table
 let hoveredDistrictPolygonID = null; // highlight district
+let selectedPolygonId = null; // for click selection
 
 var districtPopup = new mapboxgl.Popup({
   closeButton: false,
@@ -128,21 +129,22 @@ map.on('load', () => {
   // SOURCES
   map.addSource('states', {
     type: 'geojson',
-    data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
+    data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson',
+    promoteId: 'STATE_ID'  // use STATE_ID as the unique ID
   });
 
   // oregon districts only - JSON in repo
   map.addSource('oregon_districts', {
       type: 'geojson',
       data: '/assets/data/geojson/oregon_districts.geojson',
-      promoteId: 'GEOID',  // use GEOID as the unique ID
+      promoteId: 'GEOID'  // use GEOID as the unique ID
   });
 
   // all districts - mapbox hosted tileset
   map.addSource('SCHOOLDIST_TL24', {
       type: 'vector',
       url: 'mapbox://infographics.4fmvcuuh',
-      promoteId: 'GEOID',  // use GEOID as the unique ID
+      promoteId: 'GEOID'  // use GEOID as the unique ID
   });
 
 
@@ -177,9 +179,14 @@ map.on('load', () => {
   type: 'fill',
   source: 'states',
   paint: {
-    'fill-color': 'rgba(0, 0, 0, 0)', // transparent
-    'fill-opacity': 1
-  }
+      'fill-color': [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false],
+        'rgba(1, 1, 0, 1)',                   // <-- solid yellow when selected
+        'rgba(0, 0, 0, 0)'          // transparent otherwise
+      ],
+      'fill-opacity': 0.8
+    }
 });
 
 getData().then(({ geojson, stateData }) => {
@@ -247,6 +254,7 @@ getData().then(({ geojson, stateData }) => {
 
   map.on('click', 'state-fills', function (e) {
     const clickedFeature = e.features[0];
+    console.log(clickedFeature)
     document.getElementById('mapLegend').style.display = 'block'; // display legend
 
       // zoom to state
@@ -267,9 +275,20 @@ getData().then(({ geojson, stateData }) => {
     extendBounds(coords);
 
     map.fitBounds(bounds, { padding: 20 });
+
+      // clear old selection
+  if (selectedPolygonId !== null) {
     map.setFeatureState(
-      { source: 'states', id: clickedFeature.id },
-      { hover: false }
+        { source: 'states', id: selectedPolygonId },
+        { selected: false }
+      );
+    }
+
+    // set new selection
+    selectedPolygonId = clickedFeature.id;
+    map.setFeatureState(
+      { source: 'states', id: selectedPolygonId },
+      { selected: true }
     );
 
     // fill fact sheet
@@ -317,117 +336,117 @@ getData().then(({ geojson, stateData }) => {
 
       
 
-      // add district lines
-      map.addLayer({
-        id: 'district-lines',
-        type: 'line',
-        source: 'oregon_districts',
-        paint: {
-          'line-color': verydarkgrey,
-          'line-width': 0.5,
-          'line-opacity': 0.9
-        }
-      });
+      // // add district lines
+      // map.addLayer({
+      //   id: 'district-lines',
+      //   type: 'line',
+      //   source: 'oregon_districts',
+      //   paint: {
+      //     'line-color': verydarkgrey,
+      //     'line-width': 0.5,
+      //     'line-opacity': 0.9
+      //   }
+      // });
 
 
 
-      map.on('mousemove', 'district-fills', (e) => {
-        const feature = e.features[0];
-        const id = feature.id;
-        const props = feature.properties;
-        if (!id) return;
+      // map.on('mousemove', 'district-fills', (e) => {
+      //   const feature = e.features[0];
+      //   const id = feature.id;
+      //   const props = feature.properties;
+      //   if (!id) return;
 
-        // Clear previous hover state
-        if (hoveredDistrictPolygonID !== null) {
-          map.setFeatureState(
-            { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-            { hover: false }
-          );
-        }
+      //   // Clear previous hover state
+      //   if (hoveredDistrictPolygonID !== null) {
+      //     map.setFeatureState(
+      //       { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+      //       { hover: false }
+      //     );
+      //   }
 
-        hoveredDistrictPolygonID = id;
+      //   hoveredDistrictPolygonID = id;
 
-        // Set new hover state
-        map.setFeatureState(
-          { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-          { hover: true }
-        );
+      //   // Set new hover state
+      //   map.setFeatureState(
+      //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+      //     { hover: true }
+      //   );
 
-        console.log('Hovered district ID:', hoveredDistrictPolygonID);
+      //   console.log('Hovered district ID:', hoveredDistrictPolygonID);
 
-        // Fetch external district data
-        const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
-        fetch(DistDataUrl)
-          .then(res => res.json())
-          .then(stateData => {
+      //   // Fetch external district data
+      //   const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
+      //   fetch(DistDataUrl)
+      //     .then(res => res.json())
+      //     .then(stateData => {
 
-            // Find the district data matching the hovered polygon ID
-            const hoveredDistrictData = stateData.Data.find(
-              d => {
-                if (!hoveredDistrictPolygonID) return false;
-                return d.LEAID === hoveredDistrictPolygonID;
-              }
-            );
-            if (!hoveredDistrictData) {
-              console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
-              return;
-            }
+      //       // Find the district data matching the hovered polygon ID
+      //       const hoveredDistrictData = stateData.Data.find(
+      //         d => {
+      //           if (!hoveredDistrictPolygonID) return false;
+      //           return d.LEAID === hoveredDistrictPolygonID;
+      //         }
+      //       );
+      //       if (!hoveredDistrictData) {
+      //         console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
+      //         return;
+      //       }
 
-            const isDownward = props.AWATER % 2 === 0;
-            const directionArrow = isDownward ? '🡻' : '🡹';
-            const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
+      //       const isDownward = props.AWATER % 2 === 0;
+      //       const directionArrow = isDownward ? '🡻' : '🡹';
+      //       const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
 
-            districtPopup
-              .setLngLat(e.lngLat)
-              .setHTML(`
-                <div class="popup-content">
-                  <strong>${props.NAME}</strong><br>
-                  Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
-                  Students: ${hoveredDistrictData.num_students}<br> 
-                  Teachers: ${hoveredDistrictData.num_teachers}<br> 
-                  <b>Opportunity Estimates</b><br>
-                  <div class="opportunity-row">
-                    <div class="arrow ${directionClass}">${directionArrow}</div>
-                    <div class="opportunity-text">
-                      2011–12: xx<br>
-                      2021–22: xx
-                    </div>
-                  </div>
-                </div>
-              `)
-              .addTo(map);
+      //       districtPopup
+      //         .setLngLat(e.lngLat)
+      //         .setHTML(`
+      //           <div class="popup-content">
+      //             <strong>${props.NAME}</strong><br>
+      //             Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
+      //             Students: ${hoveredDistrictData.num_students}<br> 
+      //             Teachers: ${hoveredDistrictData.num_teachers}<br> 
+      //             <b>Opportunity Estimates</b><br>
+      //             <div class="opportunity-row">
+      //               <div class="arrow ${directionClass}">${directionArrow}</div>
+      //               <div class="opportunity-text">
+      //                 2011–12: xx<br>
+      //                 2021–22: xx
+      //               </div>
+      //             </div>
+      //           </div>
+      //         `)
+      //         .addTo(map);
 
-            showGraphs(); //only runs when data is available
-          })
-          .catch(error => {
-            console.error('Error loading data:', error);
-          });
-      });
+      //       showGraphs(); //only runs when data is available
+      //     })
+      //     .catch(error => {
+      //       console.error('Error loading data:', error);
+      //     });
+      // });
 
 
-      map.on('mouseleave', 'district-fills', () => {
-        // Remove hover highlight
-        if (hoveredDistrictPolygonID !== null) {
-          map.setFeatureState(
-            { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-            { hover: false }
-          );
-          hoveredDistrictPolygonID = null;
-        }
+      // map.on('mouseleave', 'district-fills', () => {
+      //   // Remove hover highlight
+      //   if (hoveredDistrictPolygonID !== null) {
+      //     map.setFeatureState(
+      //       { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+      //       { hover: false }
+      //     );
+      //     hoveredDistrictPolygonID = null;
+      //   }
 
-        // Close the district popup
-        if (districtPopup) {
-          districtPopup.remove();
-        }
+      //   // Close the district popup
+      //   if (districtPopup) {
+      //     districtPopup.remove();
+      //   }
 
-        // Optional: reset the cursor
-        map.getCanvas().style.cursor = '';
-      });
+      //   // Optional: reset the cursor
+      //   map.getCanvas().style.cursor = '';
+      // });
 
 
             // show graphs
             showGraphs();
-            fillDistricts(map) // dummy data
+            //fillDistricts(map) // dummy data
 
             // set graph container info about the current state
             // add code as needed
