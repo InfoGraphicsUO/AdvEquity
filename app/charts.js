@@ -75,12 +75,17 @@ function createLongitudinalChart(containerId, values, stateAvg) {
 function initFactSheet(stateData, fips, fieldName) {
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
+  console.log(stateData)
+
+  // set FIPS to match keys like "01"
+  const fipsKey = String(fips).padStart(2, '0');
+
 
   // find the state entry by FIPS
-  const stateEntry = Object.values(stateData).find(
-    entry => entry[0]?.FIPS === fips
-  );
+  const stateEntry = stateData[fipsKey];
+  //console.log(stateEntry);
   //console.log(stateData)
+
   if (!stateEntry) {
     factSheetContainer.innerHTML = `<p>No data found for FIPS ${fips}</p>`;
     return;
@@ -90,6 +95,7 @@ function initFactSheet(stateData, fips, fieldName) {
   const state_abbrev = stateDataCache[fips][0].state_abbrev ?? 'Unknown';
   const val2011Raw = stateEntry[0]?.[fieldName];
   const val2021Raw = stateEntry[1]?.[fieldName];
+  const apNum2021 = stateEntry[1]?.AP_num; // 2021 AP_num value
 
   const val2011 = typeof val2011Raw === 'number'
     ? (val2011Raw * 100).toFixed(1) + '%'
@@ -114,7 +120,7 @@ function initFactSheet(stateData, fips, fieldName) {
     </div>
     <br>
 
-    XX Classes Offered in Schools <br>
+    ${apNum2021} AP Classes Offered in Schools (2021) <br>
   `;
 }
 
