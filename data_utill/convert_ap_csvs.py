@@ -9,12 +9,27 @@
 usage: python data_util/convert_ap_csvs.py
 output: assets/data/json/<csvname>.json
 
+Instructions for use:
+
+to convert with minify (to reduce file size), run:
+python .\data_utill_convert_ap_csvs.py --minify
+- using minify will drop about 100mb off of the larger jsons
+
+to convert with gzip + precision 3 + drop nulls (for further file size reduction), run:
+python .\data_utill_convert_ap_csvs.py --gzip --precision 3 --drop-null
+- dropping nulls changes schema, make sure downstream code tolerates missing keys
+- rounding might slightly changes visualized numbers
+- requires gzip support (most things already do so mostly a non-problem)
+- using this method will drop the largest files to about 9mb
+
 created by Owen
 """
 from pathlib import Path
 import csv
 import json
 import sys
+import argparse
+import gzip
 
 # state abbre -> fips (int)
 STATE_TO_FIPS = {
@@ -64,7 +79,36 @@ def parse_value(v):
         return v
 
 
-def convert_csv(path: Path):
+def normalize_for_output(obj, precision=None, drop_nulls=False):
+    """recursively round floats and optionally drop nulls"""
+    if isinstance(obj, dict):
+        out = {}
+        for k, v in obj.items():
+            if v is None and drop_nulls:
+                continue
+            nv = normalize_for_output(v, precision=precision, drop_nulls=drop_nulls)
+            if nv is None and drop_nulls:
+                continue
+            out[k] = nv
+        return out
+    if isinstance(obj, list):
+        out_list = []
+        for v in obj:
+            nv = normalize_for_output(v, precision=precision, drop_nulls=drop_nulls)
+            if nv is None and drop_nulls:
+                continue
+            out_list.append(nv)
+        return out_list
+    if isinstance(obj, float) and precision is not None:
+        try:
+            return round(obj, precision)
+        except Exception:
+            return obj
+    # primitives (int, str, None)
+    return obj
+
+
+def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_nulls=False):
     name = path.name
     print(f"Converting {name}")
 
@@ -128,9 +172,23 @@ def convert_csv(path: Path):
             except Exception:
                 pass
 
-        out_path = OUT_DIR / (path.stem + '.json')
-        with out_path.open('w', encoding='utf-8') as of:
-            json.dump(out_obj, of, indent=4, ensure_ascii=False)
+        out_path = OUT_DIR / (path.stem + ('.json.gz' if gzip_out else '.json'))
+        # normalize (round floats, drop nulls) to reduce size
+        normalized = normalize_for_output(out_obj, precision=precision, drop_nulls=drop_nulls)
+
+        if gzip_out:
+            with gzip.open(out_path, 'wt', encoding='utf-8') as of:
+                if minify:
+                    json.dump(normalized, of, separators=(',', ':'), ensure_ascii=False)
+                else:
+                    json.dump(normalized, of, indent=4, ensure_ascii=False)
+        else:
+            with out_path.open('w', encoding='utf-8') as of:
+                if minify:
+                    json.dump(normalized, of, separators=(',', ':'), ensure_ascii=False)
+                else:
+                    json.dump(normalized, of, indent=4, ensure_ascii=False)
+
         print(f"Wrote states JSON: {out_path}")
 
     else:
@@ -143,9 +201,22 @@ def convert_csv(path: Path):
                     continue
                 cleaned[k.strip()] = parse_value(v)
             out_arr.append(cleaned)
-        out_path = OUT_DIR / (path.stem + '.json')
-        with out_path.open('w', encoding='utf-8') as of:
-            json.dump(out_arr, of, indent=4, ensure_ascii=False)
+        out_path = OUT_DIR / (path.stem + ('.json.gz' if gzip_out else '.json'))
+        normalized = normalize_for_output(out_arr, precision=precision, drop_nulls=drop_nulls)
+
+        if gzip_out:
+            with gzip.open(out_path, 'wt', encoding='utf-8') as of:
+                if minify:
+                    json.dump(normalized, of, separators=(',', ':'), ensure_ascii=False)
+                else:
+                    json.dump(normalized, of, indent=4, ensure_ascii=False)
+        else:
+            with out_path.open('w', encoding='utf-8') as of:
+                if minify:
+                    json.dump(normalized, of, separators=(',', ':'), ensure_ascii=False)
+                else:
+                    json.dump(normalized, of, indent=4, ensure_ascii=False)
+
         print(f"Wrote array JSON: {out_path}")
 
 
@@ -159,8 +230,15 @@ if __name__ == '__main__':
         print("No CSV files found in", CSV_DIR)
         sys.exit(0)
 
+    parser = argparse.ArgumentParser(description='convert ap csvs to json')
+    parser.add_argument('--minify', action='store_true', help='remove whitespace in json output')
+    parser.add_argument('--gzip', dest='gzip_out', action='store_true', help='write gzipped json (.json.gz)')
+    parser.add_argument('--precision', type=int, default=None, help='round floats to N decimals')
+    parser.add_argument('--drop-null', dest='drop_nulls', action='store_true', help='omit null values from output')
+    args = parser.parse_args()
+
     for p in csv_files:
         try:
-            convert_csv(p)
+            convert_csv(p, minify=args.minify, gzip_out=args.gzip_out, precision=args.precision, drop_nulls=args.drop_nulls)
         except Exception as e:
             print(f"Error converting {p.name}: {e}")
