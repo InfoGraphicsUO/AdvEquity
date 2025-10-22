@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
   const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
+  // flag to determine whether user interaction has happened (don't sort on initial load)
+  let userHasInteracted = false;
 
 
   // get CSS colors:
@@ -41,6 +43,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fill map
     fillMap(map, geojsonCache, stateDataCache, fieldName);
+
+    // mark that the user has interacted to allow sorting
+    userHasInteracted = true;
+
+    // rebuild the state table so the table values reflect the newly selected race field
+    // and then sort highest -> lowest on the 2021 column (index 3)
+    if (stateDataCache) {
+      buildStateTable(stateDataCache, fieldName);
+
+      try {
+        // only sort after an explicit user interaction
+        if (userHasInteracted) {
+          const table = $('#us-table').DataTable();
+          // order by 2021 column (index 3) descending
+          table.order([[3, 'desc']]).draw();
+          console.log(`Table sorted by ${fieldName} (highest to lowest)`);
+        }
+      } catch (err) {
+        console.warn('Unable to sort table after race selection:', err);
+      }
+    }
   });
 });
 
@@ -513,6 +536,17 @@ function getDistrictData(state) {
 
 // Build table
 function buildStateTable(stateData, fieldName) {
+  //if  DataTable already exists on #us-table, destroy it first to fully recreate with new data
+  if ($.fn.dataTable && $.fn.dataTable.isDataTable('#us-table')) {
+    try {
+      $('#us-table').DataTable().clear().destroy();
+      // also clear the tbody so new rows dont append
+      document.querySelector('#us-table tbody').innerHTML = '';
+    } catch (e) {
+      console.warn('Error destroying existing DataTable:', e);
+    }
+  }
+
   const table = new DataTable('#us-table', {
     paging: false,
     scrollCollapse: true,
