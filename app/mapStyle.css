@@ -35,7 +35,7 @@ body, html {
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-    /* display: flex; */
+    display: flex;
     gap: 6px;
 }
 

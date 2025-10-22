@@ -6,6 +6,7 @@
   <title>Adv Equity Map</title>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script defer id="search-js" src="https://api.mapbox.com/search-js/v1.5.0/web.js"></script>  <!-- mapbox search -->
   <script src="./config.js"></script> <!-- Mapbox Token Config-->
 
 
@@ -39,10 +40,10 @@
     </div>
     
     <div id="mapWidgetsQuery">
-      <div class="search_query">
-        <input type="text" placeholder="Search Query Tool..." />
-        <button>Go</button>
-      </div>
+      <div id="search_box_holder" class="search_query">
+        <!-- <input type="text" placeholder="Search Query Tool..." />
+        <button>Go</button> -->
+      </div> 
       <button id="full_extent">View US</button>
 
     </div>

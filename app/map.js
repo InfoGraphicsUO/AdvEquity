@@ -45,10 +45,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-  searchButton.addEventListener('click', () => {
-    const userInput = searchInput.value;
-    console.log('User input:', userInput);
-  });
+  // searchButton.addEventListener('click', () => {
+  //   const userInput = searchInput.value;
+  //   console.log('User input:', userInput);
+  // });
+
+  const searchBox = new MapboxSearchBox();
+  searchBox.placeholder = 'Zoom to a location...';
+    searchBox.accessToken = mapboxgl.accessToken
+    searchBox.options = {
+        types: 'city,district,region,place,locality',
+        proximity: map.getCenter(),  
+        //bbox:[-135, 30, -90, 52] // Southwest coordinates, Northeast coordinates. Same as inset bounds
+    };
+    searchBox.marker = false; // no blue pin at result
+    searchBox.mapboxgl = mapboxgl;
+    searchBox.componentOptions = { allowReverse: true, flipCoordinates: true };
+    console.log('loaded search box')
+    //map.addControl(searchBox, 'top-right');
+    document.getElementById('search_box_holder').appendChild(searchBox);
+    searchBox.bindMap(map);
+
+
+
 
   fullExtentButton.addEventListener('click', () => {
     districtPopup.remove()
