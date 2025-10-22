@@ -22,6 +22,9 @@ python .\data_utill_convert_ap_csvs.py --gzip --precision 3 --drop-null
 - requires gzip support (most things already do so mostly a non-problem)
 - using this method will drop the largest files to about 9mb
 
+EXPERIMENTAL: remove duplicate entires with GIS field = 0
+run: python .\data_utill_convert_ap_csvs.py --gis-only
+
 created by Owen
 """
 from pathlib import Path
@@ -108,7 +111,7 @@ def normalize_for_output(obj, precision=None, drop_nulls=False):
     return obj
 
 
-def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_nulls=False):
+def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_nulls=False, gis_only=False):
     name = path.name
     print(f"Converting {name}")
 
@@ -122,6 +125,20 @@ def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_n
     if is_states:
         out_obj = {}
         for row in rows:
+            # if requested, only include rows where GIS == 1
+            if gis_only:
+                gis_val = row.get('GIS') or row.get('gis') or None
+                parsed_gis = parse_value(gis_val) if gis_val is not None else None
+                if parsed_gis != 1:
+                    continue
+
+            # if requested, only include rows where GIS == 1
+            if gis_only:
+                gis_val = row.get('GIS') or row.get('gis') or None
+                parsed_gis = parse_value(gis_val) if gis_val is not None else None
+                if parsed_gis != 1:
+                    continue
+
             # prefer explicit fips column if present
             fips_num = None
             fips_candidates = ['FIPS', 'fips', 'STATE_FIPS', 'STATEID']
@@ -195,6 +212,13 @@ def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_n
         # generic array output
         out_arr = []
         for row in rows:
+            # apply gis-only filter for non-states files too
+            if gis_only:
+                gis_val = row.get('GIS') or row.get('gis') or None
+                parsed_gis = parse_value(gis_val) if gis_val is not None else None
+                if parsed_gis != 1:
+                    continue
+
             cleaned = {}
             for k, v in row.items():
                 if k is None:
@@ -235,10 +259,11 @@ if __name__ == '__main__':
     parser.add_argument('--gzip', dest='gzip_out', action='store_true', help='write gzipped json (.json.gz)')
     parser.add_argument('--precision', type=int, default=None, help='round floats to N decimals')
     parser.add_argument('--drop-null', dest='drop_nulls', action='store_true', help='omit null values from output')
+    parser.add_argument('--gis-only', dest='gis_only', action='store_true', help='only include rows where GIS == 1')
     args = parser.parse_args()
 
     for p in csv_files:
         try:
-            convert_csv(p, minify=args.minify, gzip_out=args.gzip_out, precision=args.precision, drop_nulls=args.drop_nulls)
+            convert_csv(p, minify=args.minify, gzip_out=args.gzip_out, precision=args.precision, drop_nulls=args.drop_nulls, gis_only=args.gis_only)
         except Exception as e:
             print(f"Error converting {p.name}: {e}")
