@@ -65,13 +65,6 @@ function createLongitudinalChart(containerId, values, stateAvg) {
 //   factSheetContainer.innerHTML = `<h2>Factsheet about <span id="currentState">Oregon</span></h2>`
 //   factSheetContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
 
-// factSheetContainer.innerHTML +=`
-//   XX Classes Offered in Schools <Br>
-//   Opportunity estimate for 2011-12: 80.4%<br>
-//   Opportunity estimate for 2021-22: 72.5% 
-//   `;
-// }
-
 function initFactSheet(stateData, fips, fieldName) {
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
@@ -79,7 +72,6 @@ function initFactSheet(stateData, fips, fieldName) {
 
   // set FIPS to match keys like "01"
   const fipsKey = String(fips).padStart(2, '0');
-
 
   // find the state entry by FIPS
   const stateEntry = stateData[fipsKey];
@@ -98,17 +90,17 @@ function initFactSheet(stateData, fips, fieldName) {
   const apNum2021 = stateEntry[1]?.AP_num; // 2021 AP_num value
 
   const val2011 = typeof val2011Raw === 'number'
-    ? (val2011Raw * 100).toFixed(1) + '%'
+    ? (val2011Raw).toFixed(2)
     : 'N/A';
   const val2021 = typeof val2021Raw === 'number'
-    ? (val2021Raw * 100).toFixed(1) + '%'
+    ? (val2021Raw).toFixed(2)
     : 'N/A';
 
   factSheetContainer.innerHTML = `
     <h2>Factsheet about <span id="currentState">${state_abbrev}</span></h2>
     <div id="StateOverviewCharts"></div><br>
-
-    <b>Opportunity Estimates</b><br>
+    ${apNum2021} AP Classes Offered in Schools (2021) <br>
+    <b>Opportunity Estimates</b>
     <div class="opportunity-row">
       <div class="arrow ${val2011Raw > val2021Raw ? 'arrow-down' : 'arrow-up'}">
         ${val2011Raw > val2021Raw ? '🡻' : '🡹'}
@@ -119,38 +111,68 @@ function initFactSheet(stateData, fips, fieldName) {
       </div>
     </div>
     <br>
-
-    ${apNum2021} AP Classes Offered in Schools (2021) <br>
+    <div class="opportunity-row">
+    <table id="district-table" class="table table-striped ">
+  <thead>
+    <tr>
+      <th>State</th>
+      <th>District</th>
+      <th>Students</th>
+      <th>Teachers</th>
+      <th>Opp Est 2011</th>
+      <th>Opp Est 2021</th>
+    </tr>
+  </thead>
+  <tbody id="district-table-body">
+    <!-- Dynamic rows inserted by buildDistrictTable() -->
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>State</th>
+      <th>District</th>
+      <th>Students</th>
+      <th>Teachers</th>
+      <th>Opp Est 2011</th>
+      <th>Opp Est 2021</th>
+    </tr>
+  </tfoot>
+</table>
+</div>
   `;
+
+  // buildDistrictTable(districtDataCache, 'opp_est_21-22'); 
+  getDistrictData("OR").then(districtData => {
+  buildDistrictTable(districtData, 'opp_est_21-22');
+});
 }
 
 
 
 
-function initStateOverview() {
-  const StateOverviewCharts = document.getElementById('StateOverviewCharts');
-  if (!StateOverviewCharts) return;
+// function initStateOverview() {
+//   const StateOverviewCharts = document.getElementById('StateOverviewCharts');
+//   if (!StateOverviewCharts) return;
 
+//   // no data for state race makeup overview yet.
+//   // const data = [{
+//   //   labels: ['Two-or-more', 'Asian', 'Black', 'Hispanic', 'White'],
+//   //   values: [6.1, 4.5, 1.9, 13.9, 71.7],
+//   //   type: 'pie',
+//   //   hole: 0.4, // Creates donut
+//   //   marker: {
+//   //     colors: ['#b3cde3','#fbb4ae','#ccebc5','#decbe4','#fed9a6']
+//   //   },    
+//   //   textinfo: 'label+percent',
+//   //   hoverinfo: 'label+value+percent'
+//   // }];
 
-  const data = [{
-    labels: ['Two-or-more', 'Asian', 'Black', 'Hispanic', 'White'],
-    values: [6.1, 4.5, 1.9, 13.9, 71.7],
-    type: 'pie',
-    hole: 0.4, // Creates donut
-    marker: {
-      colors: ['#b3cde3','#fbb4ae','#ccebc5','#decbe4','#fed9a6']
-    },    
-    textinfo: 'label+percent',
-    hoverinfo: 'label+value+percent'
-  }];
+//   const layout = {
+//     title: 'Racial Composition',
+//     yaxis: { title: 'Percentage', range: [0, 60] },
+//     width: 275,
+//     height: 275,
+//     showlegend: false
+//   };
 
-  const layout = {
-    title: 'Racial Composition',
-    yaxis: { title: 'Percentage', range: [0, 60] },
-    width: 275,
-    height: 275,
-    showlegend: false
-  };
-
-  Plotly.newPlot('StateOverviewCharts', data, layout);
-}
+//   Plotly.newPlot('StateOverviewCharts', data, layout);
+// }

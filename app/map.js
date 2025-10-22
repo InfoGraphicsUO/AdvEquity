@@ -4,8 +4,8 @@ let stateDataCache = null;
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.querySelector('.search_query input');
-  const searchButton = document.querySelector('.search_query button');
+  // const searchInput = document.querySelector('.search_query input');
+  // const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
   const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
 
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fullExtentButton.addEventListener('click', () => {
     districtPopup.remove()
-    document.getElementById('mapLegend').style.display = 'none'; // hide legend
+    // document.getElementById('mapLegend').style.display = 'none'; // hide legend
     map.fitBounds([[ -126, 24], [-66, 50]]); // albers
     //map.jumpTo({ center: [-99.2, 40.0], zoom: 3 })
     // remove district layer if it exists
@@ -208,11 +208,11 @@ map.on('load', () => {
     }
 });
 
-getData().then(({ geojson, stateData }) => {
+getStateData().then(({ geojson, stateData }) => {
   geojsonCache = geojson;
   stateDataCache = stateData;
 
-  buildTable(stateDataCache, 'ENR_AP_GAP_BL'); // build table with default field
+  buildStateTable(stateDataCache, 'ENR_AP_GAP_BL'); // build table with default field
   fillMap(map, geojsonCache, stateDataCache, 'ENR_AP_GAP_BL'); // default map coloring
 });
 
@@ -274,7 +274,7 @@ getData().then(({ geojson, stateData }) => {
   map.on('click', 'state-fills', function (e) {
     const clickedFeature = e.features[0];
     console.log(clickedFeature)
-    document.getElementById('mapLegend').style.display = 'block'; // display legend
+    // document.getElementById('mapLegend').style.display = 'block'; // display legend
 
       // zoom to state
     const coords = clickedFeature.geometry.coordinates;
@@ -349,7 +349,7 @@ getData().then(({ geojson, stateData }) => {
       const StateOverview = document.getElementById('StateOverviewContainer');
       if (StateOverview) {
         StateOverview.style.display = 'block'; 
-        initStateOverview();// Make it visible
+        // initStateOverview();// Make it visible
 
       }
 
@@ -477,7 +477,7 @@ getData().then(({ geojson, stateData }) => {
 });
 
 // Fetch data
-function getData() {
+function getStateData() {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
   const stateDataUrl = '../assets/data/json/AllStates.json';
 
@@ -495,8 +495,24 @@ function getData() {
   });
 }
 
+function getDistrictData(state) {
+  console.log(`getting data for ${state}`)
+  const districtDataUrl = '../assets/data/json/Oregon/or_dist_overview_update.json';
+
+  return fetch(districtDataUrl)
+    .then(res => res.json())
+    .then(districtData => {
+      console.log('Fetched District JSON:', districtData);
+      return districtData; // structure: { "Data": [ {...}, {...}, ... ] }
+    })
+    .catch(error => {
+      console.error('Error loading district data:', error);
+    });
+}
+
+
 // Build table
-function buildTable(stateData, fieldName) {
+function buildStateTable(stateData, fieldName) {
   const table = new DataTable('#us-table', {
     paging: false,
     scrollCollapse: true,
@@ -514,10 +530,10 @@ function buildTable(stateData, fieldName) {
     const fips = stateData[state][0]?.FIPS;
 
     const val2011 = typeof val2011Raw === 'number'
-      ? (val2011Raw * 100).toFixed(1) + '%'
+      ? (val2011Raw.toFixed(2))
       : 'N/A';
     const val2021 = typeof val2021Raw === 'number'
-      ? (val2021Raw * 100).toFixed(1) + '%'
+      ? (val2021Raw.toFixed(2))
       : 'N/A';
 
     // add row (note: FIPS is hidden 5th column)
@@ -526,6 +542,54 @@ function buildTable(stateData, fieldName) {
 
   table.draw();
 }
+
+
+function buildDistrictTable(districtData, fieldName) {
+  // get array of district objects
+  const districts = districtData.Data;
+
+  const table = new DataTable('#district-table', {
+    paging: false,
+    scrollCollapse: true,
+    scrollY: '300px',
+    columnDefs: [
+      { targets: 6, visible: false } // hide LEAID column (internal)
+    ]
+  });
+
+  for (const d of districts) {
+    const districtName = d.dist ?? 'Unknown';
+    const stateAbbrev = d.state ?? 'N/A';
+    const leaID = d.LEAID ?? 'N/A';
+    const numStudents = d.num_students ?? 'N/A';
+    const numTeachers = d.num_teachers ?? 'N/A';
+
+    // pick the 2011–12 and 2021–22 values
+    const val2011Raw = d['opp_est_11-12'];
+    const val2021Raw = d['opp_est_21-22'];
+
+    const val2011 = typeof val2011Raw === 'number'
+      ? (val2011Raw.toFixed(2))
+      : 'N/A';
+    const val2021 = typeof val2021Raw === 'number'
+      ? (val2021Raw.toFixed(2))
+      : 'N/A';
+
+    // add row (LEAID hidden in last column)
+    table.row.add([
+      stateAbbrev,
+      districtName,
+      numStudents,
+      numTeachers,
+      val2011,
+      val2021,
+      leaID
+    ]);
+  }
+
+  table.draw();
+}
+
 
 function highlightTableByFIPS(fipsCode) {
   const table = $('#us-table').DataTable();
@@ -658,23 +722,23 @@ function getStateValues(stateData, state, fieldName) {
 // }
 
 // Fetch data (once)
-function getData() {
-  const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-  const stateDataUrl = '../assets/data/json/AllStates.json';
+// function getStateData() {
+//   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
+//   const stateDataUrl = '../assets/data/json/AllStates.json';
 
-  return Promise.all([
-    fetch(geojsonUrl).then(res => res.json()),
-    fetch(stateDataUrl).then(res => res.json())
-  ])
-  .then(([geojson, stateData]) => {
-    console.log('Fetched GeoJSON:', geojson);
-    console.log('Fetched State JSON:', stateData);
-    return { geojson, stateData }; // return both so other funcs can use
-  })
-  .catch(error => {
-    console.error('Error loading data:', error);
-  });
-}
+//   return Promise.all([
+//     fetch(geojsonUrl).then(res => res.json()),
+//     fetch(stateDataUrl).then(res => res.json())
+//   ])
+//   .then(([geojson, stateData]) => {
+//     console.log('Fetched GeoJSON:', geojson);
+//     console.log('Fetched State JSON:', stateData);
+//     return { geojson, stateData }; // return both so other funcs can use
+//   })
+//   .catch(error => {
+//     console.error('Error loading data:', error);
+//   });
+// }
 
 // example function to color districts. Currently uses fake data.
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
