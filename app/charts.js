@@ -97,7 +97,7 @@ function initFactSheet(stateData, fips, fieldName) {
     : 'N/A';
 
   factSheetContainer.innerHTML = `
-    <h2>Factsheet about <span id="currentState">${state_abbrev}</span></h2>
+    <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     <div id="StateOverviewCharts"></div><br>
     ${apNum2021} AP Classes Offered in Schools (2021) <br>
     <b>Opportunity Estimates</b>
@@ -111,7 +111,8 @@ function initFactSheet(stateData, fips, fieldName) {
       </div>
     </div>
     <br>
-    <div class="opportunity-row">
+    <div class="opportunity-column">
+    <b>Districts in ${state_abbrev}</b><small>placeholder table fills with example OR data for all states</small><br>
     <table id="district-table" class="table table-striped ">
   <thead>
     <tr>

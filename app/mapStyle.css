@@ -135,7 +135,17 @@ h2{
   align-items: center;
   gap: 0.5em;
   margin-top: 0.25em;
+  flex-direction: row;
 }
+
+.opportunity-column {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.25em;
+  flex-direction: column;
+}
+
 
 .arrow {
   font-size: 20px;
