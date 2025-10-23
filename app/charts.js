@@ -67,6 +67,8 @@ function createLongitudinalChart(containerId, values, stateAvg) {
 
 
 function initFactSheet(stateData, fips, fieldName) {
+  showGraphs(); // hid the US level details, show the state details
+  console.log("building fact sheet")
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
 
@@ -120,7 +122,7 @@ function initFactSheet(stateData, fips, fieldName) {
 
     </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column">
-      <b>Districts in ${state_abbrev}</b>
+      <h2 class="floatText">Districts in ${state_abbrev}</h2>
       <table id="district-table" class="table table-striped">
         <thead>
           <tr>
@@ -148,13 +150,13 @@ function initFactSheet(stateData, fips, fieldName) {
   // Load and filter district data
   const loadAndBuild = (data) => {
     districtDataCache = districtDataCache || data; // cache first load
-    const filtered = data.filter(d =>
+    const filteredDistrictData = data.filter(d =>
       d.state_abbrev === state_abbrev || d.LEA_STATE === state_abbrev
     );
-    console.log('Filtered districts for', state_abbrev, filtered.length);
-    buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
-    buildStateTable(stateDataCache, 'ENR_AP_GAP_BL'); // build table with default field
-    fillStateMap(map, geojsonCache, districtDataCache, 'ENR_AP_GAP_BL'); // default map coloring
+    console.log('Filtered districts for', state_abbrev, filteredDistrictData.length);
+    //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
+    buildDistrictTable(filteredDistrictData, 'ENR_AP_GAP_BL') // actually fills the table, given the data are loaded
+    fillDistrictMap(map, filteredDistrictData, state_abbrev, fips, 'ENR_AP_GAP_BL'); // default map coloring
   };
 
   if (districtDataCache) {

@@ -194,29 +194,28 @@ map.on('load', () => {
 
 
   // LAYERS
-  map.addLayer({
-      id: 'district-fills',
-      type: 'fill', 
-      source: 'SCHOOLDIST_TL24', 
-      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
-      paint: {
-          'fill-color': 'transparent',
-      }
-  });
+  // map.addLayer({
+  //     id: 'district-fills',
+  //     type: 'fill', 
+  //     source: 'SCHOOLDIST_TL24', 
+  //     'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
+  //     paint: {
+  //         'fill-color': 'transparent',
+  //     }
+  // });
 
 
-  map.addLayer({
-      id: 'district-lines',
-      type: 'line', // or line
-      source: 'SCHOOLDIST_TL24', 
-      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
-      layout: {'display': 'none'},
-      paint: {
-        'line-color': darkGreen,
-        'line-width': 1
-      }
+  // map.addLayer({
+  //     id: 'district-lines',
+  //     type: 'line', // or line
+  //     source: 'SCHOOLDIST_TL24', 
+  //     'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
+  //     paint: {
+  //       'line-color': darkGreen,
+  //       'line-width': 1
+  //     }
 
-  });
+  // });
 
   map.addLayer({
   id: 'state-fills',
@@ -335,172 +334,101 @@ getStateData().then(({ geojson, stateData }) => {
       { selected: true }
     );
 
+      console.log("a")
     // fill fact sheet
     const fieldName = 'ENR_AP_GAP_BL';
     initFactSheet(stateDataCache, clickedFeature.id, fieldName);
 
 
-    // if Oregon ( for POC)
-    if(clickedFeature.id > 0){
-      // map.addLayer({
-      //   id: 'district-fills',
-      //   type: 'fill',
-      //   source: 'oregon_districts',
-      //   promoteId: 'GEOID',
-      //   layout: {},
-      //   paint: {
-      //    'fill-color': [
-      //     'case',
-      //     ['boolean', ['feature-state', 'hover'], false],
-      //      yellow, // yellow for hover
-      //     [
-      //       'match',
-      //       ['feature-state', 'urban_score'],
-      //       'NA', verydarkgrey,      // verydarkgrey for NA
-      //       '1', '#145214',       // green shades
-      //       '2', '#2c7a2c',
-      //       '3', '#4caf50',
-      //       '4', '#80e27e',
-      //       '5', '#b9ffb9',
-      //       verydarkgrey            
-      //     ]
-      //   ],
-      //     'fill-opacity': 1
-      //   }
-      
-      
-      // });
-      
-      const StateOverview = document.getElementById('StateOverviewContainer');
-      if (StateOverview) {
-        StateOverview.style.display = 'block'; 
-        // initStateOverview();// Make it visible
+    //   map.on('mousemove', 'district-fills', (e) => {
+    //     const feature = e.features[0];
+    //     const id = feature.id;
+    //     const props = feature.properties;
+    //     console.log(props)
+    //     if (!id) return;
 
-      }
+    //   });
 
-      
+    //     // // Clear previous hover state
+    //     // if (hoveredDistrictPolygonID !== null) {
+    //     //   map.setFeatureState(
+    //     //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+    //     //     { hover: false }
+    //     //   );
+    //     // }
 
-      // // add district lines
-      // map.addLayer({
-      //   id: 'district-lines',
-      //   type: 'line',
-      //   source: 'oregon_districts',
-      //   paint: {
-      //     'line-color': verydarkgrey,
-      //     'line-width': 0.5,
-      //     'line-opacity': 0.9
-      //   }
-      // });
+    //   //   hoveredDistrictPolygonID = id;
 
+    //   //   // Set new hover state
+    //   //   map.setFeatureState(
+    //   //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+    //   //     { hover: true }
+    //   //   );
 
+    //   //   console.log('Hovered district ID:', hoveredDistrictPolygonID);
 
-      map.on('mousemove', 'district-fills', (e) => {
-        const feature = e.features[0];
-        const id = feature.id;
-        const props = feature.properties;
-        console.log(props)
-        if (!id) return;
+    //   //   // Fetch external district data
+    //   //   const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
+    //   //   fetch(DistDataUrl)
+    //   //     .then(res => res.json())
+    //   //     .then(stateData => {
 
-      });
+    //   //       // Find the district data matching the hovered polygon ID
+    //   //       const hoveredDistrictData = stateData.Data.find(
+    //   //         d => {
+    //   //           if (!hoveredDistrictPolygonID) return false;
+    //   //           return d.LEAID === hoveredDistrictPolygonID;
+    //   //         }
+    //   //       );
+    //   //       if (!hoveredDistrictData) {
+    //   //         console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
+    //   //         return;
+    //   //       }
 
-        // // Clear previous hover state
-        // if (hoveredDistrictPolygonID !== null) {
-        //   map.setFeatureState(
-        //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-        //     { hover: false }
-        //   );
-        // }
+    //   //       const isDownward = props.AWATER % 2 === 0;
+    //   //       const directionArrow = isDownward ? '🡻' : '🡹';
+    //   //       const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
 
-      //   hoveredDistrictPolygonID = id;
+    //   //       districtPopup
+    //   //         .setLngLat(e.lngLat)
+    //   //         .setHTML(`
+    //   //           <div class="popup-content">
+    //   //             <strong>${props.NAME}</strong><br>
+    //   //             Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
+    //   //             Students: ${hoveredDistrictData.num_students}<br> 
+    //   //             Teachers: ${hoveredDistrictData.num_teachers}<br> 
+    //   //             <b>Opportunity Estimates</b><br>
+    //   //             <div class="opportunity-row">
+    //   //               <div class="arrow ${directionClass}">${directionArrow}</div>
+    //   //               <div class="opportunity-text">
+    //   //                 2011–12: xx<br>
+    //   //                 2021–22: xx
+    //   //               </div>
+    //   //             </div>
+    //   //           </div>
+    //   //         `)
+    //   //         .addTo(map);
 
-      //   // Set new hover state
-      //   map.setFeatureState(
-      //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-      //     { hover: true }
-      //   );
-
-      //   console.log('Hovered district ID:', hoveredDistrictPolygonID);
-
-      //   // Fetch external district data
-      //   const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
-      //   fetch(DistDataUrl)
-      //     .then(res => res.json())
-      //     .then(stateData => {
-
-      //       // Find the district data matching the hovered polygon ID
-      //       const hoveredDistrictData = stateData.Data.find(
-      //         d => {
-      //           if (!hoveredDistrictPolygonID) return false;
-      //           return d.LEAID === hoveredDistrictPolygonID;
-      //         }
-      //       );
-      //       if (!hoveredDistrictData) {
-      //         console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
-      //         return;
-      //       }
-
-      //       const isDownward = props.AWATER % 2 === 0;
-      //       const directionArrow = isDownward ? '🡻' : '🡹';
-      //       const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
-
-      //       districtPopup
-      //         .setLngLat(e.lngLat)
-      //         .setHTML(`
-      //           <div class="popup-content">
-      //             <strong>${props.NAME}</strong><br>
-      //             Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
-      //             Students: ${hoveredDistrictData.num_students}<br> 
-      //             Teachers: ${hoveredDistrictData.num_teachers}<br> 
-      //             <b>Opportunity Estimates</b><br>
-      //             <div class="opportunity-row">
-      //               <div class="arrow ${directionClass}">${directionArrow}</div>
-      //               <div class="opportunity-text">
-      //                 2011–12: xx<br>
-      //                 2021–22: xx
-      //               </div>
-      //             </div>
-      //           </div>
-      //         `)
-      //         .addTo(map);
-
-      //       showGraphs(); //only runs when data is available
-      //     })
-      //     .catch(error => {
-      //       console.error('Error loading data:', error);
-      //     });
-      // });
+    //   //       showGraphs(); //only runs when data is available
+    //   //     })
+    //   //     .catch(error => {
+    //   //       console.error('Error loading data:', error);
+    //   //     });
+    //   // });
 
 
-      // map.on('mouseleave', 'district-fills', () => {
-      //   // Remove hover highlight
-      //   if (hoveredDistrictPolygonID !== null) {
-      //     map.setFeatureState(
-      //       { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-      //       { hover: false }
-      //     );
-      //     hoveredDistrictPolygonID = null;
-      //   }
-
-      //   // Close the district popup
-      //   if (districtPopup) {
-      //     districtPopup.remove();
-      //   }
-
-      //   // Optional: reset the cursor
-      //   map.getCanvas().style.cursor = '';
-      // });
-
-
-            // show graphs
-            showGraphs();
-            //fillDistricts(map) // dummy data
-
-            // set graph container info about the current state
-            // add code as needed
+    //   // map.on('mouseleave', 'district-fills', () => {
+    //   //   // Remove hover highlight
+    //   //   if (hoveredDistrictPolygonID !== null) {
+    //   //     map.setFeatureState(
+    //   //       { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+    //   //       { hover: false }
+    //   //     );
+    //   //     hoveredDistrictPolygonID = null;
+    //   //   }
 
 
 
-          }
   });
 });
 
@@ -552,7 +480,7 @@ function buildStateTable(stateData, fieldName) {
     }
   }
 
-  // 🧩 Custom sort: numbers with “N/A” always last
+  // Custom sort: numbers with “N/A” always last
   jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
     'na-last-asc': function (a, b) {
       const valA = (a === 'N/A' || a === null || a === '—') ? Infinity : parseFloat(a);
@@ -753,89 +681,105 @@ function getStateValues(stateData, state, fieldName) {
   return { val2011Raw, val2021Raw };
 }
 
-function fillDistrictMap(map, districtData, state_abbrev, fieldName) {
+function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) {
   if (!map.getLayer('district-fills')) {
-    console.warn("Layer 'district-fills' not found");
-    return;
+    map.addLayer({
+      id: 'district-fills',
+      type: 'fill',
+      source: 'SCHOOLDIST_TL24',
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+      filter: ['==', ['get', 'STATEFP'], statefips],
+      paint: {
+        'fill-color': 'transparent',
+        'fill-opacity': 0.85
+      }
+    });
+  } else {
+    map.setFilter('district-fills', ['==', ['get', 'STATEFP'], statefips]);
   }
 
-  // Filter district data for the selected state
-  const filtered = districtData.filter(d =>
-    d.state_abbrev === state_abbrev || d.LEA_STATE === state_abbrev
-  );
 
+
+
+  // add district lines
+  if (!map.getLayer('district-lines')){ 
+    map.addLayer({
+      id: 'district-lines',
+      type: 'line',
+      source: 'SCHOOLDIST_TL24',
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+      filter: ['==', ['get', 'STATEFP'], statefips],
+      paint: {
+        'line-color': 'dimgrey',
+        'line-width': 0.5,
+        'line-opacity': 0.9
+      }
+    });
+  }else {
+    map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips]);
+  }
+
+  // Build lookup table: LEAID → value
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
 
-  // Collect values and compute min/max for color scaling
-  for (const d of filtered) {
-    const val2021Raw = d[fieldName];
-    if (typeof val2021Raw === 'number') {
-      const leaId = String(d.LEAID);
-      valueMap[leaId] = val2021Raw;
-      if (val2021Raw < minVal) minVal = val2021Raw;
-      if (val2021Raw > maxVal) maxVal = val2021Raw;
+  for (const d of districtData) {
+    const val = Number(d[fieldName]);
+    const leaId = String(d.LEAID);
+    if (!isNaN(val)) {
+      valueMap[leaId] = val;
+      if (val < minVal) minVal = val;
+      if (val > maxVal) maxVal = val;
     }
   }
 
-  // If no numeric data found, clear the layer and bail
-  if (minVal === Infinity || maxVal === -Infinity) {
-    console.warn(`No numeric data found for ${state_abbrev} and field ${fieldName}`);
+  if (!isFinite(minVal) || !isFinite(maxVal)) {
+    console.warn(`No valid data for ${state_abbrev} / ${fieldName}`);
     map.setPaintProperty('district-fills', 'fill-color', 'transparent');
     return;
   }
 
-  // Use an expression to color the vector tile layer by GEOID → value
-  // GEOID is a string, so we map each LEAID as a string match
-  const colorExpression = [
-    'interpolate',
-    ['linear'],
-    ['coalesce', ['get', fieldName], 0],
-    minVal, '#5a6251',
-    maxVal, '#e5e8e3'
+  if (minVal === maxVal) maxVal = minVal + 0.00001;
+  if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
+
+  // Interpolate by feature-state "value"
+  const colorRamp = [
+    "interpolate",
+    ["linear"],
+    ["feature-state", "value"],
+    minVal, "#5a6251",
+    maxVal, "#e5e8e3"
   ];
 
-  // We'll join values dynamically by setting feature-state
-  // (if we had a vector tile source, we can’t edit features directly)
-  map.setPaintProperty('district-fills', 'fill-color', [
-    'case',
-    ['boolean', ['feature-state', 'hover'], false],
-    '#ffcc00', // highlight color on hover (optional)
-    [
-      'interpolate',
-      ['linear'],
-      ['get', fieldName],
-      minVal, '#5a6251',
-      maxVal, '#e5e8e3'
-    ]
-  ]);
+  map.setPaintProperty('district-fills', 'fill-color', colorRamp);
 
-  // If your source is a GeoJSON, you could modify its data like in fillStateMap().
-  // But since this is a vector tile source, we can use feature-state updates instead:
+  // Wait until the source data is ready before assigning feature-states
   map.on('sourcedata', (e) => {
     if (e.sourceId === 'SCHOOLDIST_TL24' && e.isSourceLoaded) {
       const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
         sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
       });
 
-      features.forEach(f => {
-        const geoId = f.properties.GEOID;
+      for (const f of features) {
+        const geoId = String(f.id); // important: matches feature.id exactly
         const val = valueMap[geoId];
         if (val !== undefined) {
           map.setFeatureState(
             {
               source: 'SCHOOLDIST_TL24',
               sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-              id: geoId
+              id: geoId  // same type (string)
             },
-            { [fieldName]: val }
+            { value: val }
           );
         }
-      });
+      }
     }
   });
 }
+
+
 
 
 // example function to color districts. Uses fake data.
