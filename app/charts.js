@@ -106,7 +106,7 @@ function initFactSheet(stateData, fips, fieldName) {
   // Build factsheet HTML
   factSheetContainer.innerHTML = `
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
-    <div id="StateOverviewCharts"></div><br>
+    <div class="opportunity-column">
     ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} AP Classes Offered in Schools (2021)<br>
 
     <b>Opportunity Estimates</b>
@@ -118,13 +118,12 @@ function initFactSheet(stateData, fips, fieldName) {
       </div>
     </div>
 
-    <br>
+    </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column">
-      <b>Districts in ${state_abbrev}</b><br>
+      <b>Districts in ${state_abbrev}</b>
       <table id="district-table" class="table table-striped">
         <thead>
           <tr>
-            <th>State</th>
             <th>District</th>
             <th>Students</th>
             <th>Teachers</th>
@@ -135,7 +134,6 @@ function initFactSheet(stateData, fips, fieldName) {
         <tbody id="district-table-body"></tbody>
         <tfoot>
           <tr>
-            <th>State</th>
             <th>District</th>
             <th>Students</th>
             <th>Teachers</th>
@@ -155,6 +153,8 @@ function initFactSheet(stateData, fips, fieldName) {
     );
     console.log('Filtered districts for', state_abbrev, filtered.length);
     buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
+    buildStateTable(stateDataCache, 'ENR_AP_GAP_BL'); // build table with default field
+    fillStateMap(map, geojsonCache, districtDataCache, 'ENR_AP_GAP_BL'); // default map coloring
   };
 
   if (districtDataCache) {

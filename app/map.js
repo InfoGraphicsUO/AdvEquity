@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fill map
-    fillMap(map, geojsonCache, stateDataCache, fieldName);
+    fillStateMap(map, geojsonCache, stateDataCache, fieldName);
 
     // mark that the user has interacted to allow sorting
     userHasInteracted = true;
@@ -195,7 +195,7 @@ map.on('load', () => {
 
   // LAYERS
   map.addLayer({
-      id: 'SCHOOLDIST_TL24_-fills',
+      id: 'district-fills',
       type: 'fill', 
       source: 'SCHOOLDIST_TL24', 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
@@ -206,15 +206,16 @@ map.on('load', () => {
 
 
   map.addLayer({
-      id: 'SCHOOLDIST_TL24-lines',
+      id: 'district-lines',
       type: 'line', // or line
       source: 'SCHOOLDIST_TL24', 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
-      layout: {},
+      layout: {'display': 'none'},
       paint: {
         'line-color': darkGreen,
         'line-width': 1
       }
+
   });
 
   map.addLayer({
@@ -225,7 +226,7 @@ map.on('load', () => {
       'fill-color': [
         'case',
         ['boolean', ['feature-state', 'selected'], false],
-        'rgba(1, 1, 0, 1)',                   // <-- solid yellow when selected
+        'rgba(1, 1, 0, 1)',                   // <-- solid yellow when selected (hovered)
         'rgba(0, 0, 0, 0)'          // transparent otherwise
       ],
       'fill-opacity': 0.8
@@ -237,7 +238,7 @@ getStateData().then(({ geojson, stateData }) => {
   stateDataCache = stateData;
 
   buildStateTable(stateDataCache, 'ENR_AP_GAP_BL'); // build table with default field
-  fillMap(map, geojsonCache, stateDataCache, 'ENR_AP_GAP_BL'); // default map coloring
+  fillStateMap(map, geojsonCache, stateDataCache, 'ENR_AP_GAP_BL'); // default map coloring
 });
 
 
@@ -393,19 +394,22 @@ getStateData().then(({ geojson, stateData }) => {
 
 
 
-      // map.on('mousemove', 'district-fills', (e) => {
-      //   const feature = e.features[0];
-      //   const id = feature.id;
-      //   const props = feature.properties;
-      //   if (!id) return;
+      map.on('mousemove', 'district-fills', (e) => {
+        const feature = e.features[0];
+        const id = feature.id;
+        const props = feature.properties;
+        console.log(props)
+        if (!id) return;
 
-      //   // Clear previous hover state
-      //   if (hoveredDistrictPolygonID !== null) {
-      //     map.setFeatureState(
-      //       { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-      //       { hover: false }
-      //     );
-      //   }
+      });
+
+        // // Clear previous hover state
+        // if (hoveredDistrictPolygonID !== null) {
+        //   map.setFeatureState(
+        //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
+        //     { hover: false }
+        //   );
+        // }
 
       //   hoveredDistrictPolygonID = id;
 
@@ -625,7 +629,7 @@ function buildDistrictTable(districtData, fieldName) {
     scrollCollapse: true,
     scrollY: '300px',
     columnDefs: [
-      { targets: 6, visible: false }, // hide LEAID/internal
+      { targets: 5, visible: false }, // hide LEAID/internal
       { targets: [2, 3, 4, 5], type: 'na-last' } // numeric columns
     ]
   });
@@ -643,7 +647,8 @@ function buildDistrictTable(districtData, fieldName) {
 
     // Filter by year
     const yr2011 = records.find(r => r.YEAR === 2011);
-    const yr2021 = records.find(r => r.YEAR === 2021 || r.YEAR === 2020 || r.YEAR === 2021); // pick last available if exact 2021 missing
+    // const yr2021 = records.find(r => r.YEAR === 2021 || r.YEAR === 2020 || r.YEAR === 2021); // pick last available if exact 2021 missing
+    const yr2021 = records.find(r => r.YEAR === 2021); // pick last available if exact 2021 missing
 
     const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
     const stateAbbrev = yr2021?.LEA_STATE ?? yr2011?.LEA_STATE ?? '—';
@@ -660,7 +665,6 @@ function buildDistrictTable(districtData, fieldName) {
     const teachersDisplay = typeof numTeachers === 'number' ? numTeachers.toLocaleString() : '—';
 
     table.row.add([
-      stateAbbrev,
       districtName,
       studentsDisplay,
       teachersDisplay,
@@ -698,7 +702,7 @@ function clearTableHighlights() {
   table.$('tr.selected').removeClass('selected');
 }
 
-function fillMap(map, geojson, stateData, fieldName) {
+function fillStateMap(map, geojson, stateData, fieldName) {
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
@@ -749,53 +753,136 @@ function getStateValues(stateData, state, fieldName) {
   return { val2011Raw, val2021Raw };
 }
 
+function fillDistrictMap(map, districtData, state_abbrev, fieldName) {
+  if (!map.getLayer('district-fills')) {
+    console.warn("Layer 'district-fills' not found");
+    return;
+  }
 
-// example function to color districts. Uses fake data.
-function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
-  fetch('/assets/data/geojson/oregon_districts.geojson')
-    .then(response => response.json())
-    .then(data => {
-      data.features.forEach(feature => {
-        const id = feature.properties.GEOID;
-        if (!id) return;
+  // Filter district data for the selected state
+  const filtered = districtData.filter(d =>
+    d.state_abbrev === state_abbrev || d.LEA_STATE === state_abbrev
+  );
 
-        const name = feature.properties.NAME;
-        let urbanScore = 'NA';
+  const valueMap = {};
+  let minVal = Infinity;
+  let maxVal = -Infinity;
 
-        const urbanLike = ['Portland', 'Salem', 'Eugene', 'Beaverton', 'Hillsboro'];
-        if (urbanLike.some(city => name.includes(city))) {
-          urbanScore = String(Math.floor(Math.random() * 5) + 1); // 1-5 as string
-        } else {
-          urbanScore = Math.random() > 0.5 ? String(Math.floor(Math.random() * 5) + 1) : 'NA';
-        }
+  // Collect values and compute min/max for color scaling
+  for (const d of filtered) {
+    const val2021Raw = d[fieldName];
+    if (typeof val2021Raw === 'number') {
+      const leaId = String(d.LEAID);
+      valueMap[leaId] = val2021Raw;
+      if (val2021Raw < minVal) minVal = val2021Raw;
+      if (val2021Raw > maxVal) maxVal = val2021Raw;
+    }
+  }
 
-        map.setFeatureState(
-          { source: districtSourceId, id: id },
-          { urban_score: urbanScore }
-        );
+  // If no numeric data found, clear the layer and bail
+  if (minVal === Infinity || maxVal === -Infinity) {
+    console.warn(`No numeric data found for ${state_abbrev} and field ${fieldName}`);
+    map.setPaintProperty('district-fills', 'fill-color', 'transparent');
+    return;
+  }
+
+  // Use an expression to color the vector tile layer by GEOID → value
+  // GEOID is a string, so we map each LEAID as a string match
+  const colorExpression = [
+    'interpolate',
+    ['linear'],
+    ['coalesce', ['get', fieldName], 0],
+    minVal, '#5a6251',
+    maxVal, '#e5e8e3'
+  ];
+
+  // We'll join values dynamically by setting feature-state
+  // (if we had a vector tile source, we can’t edit features directly)
+  map.setPaintProperty('district-fills', 'fill-color', [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    '#ffcc00', // highlight color on hover (optional)
+    [
+      'interpolate',
+      ['linear'],
+      ['get', fieldName],
+      minVal, '#5a6251',
+      maxVal, '#e5e8e3'
+    ]
+  ]);
+
+  // If your source is a GeoJSON, you could modify its data like in fillStateMap().
+  // But since this is a vector tile source, we can use feature-state updates instead:
+  map.on('sourcedata', (e) => {
+    if (e.sourceId === 'SCHOOLDIST_TL24' && e.isSourceLoaded) {
+      const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
+        sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
       });
 
-      // update paint after all states are set
-      map.setPaintProperty('district-fills', 'fill-color', [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        '#ffff00', // example hover color (yellow)
-        [
-          'match',
-          ['feature-state', 'urban_score'],
-          'NA', darkgrey,
-          '1', '#145214',
-          '2', '#2c7a2c',
-          '3', '#4caf50',
-          '4', '#80e27e',
-          '5', '#b9ffb9',
-          verydarkgrey // fallback
-        ]
-      ])
-    // .catch(error => console.error('Error fetching districts GeoJSON:', error));
+      features.forEach(f => {
+        const geoId = f.properties.GEOID;
+        const val = valueMap[geoId];
+        if (val !== undefined) {
+          map.setFeatureState(
+            {
+              source: 'SCHOOLDIST_TL24',
+              sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+              id: geoId
+            },
+            { [fieldName]: val }
+          );
+        }
+      });
+    }
   });
 }
 
+
+// example function to color districts. Uses fake data.
+// function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
+//   fetch('/assets/data/geojson/oregon_districts.geojson')
+//     .then(response => response.json())
+//     .then(data => {
+//       data.features.forEach(feature => {
+//         const id = feature.properties.GEOID;
+//         if (!id) return;
+
+//         const name = feature.properties.NAME;
+//         let urbanScore = 'NA';
+
+//         const urbanLike = ['Portland', 'Salem', 'Eugene', 'Beaverton', 'Hillsboro'];
+//         if (urbanLike.some(city => name.includes(city))) {
+//           urbanScore = String(Math.floor(Math.random() * 5) + 1); // 1-5 as string
+//         } else {
+//           urbanScore = Math.random() > 0.5 ? String(Math.floor(Math.random() * 5) + 1) : 'NA';
+//         }
+
+//         map.setFeatureState(
+//           { source: districtSourceId, id: id },
+//           { urban_score: urbanScore }
+//         );
+//       });
+
+//       // update paint after all states are set
+//       map.setPaintProperty('district-fills', 'fill-color', [
+//         'case',
+//         ['boolean', ['feature-state', 'hover'], false],
+//         '#ffff00', // example hover color (yellow)
+//         [
+//           'match',
+//           ['feature-state', 'urban_score'],
+//           'NA', darkgrey,
+//           '1', '#145214',
+//           '2', '#2c7a2c',
+//           '3', '#4caf50',
+//           '4', '#80e27e',
+//           '5', '#b9ffb9',
+//           verydarkgrey // fallback
+//         ]
+//       ])
+//     // .catch(error => console.error('Error fetching districts GeoJSON:', error));
+//   });
+// }
 
 
 

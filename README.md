@@ -131,7 +131,7 @@ Core JavaScript file for map functionality using Mapbox GL JS.
   - Interactions: Hover for popups, click to zoom/fly to states/districts, highlight tables.
   - Data Fetching: GeoJSON for states, JSON for state data (e.g., `AllStates.json`).
   - Functions:
-    - `fillMap(map, geojson, stateData, fieldName)`: Colors map based on fields like 'ENR_AP_GAP_BL' (Black gap).
+    - `fillStateMap(map, geojson, stateData, fieldName)`: Colors map based on fields like 'ENR_AP_GAP_BL' (Black gap).
     - `buildOpportunityTable(geojson, stateData)`: Builds state table (stubbed; uses DataTables in full).
     - `fillDistricts(map, ...)`: Colors districts with dummy urban scores.
     - `showGraphs()` / `hideGraphs()`: Toggles info/graph containers.
