@@ -597,15 +597,15 @@ function buildStateTable(stateData, fieldName) {
   table.draw();
 }
 
-function buildDistrictTable(districtData) {
-  // Custom sort: NA values always last
+function buildDistrictTable(districtData, fieldName) {
+  // Custom sort for N/A
   jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
-    'na-last-asc': function (a, b) {
+    'na-last-asc': (a, b) => {
       const valA = (a === 'N/A' || a === null || a === '—') ? Infinity : parseFloat(a);
       const valB = (b === 'N/A' || b === null || b === '—') ? Infinity : parseFloat(b);
       return valA - valB;
     },
-    'na-last-desc': function (a, b) {
+    'na-last-desc': (a, b) => {
       const valA = (a === 'N/A' || a === null || a === '—') ? -Infinity : parseFloat(a);
       const valB = (b === 'N/A' || b === null || b === '—') ? -Infinity : parseFloat(b);
       return valB - valA;
@@ -617,9 +617,7 @@ function buildDistrictTable(districtData) {
     try {
       $('#district-table').DataTable().clear().destroy();
       document.querySelector('#district-table tbody').innerHTML = '';
-    } catch (e) {
-      console.warn('Error destroying existing DataTable:', e);
-    }
+    } catch (e) { console.warn(e); }
   }
 
   const table = new DataTable('#district-table', {
@@ -632,27 +630,29 @@ function buildDistrictTable(districtData) {
     ]
   });
 
-  // Group data by LEAID (optional)
+  // Group by LEAID
   const grouped = {};
   for (const d of districtData) {
-    const id = d.LEAID ?? Math.random(); // if LEAID missing, use dummy id
+    const id = d.LEAID ?? Math.random();
     if (!grouped[id]) grouped[id] = [];
     grouped[id].push(d);
   }
 
   for (const id in grouped) {
     const records = grouped[id];
+
+    // Filter by year
     const yr2011 = records.find(r => r.YEAR === 2011);
-    const yr2021 = records.find(r => r.YEAR === 2021);
+    const yr2021 = records.find(r => r.YEAR === 2021 || r.YEAR === 2020 || r.YEAR === 2021); // pick last available if exact 2021 missing
 
     const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
     const stateAbbrev = yr2021?.LEA_STATE ?? yr2011?.LEA_STATE ?? '—';
     const numStudents = yr2021?.ENR ?? yr2011?.ENR ?? '—';
     const numTeachers = yr2021?.SCH_FTETEACH_TOT ?? yr2011?.SCH_FTETEACH_TOT ?? '—';
 
-    // FIXED: Use correct fields for each year
-    const val2011Raw = yr2011?.['opp_est_11-12'];
-    const val2021Raw = yr2021?.['opp_est_21-22'];
+    // Pull the Opportunity Estimate from your chosen field, filtered by year
+    const val2011Raw = yr2011?.[fieldName];
+    const val2021Raw = yr2021?.[fieldName];
 
     const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
     const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';

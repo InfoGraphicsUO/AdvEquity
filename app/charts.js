@@ -78,34 +78,36 @@ function initFactSheet(stateData, fips, fieldName) {
     return;
   }
 
+  // State abbreviation and values
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
-  const val2011Raw = stateEntry[0]?.[fieldName];               // first year = 2011
-  const lastEntry = stateEntry[stateEntry.length - 1];        // last year = 2021
+  const val2011Raw = stateEntry[0]?.[fieldName];
+  const lastEntry = stateEntry[stateEntry.length - 1]; // last year = 2021
   const val2021Raw = lastEntry?.[fieldName];
-  const apNum2021 = lastEntry?.ENR_AP ?? '—';
 
+  // AP classes offered in 2021
+  const apNum2021 = lastEntry?.ENR_AP ?? '—';
 
   const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
   const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
 
-  // Determine arrow
-let arrowIcon = '';
-let arrowClass = '';
-
-if (typeof val2011Raw === 'number' && typeof val2021Raw === 'number') {
-  if (val2021Raw > val2011Raw) {
-    arrowIcon = '🡹';
-    arrowClass = 'arrow-up';
-  } else if (val2021Raw < val2011Raw) {
-    arrowIcon = '🡻';
-    arrowClass = 'arrow-down';
+  // Arrow indicator
+  let arrowIcon = '';
+  let arrowClass = '';
+  if (typeof val2011Raw === 'number' && typeof val2021Raw === 'number') {
+    if (val2021Raw > val2011Raw) {
+      arrowIcon = '🡹';
+      arrowClass = 'arrow-up';
+    } else if (val2021Raw < val2011Raw) {
+      arrowIcon = '🡻';
+      arrowClass = 'arrow-down';
+    }
   }
-}
-  // Build HTML
+
+  // Build factsheet HTML
   factSheetContainer.innerHTML = `
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     <div id="StateOverviewCharts"></div><br>
-    ${apNum2021.toLocaleString()} AP Classes Offered in Schools (2021)<br>
+    ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} AP Classes Offered in Schools (2021)<br>
 
     <b>Opportunity Estimates</b>
     <div class="opportunity-row">
@@ -145,14 +147,14 @@ if (typeof val2011Raw === 'number' && typeof val2021Raw === 'number') {
     </div>
   `;
 
-  // Load / filter districts
+  // Load and filter district data
   const loadAndBuild = (data) => {
-    districtDataCache = districtDataCache || data; // cache if first load
+    districtDataCache = districtDataCache || data; // cache first load
     const filtered = data.filter(d =>
       d.state_abbrev === state_abbrev || d.LEA_STATE === state_abbrev
     );
     console.log('Filtered districts for', state_abbrev, filtered.length);
-    buildDistrictTable(filtered);
+    buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
   };
 
   if (districtDataCache) {
@@ -164,6 +166,7 @@ if (typeof val2011Raw === 'number' && typeof val2021Raw === 'number') {
       .catch(err => console.error('Error loading district data:', err));
   }
 }
+
 
 
 
