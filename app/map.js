@@ -1,6 +1,7 @@
 // define caches in outer scope
 let geojsonCache = null;
 let stateDataCache = null;
+let districtDataCache = null;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -502,7 +503,7 @@ getStateData().then(({ geojson, stateData }) => {
 // Fetch data
 function getStateData() {
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-  const stateDataUrl = '../assets/data/json/AllStates.json';
+  const stateDataUrl = '../assets/data/json/ap_equity_states.json';
 
   return Promise.all([
     fetch(geojsonUrl).then(res => res.json()),
@@ -518,111 +519,160 @@ function getStateData() {
   });
 }
 
+
 function getDistrictData(state) {
-  console.log(`getting data for ${state}`)
-  const districtDataUrl = '../assets/data/json/Oregon/or_dist_overview_update.json';
+  console.log(`getting data for ${state}`);
+  const districtDataUrl = '../assets/data/json/ap_equity_districts.json';
 
   return fetch(districtDataUrl)
     .then(res => res.json())
     .then(districtData => {
       console.log('Fetched District JSON:', districtData);
-      return districtData; // structure: { "Data": [ {...}, {...}, ... ] }
+      // new data is an array, not an object
+      return districtData;
     })
     .catch(error => {
       console.error('Error loading district data:', error);
     });
 }
 
-
-// Build table
+// Build the state table (2011 + 2021 only)
 function buildStateTable(stateData, fieldName) {
-  //if  DataTable already exists on #us-table, destroy it first to fully recreate with new data
+  // Destroy existing DataTable if present
   if ($.fn.dataTable && $.fn.dataTable.isDataTable('#us-table')) {
     try {
       $('#us-table').DataTable().clear().destroy();
-      // also clear the tbody so new rows dont append
       document.querySelector('#us-table tbody').innerHTML = '';
     } catch (e) {
       console.warn('Error destroying existing DataTable:', e);
     }
   }
 
+  // 🧩 Custom sort: numbers with “N/A” always last
+  jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
+    'na-last-asc': function (a, b) {
+      const valA = (a === 'N/A' || a === null || a === '—') ? Infinity : parseFloat(a);
+      const valB = (b === 'N/A' || b === null || b === '—') ? Infinity : parseFloat(b);
+      return valA - valB;
+    },
+    'na-last-desc': function (a, b) {
+      const valA = (a === 'N/A' || a === null || a === '—') ? -Infinity : parseFloat(a);
+      const valB = (b === 'N/A' || b === null || b === '—') ? -Infinity : parseFloat(b);
+      return valB - valA;
+    }
+  });
+
+  // Initialize DataTable
   const table = new DataTable('#us-table', {
     paging: false,
     scrollCollapse: true,
     scrollY: '200px',
     columnDefs: [
-      { targets: 4, visible: false } // hide FIPS column
+      { targets: 4, visible: false }, // hide FIPS
+      { targets: [1, 2, 3], type: 'na-last' } // apply custom sort
     ]
   });
 
+  // Populate rows
   for (let state in stateData) {
-    const ap = stateData[state][1]?.AP_num ?? 'N/A';
-    const val2011Raw = stateData[state][0]?.[fieldName];
-    const val2021Raw = stateData[state][1]?.[fieldName];
-    const stateAbbrev = stateData[state][0]?.state_abbrev;
-    const fips = stateData[state][0]?.FIPS;
+    const stateArray = stateData[state];
 
-    const val2011 = typeof val2011Raw === 'number'
-      ? (val2011Raw.toFixed(2))
-      : 'N/A';
-    const val2021 = typeof val2021Raw === 'number'
-      ? (val2021Raw.toFixed(2))
-      : 'N/A';
+    const yr2011 = stateArray.find(d => d.YEAR === 2011);
+    const yr2021 = stateArray.find(d => d.YEAR === 2021);
 
-    // add row (note: FIPS is hidden 5th column)
-    table.row.add([stateAbbrev, ap, val2011, val2021, fips]);
+    const ap = yr2021?.ENR_AP ?? 'N/A';
+    const val2011Raw = yr2011?.[fieldName];
+    const val2021Raw = yr2021?.[fieldName];
+    const stateAbbrev = yr2011?.state_abbrev ?? yr2021?.state_abbrev ?? '';
+    const fips = yr2011?.FIPS ?? yr2021?.FIPS ?? '';
+
+    // Format display values
+    const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
+    const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
+    const apDisplay = typeof ap === 'number' ? ap.toLocaleString() : '—';
+
+    table.row.add([stateAbbrev, apDisplay, val2011, val2021, fips]);
   }
 
   table.draw();
 }
 
+function buildDistrictTable(districtData) {
+  // Custom sort: NA values always last
+  jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
+    'na-last-asc': function (a, b) {
+      const valA = (a === 'N/A' || a === null || a === '—') ? Infinity : parseFloat(a);
+      const valB = (b === 'N/A' || b === null || b === '—') ? Infinity : parseFloat(b);
+      return valA - valB;
+    },
+    'na-last-desc': function (a, b) {
+      const valA = (a === 'N/A' || a === null || a === '—') ? -Infinity : parseFloat(a);
+      const valB = (b === 'N/A' || b === null || b === '—') ? -Infinity : parseFloat(b);
+      return valB - valA;
+    }
+  });
 
-function buildDistrictTable(districtData, fieldName) {
-  // get array of district objects
-  const districts = districtData.Data;
+  // Destroy existing table if exists
+  if ($.fn.dataTable && $.fn.dataTable.isDataTable('#district-table')) {
+    try {
+      $('#district-table').DataTable().clear().destroy();
+      document.querySelector('#district-table tbody').innerHTML = '';
+    } catch (e) {
+      console.warn('Error destroying existing DataTable:', e);
+    }
+  }
 
   const table = new DataTable('#district-table', {
     paging: false,
     scrollCollapse: true,
     scrollY: '300px',
     columnDefs: [
-      { targets: 6, visible: false } // hide LEAID column (internal)
+      { targets: 6, visible: false }, // hide LEAID/internal
+      { targets: [2, 3, 4, 5], type: 'na-last' } // numeric columns
     ]
   });
 
-  for (const d of districts) {
-    const districtName = d.dist ?? 'Unknown';
-    const stateAbbrev = d.state ?? 'N/A';
-    const leaID = d.LEAID ?? 'N/A';
-    const numStudents = d.num_students ?? 'N/A';
-    const numTeachers = d.num_teachers ?? 'N/A';
+  // Group data by LEAID (optional)
+  const grouped = {};
+  for (const d of districtData) {
+    const id = d.LEAID ?? Math.random(); // if LEAID missing, use dummy id
+    if (!grouped[id]) grouped[id] = [];
+    grouped[id].push(d);
+  }
 
-    // pick the 2011–12 and 2021–22 values
-    const val2011Raw = d['opp_est_11-12'];
-    const val2021Raw = d['opp_est_21-22'];
+  for (const id in grouped) {
+    const records = grouped[id];
+    const yr2011 = records.find(r => r.YEAR === 2011);
+    const yr2021 = records.find(r => r.YEAR === 2021);
 
-    const val2011 = typeof val2011Raw === 'number'
-      ? (val2011Raw.toFixed(2))
-      : 'N/A';
-    const val2021 = typeof val2021Raw === 'number'
-      ? (val2021Raw.toFixed(2))
-      : 'N/A';
+    const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
+    const stateAbbrev = yr2021?.LEA_STATE ?? yr2011?.LEA_STATE ?? '—';
+    const numStudents = yr2021?.ENR ?? yr2011?.ENR ?? '—';
+    const numTeachers = yr2021?.SCH_FTETEACH_TOT ?? yr2011?.SCH_FTETEACH_TOT ?? '—';
 
-    // add row (LEAID hidden in last column)
+    // FIXED: Use correct fields for each year
+    const val2011Raw = yr2011?.['opp_est_11-12'];
+    const val2021Raw = yr2021?.['opp_est_21-22'];
+
+    const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
+    const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
+    const studentsDisplay = typeof numStudents === 'number' ? numStudents.toLocaleString() : '—';
+    const teachersDisplay = typeof numTeachers === 'number' ? numTeachers.toLocaleString() : '—';
+
     table.row.add([
       stateAbbrev,
       districtName,
-      numStudents,
-      numTeachers,
+      studentsDisplay,
+      teachersDisplay,
       val2011,
       val2021,
-      leaID
+      id
     ]);
   }
 
   table.draw();
 }
+
 
 
 function highlightTableByFIPS(fipsCode) {
@@ -700,81 +750,7 @@ function getStateValues(stateData, state, fieldName) {
 }
 
 
-// function buildOpportunityTable(geojson, stateData) {
-//   // STUBBED OUT FUNCTION -> Replaced with build table (builds from datatables library)
-
-//   // const container = document.getElementById('us-opportunity-table');
-//   container.innerHTML = '';
-//   // Create header row
-//   const headerRow = document.createElement('div');
-//   headerRow.className = 'row header-row';
-//   headerRow.innerHTML = `
-//     <div class="cell state">State</div>
-//     <div class="cell ap-classes">Modal # of AP Classes (Student-Weighted)</div>
-//     <div class="cell opp-11">Opportunity Estimate 2011–12</div>
-//     <div class="cell opp-21">Opportunity Estimate 2021–22</div>
-//   `;
-//   container.appendChild(headerRow);
-
-// const sortedFeatures = geojson.features.slice().sort((a, b) => {
-
-//   if (a.id === 41) return -1; // a is Oregon → comes first
-//   if (b.id === 41) return 1;  // b is Oregon → comes first
-//   return Number(a.id) - Number(b.id)
-// });
-
-//   // Loop through GeoJSON features to create rows
-//   sortedFeatures.forEach((feature) => {
-//     const props = feature.properties;
-//     const stateName = props.STATE_NAME;
-//     const fips = props.STATE_ID.padStart(2, '0'); // ensure 2-digit ID
-
-//     // Default fallback if not Oregon
-//     let ap = '—';
-//     let opp11 = '—';
-//     let opp21 = '—';
-
-//     // Match only Oregon
-//     if (props.STATE_NAME === 'Oregon') {
-//       ap = stateData.weighted_mean_ap?.toFixed(2) ?? '—';
-//       opp11 = (stateData.opp_est_1 * 100).toFixed(1) + '%' ?? '—';
-//       opp21 = (stateData.opp_est_2 * 100).toFixed(1) + '%' ?? '—';
-//     }
-
-//     const row = document.createElement('div');
-//     row.className = 'row';
-//     row.id = `row-${fips}`;
-//     row.innerHTML = `
-//       <div class="cell state">${stateName}</div>
-//       <div class="cell ap-classes" id="ap-${fips}">${ap}</div>
-//       <div class="cell opp-11" id="opp11-${fips}">${opp11}</div>
-//       <div class="cell opp-21" id="opp21-${fips}">${opp21}</div>
-//     `;
-
-//     container.appendChild(row);
-//   });
-// }
-
-// Fetch data (once)
-// function getStateData() {
-//   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
-//   const stateDataUrl = '../assets/data/json/AllStates.json';
-
-//   return Promise.all([
-//     fetch(geojsonUrl).then(res => res.json()),
-//     fetch(stateDataUrl).then(res => res.json())
-//   ])
-//   .then(([geojson, stateData]) => {
-//     console.log('Fetched GeoJSON:', geojson);
-//     console.log('Fetched State JSON:', stateData);
-//     return { geojson, stateData }; // return both so other funcs can use
-//   })
-//   .catch(error => {
-//     console.error('Error loading data:', error);
-//   });
-// }
-
-// example function to color districts. Currently uses fake data.
+// example function to color districts. Uses fake data.
 function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
   fetch('/assets/data/geojson/oregon_districts.geojson')
     .then(response => response.json())

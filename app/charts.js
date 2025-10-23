@@ -65,87 +65,106 @@ function createLongitudinalChart(containerId, values, stateAvg) {
 //   factSheetContainer.innerHTML = `<h2>Factsheet about <span id="currentState">Oregon</span></h2>`
 //   factSheetContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
 
+
 function initFactSheet(stateData, fips, fieldName) {
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
-  console.log(stateData)
 
-  // set FIPS to match keys like "01"
   const fipsKey = String(fips).padStart(2, '0');
-
-  // find the state entry by FIPS
   const stateEntry = stateData[fipsKey];
-  //console.log(stateEntry);
-  //console.log(stateData)
 
   if (!stateEntry) {
     factSheetContainer.innerHTML = `<p>No data found for FIPS ${fips}</p>`;
     return;
   }
 
-  // const stateName = stateEntry[0]?.state_name ?? 'Unknown';
-  const state_abbrev = stateDataCache[fips][0].state_abbrev ?? 'Unknown';
-  const val2011Raw = stateEntry[0]?.[fieldName];
-  const val2021Raw = stateEntry[1]?.[fieldName];
-  const apNum2021 = stateEntry[1]?.AP_num; // 2021 AP_num value
+  const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
+  const val2011Raw = stateEntry[0]?.[fieldName];               // first year = 2011
+  const lastEntry = stateEntry[stateEntry.length - 1];        // last year = 2021
+  const val2021Raw = lastEntry?.[fieldName];
+  const apNum2021 = lastEntry?.ENR_AP ?? '—';
 
-  const val2011 = typeof val2011Raw === 'number'
-    ? (val2011Raw).toFixed(2)
-    : 'N/A';
-  const val2021 = typeof val2021Raw === 'number'
-    ? (val2021Raw).toFixed(2)
-    : 'N/A';
 
+  const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
+  const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
+
+  // Determine arrow
+let arrowIcon = '';
+let arrowClass = '';
+
+if (typeof val2011Raw === 'number' && typeof val2021Raw === 'number') {
+  if (val2021Raw > val2011Raw) {
+    arrowIcon = '🡹';
+    arrowClass = 'arrow-up';
+  } else if (val2021Raw < val2011Raw) {
+    arrowIcon = '🡻';
+    arrowClass = 'arrow-down';
+  }
+}
+  // Build HTML
   factSheetContainer.innerHTML = `
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     <div id="StateOverviewCharts"></div><br>
-    ${apNum2021} AP Classes Offered in Schools (2021) <br>
+    ${apNum2021.toLocaleString()} AP Classes Offered in Schools (2021)<br>
+
     <b>Opportunity Estimates</b>
     <div class="opportunity-row">
-      <div class="arrow ${val2011Raw > val2021Raw ? 'arrow-down' : 'arrow-up'}">
-        ${val2011Raw > val2021Raw ? '🡻' : '🡹'}
-      </div>
+      <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
         2011–12: ${val2011}<br>
         2021–22: ${val2021}
       </div>
     </div>
+
     <br>
     <div class="opportunity-column">
-    <b>Districts in ${state_abbrev}</b><small>placeholder table fills with example OR data for all states</small><br>
-    <table id="district-table" class="table table-striped ">
-  <thead>
-    <tr>
-      <th>State</th>
-      <th>District</th>
-      <th>Students</th>
-      <th>Teachers</th>
-      <th>Opp Est 2011</th>
-      <th>Opp Est 2021</th>
-    </tr>
-  </thead>
-  <tbody id="district-table-body">
-    <!-- Dynamic rows inserted by buildDistrictTable() -->
-  </tbody>
-  <tfoot>
-    <tr>
-      <th>State</th>
-      <th>District</th>
-      <th>Students</th>
-      <th>Teachers</th>
-      <th>Opp Est 2011</th>
-      <th>Opp Est 2021</th>
-    </tr>
-  </tfoot>
-</table>
-</div>
+      <b>Districts in ${state_abbrev}</b><br>
+      <table id="district-table" class="table table-striped">
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>District</th>
+            <th>Students</th>
+            <th>Teachers</th>
+            <th>Opp Est 2011</th>
+            <th>Opp Est 2021</th>
+          </tr>
+        </thead>
+        <tbody id="district-table-body"></tbody>
+        <tfoot>
+          <tr>
+            <th>State</th>
+            <th>District</th>
+            <th>Students</th>
+            <th>Teachers</th>
+            <th>Opp Est 2011</th>
+            <th>Opp Est 2021</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   `;
 
-  // buildDistrictTable(districtDataCache, 'opp_est_21-22'); 
-  getDistrictData("OR").then(districtData => {
-  buildDistrictTable(districtData, 'opp_est_21-22');
-});
+  // Load / filter districts
+  const loadAndBuild = (data) => {
+    districtDataCache = districtDataCache || data; // cache if first load
+    const filtered = data.filter(d =>
+      d.state_abbrev === state_abbrev || d.LEA_STATE === state_abbrev
+    );
+    console.log('Filtered districts for', state_abbrev, filtered.length);
+    buildDistrictTable(filtered);
+  };
+
+  if (districtDataCache) {
+    loadAndBuild(districtDataCache);
+  } else {
+    fetch('../assets/data/json/ap_equity_districts.json')
+      .then(res => res.json())
+      .then(loadAndBuild)
+      .catch(err => console.error('Error loading district data:', err));
+  }
 }
+
 
 
 
