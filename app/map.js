@@ -168,6 +168,36 @@ map.on('load', () => {
   });
 
 
+  // hide labels that we don't want
+  // List of label layers that use the worldview property
+  const labelLayers = [
+  'state-label',
+  'settlement-label',
+  'settlement-subdivision-label',
+  'airport-label',
+  'road-label-simple',
+  'natural-line-label',
+  'natural-point-label',
+  'poi-label',
+  'settlement-minor-label',
+  'settlement-major-label',
+  ];
+
+  // Filter to show only US 
+labelLayers.forEach(layerId => {
+    // Check if the layer exists before applying the filter
+    if (map.getLayer(layerId)) {
+      // Use the 'any' expression to check multiple possible country code properties
+      map.setFilter(layerId, [
+        'any',
+        ['==', ['get', 'iso_3166_1'], 'US'], // For country-level features
+        ['==', ['get', 'iso_3166_2'], 'US'], // For state/province-level features (may not apply)
+        ['==', ['get', 'country_code'], 'USA'], // Another common property name
+      ]);
+    }
+  });
+
+
 
   // SOURCES
   map.addSource('states', {
