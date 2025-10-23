@@ -51,6 +51,12 @@ CSV_DIR = ROOT / 'assets' / 'data' / 'AP Data'
 OUT_DIR = ROOT / 'assets' / 'data' / 'json'
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
+# the fields we're gonna keep from the csvs when converting to json
+ALLOWED_FIELDS = {
+    'LEA_STATE', 'LEAID', 'LEA_NAME', 'SCH_NAME', 'YEAR',
+    'ENR_AP_GAP_BL', 'ENR_AP_GAP_AS', 'ENR_AP_GAP_HI'
+}
+
 # increase csv field size limit (handle very large fields)
 try:
     csv.field_size_limit(sys.maxsize)
@@ -167,7 +173,10 @@ def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_n
             for k, v in row.items():
                 if k is None:
                     continue
-                cleaned[k.strip()] = parse_value(v)
+                key = k.strip()
+                if key not in ALLOWED_FIELDS:
+                    continue
+                cleaned[key] = parse_value(v)
 
             # normalize year to int when possible
             if 'YEAR' in cleaned and cleaned['YEAR'] is not None:
@@ -176,7 +185,7 @@ def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_n
                 except Exception:
                     pass
 
-            # ensure fips and abbre present
+            # ensure fips and abbre present (keep these even if not in ALLOWED_FIELDS)
             cleaned['FIPS'] = fips_num
             cleaned['state_abbrev'] = state_abbrev.upper() if state_abbrev else cleaned.get('state_abbrev') or ''
 
@@ -223,7 +232,10 @@ def convert_csv(path: Path, minify=False, gzip_out=False, precision=None, drop_n
             for k, v in row.items():
                 if k is None:
                     continue
-                cleaned[k.strip()] = parse_value(v)
+                key = k.strip()
+                if key not in ALLOWED_FIELDS:
+                    continue
+                cleaned[key] = parse_value(v)
             out_arr.append(cleaned)
         out_path = OUT_DIR / (path.stem + ('.json.gz' if gzip_out else '.json'))
         normalized = normalize_for_output(out_arr, precision=precision, drop_nulls=drop_nulls)
