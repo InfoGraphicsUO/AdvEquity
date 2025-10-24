@@ -732,17 +732,17 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     }, 'state-fills');//add below district-fills to keep hover color above
 
 
-      map.on('mouseenter', 'district-fills', (e) => {
-        map.getCanvas().style.cursor = 'pointer';
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const description = e.features[0].properties.LEA_NAME;
-        popup.setLngLat(coordinates).setHTML(description).addTo(map);
-    });
+    //   map.on('mouseenter', 'district-fills', (e) => {
+    //     map.getCanvas().style.cursor = 'pointer';
+    //     const coordinates = e.features[0].geometry.coordinates.slice();
+    //     const description = e.features[0].properties.LEA_NAME;
+    //     popup.setLngLat(coordinates).setHTML(description).addTo(map);
+    // });
 
-    map.on('mouseleave', 'district-fills', () => {
-        map.getCanvas().style.cursor = '';
-        popup.remove();
-    });
+    // map.on('mouseleave', 'district-fills', () => {
+    //     map.getCanvas().style.cursor = '';
+    //     popup.remove();
+    // });
 
 
 
@@ -920,8 +920,14 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         AP Enrollment: ${fmtValue(latest.ENR_AP, latestYear)}<br>
         Number of Schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
       </p>
-      <p><b>  District Composition</b></p>
-      <canvas id="compDonut" width="150" height="150"></canvas>
+      <p><b>District Composition</b>
+      <label class="composition-toggle">
+        <input type="checkbox" id="compToggle">
+        <small>show Bar</small>
+      </label>
+      </p>
+      <canvas id="compDonut" width="300" height="100"></canvas>
+      <canvas id="compBar" width="300" height="100" style="display:none;"></canvas>
     </div>
 
     <div class="opportunity-column">
@@ -940,15 +946,25 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     AS: latest.ENR_AS,
     OTH: latest.ENR_OTH
   };
-  drawDonutChart("compDonut", compData, colors);
 
-  // --- Prepare AP gap chart data ---
+  drawDonutChart("compDonut", compData, colors);
+  drawCompositionBar("compBar", compData, colors);
+
+  // Toggle between donut and bar
+  document.getElementById("compToggle").addEventListener("change", function() {
+    const showBar = this.checked;
+    document.getElementById("compDonut").style.display = showBar ? "none" : "block";
+    document.getElementById("compBar").style.display = showBar ? "block" : "none";
+  });
+
+  // --- Prepare gap chart data ---
   const years = records.map(r => r.YEAR);
   const series = {
     BL: records.map(r => r.ENR_AP_GAP_BL),
     AS: records.map(r => r.ENR_AP_GAP_AS),
     HI: records.map(r => r.ENR_AP_GAP_HI)
   };
+
   drawMiniChart("gapChart", years, series, { BL: colors.BL, AS: colors.AS, HI: colors.HI });
   drawLegend("gapLegend", series);
 }
@@ -975,47 +991,107 @@ function drawDonutChart(canvasId, data, colors) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Sort data entries by value ascending
-  const entries = Object.entries(data).sort((b, a) => (a[1] || 0) - (b[1] || 0));
-
-  const total = entries.reduce((sum, [, val]) => sum + (val || 0), 0);
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = Math.min(centerX, centerY) * 0.8;
-  let startAngle = -Math.PI / 2;
+  // Sort entries ascending for legend order
+  const entries = Object.entries(data).sort((a,b)=>(a[1]||0)-(b[1]||0));
+  const total = entries.reduce((sum,[,v])=>sum+(v||0),0);
+  const centerX = canvas.width/2;
+  const centerY = canvas.height/2;
+  const radius = Math.min(centerX, centerY)*0.8;
+  let startAngle = -Math.PI/2;
 
   // Draw donut segments
-  for (const [key, value] of entries) {
-    const val = value || 0;
-    const sliceAngle = (val / total) * Math.PI * 2;
+  for(const [key,value] of entries){
+    const sliceAngle = ((value||0)/total)*Math.PI*2;
     ctx.beginPath();
-    ctx.fillStyle = colors[key] || "#000";
-    ctx.moveTo(centerX, centerY);
-    ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+    ctx.fillStyle = colors[key]||"#000";
+    ctx.moveTo(centerX,centerY);
+    ctx.arc(centerX,centerY,radius,startAngle,startAngle+sliceAngle);
     ctx.closePath();
     ctx.fill();
-    startAngle += sliceAngle;
+    startAngle+=sliceAngle;
   }
 
-  // Draw inner circle to create donut effect
+  // Inner circle
   ctx.beginPath();
-  ctx.fillStyle = "#fff";
-  ctx.arc(centerX, centerY, radius * 0.6, 0, Math.PI * 2);
+  ctx.fillStyle="#fff";
+  ctx.arc(centerX,centerY,radius*0.6,0,Math.PI*2);
   ctx.fill();
 
-  // Draw mini legend below the donut in ascending order
-  const legendX = 10;
-  let legendY = canvas.height - 20;
-  ctx.font = "12px sans-serif";
-  for (const [key, value] of entries) {
-    const val = value || 0;
-    ctx.fillStyle = colors[key] || "#000";
-    ctx.fillRect(legendX, legendY - 10, 12, 12);
-    ctx.fillStyle = "#000";
-    ctx.fillText(`${key}: ${val}`, legendX + 18, legendY);
-    legendY -= 16;
+  // Legend on left (ascending)
+  const legendX = 5;
+  let legendY = 20;
+  ctx.font="12px sans-serif";
+  ctx.textAlign="left";
+  ctx.textBaseline="middle";
+
+  for(const [key,value] of entries){
+    ctx.fillStyle = colors[key]||"#000";
+    ctx.fillRect(legendX,legendY-10,12,12);
+    ctx.fillStyle="#000";
+    ctx.fillText(`${key}: ${value}`,legendX+18,legendY);
+    legendY+=16;
+  }
+}
+
+// --- Draw horizontal composition bar with below legend for small segments ---
+function drawCompositionBar(canvasId, data, colors) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const entries = Object.entries(data);
+  const total = entries.reduce((sum,[,v])=>sum+(v||0),0);
+
+  const barHeight=30;
+  const startY=20;
+  let x=0;
+  const legendEntries = [];
+
+  ctx.font="12px sans-serif";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+
+  // Draw stacked bar with internal labels if wide enough
+  for(const [key,value] of entries){
+    const width=(value||0)/total*canvas.width;
+    ctx.fillStyle = colors[key]||"#000";
+    ctx.fillRect(x,startY,width,barHeight);
+
+    if(width>40){
+      ctx.fillStyle="#fff";
+      ctx.fillText(`${key}: ${value}`,x+width/2,startY+barHeight/2);
+    } else {
+      legendEntries.push([key,value]);
+    }
+    x+=width;
+  }
+
+  // Draw legend below bar for segments too small for inside label
+  ctx.font="12px sans-serif";
+  ctx.textAlign="left";
+  ctx.textBaseline="middle";
+  const legendPadding=5;
+  let legendX=0;
+  let legendY=startY+barHeight+15;
+  const legendHeight=16;
+
+  for(const [key,value] of legendEntries){
+    const text=`${key}: ${value}`;
+    const textWidth=ctx.measureText(text).width+18+legendPadding; // 18 for color box
+    if(legendX+textWidth>canvas.width){
+      legendX=0;
+      legendY+=legendHeight;
+    }
+    // Color box
+    ctx.fillStyle = colors[key]||"#000";
+    ctx.fillRect(legendX,legendY-10,12,12);
+    // Text
+    ctx.fillStyle="#000";
+    ctx.fillText(text,legendX+18,legendY);
+    legendX+=textWidth;
   }
 }
 

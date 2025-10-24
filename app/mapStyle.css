@@ -250,3 +250,38 @@ h2{
   border-radius: 3px;
 }
 /* end legend */
+
+
+
+/* toggle for comp picker */
+/* Container for the district composition toggle */
+.districtCompToggle {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between options */
+  margin-bottom: 5px;
+  font-size: 0.9em;
+}
+
+/* Hide default radio buttons */
+.districtCompToggle input[type="radio"] {
+  display: none;
+}
+
+/* Style labels as buttons */
+.districtCompToggle label {
+  padding: 5px 12px;
+  border: 1px solid #aaa;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+/* Active state */
+.districtCompToggle input[type="radio"]:checked + label {
+  background-color: #4a90e2;
+  color: white;
+  border-color: #4a90e2;
+}
