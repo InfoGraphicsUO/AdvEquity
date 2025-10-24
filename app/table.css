@@ -69,3 +69,8 @@
   box-shadow: none !important;
   outline: none !important;
 }
+
+
+.table tbody tr:hover td, .table tbody tr:hover th {
+    background-color: var(--yellow) !important;
+}

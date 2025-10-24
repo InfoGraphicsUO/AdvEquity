@@ -107,8 +107,8 @@ function initFactSheet(stateData, fips, fieldName) {
 
   // Build factsheet HTML
   factSheetContainer.innerHTML = `
-    <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     <div class="opportunity-column">
+    <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} AP Classes Offered in Schools (2021)<br>
 
     <b>Opportunity Estimates</b>
@@ -150,10 +150,11 @@ function initFactSheet(stateData, fips, fieldName) {
   // Load and filter district data
   const loadAndBuild = (data) => {
     districtDataCache = districtDataCache || data; // cache first load
+    console.log(data[0].LEA_STATE)
     const filteredDistrictData = data.filter(d =>
-      d.state_abbrev === state_abbrev || d.LEA_STATE === state_abbrev
+      d.LEA_STATE == state_abbrev
     );
-    console.log('Filtered districts for', state_abbrev, filteredDistrictData.length);
+    console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
     //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
     buildDistrictTable(filteredDistrictData, 'ENR_AP_GAP_BL') // actually fills the table, given the data are loaded
     fillDistrictMap(map, filteredDistrictData, state_abbrev, fips, 'ENR_AP_GAP_BL'); // default map coloring

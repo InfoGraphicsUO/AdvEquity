@@ -104,7 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
       map.removeLayer('district-fills');
     }
     hideGraphs();
-    StateOverview.style.display = 'none'; // hide state panel
+
+    $('#race-selectBlk').click() // trigger returning gto US view with Opportunity Estimate for Black Students
+    //StateOverview.style.display = 'none'; // hide state panel
 
   });
 
@@ -324,6 +326,44 @@ getStateData().then(({ geojson, stateData }) => {
 
     clearTableHighlights();
   });
+
+  // TABLE HOVER FUNCTIONALITY
+  // --- When table row is hovered ---
+
+$('#us-table tbody').on('mouseenter', 'tr', function() {
+  const table = $('#us-table').DataTable();
+  const rowData = table.row(this).data();
+  if (!rowData) return;
+
+  const fips = rowData[4]; // the last column
+  console.log(fips)
+
+  // Clear previous highlight
+  if (hoveredPolygonId !== null) {
+    map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
+  }
+
+  // Highlight new feature
+  hoveredPolygonId = fips;
+  map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
+});
+
+$('#us-table tbody').on('mouseleave', 'tr', function() {
+  const table = $('#us-table').DataTable();
+  const rowData = table.row(this).data();
+  if (!rowData) return;
+
+  const fips = rowData[4];
+
+  // Remove highlight if it's the same one
+  if (hoveredPolygonId === fips) {
+    map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
+    hoveredPolygonId = null;
+  }
+});
+
+// END HOVER FUTIONALITY
+
 
   map.on('click', 'state-fills', function (e) {
     const clickedFeature = e.features[0];
