@@ -962,9 +962,12 @@ function showDistrictFactsheet(clickedFeature, districtData) {
       <p>
         Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
         Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
+        HS Enrollment: ${fmtValue(latest.ENR_HS_TOT, latestYear)}<br>
         Student-teacher ratio: ${fmtValue(latest.STU_TEACH_RAT, latestYear)}<br>
         AP Enrollment: ${fmtValue(latest.ENR_AP, latestYear)}<br>
-        Number of Schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
+        Modal AP courses: ${fmtValue(latest.SCH_APCOURSES, latestYear)}<br>
+        Number of schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
+
       </p>
       <p><b>District Composition</b>
       <label class="composition-toggle">
@@ -984,13 +987,13 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     </div>
   `  + dropdownHtml;
 
-  // --- Prepare donut data ---
+  // --- Prepare comp data ---
   const compData = {
-    WH: latest.ENR_WH,
-    HI: latest.ENR_HI,
-    BL: latest.ENR_BL,
-    AS: latest.ENR_AS,
-    OTH: latest.ENR_OTH
+    WH: latest.PCT_ENR_WH,
+    HI: latest.PCT_ENR_HI,
+    BL: latest.PCT_ENR_BL,
+    AS: latest.PCT_ENR_AS,
+    OTH: latest.PCT_ENR_OTH
   };
 
   drawDonutChart("compDonut", compData, colors);
