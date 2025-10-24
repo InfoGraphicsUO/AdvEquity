@@ -364,7 +364,6 @@ getStateData().then(({ geojson, stateData }) => {
       { selected: true }
     );
 
-      console.log("a")
     // fill fact sheet
     const fieldName = 'ENR_AP_GAP_BL';
     initFactSheet(stateDataCache, clickedFeature.id, fieldName);
@@ -460,6 +459,11 @@ getStateData().then(({ geojson, stateData }) => {
 
 
   });
+});
+
+const popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
 });
 
 // Fetch data
@@ -726,6 +730,22 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         'fill-opacity': 0.85
       }
     });
+
+
+      map.on('mouseenter', 'district-fills', (e) => {
+        map.getCanvas().style.cursor = 'pointer';
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const description = e.features[0].properties.LEA_NAME;
+        popup.setLngLat(coordinates).setHTML(description).addTo(map);
+    });
+
+    map.on('mouseleave', 'district-fills', () => {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
+
+
+
   } else {
     map.setFilter('district-fills', ['==', ['get', 'STATEFP'], statefips]);
   }
@@ -814,60 +834,84 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       }
     }
   });
+
+
+  // district  interaction
+  map.on('click', 'district-fills', function (e) {
+    const clickedFeature = e.features[0];
+    console.log(clickedFeature)
+    // document.getElementById('mapLegend').style.display = 'block'; // display legend
+
+      // zoom to state
+    const coords = clickedFeature.geometry.coordinates;
+    // console.log(JSON.stringify(coords, null, 1));
+    const bounds = new mapboxgl.LngLatBounds();
+
+    function extendBounds(coordinates) {
+      if (typeof coordinates[0][0] === 'number') {
+        // coordinates is an array of [lng, lat]
+        coordinates.forEach(coord => bounds.extend(coord));
+      } else {
+        // coordinates is nested (MultiPolygon), recurse
+        coordinates.forEach(extendBounds);
+      }
+    }
+
+    extendBounds(coords);
+
+    map.fitBounds(bounds, { padding: 20 });
+
+    // fill factsheet area:
+     showDistrictFactsheet(clickedFeature, districtData);
+
+
+  });
+  
+
 }
+function showDistrictFactsheet(clickedFeature, districtData) {
+  const geoId = String(clickedFeature.properties.GEOID);
+  
+  // Find the district record whose LEAID or GEOID matches
+  const record = districtData.find(d => String(d.LEAID) === geoId || String(d.GEOID) === geoId);
 
+  const factSheetContainer = document.getElementById("factSheetContainer");
 
+  if (!record) {
+    factSheetContainer.innerHTML = `
+      <h2><b>No data found for District ID ${geoId}</b></h2>
+      <div class="opportunity-column">No district data available.</div>
+    `;
+    return;
+  }
 
+  // Safely extract key values
+  const leaName = record.LEA_NAME || "Unknown district";
+  const year = record.YEAR || "N/A";
+  const enr = record.ENR ?? "N/A";
+  const teachers = record.SCH_FTETEACH_TOT ?? "N/A";
+  const gapBL = record.ENR_AP_GAP_BL ?? "N/A";
+  const gapAS = record.ENR_AP_GAP_AS ?? "N/A";
+  const gapHI = record.ENR_AP_GAP_HI ?? "N/A";
 
+  factSheetContainer.innerHTML = `
+    <h2><b>Factsheet about <span id="currentState">${leaName}</span></b></h2>
 
-// example function to color districts. Uses fake data.
-// function fillDistricts(map, districtSourceId = 'oregon_districts', districtLayerId = 'district-fills') {
-//   fetch('/assets/data/geojson/oregon_districts.geojson')
-//     .then(response => response.json())
-//     .then(data => {
-//       data.features.forEach(feature => {
-//         const id = feature.properties.GEOID;
-//         if (!id) return;
+    <div class="opportunity-column">
+      <p><b>District ID:</b> ${geoId}</p>
+      <p><b>District Name:</b> ${leaName}</p>
+      <p><b>Data Year:</b> ${year}</p>
+      <p><b>Total Enrollment:</b> ${enr}</p>
+      <p><b>Total Teachers (FTE):</b> ${teachers}</p>
+    </div>
 
-//         const name = feature.properties.NAME;
-//         let urbanScore = 'NA';
-
-//         const urbanLike = ['Portland', 'Salem', 'Eugene', 'Beaverton', 'Hillsboro'];
-//         if (urbanLike.some(city => name.includes(city))) {
-//           urbanScore = String(Math.floor(Math.random() * 5) + 1); // 1-5 as string
-//         } else {
-//           urbanScore = Math.random() > 0.5 ? String(Math.floor(Math.random() * 5) + 1) : 'NA';
-//         }
-
-//         map.setFeatureState(
-//           { source: districtSourceId, id: id },
-//           { urban_score: urbanScore }
-//         );
-//       });
-
-//       // update paint after all states are set
-//       map.setPaintProperty('district-fills', 'fill-color', [
-//         'case',
-//         ['boolean', ['feature-state', 'hover'], false],
-//         '#ffff00', // example hover color (yellow)
-//         [
-//           'match',
-//           ['feature-state', 'urban_score'],
-//           'NA', darkgrey,
-//           '1', '#145214',
-//           '2', '#2c7a2c',
-//           '3', '#4caf50',
-//           '4', '#80e27e',
-//           '5', '#b9ffb9',
-//           verydarkgrey // fallback
-//         ]
-//       ])
-//     // .catch(error => console.error('Error fetching districts GeoJSON:', error));
-//   });
-// }
-
-
-
+    <div class="opportunity-column">
+      <p><b>AP Gap (Black):</b> ${gapBL}</p>
+      <p><b>AP Gap (Asian):</b> ${gapAS}</p>
+      <p><b>AP Gap (Hispanic):</b> ${gapHI}</p>
+    </div>
+  `;
+}
 
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'
