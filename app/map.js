@@ -133,7 +133,7 @@ const map = new mapboxgl.Map({
   bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
   maxBounds: [[ -135, 25],[-40, 53]], // bounding box (southwest corner, northeast corner)
   fitBoundsOptions: {
-    padding: 15 // padding to keep the bounds away from the edge of the map
+    padding: 30 // padding to keep the bounds away from the edge of the map
   },
   // projection: 'albers',
   // center: [-99.2, 40.0],
@@ -347,7 +347,7 @@ getStateData().then(({ geojson, stateData }) => {
 
     extendBounds(coords);
 
-    map.fitBounds(bounds, { padding: 20 });
+    map.fitBounds(bounds, { padding: 30 });
 
       // clear old selection
   if (selectedPolygonId !== null) {
@@ -729,7 +729,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         'fill-color': 'transparent',
         'fill-opacity': 0.85
       }
-    });
+    }, 'state-fills');//add below district-fills to keep hover color above
 
 
       map.on('mouseenter', 'district-fills', (e) => {
@@ -759,7 +759,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
       filter: ['==', ['get', 'STATEFP'], statefips],
       paint: {
-        'line-color': 'dimgrey',
+        'line-color': 'grey',
         'line-width': 0.5,
         'line-opacity': 0.9
       }
@@ -859,7 +859,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
     extendBounds(coords);
 
-    map.fitBounds(bounds, { padding: 20 });
+    map.fitBounds(bounds, { padding: 30 });
 
     // fill factsheet area:
      showDistrictFactsheet(clickedFeature, districtData);
@@ -869,15 +869,16 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   
 
 }
+
+
+// --- District fact sheet ---
 function showDistrictFactsheet(clickedFeature, districtData) {
   const geoId = String(clickedFeature.properties.GEOID);
-  
-  // Find the district record whose LEAID or GEOID matches
-  const record = districtData.find(d => String(d.LEAID) === geoId || String(d.GEOID) === geoId);
+  const records = districtData.filter(d => String(d.LEAID) === geoId);
 
   const factSheetContainer = document.getElementById("factSheetContainer");
 
-  if (!record) {
+  if (!records.length) {
     factSheetContainer.innerHTML = `
       <h2><b>No data found for District ID ${geoId}</b></h2>
       <div class="opportunity-column">No district data available.</div>
@@ -885,32 +886,220 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     return;
   }
 
-  // Safely extract key values
-  const leaName = record.LEA_NAME || "Unknown district";
-  const year = record.YEAR || "N/A";
-  const enr = record.ENR ?? "N/A";
-  const teachers = record.SCH_FTETEACH_TOT ?? "N/A";
-  const gapBL = record.ENR_AP_GAP_BL ?? "N/A";
-  const gapAS = record.ENR_AP_GAP_AS ?? "N/A";
-  const gapHI = record.ENR_AP_GAP_HI ?? "N/A";
+  // Sort by YEAR ascending
+  records.sort((a, b) => a.YEAR - b.YEAR);
+  const latest = records[records.length - 1];
+  const leaName = latest.LEA_NAME || "Unknown district";
+  const latestYear = latest.YEAR;
 
-  factSheetContainer.innerHTML = `
-    <h2><b>Factsheet about <span id="currentState">${leaName}</span></b></h2>
+  // Unified colors for both charts
+  const colors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
 
-    <div class="opportunity-column">
-      <p><b>District ID:</b> ${geoId}</p>
-      <p><b>District Name:</b> ${leaName}</p>
-      <p><b>Data Year:</b> ${year}</p>
-      <p><b>Total Enrollment:</b> ${enr}</p>
-      <p><b>Total Teachers (FTE):</b> ${teachers}</p>
-    </div>
+  // --- Dropdown of district names ---
+  const districtNames = districtData
+    .map(d => d.LEA_NAME)
+    .filter((v, i, a) => v && a.indexOf(v) === i)
+    .sort();
 
-    <div class="opportunity-column">
-      <p><b>AP Gap (Black):</b> ${gapBL}</p>
-      <p><b>AP Gap (Asian):</b> ${gapAS}</p>
-      <p><b>AP Gap (Hispanic):</b> ${gapHI}</p>
-    </div>
+  const dropdownHtml = `
+    <br><label for="districtPicker">Jump to District</label>
+    <select id="districtPicker" style="margin-bottom:10px; max-width:300px;">
+      ${districtNames.map(name => `<option value="${name}">${toTitleCase(name)}</option>`).join('')}
+    </select>
   `;
+
+  // --- Build factsheet HTML ---
+  factSheetContainer.innerHTML = `
+    <h2><b>${leaName} Factsheet</b></h2>
+    <div class="opportunity-column">
+      <p><b>Latest information</b></p>
+      <p>
+        Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
+        Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
+        Student-teacher ratio: ${fmtValue(latest.STU_TEACH_RAT, latestYear)}<br>
+        AP Enrollment: ${fmtValue(latest.ENR_AP, latestYear)}<br>
+        Number of Schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
+      </p>
+      <p><b>  District Composition</b></p>
+      <canvas id="compDonut" width="150" height="150"></canvas>
+    </div>
+
+    <div class="opportunity-column">
+      <p><b>Historic/temporal information</b></p>
+      <canvas id="gapChart" width="300" height="120"></canvas>
+      <div id="gapLegend" style="font-size:0.85em;margin-top:5px;"></div>
+      <p style="font-size:0.9em;color:#666">AP Participation Gap by Year</p>
+    </div>
+  `  + dropdownHtml;
+
+  // --- Prepare donut data ---
+  const compData = {
+    WH: latest.ENR_WH,
+    HI: latest.ENR_HI,
+    BL: latest.ENR_BL,
+    AS: latest.ENR_AS,
+    OTH: latest.ENR_OTH
+  };
+  drawDonutChart("compDonut", compData, colors);
+
+  // --- Prepare AP gap chart data ---
+  const years = records.map(r => r.YEAR);
+  const series = {
+    BL: records.map(r => r.ENR_AP_GAP_BL),
+    AS: records.map(r => r.ENR_AP_GAP_AS),
+    HI: records.map(r => r.ENR_AP_GAP_HI)
+  };
+  drawMiniChart("gapChart", years, series, { BL: colors.BL, AS: colors.AS, HI: colors.HI });
+  drawLegend("gapLegend", series);
+}
+
+
+// get most recent year of data
+function fmtValue(val, year, targetYear = 2021) {
+  if (val == null || isNaN(val)) return "N/A";
+
+  // Format number: if integer, keep as is; if float, round to 2 decimals
+  let formatted;
+  if (typeof val === "number") {
+    formatted = Number.isInteger(val) ? val.toLocaleString() : val.toFixed(2);
+  } else {
+    formatted = val;
+  }
+
+  return year !== targetYear ? `${formatted} (${year})` : formatted;
+}
+
+
+
+function drawDonutChart(canvasId, data, colors) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Sort data entries by value ascending
+  const entries = Object.entries(data).sort((b, a) => (a[1] || 0) - (b[1] || 0));
+
+  const total = entries.reduce((sum, [, val]) => sum + (val || 0), 0);
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = Math.min(centerX, centerY) * 0.8;
+  let startAngle = -Math.PI / 2;
+
+  // Draw donut segments
+  for (const [key, value] of entries) {
+    const val = value || 0;
+    const sliceAngle = (val / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.fillStyle = colors[key] || "#000";
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+    ctx.closePath();
+    ctx.fill();
+    startAngle += sliceAngle;
+  }
+
+  // Draw inner circle to create donut effect
+  ctx.beginPath();
+  ctx.fillStyle = "#fff";
+  ctx.arc(centerX, centerY, radius * 0.6, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw mini legend below the donut in ascending order
+  const legendX = 10;
+  let legendY = canvas.height - 20;
+  ctx.font = "12px sans-serif";
+  for (const [key, value] of entries) {
+    const val = value || 0;
+    ctx.fillStyle = colors[key] || "#000";
+    ctx.fillRect(legendX, legendY - 10, 12, 12);
+    ctx.fillStyle = "#000";
+    ctx.fillText(`${key}: ${val}`, legendX + 18, legendY);
+    legendY -= 16;
+  }
+}
+
+
+
+function drawMiniChart(canvasId, years, series, colors) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const padding = 30;
+  const w = canvas.width - padding * 2;
+  const h = canvas.height - padding * 1.5;
+
+  // Flatten all values to get min/max
+  const allVals = Object.values(series).flat().filter(v => v != null && !isNaN(v));
+  const min = Math.min(...allVals);
+  const max = Math.max(...allVals);
+  const xStep = w / (years.length - 1);
+
+  // Draw lines and dots
+  for (const [key, values] of Object.entries(series)) {
+    ctx.beginPath();
+    ctx.strokeStyle = colors[key] || "#000";
+    ctx.lineWidth = 1.5;
+
+    values.forEach((v, i) => {
+      if (v == null || isNaN(v)) return;
+      const x = padding + i * xStep;
+      const y = padding + h - ((v - min) / (max - min)) * h;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Draw dots
+    values.forEach((v, i) => {
+      if (v == null || isNaN(v)) return;
+      const x = padding + i * xStep;
+      const y = padding + h - ((v - min) / (max - min)) * h;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = colors[key] || "#000";
+      ctx.fill();
+
+      // Label 2021 point
+      if (years[i] === 2021) {
+        ctx.fillStyle = colors[key] || "#000";
+        ctx.font = "10px sans-serif";
+        ctx.fillText(v.toFixed(2), x + 4, y - 4);
+      }
+    });
+  }
+
+  // Draw x-axis labels (years)
+  ctx.fillStyle = "#555";
+  ctx.font = "10px sans-serif";
+  years.forEach((yr, i) => {
+    const x = padding + i * xStep - 8;
+    ctx.fillText(yr.toString().slice(2), x, canvas.height - 5);
+  });
+}
+
+
+function drawLegend(containerId, series) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const colors = { BL: "#1b9e77", AS: "#7570b3", HI: "#d95f02" };
+  container.innerHTML = "";
+
+  Object.keys(series).forEach(key => {
+    const span = document.createElement("span");
+    span.style.display = "inline-block";
+    span.style.marginRight = "10px";
+    span.style.color = colors[key];
+    span.innerHTML = `<b>${key}</b>`;
+    container.appendChild(span);
+  });
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
 }
 
 function showGraphs(){
