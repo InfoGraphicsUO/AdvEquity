@@ -731,19 +731,25 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       }
     }, 'state-fills');//add below district-fills to keep hover color above
 
+map.on('mousemove', 'district-fills', (e) => {
+  map.getCanvas().style.cursor = 'pointer';
 
-    //   map.on('mouseenter', 'district-fills', (e) => {
-    //     map.getCanvas().style.cursor = 'pointer';
-    //     const coordinates = e.features[0].geometry.coordinates.slice();
-    //     const description = e.features[0].properties.LEA_NAME;
-    //     popup.setLngLat(coordinates).setHTML(description).addTo(map);
-    // });
+  const props = e.features[0].properties;
+  const description = `
+    <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
+      <strong>${props.NAME}</strong><br>
+    </div>
+  `;
 
-    // map.on('mouseleave', 'district-fills', () => {
-    //     map.getCanvas().style.cursor = '';
-    //     popup.remove();
-    // });
+  popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+});
 
+    
+
+    map.on('mouseleave', 'district-fills', () => {
+      map.getCanvas().style.cursor = '';
+      popup.remove();
+    });
 
 
   } else {
