@@ -53,8 +53,8 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # the fields we're gonna keep from the csvs when converting to json
 ALLOWED_FIELDS = {
-    'LEA_STATE', 'LEAID', 'LEA_NAME', 'SCH_NAME', 'YEAR','SCH_FTETEACH_TOT',
-    'ENR_AP_GAP_BL', 'ENR_AP_GAP_AS', 'ENR_AP_GAP_HI', 'ENR_AP', 'ENR'
+    'LEA_STATE', 'LEAID', 'LEA_NAME', 'SCH_NAME', 'YEAR','SCH_FTE','TEACH_TOT', 'STU_TEACH_RAT',
+    'ENR_AP_GAP_BL', 'ENR_AP_GAP_AS', 'ENR_AP_GAP_HI', 'ENR_AP', 'ENR', 'SCHOOLS',
 }
 
 # increase csv field size limit (handle very large fields)
