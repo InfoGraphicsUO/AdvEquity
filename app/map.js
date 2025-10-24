@@ -727,7 +727,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       filter: ['==', ['get', 'STATEFP'], statefips],
       paint: {
         'fill-color': 'transparent',
-        'fill-opacity': 0.85
+        'fill-opacity': 0.9
       }
     }, 'state-fills');//add below district-fills to keep hover color above
 
@@ -902,15 +902,15 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     .sort();
 
   const dropdownHtml = `
-    <br><label for="districtPicker">Jump to District</label>
-    <select id="districtPicker" style="margin-bottom:10px; max-width:300px;">
-      ${districtNames.map(name => `<option value="${name}">${toTitleCase(name)}</option>`).join('')}
-    </select>
+    <br><br><label for="districtPicker" style="align-self: center;">Jump to District</label>
+<select id="districtPicker" style="align-self: center; margin-bottom: 10px; max-width: 300px;">
+  ${districtNames.map(name => `<option value="${name}">${toTitleCase(name)}</option>`).join('')}
+</select>
   `;
 
   // --- Build factsheet HTML ---
   factSheetContainer.innerHTML = `
-    <h2><b>${leaName} Factsheet</b></h2>
+    <h2><b>${toTitleCase(leaName)} Factsheet</b></h2>
     <div class="opportunity-column">
       <p><b>Latest information</b></p>
       <p>
@@ -925,7 +925,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     </div>
 
     <div class="opportunity-column">
-      <p><b>Historic/temporal information</b></p>
+      <br><br><p><b>Historic/temporal information</b></p>
       <canvas id="gapChart" width="300" height="120"></canvas>
       <div id="gapLegend" style="font-size:0.85em;margin-top:5px;"></div>
       <p style="font-size:0.9em;color:#666">AP Participation Gap by Year</p>

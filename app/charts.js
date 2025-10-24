@@ -127,7 +127,7 @@ function initFactSheet(stateData, fips, fieldName) {
         <thead>
           <tr>
             <th>District</th>
-            <th>Students</th>
+            <th>Enrollment</th>
             <th>Teachers</th>
             <th>Opp Est 2011</th>
             <th>Opp Est 2021</th>
@@ -137,7 +137,7 @@ function initFactSheet(stateData, fips, fieldName) {
         <tfoot>
           <tr>
             <th>District</th>
-            <th>Students</th>
+            <th>Enrollment</th>
             <th>Teachers</th>
             <th>Opp Est 2011</th>
             <th>Opp Est 2021</th>
