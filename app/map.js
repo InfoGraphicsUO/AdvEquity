@@ -711,7 +711,9 @@ function getStateValues(stateData, state, fieldName) {
   return { val2011Raw, val2021Raw };
 }
 
-function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) {
+function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, targetYear = 2021) {
+  map.setPaintProperty('state-fills', 'fill-color', 'transparent');
+
   if (!map.getLayer('district-fills')) {
     map.addLayer({
       id: 'district-fills',
@@ -728,9 +730,6 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) 
     map.setFilter('district-fills', ['==', ['get', 'STATEFP'], statefips]);
   }
 
-
-
-
   // add district lines
   if (!map.getLayer('district-lines')){ 
     map.addLayer({
@@ -745,27 +744,35 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) 
         'line-opacity': 0.9
       }
     });
-  }else {
+  } else {
     map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips]);
   }
+
+  // Filter to the target year
+  const filtered = districtData.filter(d => Number(d.YEAR) === targetYear);
 
   // Build lookup table: LEAID → value
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
 
-  for (const d of districtData) {
-    const val = Number(d[fieldName]);
-    const leaId = String(d.LEAID);
-    if (!isNaN(val)) {
+  // filter out nulls
+  for (const d of filtered) {
+    const raw = d[fieldName];
+
+    // Only handle finite numeric values
+    if (raw !== null && raw !== undefined && !isNaN(Number(raw))) {
+      const val = Number(raw);
+      const leaId = String(d.LEAID);
       valueMap[leaId] = val;
       if (val < minVal) minVal = val;
       if (val > maxVal) maxVal = val;
     }
   }
 
+
   if (!isFinite(minVal) || !isFinite(maxVal)) {
-    console.warn(`No valid data for ${state_abbrev} / ${fieldName}`);
+    console.warn(`No valid data for ${state_abbrev} / ${fieldName} / ${targetYear}`);
     map.setPaintProperty('district-fills', 'fill-color', 'transparent');
     return;
   }
@@ -779,7 +786,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) 
     ["linear"],
     ["feature-state", "value"],
     minVal, "#5a6251",
-    maxVal, "#e5e8e3"
+    maxVal, "#e5e8e3",
   ];
 
   map.setPaintProperty('district-fills', 'fill-color', colorRamp);
@@ -792,14 +799,14 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) 
       });
 
       for (const f of features) {
-        const geoId = String(f.id); // important: matches feature.id exactly
+        const geoId = String(f.id);
         const val = valueMap[geoId];
         if (val !== undefined) {
           map.setFeatureState(
             {
               source: 'SCHOOLDIST_TL24',
               sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-              id: geoId  // same type (string)
+              id: geoId
             },
             { value: val }
           );
@@ -808,6 +815,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName) 
     }
   });
 }
+
 
 
 
