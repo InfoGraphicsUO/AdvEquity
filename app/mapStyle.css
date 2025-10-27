@@ -102,10 +102,22 @@ button:hover {
 }
 
 /* Shared styles for the lower containers */
+
+#factSheetContainer {
+  display: none;                /* hidden by default */
+  flex-direction: column;       /* stack rows vertically */
+  background: var(--offwhite);
+}
+
+#factSheetContainer h2,
+#factSheetContainer h3 {
+  margin: 0;
+}
+
 #infoContainer,
 #factSheetContainer {
-  flex: 1;               /* take up remaining space */
-  overflow: auto;        /* scroll if content is long */
+  flex: 1;                      /* take up remaining space */
+  overflow: auto;               /* scroll if content is long */
   background: #f9f9f9;
   padding: 10px 20px 0 20px;
 }
@@ -113,39 +125,64 @@ button:hover {
 /* whichever is shown will stretch */
 #infoContainer.show,
 #factSheetContainer.show {
-  display: flex;         /* or block, depending on your content */
+  display: flex;
+  justify-content: center;
 }
 
-
-h2{
+h2 {
   flex: 0;
   margin-bottom: 0;
   font-size: 1.1rem;
 }
 
+/* layout rows (title row, content row, etc.) */
+.opportunity-row {
+  display: flex;
+  flex-direction: row;          /* horizontal layout for columns */
+  align-items: flex-start;      /* top-align content */
+  justify-content: center;      /* center-align content */
+  gap: 0.5em;
+  margin-top: 0.25em;
+}
+
+/* full-width top row ONLY when explicitly requested */
+.full-width .opportunity-row:first-child {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+
+/* layout columns inside each row */
+.opportunity-column {
+  display: flex;
+  flex-direction: column;       /* stack content inside each column */
+  align-items: flex-start;      /* left-align text and charts */
+  min-width: 280px;             /* responsive floor */
+  gap: 0.5em;
+}
+
+/* Responsive stacking for narrow screens */
+@media (max-width: 700px) {
+  .opportunity-row {
+    flex-direction: column;     /* stack columns vertically */
+  }
+
+  .opportunity-column {
+    width: 100%;                /* take full width */
+  }
+
+  #factSheetContainer {
+    gap: 15px;                  /* slightly larger vertical spacing on small screens */
+  }
+}
+
+/* popup */
 
 .popup-content {
   font-family: sans-serif;
   font-size: 13px;
 }
-
-/* popup */
-.opportunity-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin-top: 0.25em;
-  flex-direction: row;
-}
-
-.opportunity-column {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin-top: 0.25em;
-  flex-direction: column;
-}
-
 
 .arrow {
   font-size: 20px;

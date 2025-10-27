@@ -2,21 +2,24 @@
   font-family: jaf-bernina-sans, sans-serif;
 }
 
-#factSheetContainer {
-  display: none;
-  flex-wrap: wrap;
-  flex-direction: row;
-  gap: 10px;
-  /* padding: 20px; */
-  background: var(--offwhite);
+.district-column {
+  position: relative; /* make absolute positioning relative to this container */
 }
 
-#factSheetContainer h2, #factSheetContainer h3{
-  margin: 0;
+.floatText {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+  z-index: 10;
+  background: var(--offwhite); /* optional: cover table border underneath */
+  padding: 0 4px;             /* optional spacing */
 }
 
-.floatText{
-  float: left;
+/* top padding to the table below header */
+.district-column table {
+  margin-top: 0.5em;
 }
 
 .chart-row {

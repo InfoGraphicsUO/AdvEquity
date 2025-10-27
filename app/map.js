@@ -954,9 +954,11 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 </select>
   `;
 
-  // --- Build factsheet HTML ---
+  // --- Build factsheet HTML (District) ---
+  factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
-    <h2><b>${toTitleCase(leaName)} Factsheet</b></h2>
+    <div class="opportunity-row"><h2><b>${toTitleCase(leaName)} Factsheet</b></h2></div>
+    <div class="opportunity-row">
     <div class="opportunity-column">
       <p><b>Latest information</b></p>
       <p>
@@ -980,12 +982,14 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     </div>
 
     <div class="opportunity-column">
-      <br><br><p><b>Historic/temporal information</b></p>
+      <p><b>Historic/temporal information</b></p>
       <canvas id="gapChart" width="300" height="120"></canvas>
       <div id="gapLegend" style="font-size:0.85em;margin-top:5px;"></div>
       <p style="font-size:0.9em;color:#666">AP Participation Gap by Year</p>
-    </div>
-  `  + dropdownHtml;
+      ${dropdownHtml}
+    </div> <!-- end row -->
+    </div>  <!-- end column -->
+  `  ;
 
   // --- Prepare comp data ---
   const compData = {
