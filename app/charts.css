@@ -17,9 +17,9 @@
   padding: 0 4px;             /* optional spacing */
 }
 
-/* Add top padding to the table to make space for the floating header */
+/* top padding to the table below header */
 .district-column table {
-  margin-top: 2em; /* adjust based on floatText height */
+  margin-top: 0.5em;
 }
 
 .chart-row {

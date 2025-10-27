@@ -160,7 +160,6 @@ h2 {
   align-items: flex-start;      /* left-align text and charts */
   min-width: 280px;             /* responsive floor */
   gap: 0.5em;
-  margin-top: 0.25em;
 }
 
 /* Responsive stacking for narrow screens */
