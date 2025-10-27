@@ -105,8 +105,10 @@ function initFactSheet(stateData, fips, fieldName) {
     }
   }
 
-  // Build factsheet HTML
+  // Build factsheet HTML (state)
+  factSheetContainer.classList.remove("full-width"); // no full width top row
   factSheetContainer.innerHTML = `
+  <div class="opportunity-row">
     <div class="opportunity-column">
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} AP Classes Offered in Schools (2021)<br>
@@ -121,7 +123,8 @@ function initFactSheet(stateData, fips, fieldName) {
     </div>
 
     </div> <!-- end "opportunity-column" -->
-    <div class="opportunity-column">
+    <div class="opportunity-column district-column">
+    <div class="table-header-wrapper">
       <h2 class="floatText">Districts in ${state_abbrev}</h2>
       <table id="district-table" class="table table-striped">
         <thead>
@@ -145,6 +148,8 @@ function initFactSheet(stateData, fips, fieldName) {
         </tfoot>
       </table>
     </div>
+  </div>
+  </div>
   `;
 
   // Load and filter district data

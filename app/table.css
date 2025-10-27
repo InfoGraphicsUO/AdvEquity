@@ -13,6 +13,22 @@
   align-items: center;
 }
 
+/* Flex row inside the opportunity column for title + search */
+.table-header {
+  display: flex;
+  justify-content: space-between; /* title left, search right */
+  align-items: center;            /* vertical align */
+  width: 100%;
+  margin-bottom: 0.5rem;          /* spacing below header */
+}
+
+/* Style the title */
+#districtTitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
 .header-row {
   font-weight: bold;
   background-color: #f0f0f0;
