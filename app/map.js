@@ -750,16 +750,22 @@ function clearTableHighlights() {
   table.$('tr.selected').removeClass('selected');
 }
 
-function updateLegendTicks(minVal, maxVal, steps = 3) {
+function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
   const ticksContainer = document.querySelector('.legend .legend-ticks');
   if (!ticksContainer) return;
 
   ticksContainer.innerHTML = ''; // clear previous ticks
 
   for (let i = 0; i <= steps; i++) {
-    const value = minVal + (i / steps) * (maxVal - minVal);
+    let value = minVal + (i / steps) * (maxVal - minVal);
     const tick = document.createElement('span');
-    tick.textContent = value.toFixed(2); // cap to 2 digits
+
+    if (cappedMax !== null && value > cappedMax && i === steps) {
+      tick.textContent = `> ${cappedMax.toFixed(1)}`;
+    } else {
+      tick.textContent = value.toFixed(1); // cap to 2 digits
+    }
+
     ticksContainer.appendChild(tick);
   }
 }
@@ -781,7 +787,9 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     }
   }
 
-  updateLegendTicks(minVal, maxVal, steps = 2)
+  // Cap max for color ramp at 5, anything above that gets the max color
+  const cappedMax = Math.min(maxVal, 5);
+  updateLegendTicks(minVal, cappedMax, steps = 2)
 
   // Make a copy of geojson so we don't mutate the original
   const geojsonCopy = JSON.parse(JSON.stringify(geojson));
@@ -843,6 +851,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       'district-fills',
       showAllStates ? true : ['==', ['get', 'STATEFP'], statefips]
     );
+    map.setLayoutProperty('district-fills', 'visibility', 'visible');
+    map.setLayoutProperty('district-lines', 'visibility', 'visible');
   }
 
   // Add or update district outlines
@@ -873,17 +883,21 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
+  console.log(filtered)
 
-  for (const d of filtered) {
-    const raw = d[fieldName];
-    if (raw !== null && raw !== undefined && !isNaN(Number(raw))) {
-      const val = Number(raw);
-      const leaId = String(d.LEAID);
-      valueMap[leaId] = val;
-      if (val < minVal) minVal = val;
-      if (val > maxVal) maxVal = val;
-    }
+for (const d of filtered) {
+  const raw = d[fieldName];
+  if (raw !== null && raw !== undefined && !isNaN(Number(raw))) {
+    const val = Number(raw);
+
+    // Convert LEAID to string and pad to 7 digits (standard for NCES / FIPS IDs)
+    const leaId = String(d.LEAID).padStart(7, '0'); 
+
+    valueMap[leaId] = val;
+    if (val < minVal) minVal = val;
+    if (val > maxVal) maxVal = val;
   }
+}
 
   if (!isFinite(minVal) || !isFinite(maxVal)) {
     console.warn(`No valid data for ${state_abbrev} / ${fieldName} / ${targetYear}`);
@@ -894,7 +908,9 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   if (minVal === maxVal) maxVal = minVal + 0.00001;
   if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
 
-  updateLegendTicks(minVal, maxVal, steps = 2)
+  // Cap max for color ramp at 5, anything above that gets the max color
+  const cappedMax = Math.min(maxVal, 2);
+  updateLegendTicks(minVal, cappedMax, maxVal, steps = 2)
 
   const colorRamp = [
     "interpolate",
