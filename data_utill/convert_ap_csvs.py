@@ -58,7 +58,7 @@ ALLOWED_FIELDS = {
     'PCT_ENR_WH', 'PCT_ENR_BL', 'PCT_ENR_AS', 'PCT_ENR_HI',
     'PCT_ENR_OTH', 'PCT_ENR_NON_WH', 'PCT_ENR_AP',
     'ENR_AP_GAP_BL', 'ENR_AP_GAP_AS', 'ENR_AP_GAP_HI',
-    'STU_TEACH_RAT',"is_last"
+    'STU_TEACH_RAT',"is_last","GIS"
 }
 
 # increase csv field size limit (handle very large fields)
