@@ -331,7 +331,7 @@ getStateData().then(({ geojson, stateData }) => {
         yellow,   // when hover = true
         green       // default
       ],
-      'line-width': 2,
+      'line-width': 1.5,
       'line-offset': [
       'case',
       ['boolean', ['feature-state', 'hover'], false],
@@ -1028,7 +1028,8 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     .sort();
 
   const dropdownHtml = `
-    <br><br><label for="districtPicker" style="align-self: center;">Jump to District</label>
+    <br><br><label for="districtPicker" style="align-self: center;">Jump to District
+    <br>(place holder, not currently functioning)</label>
 <select id="districtPicker" style="align-self: center; margin-bottom: 10px; max-width: 300px;">
   ${districtNames.map(name => `<option value="${name}">${toTitleCase(name)}</option>`).join('')}
 </select>
