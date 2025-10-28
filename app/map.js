@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
   const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
+  const aggSelectionButton = document.querySelectorAll('.agg-selectBtn');
   // flag to determine whether user interaction has happened (don't sort on initial load)
   let userHasInteracted = false;
 
@@ -25,6 +26,51 @@ document.addEventListener('DOMContentLoaded', () => {
   offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
 
   // data
+  aggSelectionButton.forEach(btn => {
+    btn.addEventListener('click', function() {
+    // Remove active class from all buttons
+    aggSelectionButton.forEach(b => b.classList.remove('active'));
+
+    // Add active class to clicked button
+    this.classList.add('active');
+
+
+    // display State level data
+    if (this.id === 'agg-selectState'){
+        console.log("clickedState")
+        $('#race-selectBlk').click() // trigger returning to US view wiht Opportunity Estimate for Black Students
+        map.setLayoutProperty('state-fills', 'visibility', 'visible');
+        map.setLayoutProperty('district-fills', 'visibility', 'none');
+        map.setLayoutProperty('district-lines', 'visibility', 'none');
+      } else if (this.id === 'agg-selectDist'){
+       // display district level data 
+        console.log("clickedDistrict")
+        // hide state layer
+        map.setLayoutProperty('state-fills', 'visibility', 'none');
+
+        //draw state data:
+        if (!map.getLayer('district-fills')) {
+          map.addLayer({
+            id: 'district-fills',
+            type: 'fill',
+            source: 'SCHOOLDIST_TL24',
+            'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+            paint: {
+              'fill-color': 'transparent',
+              'fill-opacity': 0.9
+            }
+          }, 'state-borders');//add below district-fills to keep hover color above
+        } else {
+          map.setLayoutProperty('district-fills', 'visibility', 'visible');
+          map.setLayoutProperty('district-lines', 'visibility', 'visible');
+        }
+
+        getDistrictData('all').then(districtData => {
+          fillDistrictMap(map, districtData, 'all', 'all', 'ENR_AP_GAP_BL');
+        });
+      }
+    })
+  });
 
   raceSelectionButton.forEach(btn => {
   btn.addEventListener('click', function() {
@@ -105,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     hideGraphs();
 
-    $('#race-selectBlk').click() // trigger returning gto US view with Opportunity Estimate for Black Students
+    $('#race-selectBlk').click() // trigger returning to US view Opportunity Estimate for Black Students
     //StateOverview.style.display = 'none'; // hide state panel
 
   });
@@ -704,20 +750,38 @@ function clearTableHighlights() {
   table.$('tr.selected').removeClass('selected');
 }
 
+function updateLegendTicks(minVal, maxVal, steps = 3) {
+  const ticksContainer = document.querySelector('.legend .legend-ticks');
+  if (!ticksContainer) return;
+
+  ticksContainer.innerHTML = ''; // clear previous ticks
+
+  for (let i = 0; i <= steps; i++) {
+    const value = minVal + (i / steps) * (maxVal - minVal);
+    const tick = document.createElement('span');
+    tick.textContent = value.toFixed(2); // cap to 2 digits
+    ticksContainer.appendChild(tick);
+  }
+}
+
 function fillStateMap(map, geojson, stateData, fieldName) {
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
+  const targetYear = 2021; // assumes map is always 2021 data
 
   // Extract values & track min/max
   for (let state in stateData) {
-    const val2021Raw = stateData[state][1]?.[fieldName];
-    if (typeof val2021Raw === 'number') {
-      valueMap[state] = val2021Raw;
-      if (val2021Raw < minVal) minVal = val2021Raw;
-      if (val2021Raw > maxVal) maxVal = val2021Raw;
+    const row = stateData[state].find(d => d.YEAR === targetYear);
+    const valRaw = row?.[fieldName];
+    if (typeof valRaw === 'number') {
+      valueMap[state] = valRaw;
+      if (valRaw < minVal) minVal = valRaw;
+      if (valRaw > maxVal) maxVal = valRaw;
     }
   }
+
+  updateLegendTicks(minVal, maxVal, steps = 2)
 
   // Make a copy of geojson so we don't mutate the original
   const geojsonCopy = JSON.parse(JSON.stringify(geojson));
@@ -758,75 +822,60 @@ function getStateValues(stateData, state, fieldName) {
 function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, targetYear = 2021) {
   map.setPaintProperty('state-fills', 'fill-color', 'transparent');
 
+  // Determine if we're showing all states
+  const showAllStates = !statefips || statefips === 'all' || statefips === 'any';
+
+  // Add or update fill layer
   if (!map.getLayer('district-fills')) {
     map.addLayer({
       id: 'district-fills',
       type: 'fill',
       source: 'SCHOOLDIST_TL24',
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-      filter: ['==', ['get', 'STATEFP'], statefips],
+      filter: showAllStates ? true : ['==', ['get', 'STATEFP'], statefips],
       paint: {
         'fill-color': 'transparent',
         'fill-opacity': 0.9
       }
-    }, 'state-fills');//add below district-fills to keep hover color above
-
-map.on('mousemove', 'district-fills', (e) => {
-  map.getCanvas().style.cursor = 'pointer';
-
-  const props = e.features[0].properties;
-  const description = `
-    <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
-      <strong>${props.NAME}</strong><br>
-    </div>
-  `;
-
-  popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
-});
-
-    
-
-    map.on('mouseleave', 'district-fills', () => {
-      map.getCanvas().style.cursor = '';
-      popup.remove();
-    });
-
-
+    }, 'state-fills'); // place below state-fills
   } else {
-    map.setFilter('district-fills', ['==', ['get', 'STATEFP'], statefips]);
+    map.setFilter(
+      'district-fills',
+      showAllStates ? true : ['==', ['get', 'STATEFP'], statefips]
+    );
   }
 
-  // add district lines
-  if (!map.getLayer('district-lines')){ 
+  // Add or update district outlines
+  if (!map.getLayer('district-lines')) {
     map.addLayer({
       id: 'district-lines',
       type: 'line',
       source: 'SCHOOLDIST_TL24',
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-      filter: ['==', ['get', 'STATEFP'], statefips],
+      filter: showAllStates ? true : ['==', ['get', 'STATEFP'], statefips],
       paint: {
-        'line-color': 'grey',
+        'line-color': '#333',
         'line-width': 0.5,
         'line-opacity': 0.9
       }
-    });
+    }, 'state-borders');
   } else {
-    map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips]);
+    map.setFilter(
+      'district-lines',
+      showAllStates ? true : ['==', ['get', 'STATEFP'], statefips]
+    );
   }
 
   // Filter to the target year
   const filtered = districtData.filter(d => Number(d.YEAR) === targetYear);
 
-  // Build lookup table: LEAID → value
+  // Build LEAID → value lookup
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
 
-  // filter out nulls
   for (const d of filtered) {
     const raw = d[fieldName];
-
-    // Only handle finite numeric values
     if (raw !== null && raw !== undefined && !isNaN(Number(raw))) {
       const val = Number(raw);
       const leaId = String(d.LEAID);
@@ -835,7 +884,6 @@ map.on('mousemove', 'district-fills', (e) => {
       if (val > maxVal) maxVal = val;
     }
   }
-
 
   if (!isFinite(minVal) || !isFinite(maxVal)) {
     console.warn(`No valid data for ${state_abbrev} / ${fieldName} / ${targetYear}`);
@@ -846,24 +894,27 @@ map.on('mousemove', 'district-fills', (e) => {
   if (minVal === maxVal) maxVal = minVal + 0.00001;
   if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
 
-  // Interpolate by feature-state "value"
+  updateLegendTicks(minVal, maxVal, steps = 2)
+
   const colorRamp = [
     "interpolate",
     ["linear"],
     ["feature-state", "value"],
-    minVal, "#5a6251",
-    maxVal, "#e5e8e3",
+    minVal, "#4a4f41",         // darkest
+    minVal + (maxVal - minVal) * 0.25, "#7a816e",
+    minVal + (maxVal - minVal) * 0.5,  "#a8ae9c",
+    minVal + (maxVal - minVal) * 0.75, "#ccd1c4",
+    maxVal, "#e8ebe5"          // lightest
   ];
 
   map.setPaintProperty('district-fills', 'fill-color', colorRamp);
 
-  // Wait until the source data is ready before assigning feature-states
+  // Assign feature states after data loads
   map.on('sourcedata', (e) => {
     if (e.sourceId === 'SCHOOLDIST_TL24' && e.isSourceLoaded) {
       const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
         sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
       });
-
       for (const f of features) {
         const geoId = String(f.id);
         const val = valueMap[geoId];
@@ -881,40 +932,54 @@ map.on('mousemove', 'district-fills', (e) => {
     }
   });
 
+  // Tooltip for hover
+  map.on('mousemove', 'district-fills', (e) => {
+    if (!e.features.length) return;
+    map.getCanvas().style.cursor = 'pointer';
+    const props = e.features[0].properties;
+    const description = `
+      <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
+        <strong>${props.NAME}</strong>
+      </div>
+    `;
+    popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+  });
 
-  // district  interaction
+  map.on('mouseleave', 'district-fills', () => {
+    map.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+
+  // Click → zoom and factsheet
   map.on('click', 'district-fills', function (e) {
     const clickedFeature = e.features[0];
-    console.log(clickedFeature)
-    // document.getElementById('mapLegend').style.display = 'block'; // display legend
+    console.log(clickedFeature);
 
-      // zoom to state
-    const coords = clickedFeature.geometry.coordinates;
-    // console.log(JSON.stringify(coords, null, 1));
-    const bounds = new mapboxgl.LngLatBounds();
+    // Only zoom if showing a single state
+    if (!showAllStates) {
+      const coords = clickedFeature.geometry.coordinates;
+      const bounds = new mapboxgl.LngLatBounds();
 
-    function extendBounds(coordinates) {
-      if (typeof coordinates[0][0] === 'number') {
-        // coordinates is an array of [lng, lat]
-        coordinates.forEach(coord => bounds.extend(coord));
-      } else {
-        // coordinates is nested (MultiPolygon), recurse
-        coordinates.forEach(extendBounds);
+      function extendBounds(coordinates) {
+        if (typeof coordinates[0][0] === 'number') {
+          coordinates.forEach(coord => bounds.extend(coord));
+        } else {
+          coordinates.forEach(extendBounds);
+        }
       }
+
+      extendBounds(coords);
+      map.fitBounds(bounds, { padding: 30 });
     }
 
-    extendBounds(coords);
-
-    map.fitBounds(bounds, { padding: 30 });
-
-    // fill factsheet area:
-     showDistrictFactsheet(clickedFeature, districtData);
-
-
+    // Show factsheet only if zoomed in
+    if (!showAllStates) {
+      showDistrictFactsheet(clickedFeature, districtData);
+      // document.getElementById('mapLegend').style.display = 'block';
+    }
   });
-  
-
 }
+
 
 
 // --- District fact sheet ---

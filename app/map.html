@@ -59,11 +59,23 @@
       <button id="race-selectHis" class="race-selectBtn" data-field="ENR_AP_GAP_HI">
         Hispanic Students
       </button>
+    </div><br>
+    Display data by
+    <div class="aggregation-toggle">
+      <button id="agg-selectState" class="agg-selectBtn active">
+        State
+      </button>
+      <button id="agg-selectDist" class="agg-selectBtn">
+        District
+      </button>
     </div>
       <!-- Legend -->
     <div class="legend">
       <span class="legend-label">Low</span>
-      <div class="legend-gradient"></div>
+      <div class="legend-gradient-wrapper">
+        <div class="legend-gradient"></div>
+        <div class="legend-ticks"></div>
+      </div>
       <span class="legend-label">High</span>
     </div>
   </div>

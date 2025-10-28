@@ -75,27 +75,28 @@ button:hover {
     background-color:var(--darkgrey);
 }
 
-.race-toggle {
+.race-toggle, .aggregation-toggle{
   display: inline-flex;
   border: 2px solid var(--green);
   border-radius: 999px;
   overflow: hidden;
+  margin-bottom: 2px;
 }
 
-.race-selectBtn {
+.race-selectBtn, .agg-selectBtn {
   background-color: transparent;
   color: var(--black);
   border: none;
-  padding: 4px 8px;
+  padding: 0px 8px;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
 
-.race-selectBtn:hover {
+.race-selectBtn:hover, .agg-selectBtn:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.race-selectBtn.active {
+.race-selectBtn.active, .agg-selectBtn.active {
   background-color: var(--green);
   color: var(--offwhite);
   font-weight: bold;
@@ -236,56 +237,48 @@ h2 {
     opacity: 0.8;
 }
 
+/* map legend */
+
 .legend {
   display: flex;
   align-items: center;
-  margin-top: 8px;
+  gap: 8px;
+  font-size: 13px;
+  font-family: sans-serif;
+  width: 280px;
 }
 
-.legend-label {
-  font-size: 0.8rem;
-  color: var(--black);
-  margin: 0 6px;
+.legend-gradient-wrapper {
+  position: relative;
+  flex: 1;
+  height: 12px;
 }
 
 .legend-gradient {
-  flex: 1;
-  height: 12px;
+  width: 100%;
+  height: 100%;
   border-radius: 6px;
-  background: linear-gradient(to right, #5a6251, #e5e8e3);
+  background: linear-gradient(
+    to right,
+    #4a4f41,
+    #7a816e,
+    #a8ae9c,
+    #ccd1c4,
+    #e8ebe5
+  );
 }
 
-/* map legend */
-#mapLegend {
+.legend-ticks {
   position: absolute;
-  color: var(--offwhite);
-  bottom: 30px;
-  left: 30px;
-  z-index: 10;
-  width: 180px;
-  display: none;
-  color: var(--offwhite);
-}
-
-#mapLegend h4 {
-  margin: 0 0 0.1rem;
-  font-size: 0.8rem;
-}
-
-.map-legend-item {
+  width: 100%;
   display: flex;
-  align-items: center;
-  margin-top: 0;
-  font-size: 0.75rem;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #333;
+  line-height: 1.1;
 }
 
-.map-legend-item span {
-  display: inline-block;
-  width: 0.75rem;
-  height: 0.75rem;
-  margin-right: 0.4rem;
-  border-radius: 3px;
-}
+
 /* end legend */
 
 
