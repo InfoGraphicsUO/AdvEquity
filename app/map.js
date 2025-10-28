@@ -619,6 +619,8 @@ function buildStateTable(stateData, fieldName) {
     paging: false,
     scrollCollapse: true,
     scrollY: '200px',
+    // initial order: sort by 2021 Opportunity Estimate (column index 3) descending
+    order: [[3, 'desc']],
     columnDefs: [
       { targets: 4, visible: false }, // hide FIPS
       { targets: [1, 2, 3], type: 'na-last' } // apply custom sort
