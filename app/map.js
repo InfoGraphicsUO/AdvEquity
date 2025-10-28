@@ -757,7 +757,7 @@ function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
   ticksContainer.innerHTML = ''; // clear previous ticks
 
   for (let i = 0; i <= steps; i++) {
-    let value = minVal + (i / steps) * (maxVal - minVal);
+    let value = minVal + (i / steps) * (cappedMax - minVal);
     const tick = document.createElement('span');
 
     if (cappedMax !== null && value > cappedMax && i === steps) {
@@ -909,7 +909,7 @@ for (const d of filtered) {
   if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
 
   // Cap max for color ramp at 5, anything above that gets the max color
-  const cappedMax = Math.min(maxVal, 2);
+  const cappedMax = Math.min(maxVal, 3);
   updateLegendTicks(minVal, cappedMax, maxVal, steps = 2)
 
   const colorRamp = [
@@ -917,10 +917,10 @@ for (const d of filtered) {
     ["linear"],
     ["feature-state", "value"],
     minVal, "#4a4f41",         // darkest
-    minVal + (maxVal - minVal) * 0.25, "#7a816e",
-    minVal + (maxVal - minVal) * 0.5,  "#a8ae9c",
-    minVal + (maxVal - minVal) * 0.75, "#ccd1c4",
-    maxVal, "#e8ebe5"          // lightest
+    minVal + (cappedMax - minVal) * 0.25, "#7a816e",
+    minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
+    minVal + (cappedMax - minVal) * 0.75, "#ccd1c4",
+    cappedMax, "#e8ebe5"          // lightest
   ];
 
   map.setPaintProperty('district-fills', 'fill-color', colorRamp);
