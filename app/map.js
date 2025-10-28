@@ -1001,8 +1001,7 @@ for (const d of filtered) {
 // --- District fact sheet ---
 function showDistrictFactsheet(clickedFeature, districtData) {
   const geoId = String(clickedFeature.properties.GEOID);
-  const records = districtData.filter(d => String(d.LEAID) === geoId);
-
+  const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
   const factSheetContainer = document.getElementById("factSheetContainer");
 
   if (!records.length) {
