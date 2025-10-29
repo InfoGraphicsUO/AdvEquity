@@ -214,8 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let fieldName;
     if (this.id === 'race-selectBlk') {
       fieldName = 'ENR_AP_GAP_BL';
+       $('#currentRaceDesc').html('Black');
     } else if (this.id === 'race-selectHis') {
       fieldName = 'ENR_AP_GAP_HI';
+      $('#currentRaceDesc').html('Hispanic');
     }
 
     // Fill map
@@ -233,8 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // only sort after an explicit user interaction
         if (userHasInteracted) {
           const table = $('#us-table').DataTable();
-          // order by 2021 column (index 3) descending
-          table.order([[3, 'desc']]).draw();
+          // order by 2021 column (index 4) descending
+          table.order([[4, 'desc']]).draw();
           console.log(`Table sorted by ${fieldName} (highest to lowest)`);
         }
       } catch (err) {
@@ -780,7 +782,7 @@ function buildStateTable(stateData, fieldName) {
     table.row.add([stateAbbrev, apDisplay, val2011, val2021, fips]);
   }
 
-  table.draw();
+  table.order([[4, 'desc']]).draw() 
 }
 
 function buildDistrictTable(districtData, fieldName) {
@@ -856,7 +858,7 @@ function buildDistrictTable(districtData, fieldName) {
     ]);
   }
 
-  table.draw();
+  table.order([[4, 'desc']]).draw() 
 }
 
 
