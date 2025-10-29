@@ -1212,7 +1212,23 @@ function showDistrictFactsheet(clickedFeature, districtData) {
       <p><b>Historic/temporal information</b></p>
       <canvas id="gapChart" width="300" height="120"></canvas>
       <div id="gapLegend" style="font-size:0.85em;margin-top:5px;"></div>
-      <p style="font-size:0.9em;color:#666">AP Participation Gap by Year</p>
+  <p style="font-size:0.9em;color:#666">AP Participation Gap by Year</p>
+  <!-- New sparkline: Students - Percentage of non-white students -->
+  <canvas id="nonwhiteChart" width="300" height="80" style="margin-top:8px;"></canvas>
+  <div id="nonwhiteLegend" style="font-size:0.85em;margin-top:5px;"></div>
+  <p style="font-size:0.9em;color:#666">Students - Percentage of non-white students (by year)</p>
+  <!-- New sparkline: HS students taking ≥1 AP (PCT_ENR_AP) -->
+  <canvas id="apChart" width="300" height="80" style="margin-top:6px;"></canvas>
+  <div id="apLegend" style="font-size:0.85em;margin-top:5px;"></div>
+  <p style="font-size:0.9em;color:#666">HS students taking at least 1 AP course (by year)</p>
+  <!-- New sparkline: Student-teacher ratio (STU_TEACH_RAT) -->
+  <canvas id="stChart" width="300" height="80" style="margin-top:6px;"></canvas>
+  <div id="stLegend" style="font-size:0.85em;margin-top:5px;"></div>
+  <p style="font-size:0.9em;color:#666">Student–teacher ratio (by year)</p>
+  <!-- New sparkline: Modal AP courses offered in district (SCH_APCOURSES) -->
+  <canvas id="apCoursesChart" width="300" height="80" style="margin-top:6px;"></canvas>
+  <div id="apCoursesLegend" style="font-size:0.85em;margin-top:5px;"></div>
+  <p style="font-size:0.9em;color:#666">Modal number of AP courses offered (by year)</p>
       ${dropdownHtml}
     </div> <!-- end row -->
     </div>  <!-- end column -->
@@ -1376,11 +1392,148 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           gapLegend.parentNode.insertBefore(pickerWrapper, gapLegend);
         }
 
-        // draw default (district)
-        const defaultSeries = { BL: extendedSeries.BL, HI: extendedSeries.HI };
-        const defaultColors = { BL: colorMap.BL, HI: colorMap.HI };
-        drawMiniChart('gapChart', years, defaultSeries, defaultColors);
-        drawLegend('gapLegend', defaultSeries, defaultColors);
+  // draw default (district)
+  const defaultSeries = { BL: extendedSeries.BL, HI: extendedSeries.HI };
+  const defaultColors = { BL: colorMap.BL, HI: colorMap.HI };
+  drawMiniChart('gapChart', years, defaultSeries, defaultColors);
+  drawLegend('gapLegend', defaultSeries, defaultColors);
+        // helper to build state series for a given field (shared by all sparklines)
+        const buildStateSeries = (field) => {
+          const arr = Array(years.length).fill(null);
+          if (typeof stateDataCache === 'object' && stateAbbrev) {
+            const stateKey = Object.keys(stateDataCache).find(k => {
+              const a = stateDataCache[k] || [];
+              return a.some(d => d.state_abbrev === stateAbbrev);
+            });
+            if (stateKey) {
+              const sRecords = stateDataCache[stateKey].slice().sort((a,b)=>a.YEAR-b.YEAR);
+              const sLookup = {};
+              for (const s of sRecords) sLookup[Number(s.YEAR)] = s;
+              years.forEach((y,i)=>{
+                const row = sLookup[Number(y)];
+                if (row) arr[i] = row[field] ?? null;
+              });
+            }
+          }
+          return arr;
+        };
+
+        // SPARKLINE - Students - Percentage non-white by Year (District + State + National)
+        try {
+          const districtNonwhite = records.map(r => {
+            const v = r.PCT_ENR_NON_WH;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+
+          const stateNonwhite = buildStateSeries('PCT_ENR_NON_WH');
+          const natNonwhite = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].PCT_ENR_NON_WH ?? null : null));
+
+          const seriesNonwhite = { District: districtNonwhite };
+          if (stateNonwhite.some(v=>v!==null)) seriesNonwhite.State = stateNonwhite;
+          if (natNonwhite.some(v=>v!==null)) seriesNonwhite.National = natNonwhite;
+
+          const colorsNonwhite = { District: '#000', State: darkgrey || '#666', National: lightgrey || '#bbb' };
+          if (Object.values(seriesNonwhite).flat().some(v => v !== null)) {
+            drawMiniChart('nonwhiteChart', years, seriesNonwhite, colorsNonwhite);
+            drawSimpleLegend('nonwhiteLegend', { District: 'District', State: 'State', National: 'National' }, colorsNonwhite, seriesNonwhite);
+          } else {
+            const c = document.getElementById('nonwhiteChart');
+            if (c && c.getContext) {
+              const ctx = c.getContext('2d');
+              ctx.clearRect(0,0,c.width,c.height);
+              ctx.font = '12px sans-serif';
+              ctx.fillStyle = '#666';
+              ctx.fillText('No data available', 10, c.height/2);
+            }
+          }
+        } catch (e) { console.warn('Could not draw nonwhite sparkline', e); }
+
+        // SPARKLINE - HS students taking at least 1 AP (PCT_ENR_AP) (District + State + National)
+        try {
+          const districtAP = records.map(r => {
+            const v = r.PCT_ENR_AP;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateAP = buildStateSeries('PCT_ENR_AP');
+          const natAP = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].PCT_ENR_AP ?? null : null));
+
+          const seriesAP = { District: districtAP };
+          if (stateAP.some(v=>v!==null)) seriesAP.State = stateAP;
+          if (natAP.some(v=>v!==null)) seriesAP.National = natAP;
+
+          const colorsAP = { District: '#000', State: darkgrey || '#666', National: lightgrey || '#bbb' };
+          if (Object.values(seriesAP).flat().some(v => v !== null)) {
+            drawMiniChart('apChart', years, seriesAP, colorsAP);
+            drawSimpleLegend('apLegend', { District: 'District', State: 'State', National: 'National' }, colorsAP, seriesAP);
+          } else {
+            const c2 = document.getElementById('apChart');
+            if (c2 && c2.getContext) {
+              const ctx2 = c2.getContext('2d');
+              ctx2.clearRect(0,0,c2.width,c2.height);
+              ctx2.font = '12px sans-serif';
+              ctx2.fillStyle = '#666';
+              ctx2.fillText('No data available', 10, c2.height/2);
+            }
+          }
+        } catch (e) { console.warn('Could not draw AP participation sparkline', e); }
+
+        // SPARKLINE - Student–teacher ratio (STU_TEACH_RAT) (District + State + National)
+        try {
+          const districtST = records.map(r => {
+            const v = r.STU_TEACH_RAT;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateST = buildStateSeries('STU_TEACH_RAT');
+          const natST = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].STU_TEACH_RAT ?? null : null));
+
+          const seriesST = { District: districtST };
+          if (stateST.some(v=>v!==null)) seriesST.State = stateST;
+          if (natST.some(v=>v!==null)) seriesST.National = natST;
+
+          const colorsST = { District: '#000', State: darkgrey || '#666', National: lightgrey || '#bbb' };
+          if (Object.values(seriesST).flat().some(v => v !== null)) {
+            drawMiniChart('stChart', years, seriesST, colorsST);
+            drawSimpleLegend('stLegend', { District: 'District', State: 'State', National: 'National' }, colorsST, seriesST);
+          } else {
+            const c3 = document.getElementById('stChart');
+            if (c3 && c3.getContext) {
+              const ctx3 = c3.getContext('2d');
+              ctx3.clearRect(0,0,c3.width,c3.height);
+              ctx3.font = '12px sans-serif';
+              ctx3.fillStyle = '#666';
+              ctx3.fillText('No data available', 10, c3.height/2);
+            }
+          }
+        } catch (e) { console.warn('Could not draw student-teacher ratio sparkline', e); }
+
+        // SPARKLINE - Modal number of AP courses offered (SCH_APCOURSES) (District + State + National)
+        try {
+          const districtAPCourses = records.map(r => {
+            const v = r.SCH_APCOURSES;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateAPCourses = buildStateSeries('SCH_APCOURSES');
+          const natAPCourses = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].SCH_APCOURSES ?? null : null));
+
+          const seriesAPCourses = { District: districtAPCourses };
+          if (stateAPCourses.some(v=>v!==null)) seriesAPCourses.State = stateAPCourses;
+          if (natAPCourses.some(v=>v!==null)) seriesAPCourses.National = natAPCourses;
+
+          const colorsAPCourses = { District: '#000', State: darkgrey || '#666', National: lightgrey || '#bbb' };
+          if (Object.values(seriesAPCourses).flat().some(v => v !== null)) {
+            drawMiniChart('apCoursesChart', years, seriesAPCourses, colorsAPCourses);
+            drawSimpleLegend('apCoursesLegend', { District: 'District', State: 'State', National: 'National' }, colorsAPCourses, seriesAPCourses);
+          } else {
+            const c4 = document.getElementById('apCoursesChart');
+            if (c4 && c4.getContext) {
+              const ctx4 = c4.getContext('2d');
+              ctx4.clearRect(0,0,c4.width,c4.height);
+              ctx4.font = '12px sans-serif';
+              ctx4.fillStyle = '#666';
+              ctx4.fillText('No data available', 10, c4.height/2);
+            }
+          }
+        } catch (e) { console.warn('Could not draw AP courses sparkline', e); }
       })
       .catch(err => {
         console.warn('Failed to load national data for gap chart:', err);
@@ -1392,6 +1545,86 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         if (existing) existing.remove();
         drawMiniChart('gapChart', years, fallbackSeries, fallbackColors);
         drawLegend('gapLegend', fallbackSeries, fallbackColors);
+
+        // In fallback (no national data) try to draw District + State series where possible
+        try {
+          // helper to build state series for a given field
+          const buildStateSeriesFallback = (field) => {
+            const arr = Array(years.length).fill(null);
+            if (typeof stateDataCache === 'object' && stateAbbrev) {
+              const stateKey = Object.keys(stateDataCache).find(k => {
+                const a = stateDataCache[k] || [];
+                return a.some(d => d.state_abbrev === stateAbbrev);
+              });
+              if (stateKey) {
+                const sRecords = stateDataCache[stateKey].slice().sort((a,b)=>a.YEAR-b.YEAR);
+                const sLookup = {};
+                for (const s of sRecords) sLookup[Number(s.YEAR)] = s;
+                years.forEach((y,i)=>{
+                  const row = sLookup[Number(y)];
+                  if (row) arr[i] = row[field] ?? null;
+                });
+              }
+            }
+            return arr;
+          };
+
+          // SPARKLINE - Students - Percentage non-white (district + state)
+          const districtNonwhite = records.map(r => {
+            const v = r.PCT_ENR_NON_WH;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateNonwhite = buildStateSeriesFallback('PCT_ENR_NON_WH');
+          const seriesNonwhite = { District: districtNonwhite };
+          if (stateNonwhite.some(v=>v!==null)) seriesNonwhite.State = stateNonwhite;
+          const colorsNonwhite = { District: '#000', State: darkgrey || '#666' };
+          if (Object.values(seriesNonwhite).flat().some(v => v !== null)) {
+            drawMiniChart('nonwhiteChart', years, seriesNonwhite, colorsNonwhite);
+            drawSimpleLegend('nonwhiteLegend', { District: 'District', State: 'State' }, colorsNonwhite, seriesNonwhite);
+          }
+
+          // SPARKLINE - AP participation (district + state)
+          const districtAP = records.map(r => {
+            const v = r.PCT_ENR_AP;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateAP = buildStateSeriesFallback('PCT_ENR_AP');
+          const seriesAP = { District: districtAP };
+          if (stateAP.some(v=>v!==null)) seriesAP.State = stateAP;
+          const colorsAP = { District: '#000', State: darkgrey || '#666' };
+          if (Object.values(seriesAP).flat().some(v => v !== null)) {
+            drawMiniChart('apChart', years, seriesAP, colorsAP);
+            drawSimpleLegend('apLegend', { District: 'District', State: 'State' }, colorsAP, seriesAP);
+          }
+
+          // SPARKLINE - Student–teacher ratio (district + state)
+          const districtST = records.map(r => {
+            const v = r.STU_TEACH_RAT;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateST = buildStateSeriesFallback('STU_TEACH_RAT');
+          const seriesST = { District: districtST };
+          if (stateST.some(v=>v!==null)) seriesST.State = stateST;
+          const colorsST = { District: '#000', State: darkgrey || '#666' };
+          if (Object.values(seriesST).flat().some(v => v !== null)) {
+            drawMiniChart('stChart', years, seriesST, colorsST);
+            drawSimpleLegend('stLegend', { District: 'District', State: 'State' }, colorsST, seriesST);
+          }
+
+          // SPARKLINE - Modal AP courses (district + state)
+          const districtAPCourses = records.map(r => {
+            const v = r.SCH_APCOURSES;
+            return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+          });
+          const stateAPCourses = buildStateSeriesFallback('SCH_APCOURSES');
+          const seriesAPCourses = { District: districtAPCourses };
+          if (stateAPCourses.some(v=>v!==null)) seriesAPCourses.State = stateAPCourses;
+          const colorsAPCourses = { District: '#000', State: darkgrey || '#666' };
+          if (Object.values(seriesAPCourses).flat().some(v => v !== null)) {
+            drawMiniChart('apCoursesChart', years, seriesAPCourses, colorsAPCourses);
+            drawSimpleLegend('apCoursesLegend', { District: 'District', State: 'State' }, colorsAPCourses, seriesAPCourses);
+          }
+        } catch (e) { console.warn('Could not draw fallback sparklines', e); }
       });
 
     // exit here to avoid drawing twice (we draw in the fetch callback)
@@ -1403,6 +1636,44 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   // default fallback if something goes wrong
   drawMiniChart("gapChart", years, series, { BL: colors.BL, HI: colors.HI });
   drawLegend("gapLegend", series, { BL: colors.BL, HI: colors.HI });
+  // draw nonwhite & AP sparklines in default fallback
+  try {
+    const nonwhiteVals = records.map(r => {
+      const v = r.PCT_ENR_NON_WH;
+      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+    });
+    if (nonwhiteVals.some(v => v !== null)) {
+      drawMiniChart('nonwhiteChart', years, { 'Non-white %': nonwhiteVals }, { 'Non-white %': '#333' });
+    }
+  } catch (e) { console.warn('Could not draw nonwhite sparkline (default fallback)', e); }
+
+  try {
+    const apVals = records.map(r => {
+      const v = r.PCT_ENR_AP;
+      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+    });
+    if (apVals.some(v => v !== null)) {
+      drawMiniChart('apChart', years, { 'AP %': apVals }, { 'AP %': '#444' });
+    }
+  } catch (e) { console.warn('Could not draw AP participation sparkline (default fallback)', e); }
+  try {
+    const stVals = records.map(r => {
+      const v = r.STU_TEACH_RAT;
+      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+    });
+    if (stVals.some(v => v !== null)) {
+      drawMiniChart('stChart', years, { 'Stu-Teach': stVals }, { 'Stu-Teach': '#2a9d8f' });
+    }
+  } catch (e) { console.warn('Could not draw student-teacher ratio sparkline (default fallback)', e); }
+  try {
+    const apCoursesVals = records.map(r => {
+      const v = r.SCH_APCOURSES;
+      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
+    });
+    if (apCoursesVals.some(v => v !== null)) {
+      drawMiniChart('apCoursesChart', years, { 'AP Courses': apCoursesVals }, { 'AP Courses': '#e76f51' });
+    }
+  } catch (e) { console.warn('Could not draw AP courses sparkline (default fallback)', e); }
 }
 
 
@@ -1545,15 +1816,22 @@ function drawMiniChart(canvasId, years, series, colors) {
 
   // Flatten all values to get min/max
   const allVals = Object.values(series).flat().filter(v => v != null && !isNaN(v));
-  const min = Math.min(...allVals);
-  const max = Math.max(...allVals);
+  if (!allVals.length) return; // nothing to draw
+  let min = Math.min(...allVals);
+  let max = Math.max(...allVals);
+  if (min === max) {
+    // avoid division by zero when series are flat
+    min = min - 1;
+    max = max + 1;
+  }
   const xStep = w / (years.length - 1);
 
   // Draw lines and dots
   for (const [key, values] of Object.entries(series)) {
     ctx.beginPath();
     ctx.strokeStyle = colors[key] || "#000";
-    ctx.lineWidth = 1.5;
+    // District line should be bold and black
+    ctx.lineWidth = key === 'District' ? 2.4 : 1.2;
 
     values.forEach((v, i) => {
       if (v == null || isNaN(v)) return;
@@ -1565,20 +1843,22 @@ function drawMiniChart(canvasId, years, series, colors) {
     ctx.stroke();
 
     // Draw dots
+    const dotR =  key === 'District' ? 3.5 : 2.5;
     values.forEach((v, i) => {
       if (v == null || isNaN(v)) return;
       const x = padding + i * xStep;
       const y = padding + h - ((v - min) / (max - min)) * h;
       ctx.beginPath();
-      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.arc(x, y, dotR, 0, Math.PI * 2);
       ctx.fillStyle = colors[key] || "#000";
       ctx.fill();
 
       // Label 2021 point
       if (years[i] === 2021) {
         ctx.fillStyle = colors[key] || "#000";
-        ctx.font = "10px sans-serif";
-        ctx.fillText(v.toFixed(2), x + 4, y - 4);
+        ctx.font = key === 'District' ? "10px sans-serif" : "9px sans-serif";
+        // format number with 2 decimals
+        ctx.fillText(Number(v).toFixed(2), x + 4, y - 4);
       }
     });
   }
@@ -1671,4 +1951,36 @@ function showGraphs(){
 function hideGraphs(){
   document.querySelector('#infoContainer').style.display = 'block'
   document.querySelector('#factSheetContainer').style.display = 'none'
+}
+
+// Generic simple legend for District/State/National style sparklines
+function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+
+  Object.keys(labelMap).forEach(key => {
+    if (!series[key]) return; // don't show legend entry if series not present
+    const span = document.createElement('span');
+    span.style.display = 'inline-block';
+    span.style.marginRight = '12px';
+    span.style.fontSize = '13px';
+    span.style.verticalAlign = 'middle';
+
+    const box = document.createElement('span');
+    box.style.display = 'inline-block';
+    box.style.width = '12px';
+    box.style.height = '12px';
+    box.style.background = colors[key] || '#000';
+    box.style.marginRight = '6px';
+    box.style.verticalAlign = 'middle';
+
+    span.appendChild(box);
+    const txt = document.createElement('span');
+    txt.textContent = labelMap[key];
+    txt.style.marginRight = '8px';
+    span.appendChild(txt);
+
+    container.appendChild(span);
+  });
 }
