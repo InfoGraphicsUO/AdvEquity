@@ -1241,12 +1241,168 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   const years = records.map(r => r.YEAR);
   const series = {
     BL: records.map(r => r.ENR_AP_GAP_BL),
-    AS: records.map(r => r.ENR_AP_GAP_AS),
     HI: records.map(r => r.ENR_AP_GAP_HI)
   };
 
-  drawMiniChart("gapChart", years, series, { BL: colors.BL, AS: colors.AS, HI: colors.HI });
-  drawLegend("gapLegend", series);
+  // state level and national level series for BL and HI (if available)
+  try {
+    // determine state abbreviation for this district (used to look up state series)
+    const stateAbbrev = latest.LEA_STATE || clickedFeature.properties?.STATE_ABBR || window.lastDistrictStateAbbrev || null;
+    // find state entry in stateDataCache by matching abbreviation
+    let stateSeriesBL = Array(years.length).fill(null);
+    let stateSeriesHI = Array(years.length).fill(null);
+
+    if (typeof stateDataCache === 'object' && stateAbbrev) {
+      const stateKey = Object.keys(stateDataCache).find(k => {
+        const arr = stateDataCache[k] || [];
+        return arr.some(d => d.state_abbrev === stateAbbrev);
+      });
+
+      if (stateKey) {
+        const sRecords = stateDataCache[stateKey].slice().sort((a,b)=>a.YEAR-b.YEAR);
+        // build year-indexed lookup
+        const sLookup = {};
+        for (const s of sRecords) sLookup[Number(s.YEAR)] = s;
+        years.forEach((y, i) => {
+          const row = sLookup[Number(y)];
+          if (row) {
+            stateSeriesBL[i] = row.ENR_AP_GAP_BL ?? null;
+            stateSeriesHI[i] = row.ENR_AP_GAP_HI ?? null;
+          }
+        });
+      }
+    }
+
+    // fetch national series (promise) and draw chart after
+    const natUrl = '../assets/data/json/ap_equity_national.json';
+    fetch(natUrl)
+      .then(res => res.json())
+      .then(natData => {
+        const natLookup = {};
+        if (Array.isArray(natData)) {
+          for (const n of natData) natLookup[Number(n.YEAR)] = n;
+        }
+
+        const natSeriesBL = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].ENR_AP_GAP_BL ?? null : null));
+        const natSeriesHI = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].ENR_AP_GAP_HI ?? null : null));
+
+        // extend series object with state & national lines (label suffixes: _state, _nat)
+        const extendedSeries = Object.assign({}, series, {
+          'BL_state': stateSeriesBL,
+          'BL_nat': natSeriesBL,
+          'HI_state': stateSeriesHI,
+          'HI_nat': natSeriesHI
+        });
+
+        // color map: use the same (district) colors for state and national as requested
+        const colorMap = {
+          BL: colors.BL,
+          'BL_state': colors.BL,
+          'BL_nat': colors.BL,
+          HI: colors.HI,
+          'HI_state': colors.HI,
+          'HI_nat': colors.HI
+        };
+
+        // simple bubble picker to toggle which aggregation is shown (district/state/national)
+        const gapLegend = document.getElementById('gapLegend');
+        if (gapLegend) {
+          // remove existing picker if present
+          const existing = document.getElementById('gapPicker');
+          if (existing) existing.remove();
+
+          const picker = document.createElement('div');
+          picker.id = 'gapPicker';
+          picker.style.display = 'flex';
+          picker.style.gap = '8px';
+          picker.style.marginBottom = '6px';
+
+          // label above picker
+          const pickerLabel = document.createElement('div');
+          pickerLabel.textContent = 'Level:';
+          pickerLabel.style.fontSize = '12px';
+          pickerLabel.style.marginBottom = '6px';
+
+          const pickerWrapper = document.createElement('div');
+          pickerWrapper.style.display = 'flex';
+          pickerWrapper.style.flexDirection = 'column';
+          pickerWrapper.appendChild(pickerLabel);
+
+          const views = ['district','state','national'];
+          views.forEach(v => {
+            const btn = document.createElement('button');
+            btn.className = 'gap-btn';
+            btn.dataset.view = v;
+            btn.title = v;
+            // show full word on the button
+            btn.textContent = v.charAt(0).toUpperCase() + v.slice(1);
+            btn.style.padding = '4px 8px';
+            btn.style.borderRadius = '16px';
+            btn.style.border = '1px solid rgba(0,0,0,0.15)';
+            btn.style.background = v === 'district' ? '#111' : '#fff';
+            btn.style.color = v === 'district' ? '#fff' : '#111';
+            btn.style.cursor = 'pointer';
+            btn.addEventListener('click', () => {
+              // update active styling
+              Array.from(picker.children).forEach(c => {
+                c.style.background = '#fff';
+                c.style.color = '#111';
+              });
+              btn.style.background = '#111';
+              btn.style.color = '#fff';
+
+              // draw appropriate series
+              if (v === 'district') {
+                const s = { BL: extendedSeries.BL, HI: extendedSeries.HI };
+                const cm = { BL: colorMap.BL, HI: colorMap.HI };
+                drawMiniChart('gapChart', years, s, cm);
+                drawLegend('gapLegend', s, cm);
+              } else if (v === 'state') {
+                const s = { 'BL_state': extendedSeries.BL_state, 'HI_state': extendedSeries.HI_state };
+                const cm = { 'BL_state': colorMap['BL_state'], 'HI_state': colorMap['HI_state'] };
+                drawMiniChart('gapChart', years, s, cm);
+                drawLegend('gapLegend', s, cm);
+              } else if (v === 'national') {
+                const s = { 'BL_nat': extendedSeries.BL_nat, 'HI_nat': extendedSeries.HI_nat };
+                const cm = { 'BL_nat': colorMap['BL_nat'], 'HI_nat': colorMap['HI_nat'] };
+                drawMiniChart('gapChart', years, s, cm);
+                drawLegend('gapLegend', s, cm);
+              }
+            });
+            picker.appendChild(btn);
+          });
+
+          pickerWrapper.appendChild(picker);
+          gapLegend.parentNode.insertBefore(pickerWrapper, gapLegend);
+        }
+
+        // draw default (district)
+        const defaultSeries = { BL: extendedSeries.BL, HI: extendedSeries.HI };
+        const defaultColors = { BL: colorMap.BL, HI: colorMap.HI };
+        drawMiniChart('gapChart', years, defaultSeries, defaultColors);
+        drawLegend('gapLegend', defaultSeries, defaultColors);
+      })
+      .catch(err => {
+        console.warn('Failed to load national data for gap chart:', err);
+        // fallback: draw only district series and remove picker
+        const fallbackSeries = { BL: series.BL, HI: series.HI };
+        const fallbackColors = { BL: colors.BL, HI: colors.HI };
+        // remove picker if exists
+        const existing = document.getElementById('gapPicker');
+        if (existing) existing.remove();
+        drawMiniChart('gapChart', years, fallbackSeries, fallbackColors);
+        drawLegend('gapLegend', fallbackSeries, fallbackColors);
+      });
+
+    // exit here to avoid drawing twice (we draw in the fetch callback)
+    return;
+  } catch (e) {
+    console.warn('Error preparing state/national series:', e);
+  }
+
+  // default fallback if something goes wrong
+  drawMiniChart("gapChart", years, series, { BL: colors.BL, HI: colors.HI });
+  drawLegend("gapLegend", series, { BL: colors.BL, HI: colors.HI });
 }
 
 
@@ -1437,19 +1593,68 @@ function drawMiniChart(canvasId, years, series, colors) {
 }
 
 
-function drawLegend(containerId, series) {
+function shadeColor(hex, percent) {
+  // lighten color by percent (0..1). hex in form '#rrggbb'
+  try {
+    const h = hex.replace('#', '');
+    const r = parseInt(h.substring(0,2),16);
+    const g = parseInt(h.substring(2,4),16);
+    const b = parseInt(h.substring(4,6),16);
+    const nr = Math.round(r + (255 - r) * percent);
+    const ng = Math.round(g + (255 - g) * percent);
+    const nb = Math.round(b + (255 - b) * percent);
+    return '#' + [nr,ng,nb].map(v => v.toString(16).padStart(2,'0')).join('');
+  } catch (e) {
+    return hex;
+  }
+}
+
+function drawLegend(containerId, series, colorMap = {}) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const colors = { BL: "#1b9e77", AS: "#7570b3", HI: "#d95f02" };
+  const baseColors = { BL: "#1b9e77", AS: "#7570b3", HI: "#d95f02" };
+  const colors = Object.assign({}, baseColors, colorMap || {});
   container.innerHTML = "";
+
+  const nameMap = { BL: 'Black', AS: 'Asian', HI: 'Hispanic' };
 
   Object.keys(series).forEach(key => {
     const span = document.createElement("span");
     span.style.display = "inline-block";
-    span.style.marginRight = "10px";
-    span.style.color = colors[key];
-    span.innerHTML = `<b>${key}</b>`;
+    span.style.marginRight = "14px";
+    span.style.fontSize = '13px';
+    span.style.verticalAlign = 'middle';
+
+    // Determine label
+    let label = key;
+    if (key.endsWith('_state')) {
+      const base = key.replace(/_state$/, '');
+      label = `${nameMap[base] || base} (state)`;
+    } else if (key.endsWith('_nat')) {
+      const base = key.replace(/_nat$/, '');
+      label = `${nameMap[base] || base} (national)`;
+    } else {
+      label = nameMap[key] || key;
+    }
+
+    const color = colors[key] || baseColors[key.replace(/_(state|nat)$/, '')] || '#000';
+
+    // color box
+    const box = document.createElement('span');
+    box.style.display = 'inline-block';
+    box.style.width = '12px';
+    box.style.height = '12px';
+    box.style.background = color;
+    box.style.marginRight = '6px';
+    box.style.verticalAlign = 'middle';
+
+    span.appendChild(box);
+    const txt = document.createElement('span');
+    txt.textContent = label;
+    txt.style.marginRight = '8px';
+    span.appendChild(txt);
+
     container.appendChild(span);
   });
 }
