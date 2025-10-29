@@ -173,7 +173,8 @@ function initFactSheet(stateData, fips, fieldName) {
   <div class="opportunity-row">
     <div class="opportunity-column">
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
-    ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} AP Classes Offered in Schools (2021)<br>
+  ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} Modal number of AP Classes Offered in Schools (average of the school-level modes) (2021)<br>
+  <strong># Districts:</strong> <span id="numDistricts">—</span><br>
 
     ${oppestHTML}
 
@@ -208,7 +209,7 @@ function initFactSheet(stateData, fips, fieldName) {
   `;
 
   // Load and filter district data
-  const loadAndBuild = (data) => {
+    const loadAndBuild = (data) => {
     districtDataCache = districtDataCache || data; // cache first load
     console.log(data[0].LEA_STATE)
     const filteredDistrictData = data.filter(d =>
@@ -217,6 +218,14 @@ function initFactSheet(stateData, fips, fieldName) {
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
     //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
     buildDistrictTable(filteredDistrictData, 'ENR_AP_GAP_BL') // actually fills the table, given the data are loaded
+    // populate # districts in the factsheet by counting unique LEAID (might be changed later)
+    try {
+      const nd = document.getElementById('numDistricts');
+      if (nd) {
+        const unique = new Set(filteredDistrictData.map(d => String(d.LEAID || d.LEA_NAME || '')).filter(v => v));
+        nd.textContent = unique.size.toLocaleString();
+      }
+    } catch(e) { console.warn('Could not set numDistricts', e); }
     fillDistrictMap(map, filteredDistrictData, state_abbrev, fips, 'ENR_AP_GAP_BL'); // default map coloring
   };
 
