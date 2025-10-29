@@ -65,6 +65,66 @@ function createLongitudinalChart(containerId, values, stateAvg) {
 //   factSheetContainer.innerHTML = `<h2>Factsheet about <span id="currentState">Oregon</span></h2>`
 //   factSheetContainer.innerHTML +=`<div id = "StateOverviewCharts"></div><br>`
 
+function getStateOpportunityEstimates(state,fieldName) {
+  // Normalize input to string
+  const stateStr = String(state).trim();
+
+  // Helper: check if string is all digits (FIPS)
+  const isNumeric = /^\d+$/.test(stateStr);
+
+  // Get the state entry depending on the type
+  let stateEntry;
+  if (isNumeric) {
+    const fipsKey = stateStr.padStart(2, '0');
+    stateEntry = stateDataCache[fipsKey];
+  } else {
+    stateEntry = Object.values(stateDataCache).find(
+      arr => arr[0]?.state_abbrev === stateStr.toUpperCase()
+    );
+  }
+
+  if (!stateEntry) return `<div>State data not found for "${stateStr}"</div>`;
+  console.log(stateEntry)
+
+  // Extract values
+  const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
+  const val2011Raw = stateEntry[0]?.[fieldName];
+  const lastEntry = stateEntry[stateEntry.length - 1]; // last year = 2021
+  const val2021Raw = lastEntry?.[fieldName];
+  const apNum2021 = lastEntry?.ENR_AP ?? '—';
+
+  const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
+  const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
+
+  // Arrow indicator
+  let arrowIcon = '';
+  let arrowClass = '';
+  if (typeof val2011Raw === 'number' && typeof val2021Raw === 'number') {
+    if (val2021Raw > val2011Raw) {
+      arrowIcon = '🡹';
+      arrowClass = 'arrow-up';
+    } else if (val2021Raw < val2011Raw) {
+      arrowIcon = '🡻';
+      arrowClass = 'arrow-down';
+    }
+  }
+
+  // Return formatted HTML
+  const opphtml = `
+    <br><b>Opportunity Estimates</b>
+    <div class="opportunity-row">
+      <div class="arrow ${arrowClass}">${arrowIcon}</div>
+      <div class="opportunity-text">
+        2011–12: ${val2011}<br>
+        2021–22: ${val2021}
+      </div>
+    </div>
+  `;
+
+  return opphtml;
+}
+
+
 
 function initFactSheet(stateData, fips, fieldName) {
   showGraphs(); // hid the US level details, show the state details
@@ -105,6 +165,8 @@ function initFactSheet(stateData, fips, fieldName) {
     }
   }
 
+  oppestHTML = getStateOpportunityEstimates(fips,fieldName)
+
   // Build factsheet HTML (state)
   factSheetContainer.classList.remove("full-width"); // no full width top row
   factSheetContainer.innerHTML = `
@@ -113,14 +175,7 @@ function initFactSheet(stateData, fips, fieldName) {
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
     ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} AP Classes Offered in Schools (2021)<br>
 
-    <b>Opportunity Estimates</b>
-    <div class="opportunity-row">
-      <div class="arrow ${arrowClass}">${arrowIcon}</div>
-      <div class="opportunity-text">
-        2011–12: ${val2011}<br>
-        2021–22: ${val2021}
-      </div>
-    </div>
+    ${oppestHTML}
 
     </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column district-column">

@@ -479,7 +479,28 @@ getStateData().then(({ geojson, stateData }) => {
 
       const fips = e.features[0].id;  // FIPS is the feature id
 
-      if (hoveredPolygonId === fips) return; // already highlighted
+      // tooltip  
+      map.getCanvas().style.cursor = 'pointer';
+      const props = e.features[0].properties;
+      //console.log(props)
+      var description 
+
+
+      if (hoveredPolygonId === fips){
+        popup.setLngLat(e.lngLat); // move the tooltip with existing data
+        return; // already highlighted
+      } else {
+        // get new data
+        description = 
+        `
+          <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
+            <strong>${props.STATE_NAME}</strong>
+            ${getStateOpportunityEstimates(fips,'ENR_AP_GAP_BL')}
+
+          </div>
+        `;
+        popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+      }
 
       // clear previous highlight
       if (hoveredPolygonId !== null) {
