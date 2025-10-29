@@ -75,6 +75,36 @@ button:hover {
     background-color:var(--darkgrey);
 }
 
+/* disabled control style: greyed out, not-allowed cursor, no hover color change */
+.control-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.control-disabled:hover {
+  /* keep same background on hover so color doesn't change */
+  background-color: var(--green) !important;
+}
+
+/* map control buttons */
+#mapWidgetsQuery button#full_extent,
+#backToStateMapBtn {
+  display: block;
+  /* margin-top: 6px; */
+  min-width: 110px;
+  width: auto;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 2px;
+  font-size: 0.95rem;
+  height: 37px;
+}
+
+.control-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .race-toggle, .aggregation-toggle{
   display: inline-flex;
   border: 2px solid var(--green);
