@@ -8,10 +8,130 @@ document.addEventListener('DOMContentLoaded', () => {
   // const searchInput = document.querySelector('.search_query input');
   // const searchButton = document.querySelector('.search_query button');
   const fullExtentButton = document.querySelector('#full_extent');
+
+  // map-level "Back to state" button 
+  const backToStateMapBtn = document.createElement('button');
+  backToStateMapBtn.id = 'backToStateMapBtn';
+  backToStateMapBtn.textContent = 'Back to state';
+  // insert after the fullExtentButton if present
+  if (fullExtentButton && fullExtentButton.parentNode) {
+    fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton.nextSibling);
+  } else {
+    // fallback: append to body
+    document.body.appendChild(backToStateMapBtn);
+  }
+
+  // click handler- zoom back to the last district's state (stored when factsheet opens)
+  backToStateMapBtn.addEventListener('click', () => {
+    // Only active when in district view
+    if (window.mapView !== 'district') {
+      return;
+    }
+
+    const stateFP = window.lastDistrictStateFP || null;
+    const stateAbbrev = window.lastDistrictStateAbbrev || null;
+
+    // try geojsonCache first
+    let stateFeature = null;
+    if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
+      stateFeature = geojsonCache.features.find(f => {
+        const p = f.properties || {};
+        return String(p.STATEFP) === String(stateFP) || String(p.STATE_ID) === String(stateFP) || String((p.STATE_ABBR || p.STATE)) === String(stateAbbrev);
+      });
+    }
+
+    function fitFeatureBoundsAndShowFacts(f, fips) {
+      if (!f || !f.geometry) return false;
+      const coords = f.geometry.coordinates;
+      const bounds = new mapboxgl.LngLatBounds();
+      function extendBounds(coordinates) {
+        if (typeof coordinates[0][0] === 'number') {
+          coordinates.forEach(coord => bounds.extend(coord));
+        } else {
+          coordinates.forEach(extendBounds);
+        }
+      }
+      extendBounds(coords);
+      map.fitBounds(bounds, { padding: 30 });
+  // switch to state view UI
+  if (typeof setMapView === 'function') setMapView('state');
+      hideGraphs();
+      // show the state factsheet (fips may need padding to match keys)
+      try {
+        initFactSheet(stateDataCache, fips, 'ENR_AP_GAP_BL');
+      } catch (e) { console.warn('initFactSheet failed', e); }
+      // scroll state info into view
+      const info = document.getElementById('infoContainer');
+      if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      return true;
+    }
+
+    if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateFP)) return;
+
+    // fallback to querySourceFeatures
+    try {
+      const matches = map.querySourceFeatures('states', {
+        filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateFP || '')]
+      });
+      if (matches && matches.length) {
+        const f = matches[0];
+        if (fitFeatureBoundsAndShowFacts(f, stateFP)) return;
+      }
+    } catch (e) {
+      console.warn('querySourceFeatures fallback failed', e);
+    }
+
+    // final fallback to full US extent and show nothing specific
+    map.fitBounds([[ -126, 24], [-66, 50]]);
+    if (typeof setMapView === 'function') setMapView('full');
+    hideGraphs();
+    const info3 = document.getElementById('infoContainer');
+    if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  });
+  // canonical view setter: 'full' | 'state' | 'district'
+  // make setMapView available globally so code outside this closure (map handlers)
+  // can call it (some map handlers are defined after this DOMContentLoaded block)
+  window.setMapView = function(view) {
+    window.mapView = view; // canonical
+    // backwards compatibility for older code/tests
+    window.isFullUSView = (view === 'full');
+    window.currentAggView = (view === 'district') ? 'district' : 'state';
+    if (typeof updateControlStates === 'function') updateControlStates();
+  };
+
+  // update control enabled/disabled visuals based on current view
+  function updateControlStates() {
+    try {
+      if (backToStateMapBtn) {
+        if (window.mapView === 'district') {
+          backToStateMapBtn.disabled = false;
+          backToStateMapBtn.classList.remove('control-disabled');
+        } else {
+          backToStateMapBtn.disabled = true;
+          backToStateMapBtn.classList.add('control-disabled');
+        }
+      }
+      if (fullExtentButton) {
+        if (window.mapView === 'full') {
+          fullExtentButton.disabled = true;
+          fullExtentButton.classList.add('control-disabled');
+        } else {
+          fullExtentButton.disabled = false;
+          fullExtentButton.classList.remove('control-disabled');
+        }
+      }
+    } catch (e) {
+      console.warn('updateControlStates error', e);
+    }
+  }
+  // set initial canonical view and update controls
+  setMapView('full');
   const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
   const aggSelectionButton = document.querySelectorAll('.agg-selectBtn');
   // flag to determine whether user interaction has happened (don't sort on initial load)
   let userHasInteracted = false;
+  // track aggregation selection separately from canonical map view
+  window.aggLevel = 'state'; // 'state' or 'district'
 
 
   // get CSS colors:
@@ -36,15 +156,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // display State level data
-    if (this.id === 'agg-selectState'){
+  if (this.id === 'agg-selectState'){
+    window.aggLevel = 'state';
+        // switch map view to state (not full US)
+        if (typeof setMapView === 'function') setMapView('state');
         console.log("clickedState")
         $('#race-selectBlk').click() // trigger returning to US view wiht Opportunity Estimate for Black Students
         map.setLayoutProperty('state-fills', 'visibility', 'visible');
         map.setLayoutProperty('district-fills', 'visibility', 'none');
         map.setLayoutProperty('district-lines', 'visibility', 'none');
+        // update control states if function exists
+        if (typeof updateControlStates === 'function') updateControlStates();
       } else if (this.id === 'agg-selectDist'){
+        window.aggLevel = 'district';
+        // switch map view to district-level (enables Back)
+        if (typeof setMapView === 'function') setMapView('district');
        // display district level data 
         console.log("clickedDistrict")
+        if (typeof updateControlStates === 'function') updateControlStates();
         // hide state layer
         map.setLayoutProperty('state-fills', 'visibility', 'none');
 
@@ -67,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         getDistrictData('all').then(districtData => {
           fillDistrictMap(map, districtData, 'all', 'all', 'ENR_AP_GAP_BL');
+          if (typeof updateControlStates === 'function') updateControlStates();
         });
       }
     })
@@ -128,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
         proximity: map.getCenter(),  
         //bbox:[-135, 30, -90, 52] // Southwest coordinates, Northeast coordinates. Same as inset bounds
     };
-    searchBox.marker = false; // no blue pin at result
     searchBox.mapboxgl = mapboxgl;
     searchBox.componentOptions = { allowReverse: true, flipCoordinates: true };
     console.log('loaded search box')
@@ -150,8 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
       map.removeLayer('district-fills');
     }
     hideGraphs();
-
-    $('#race-selectBlk').click() // trigger returning to US view Opportunity Estimate for Black Students
+  $('#race-selectBlk').click(); // trigger returning to US view Opportunity Estimate for Black Students
+  // mark full US view active and update controls
+  if (typeof setMapView === 'function') setMapView('full');
     //StateOverview.style.display = 'none'; // hide state panel
 
   });
@@ -452,7 +582,9 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
 
     // fill fact sheet
     const fieldName = 'ENR_AP_GAP_BL';
-    initFactSheet(stateDataCache, clickedFeature.id, fieldName);
+  initFactSheet(stateDataCache, clickedFeature.id, fieldName);
+  // update canonical map view to 'state' and refresh controls
+  if (typeof setMapView === 'function') setMapView('state');
 
 
     //   map.on('mousemove', 'district-fills', (e) => {
@@ -619,7 +751,7 @@ function buildStateTable(stateData, fieldName) {
     paging: false,
     scrollCollapse: true,
     scrollY: '200px',
-    // initial order: sort by 2021 Opportunity Estimate (column index 3) descending
+    // initial order- sort by 2021 opp est descending
     order: [[3, 'desc']],
     columnDefs: [
       { targets: 4, visible: false }, // hide FIPS
@@ -959,7 +1091,8 @@ for (const d of filtered) {
       <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
         <strong>${props.NAME}</strong>
       </div>
-    `;
+  `;
+  return;
     popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
   });
 
@@ -1002,6 +1135,8 @@ for (const d of filtered) {
 
 // --- District fact sheet ---
 function showDistrictFactsheet(clickedFeature, districtData) {
+  // ensure canonical view reflects district view (this will update controls)
+  if (typeof setMapView === 'function') setMapView('district');
   const geoId = String(clickedFeature.properties.GEOID);
   const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
   const factSheetContainer = document.getElementById("factSheetContainer");
@@ -1020,6 +1155,15 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   const leaName = latest.LEA_NAME || "Unknown district";
   const latestYear = latest.YEAR;
 
+  // store state identifiers for map-level "Back to state" button
+  try {
+    window.lastDistrictStateFP = latest.STATEFP || latest.LEA_STATEFP || clickedFeature.properties?.STATEFP || null;
+    window.lastDistrictStateAbbrev = latest.LEA_STATE || clickedFeature.properties?.STATE_ABBR || null;
+  } catch (e) {
+    window.lastDistrictStateFP = null;
+    window.lastDistrictStateAbbrev = null;
+  }
+
   // Unified colors for both charts
   const colors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
 
@@ -1034,8 +1178,8 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     <br>(place holder, not currently functioning)</label>
 <select id="districtPicker" style="align-self: center; margin-bottom: 10px; max-width: 300px;">
   ${districtNames.map(name => `<option value="${name}">${toTitleCase(name)}</option>`).join('')}
-</select>
-  `;
+ </select>
+   `;
 
   // --- Build factsheet HTML (District) ---
   factSheetContainer.classList.add("full-width"); // full width top row
