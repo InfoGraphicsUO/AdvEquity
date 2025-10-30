@@ -350,3 +350,8 @@ h2 {
   color: white;
   border-color: #4a90e2;
 }
+
+/* tooltip */
+.mapboxgl-popup {
+  z-index: 11; /*so it appears over the widgets*/
+}
