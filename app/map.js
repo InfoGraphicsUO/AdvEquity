@@ -1346,9 +1346,14 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         // simple bubble picker to toggle which aggregation is shown (district/state/national)
         const gapLegend = document.getElementById('gapLegend');
         if (gapLegend) {
-          // remove existing picker if present
-          const existing = document.getElementById('gapPicker');
-          if (existing) existing.remove();
+          // remove existing picker wrapper if present (remove whole wrapper that contains the label)
+          const existingWrapper = document.getElementById('gapPickerWrapper');
+          if (existingWrapper) existingWrapper.remove();
+          else {
+            // fallback: remove inner picker if wrapper wasn't used previously
+            const existing = document.getElementById('gapPicker');
+            if (existing) existing.remove();
+          }
 
           const picker = document.createElement('div');
           picker.id = 'gapPicker';
@@ -1363,6 +1368,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           pickerLabel.style.marginBottom = '6px';
 
           const pickerWrapper = document.createElement('div');
+          pickerWrapper.id = 'gapPickerWrapper';
           pickerWrapper.style.display = 'flex';
           pickerWrapper.style.flexDirection = 'column';
           pickerWrapper.appendChild(pickerLabel);
@@ -1454,9 +1460,13 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         // fallback: draw only district series and remove picker
         const fallbackSeries = { BL: series.BL, HI: series.HI };
         const fallbackColors = { BL: colors.BL, HI: colors.HI };
-        // remove picker if exists
-        const existing = document.getElementById('gapPicker');
-        if (existing) existing.remove();
+        // remove picker wrapper if exists
+        const existingWrapper = document.getElementById('gapPickerWrapper');
+        if (existingWrapper) existingWrapper.remove();
+        else {
+          const existing = document.getElementById('gapPicker');
+          if (existing) existing.remove();
+        }
   drawMiniChart('gapChart', years, fallbackSeries, fallbackColors, 'AP participation gap');
         drawLegend('gapLegend', fallbackSeries, fallbackColors);
 
