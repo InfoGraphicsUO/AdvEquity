@@ -112,13 +112,14 @@ function getStateOpportunityEstimates(state,fieldName) {
   // Return formatted HTML
   const opphtml = `
     <br><b>Opportunity Estimates</b>
-    <div class="opportunity-row">
+    <div class="opportunity-row opportunity-estimates">
       <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
         2011–12: ${val2011}<br>
         2021–22: ${val2021}
       </div>
     </div>
+    <small>placeholder for description of the change</small>
   `;
 
   return opphtml;
@@ -142,6 +143,7 @@ function initFactSheet(stateData, fips, fieldName) {
 
   // State abbreviation and values
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
+  const modal_school_APCOURSES = stateEntry[stateEntry.length - 1]?.SCH_APCOURSES ?? 'Unknown';
   const val2011Raw = stateEntry[0]?.[fieldName];
   const lastEntry = stateEntry[stateEntry.length - 1]; // last year = 2021
   const val2021Raw = lastEntry?.[fieldName];
@@ -173,8 +175,9 @@ function initFactSheet(stateData, fips, fieldName) {
   <div class="opportunity-row">
     <div class="opportunity-column">
     <h2><b>Factsheet about <span id="currentState">${state_abbrev}</span></b></h2>
-  ${typeof apNum2021 === 'number' ? apNum2021.toLocaleString() : apNum2021} Modal number of AP Classes Offered in Schools (average of the school-level modes) (2021)<br>
-  <strong># Districts:</strong> <span id="numDistricts">—</span><br>
+    # Districts: <span id="numDistricts">—</span><br>
+    Modal # of AP classes offered in schools:${modal_school_APCOURSES}<small>(avg of 2021 school-level modes)</small>
+
 
     ${oppestHTML}
 

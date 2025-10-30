@@ -172,7 +172,7 @@ h2 {
   flex-direction: row;          /* horizontal layout for columns */
   align-items: flex-start;      /* top-align content */
   justify-content: center;      /* center-align content */
-  gap: 0.5em;
+  gap: 5em;
   margin-top: 0.25em;
 }
 
@@ -230,6 +230,11 @@ h2 {
 
 .opportunity-text {
   line-height: 1.2;
+}
+
+.opportunity-estimates{
+  gap:0.5em;
+  align-items: center;
 }
 
 /* end popup */

@@ -775,7 +775,7 @@ function buildStateTable(stateData, fieldName) {
     scrollCollapse: true,
     scrollY: '200px',
     // initial order- sort by 2021 opp est descending
-    order: [[3, 'desc']],
+    order: [[4, 'desc']],
     columnDefs: [
       { targets: 4, visible: false }, // hide FIPS
       { targets: [1, 2, 3], type: 'na-last' } // apply custom sort
