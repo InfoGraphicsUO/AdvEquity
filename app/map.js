@@ -1223,12 +1223,12 @@ function showDistrictFactsheet(clickedFeature, districtData) {
       </p>
       <p><b>District Composition</b>
       <label class="composition-toggle">
-        <input type="checkbox" id="compToggle">
-        <small>show Bar</small>
+        <input type="checkbox" id="compToggle" checked>
+        <small>show as bar</small>
       </label>
       </p>
-      <canvas id="compDonut" width="300" height="100"></canvas>
-      <canvas id="compBar" width="300" height="100" style="display:none;"></canvas>
+      <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
+      <canvas id="compBar" width="300" height="100"></canvas>
     </div>
 
     <div class="opportunity-column">
@@ -1266,7 +1266,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     OTH: latest.PCT_ENR_OTH
   };
 
-  drawDonutChart("compDonut", compData, colors);
+  drawCompDonutChart("compDonut", compData, colors);
   drawCompositionBar("compBar", compData, colors);
 
   // Toggle between donut and bar
@@ -1536,7 +1536,7 @@ function fmtValue(val, year, targetYear = 2021) {
 
 
 
-function drawDonutChart(canvasId, data, colors) {
+function drawCompDonutChart(canvasId, data, colors) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -1579,7 +1579,7 @@ function drawDonutChart(canvasId, data, colors) {
     ctx.fillStyle = colors[key]||"#000";
     ctx.fillRect(legendX,legendY-10,12,12);
     ctx.fillStyle="#000";
-    ctx.fillText(`${key}: ${value}`,legendX+18,legendY);
+    ctx.fillText(`${key}: ${formatPercentage(value)}`,legendX+18,legendY);
     legendY+=16;
   }
 }
@@ -1611,9 +1611,9 @@ function drawCompositionBar(canvasId, data, colors) {
 
     if(width>40){
       ctx.fillStyle="#fff";
-      ctx.fillText(`${key}: ${value}`,x+width/2,startY+barHeight/2);
+      ctx.fillText(`${key}: ${formatPercentage(value)}`,x+width/2,startY+barHeight/2);
     } else {
-      legendEntries.push([key,value]);
+      legendEntries.push([key,formatPercentage(value)]);
     }
     x+=width;
   }
@@ -1916,10 +1916,6 @@ function prepareAndDrawSparkline(opts) {
   }
 }
 
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
-}
-
 function showGraphs(){
   document.querySelector('#infoContainer').style.display = 'none'
   document.querySelector('#factSheetContainer').style.display = 'flex'
@@ -1960,4 +1956,16 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 
     container.appendChild(span);
   });
+}
+
+// formatting functions
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+}
+
+function formatPercentage(num) {
+  if (num * 100 < 1) {
+    return "< 1%";
+  }
+  return (num * 100).toFixed(1) + "%";
 }
