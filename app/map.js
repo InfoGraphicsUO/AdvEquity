@@ -1601,37 +1601,45 @@ function drawCompositionBar(canvasId, data, colors) {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  const entries = Object.entries(data);
+  // sort entries by value descending 
+  const entries = Object.entries(data).sort((a,b) => (b[1] || 0) - (a[1] || 0));
   const total = entries.reduce((sum,[,v])=>sum+(v||0),0);
 
-  const barHeight=30;
-  const startY=20;
-  let x=0;
+  if (!total || total <= 0) return; // nothing to draw
+
+  const barHeight = 30;
+  const startY = 20;
+  let x = 0;
   const legendEntries = [];
 
-  ctx.font="12px sans-serif";
-  ctx.textAlign="center";
-  ctx.textBaseline="middle";
+  const baseFont = "12px sans-serif";
+  const boldFont = "bold 12px sans-serif";
+  ctx.font = baseFont;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
 
   // Draw stacked bar with internal labels if wide enough
-  for(const [key,value] of entries){
-    const width=(value||0)/total*canvas.width;
-    ctx.fillStyle = colors[key]||"#000";
-    ctx.fillRect(x,startY,width,barHeight);
+  for (const [key, value] of entries) {
+    const width = (value || 0) / total * canvas.width;
+    ctx.fillStyle = colors[key] || "#000";
+    ctx.fillRect(x, startY, width, barHeight);
 
-    if(width>40){
-      ctx.fillStyle="#fff";
-      ctx.fillText(`${key}: ${formatPercentage(value)}`,x+width/2,startY+barHeight/2);
+    if (width > 40) {
+      ctx.fillStyle = "#fff";
+      ctx.font = boldFont;
+      ctx.fillText(`${key}: ${formatPercentage(value)}`, x + width / 2, startY + barHeight / 2);
+      // restore base font for subsequent measurements/draws
+      ctx.font = baseFont;
     } else {
-      legendEntries.push([key,formatPercentage(value)]);
+      legendEntries.push([key, formatPercentage(value)]);
     }
-    x+=width;
+    x += width;
   }
 
   // Draw legend below bar for segments too small for inside label
-  ctx.font="12px sans-serif";
-  ctx.textAlign="left";
-  ctx.textBaseline="middle";
+  ctx.font = baseFont;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
   const legendPadding=5;
   let legendX=0;
   let legendY=startY+barHeight+15;
