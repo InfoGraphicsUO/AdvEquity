@@ -475,6 +475,16 @@ getStateData().then(({ geojson, stateData }) => {
 
 
   map.on('mousemove', 'state-fills', (e) => {
+    //hide the tool tip when in district/state level view
+      if (window.mapView && window.mapView !== 'full') {
+        // reset cursor and remove popup if present
+        map.getCanvas().style.cursor = '';
+        try {
+          if (typeof popup !== 'undefined' && popup && typeof popup.remove === 'function') popup.remove();
+        } catch (err) { /* ignore */ }
+        return;
+      }
+
       if (!e.features.length) return;
 
       const fips = e.features[0].id;  // FIPS is the feature id
@@ -482,12 +492,11 @@ getStateData().then(({ geojson, stateData }) => {
       // tooltip  
       map.getCanvas().style.cursor = 'pointer';
       const props = e.features[0].properties;
-      //console.log(props)
-      var description 
-
+      var description;
 
       if (hoveredPolygonId === fips){
-        popup.setLngLat(e.lngLat); // move the tooltip with existing data
+        // move the tooltip with existing data
+        try { if (typeof popup !== 'undefined' && popup && typeof popup.setLngLat === 'function') popup.setLngLat(e.lngLat); } catch (err) { }
         return; // already highlighted
       } else {
         // get new data
@@ -499,7 +508,7 @@ getStateData().then(({ geojson, stateData }) => {
 
           </div>
         `;
-        popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+        try { if (typeof popup !== 'undefined' && popup && typeof popup.setLngLat === 'function') popup.setLngLat(e.lngLat).setHTML(description).addTo(map); } catch (err) { }
       }
 
       // clear previous highlight
@@ -513,7 +522,7 @@ getStateData().then(({ geojson, stateData }) => {
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
 
       // Highlight the table by hoveredPolygonId, state FIPS code (like "41")
-      highlightTableByFIPS(fips) 
+      highlightTableByFIPS(fips);
   });
 
 
@@ -522,6 +531,11 @@ getStateData().then(({ geojson, stateData }) => {
       map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
       hoveredPolygonId = null;
     }
+
+    // remove state tooltip when leaving
+    try {
+      if (typeof popup !== 'undefined' && popup && typeof popup.remove === 'function') popup.remove();
+    } catch (err) { }
 
     clearTableHighlights();
   });
