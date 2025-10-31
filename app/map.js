@@ -1204,17 +1204,28 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   // Unified colors for both charts
   const colors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
 
-  // --- Dropdown of district names ---
-  const districtNames = districtData
-    .map(d => d.LEA_NAME)
-    .filter((v, i, a) => v && a.indexOf(v) === i)
-    .sort();
+  // --- Dropdown of districts (unique by LEAID) ---
+  // Build a map keyed by normalized LEAID (remove leading zeros) so each option is unique
+  const uniqLea = {};
+  for (const d of districtData) {
+    const leaRaw = d.LEAID || d.GEOID || '';
+    const lea = String(leaRaw).replace(/^0+/, '');
+    if (!lea) continue;
+    if (!uniqLea[lea]) {
+      uniqLea[lea] = {
+        lea,
+        name: d.LEA_NAME || d.NAME || 'Unknown',
+        state: d.LEA_STATE || d.STATE || ''
+      };
+    }
+  }
+
+  const districtList = Object.values(uniqLea).sort((a,b) => (a.name || '').localeCompare(b.name || ''));
 
   const dropdownHtml = `
-    <br><br><label for="districtPicker" style="align-self: center;">Jump to District
-    <br>(place holder, not currently functioning)</label>
-<select id="districtPicker" style="align-self: center; margin-bottom: 10px; max-width: 300px;">
-  ${districtNames.map(name => `<option value="${name}">${toTitleCase(name)}</option>`).join('')}
+    <br><br><label for="districtPicker" style="align-self: center;">Jump to District<br>(select LEAID)</label>
+<select id="districtPicker" style="align-self: center; margin-bottom: 10px; max-width: 360px;">
+  ${districtList.map(d => `<option value="${d.lea}">${toTitleCase(d.name)}${d.state ? ' ('+d.state+')' : ''} — ${d.lea}</option>`).join('')}
  </select>
    `;
 
@@ -1222,6 +1233,12 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
     <div class="opportunity-row"><h2><b>${toTitleCase(leaName)} Factsheet</b></h2></div>
+    <!-- Jump-to selector placed immediately under title so it's visible on open -->
+    <div class="opportunity-row">
+      <div class="opportunity-column">
+        ${dropdownHtml}
+      </div>
+    </div>
     <div class="opportunity-row">
     <div class="opportunity-column">
       <p><b>Latest information</b></p>
@@ -1266,7 +1283,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   <p style="font-size:0.9em;color: black">Modal number of AP courses offered (by year)</p>
   <canvas id="apCoursesChart" width="300" height="120" style="margin-top:6px;"></canvas>
   <div id="apCoursesLegend" style="font-size:0.85em;margin-top:5px;"></div>
-      ${dropdownHtml}
+      
     </div> <!-- end row -->
     </div>  <!-- end column -->
   `  ;
@@ -1289,6 +1306,86 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     document.getElementById("compDonut").style.display = showBar ? "none" : "block";
     document.getElementById("compBar").style.display = showBar ? "block" : "none";
   });
+
+//jump to district
+  try {
+    const picker = document.getElementById('districtPicker');
+    if (picker) {
+      picker.addEventListener('change', function () {
+        const selectedLea = String(this.value || '').replace(/^0+/, '');
+        if (!selectedLea) return;
+
+        // Find a record in the district data matching the selected LEAID (unique)
+        const rec = districtData.find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === selectedLea);
+        if (!rec) {
+          console.warn('Selected district LEAID not found in data:', selectedLea);
+          return;
+        }
+
+        const targetId = String(rec.LEAID || rec.GEOID || '').replace(/^0+/, '');
+
+        // query map source features for the districts layer and attempt to match
+        let foundFeature = null;
+        try {
+          const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
+            sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
+          }) || [];
+
+          // match by feature id (some features have id == LEAID), by LEAID/GEOID property,
+          // or by NAME property (we use first match we find)
+          foundFeature = features.find(f => {
+            if (!f) return false;
+            const fid = String(f.id || '').replace(/^0+/, '');
+            if (fid && targetId && fid === targetId) return true;
+            const p = f.properties || {};
+            const propLea = String(p.LEAID || p.GEOID || '').replace(/^0+/, '');
+            if (propLea && targetId && propLea === targetId) return true;
+            // fallback: match by name using the selected record's name (rec)
+            const recName = String(rec.LEA_NAME || rec.NAME || '').trim();
+            if (recName) {
+              if ((p.NAME && String(p.NAME).trim() === recName) || (p.LEA_NAME && String(p.LEA_NAME).trim() === recName)) return true;
+            }
+            return false;
+          });
+        } catch (err) {
+          console.warn('Could not query district features to find selected district', err);
+        }
+
+        if (!foundFeature) {
+          console.warn('Could not find map feature for district:', rec.LEA_NAME || rec.NAME || selectedLea);
+          return;
+        }
+
+        // zoom to the found feature's bounds 
+        try {
+          const coords = foundFeature.geometry && foundFeature.geometry.coordinates;
+          if (coords) {
+            const bounds = new mapboxgl.LngLatBounds();
+            function extendBounds(coordinates) {
+              if (typeof coordinates[0][0] === 'number') {
+                coordinates.forEach(coord => bounds.extend(coord));
+              } else {
+                coordinates.forEach(extendBounds);
+              }
+            }
+            extendBounds(coords);
+            map.fitBounds(bounds, { padding: 30 });
+          }
+        } catch (err) {
+          console.warn('Could not compute bounds for selected district:', err);
+        }
+
+        // open the factsheet for that district
+        try {
+          showDistrictFactsheet(foundFeature, districtData);
+        } catch (err) {
+          console.warn('Could not open factsheet for selected district:', err);
+        }
+      });
+    }
+  } catch (e) {
+    console.warn('Failed to wire districtPicker change handler', e);
+  }
 
   // --- Prepare gap chart data ---
   const years = records.map(r => r.YEAR);
