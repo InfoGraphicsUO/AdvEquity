@@ -180,7 +180,11 @@ function initFactSheet(stateData, fips, fieldName) {
 
 
     ${oppestHTML}
-
+      <!-- State composition bar: placed below the opportunity column -->
+      <div style="margin-top:8px;">
+        <b>State Composition</b>
+        <canvas id="stateCompBar" width="360" height="90"></canvas>
+      </div>
     </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column district-column">
     <div class="table-header-wrapper">
@@ -210,6 +214,24 @@ function initFactSheet(stateData, fips, fieldName) {
   </div>
   </div>
   `;
+  // draw state composition bar (uses latest year values from stateEntry
+  try {
+    const stateLatest = stateEntry[stateEntry.length - 1];
+    if (stateLatest) {
+      const compData = {
+        WH: stateLatest.PCT_ENR_WH,
+        HI: stateLatest.PCT_ENR_HI,
+        BL: stateLatest.PCT_ENR_BL,
+        AS: stateLatest.PCT_ENR_AS,
+        OTH: stateLatest.PCT_ENR_OTH
+      };
+      const compColors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
+      // drawCompositionBar is defined in map.js and loaded before this script in map.html
+      try { drawCompositionBar('stateCompBar', compData, compColors); } catch (e) { console.warn('drawCompositionBar unavailable', e); }
+    }
+  } catch (e) {
+    console.warn('Could not build state composition data', e);
+  }
 
   // Load and filter district data
     const loadAndBuild = (data) => {
