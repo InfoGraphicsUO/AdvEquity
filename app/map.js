@@ -1035,8 +1035,19 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
       filter: showAllStates ? true : ['==', ['get', 'STATEFP'], statefips],
       paint: {
-        'line-color': '#333',
-        'line-width': 0.5,
+        // use feature-state 'hover' to change line color/width on hover
+        'line-color': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          (typeof yellow !== 'undefined' ? yellow : '#ffcc00'),
+          '#333'
+        ],
+        'line-width': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          2.0,
+          0.5
+        ],
         'line-opacity': 0.9
       }
     }, 'state-borders');
@@ -1095,6 +1106,13 @@ for (const d of filtered) {
   ];
 
   map.setPaintProperty('district-fills', 'fill-color', colorRamp);
+  map.setPaintProperty('district-fills', 'fill-outline-color', [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    (typeof almostBlack !== 'undefined' ? almostBlack : '#111'),
+    '#333'
+  ]);
+
 
   // Assign feature states after data loads
   map.on('sourcedata', (e) => {
@@ -1121,21 +1139,68 @@ for (const d of filtered) {
 
   // Tooltip for hover
   map.on('mousemove', 'district-fills', (e) => {
-    if (!e.features.length) return;
+    // only show district tooltip when viewing a state or when district aggregation is active
+    if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
+      try { districtPopup.remove(); } catch (err) { }
+      map.getCanvas().style.cursor = '';
+      return;
+    }
+
+    if (!e.features || !e.features.length) return;
+
     map.getCanvas().style.cursor = 'pointer';
-    const props = e.features[0].properties;
+    const feat = e.features[0];
+    const props = feat.properties || {};
+
+    // manage hover feature state so districts can be visually highlighted if desired
+    try {
+      const fid = String(feat.id);
+      if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
+        map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: false });
+      }
+      hoveredDistrictPolygonID = fid;
+      map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: true });
+    } catch (err) { /* non-fatal */ }
+
+    // Find matching district record from provided districtData (if available)
+    let hoveredDistrictData = null;
+    try {
+      const geoId = String(feat.id || props.GEOID || props.LEAID || '').replace(/^0+/, '');
+      if (Array.isArray(districtData)) {
+        hoveredDistrictData = districtData.find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === geoId) || null;
+      }
+    } catch (err) { hoveredDistrictData = null; }
+
+    const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
+    const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
+
+    const grades = (props.LOGRADE || props.LGRADE || props.L_GRADE || '') && (props.HIGRADE || props.HGRADE || props.H_GRADE || '') ? `${props.LOGRADE || props.LGRADE || props.L_GRADE}–${props.HIGRADE || props.HGRADE || props.H_GRADE}` : '';
+
+    const directionClass = '';
     const description = `
       <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
-        <strong>${props.NAME}</strong>
+        <strong>${props.NAME || props.LEA_NAME || 'District'}</strong>
+        ${grades ? `<div>Grades: ${grades}</div>` : ''}
+        <div>Students: ${students}</div>
+        <div>Teachers (FTE): ${teachers}</div>
       </div>
-  `;
-  return;
-    popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+    `;
+
+    try {
+      districtPopup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+    } catch (err) { console.warn('Could not show district popup', err); }
   });
 
   map.on('mouseleave', 'district-fills', () => {
     map.getCanvas().style.cursor = '';
-    popup.remove();
+    try { districtPopup.remove(); } catch (err) { }
+    // clear district hover state
+    try {
+      if (hoveredDistrictPolygonID !== null) {
+        map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: false });
+        hoveredDistrictPolygonID = null;
+      }
+    } catch (err) { }
   });
 
   // Click → zoom and factsheet
