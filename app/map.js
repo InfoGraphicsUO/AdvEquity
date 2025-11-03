@@ -803,7 +803,7 @@ function buildStateTable(stateData, fieldName) {
     const yr2011 = stateArray.find(d => d.YEAR === 2011);
     const yr2021 = stateArray.find(d => d.YEAR === 2021);
 
-    const ap = yr2021?.ENR_AP ?? 'N/A';
+    const ap = yr2021?.SCH_APCOURSES ?? 'N/A';
     const val2011Raw = yr2011?.[fieldName];
     const val2021Raw = yr2021?.[fieldName];
     const stateAbbrev = yr2011?.state_abbrev ?? yr2021?.state_abbrev ?? '';
@@ -2089,7 +2089,9 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 
 // formatting functions
 function toTitleCase(str) {
-  return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+  return str.replace(/\w\S*/g, txt => {
+    return txt.length <= 2 ? txt : txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
+  });
 }
 
 function formatPercentage(num) {
