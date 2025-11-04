@@ -134,16 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.aggLevel = 'state'; // 'state' or 'district'
 
 
-  // get CSS colors:
-  const root = document.documentElement;
-  verydarkgrey = getComputedStyle(root).getPropertyValue('--verydarkgrey').trim();
-  darkgrey = getComputedStyle(root).getPropertyValue('--darkgrey').trim();
-  lightgrey = getComputedStyle(root).getPropertyValue('--lightgrey').trim();
-  green = getComputedStyle(root).getPropertyValue('--green').trim();
-  darkGreen = getComputedStyle(root).getPropertyValue('--darkGreen').trim();
-  yellow = getComputedStyle(root).getPropertyValue('--yellow').trim();
-  almostBlack = getComputedStyle(root).getPropertyValue('--almostBlack').trim();
-  offwhite = getComputedStyle(root).getPropertyValue('--offwhite').trim();
 
   // data
   aggSelectionButton.forEach(btn => {
