@@ -90,3 +90,12 @@
 .table tbody tr:hover td, .table tbody tr:hover th {
     background-color: var(--yellow) !important;
 }
+
+/** style for mini graphs **/
+/* spacing above titles*/
+div.opportunity-column:nth-child(2) > p{
+  margin: 1.25em 0 0 0 !important;
+  
+}
+
+/* to move move inine CSS for charts from JS to here */

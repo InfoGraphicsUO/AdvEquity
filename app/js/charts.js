@@ -181,7 +181,7 @@ function initFactSheet(stateData, fips, fieldName) {
 
     ${oppestHTML}
       <!-- State composition bar: placed below the opportunity column -->
-      <div style="margin-top:8px;">
+      <div style="margin-bottom:8px;">
         <b>State Composition</b>
         <canvas id="stateCompBar" width="360" height="90"></canvas>
       </div>
@@ -655,10 +655,11 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 
     const box = document.createElement('span');
     box.style.display = 'inline-block';
-    box.style.width = '12px';
-    box.style.height = '12px';
+    box.style.width = '8px';
+    box.style.height = '8px';
     box.style.background = colors[key] || '#000';
-    box.style.marginRight = '6px';
+    box.style.marginRight = '0.5em';
+    box.style.borderRadius  = '50%';
     box.style.verticalAlign = 'middle';
 
     span.appendChild(box);
