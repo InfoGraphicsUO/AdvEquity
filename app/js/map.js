@@ -1026,6 +1026,7 @@ function buildDistrictTable(districtData, fieldName) {
       // Open factsheet for the found feature
       try {
         showDistrictFactsheet(foundFeature, districtData);
+        hideNoGeometryNotice();
       } catch (e) { console.warn('Could not open factsheet for selected district (table click):', e); }
     });
   } catch (e) { console.warn('Failed to attach district table click handler', e); }
@@ -1363,6 +1364,7 @@ for (const d of filtered) {
     // Show factsheet only if zoomed in
     if (!showAllStates) {
       showDistrictFactsheet(clickedFeature, districtData);
+      hideNoGeometryNotice();
       // document.getElementById('mapLegend').style.display = 'block';
     }
   });
@@ -1371,6 +1373,13 @@ for (const d of filtered) {
 
 
 // --- District fact sheet ---
+function hideNoGeometryNotice() {
+  try {
+    const el = document.getElementById('noGeometryNotice');
+    if (el) el.style.display = 'none';
+  } catch (e) { /* non-fatal */ }
+}
+
 function showDistrictFactsheet(clickedFeature, districtData) {
   // ensure canonical view reflects district view (this will update controls)
   if (typeof setMapView === 'function') setMapView('district');
@@ -1565,11 +1574,19 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           // or by NAME property (we use first match we find)
           foundFeature = features.find(f => {
             if (!f) return false;
-            const fid = String(f.id || '').replace(/^0+/, '');
-            if (fid && targetId && fid === targetId) return true;
             const p = f.properties || {};
+            // various forms to compare (padded/unpadded)
+            const fid = String(f.id || '').replace(/^0+/, '');
+            const fidPadded = String(f.id || '').padStart(7, '0');
             const propLea = String(p.LEAID || p.GEOID || '').replace(/^0+/, '');
+            const propLeaPadded = String(p.LEAID || p.GEOID || '').padStart(7, '0');
+            const targetPadded = String(targetId).padStart(7, '0');
+
+            if (fid && targetId && fid === targetId) return true;
+            if (fidPadded && targetPadded && fidPadded === targetPadded) return true;
             if (propLea && targetId && propLea === targetId) return true;
+            if (propLeaPadded && targetPadded && propLeaPadded === targetPadded) return true;
+
             // fallback: match by name using the selected record's name (rec)
             const recName = String(rec.LEA_NAME || rec.NAME || '').trim();
             if (recName) {
@@ -1582,7 +1599,16 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         }
 
         if (!foundFeature) {
-          console.warn('Could not find map feature for district:', rec.LEA_NAME || rec.NAME || selectedLea);
+          console.warn('Could not find map feature for district (falling back to factsheet):', rec.LEA_NAME || rec.NAME || selectedLea);
+          try {
+            // show factsheet using the record (no geometry zoom)
+            const fakeFeature = { properties: { GEOID: String(rec.LEAID || rec.GEOID || '').replace(/^0+/, ''), STATE_ABBR: rec.LEA_STATE || '', STATEFP: rec.STATEFP || '' }, geometry: null };
+            showDistrictFactsheet(fakeFeature, districtData);
+            // ensure the no-geometry notice is hidden because rec.GIS indicates geometry exists
+            hideNoGeometryNotice();
+          } catch (err) {
+            console.warn('Could not open fallback factsheet for district:', err);
+          }
           return;
         }
 
@@ -1608,6 +1634,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         // open the factsheet for that district
         try {
           showDistrictFactsheet(foundFeature, districtData);
+          hideNoGeometryNotice();
         } catch (err) {
           console.warn('Could not open factsheet for selected district:', err);
         }
