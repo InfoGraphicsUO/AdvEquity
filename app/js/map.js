@@ -41,9 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fitFeatureBoundsAndShowFacts(f, fips) {
-      if (!f || !f.geometry) return false;
-      const coords = f.geometry.coordinates;
+      if (!f) return false;
+      const coords = f.geometry && f.geometry.coordinates;
       const bounds = new mapboxgl.LngLatBounds();
+
       function extendBounds(coordinates) {
         if (typeof coordinates[0][0] === 'number') {
           coordinates.forEach(coord => bounds.extend(coord));
@@ -51,14 +52,41 @@ document.addEventListener('DOMContentLoaded', () => {
           coordinates.forEach(extendBounds);
         }
       }
-      extendBounds(coords);
-      map.fitBounds(bounds, { padding: 30 });
-  // switch to state view UI
-  if (typeof setMapView === 'function') setMapView('state');
+      const props = f.properties || {};
+      let fipsToUse = fips;
+      if (!fipsToUse || fipsToUse === null) {
+        if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
+        else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
+        else if (props.STATE_ABBR || props.STATE) {
+          const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
+          try {
+            if (typeof stateDataCache === 'object') {
+              const stateKey = Object.keys(stateDataCache).find(k => {
+                const arr = stateDataCache[k] || [];
+                return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
+              });
+              if (stateKey) fipsToUse = stateKey;
+            }
+          } catch (e) { /* non-fatal */ }
+        }
+      }
+
+      // If feature has geometry, fit bounds; otherwise skip zoom but still show factsheet
+      try {
+        if (coords) {
+          extendBounds(coords);
+          map.fitBounds(bounds, { padding: 30 });
+        }
+      } catch (e) {
+        console.warn('Could not compute bounds for state feature', e);
+      }
+
+      // switch to state view UI
+      if (typeof setMapView === 'function') setMapView('state');
       hideGraphs();
       // show the state factsheet (fips may need padding to match keys)
       try {
-        initFactSheet(stateDataCache, fips, 'ENR_AP_GAP_BL');
+        initFactSheet(stateDataCache, fipsToUse, 'ENR_AP_GAP_BL');
       } catch (e) { console.warn('initFactSheet failed', e); }
       // scroll state info into view
       const info = document.getElementById('infoContainer');
@@ -80,6 +108,40 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.warn('querySourceFeatures fallback failed', e);
     }
+// this should fix issue with non geometry districts still being able to use Back to state button
+    try {
+      if ((!stateFeature || !stateFP) && stateAbbrev && typeof stateDataCache === 'object') {
+        const upperAbbrev = String(stateAbbrev).toUpperCase();
+        const stateKey = Object.keys(stateDataCache).find(k => {
+          const arr = stateDataCache[k] || [];
+          return arr.some(d => String(d.state_abbrev || '').toUpperCase() === upperAbbrev);
+        });
+        if (stateKey) {
+          // try to find feature in geojsonCache using known keys/properties
+          if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
+            stateFeature = geojsonCache.features.find(f => {
+              const p = f.properties || {};
+              return String(p.STATEFP) === String(stateKey) || String(p.STATE_ID) === String(stateKey) || String((p.STATE_ABBR || p.STATE || '')).toUpperCase() === upperAbbrev;
+            });
+          }
+
+          if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateKey)) return;
+
+          // try querySourceFeatures using the discovered stateKey
+          try {
+            const matches2 = map.querySourceFeatures('states', {
+              filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateKey || '')]
+            });
+            if (matches2 && matches2.length) {
+              const f2 = matches2[0];
+              if (fitFeatureBoundsAndShowFacts(f2, stateKey)) return;
+            }
+          } catch (e) {
+            // non-fatal
+          }
+        }
+      }
+    } catch (e) { console.warn('stateAbbrev fallback failed', e); }
 
     // final fallback to full US extent and show nothing specific
     map.fitBounds([[ -126, 24], [-66, 50]]);
@@ -808,7 +870,7 @@ function buildStateTable(stateData, fieldName) {
   }
 
   table.order([[4, 'desc']]).draw() 
-}
+ }
 
 function buildDistrictTable(districtData, fieldName) {
   // Custom sort for N/A
@@ -884,6 +946,89 @@ function buildDistrictTable(districtData, fieldName) {
   }
 
   table.order([[4, 'desc']]).draw() 
+  // click handler for district rows
+  try {
+    // remove previous handler to avoid duplicates
+    $('#district-table tbody').off('click', 'tr');
+    $('#district-table tbody').on('click', 'tr', function (e) {
+      const tableRef = $('#district-table').DataTable();
+      const row = tableRef.row(this);
+      const rowData = row.data();
+      if (!rowData) return;
+
+      // ensure click was on the first cell (district name)
+      const td = e.target.closest ? e.target.closest('td') : null;
+      if (td && typeof td.cellIndex !== 'undefined' && td.cellIndex !== 0) {
+        return; // only act on clicks of the name cell
+      }
+
+      console.log('District table clicked (name):', rowData[0]);
+
+      // LEAID/internal id is stored in column index 5
+      const selectedId = String(rowData[5] || '').replace(/^0+/, '');
+      if (!selectedId) return;
+
+      // find matching record in the districtData provided to this function
+      const rec = (Array.isArray(districtData) ? districtData : []).find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === selectedId);
+
+      // If record exists but has no geometry, show the factsheet without zooming
+      if (rec && (rec.GIS === 0 || String(rec.GIS) === '0' || rec.gis === 0 || String(rec.gis) === '0')) {
+        const fakeFeature = { properties: { GEOID: String(rec.LEAID || rec.GEOID || '') }, geometry: null };
+        try { showDistrictFactsheet(fakeFeature, districtData); } catch (e) { console.warn('showDistrictFactsheet failed for no-geometry district', e); }
+        return;
+      }
+
+      // Attempt to find the map feature and zoom to it
+      let foundFeature = null;
+      try {
+        const features = map.querySourceFeatures('SCHOOLDIST_TL24', { sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l' }) || [];
+        foundFeature = features.find(f => {
+          if (!f) return false;
+          const fid = String(f.id || '').replace(/^0+/, '');
+          if (fid && fid === selectedId) return true;
+          const p = f.properties || {};
+          const propLea = String(p.LEAID || p.GEOID || '').replace(/^0+/, '');
+          if (propLea && propLea === selectedId) return true;
+          return false;
+        });
+      } catch (err) {
+        console.warn('Could not query district features to find selected district (table click)', err);
+      }
+
+      if (!foundFeature) {
+        console.warn('Could not find map feature for district (table click):', selectedId);
+        // fallback: show factsheet from record if available
+        if (rec) {
+          try { showDistrictFactsheet({ properties: { GEOID: String(rec.LEAID || rec.GEOID || '') }, geometry: null }, districtData); } catch (e) { console.warn(e); }
+        }
+        return;
+      }
+
+      // Zoom to feature bounds if geometry exists
+      try {
+        const coords = foundFeature.geometry && foundFeature.geometry.coordinates;
+        if (coords) {
+          const bounds = new mapboxgl.LngLatBounds();
+          function extendBounds(coordinates) {
+            if (typeof coordinates[0][0] === 'number') {
+              coordinates.forEach(coord => bounds.extend(coord));
+            } else {
+              coordinates.forEach(extendBounds);
+            }
+          }
+          extendBounds(coords);
+          map.fitBounds(bounds, { padding: 30 });
+        }
+      } catch (err) {
+        console.warn('Could not compute bounds for selected district (table click):', err);
+      }
+
+      // Open factsheet for the found feature
+      try {
+        showDistrictFactsheet(foundFeature, districtData);
+      } catch (e) { console.warn('Could not open factsheet for selected district (table click):', e); }
+    });
+  } catch (e) { console.warn('Failed to attach district table click handler', e); }
 }
 
 

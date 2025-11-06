@@ -91,6 +91,16 @@
     background-color: var(--yellow) !important;
 }
 
+
+#us-table tbody td:first-child,
+#district-table tbody td:first-child {
+  cursor: pointer;
+}
+
+#district-table tbody td:first-child {
+  text-decoration: underline;
+}
+
 /** style for mini graphs **/
 /* spacing above titles*/
 div.opportunity-column:nth-child(2) > p{
