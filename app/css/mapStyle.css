@@ -145,6 +145,35 @@ button:hover {
   margin: 0;
 }
 
+.district-dropdown {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='12' height='12'><path fill='%23333' d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding: 6px 36px 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.12);
+  font-size: 1.05rem;
+  color: #111;
+  cursor: pointer;
+  max-width: 60%;
+}
+
+.district-dropdown:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34,71,34,0.08);
+}
+
+.factsheet-label {
+  margin-left: 12px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  vertical-align: middle;
+}
+
 #infoContainer,
 #factSheetContainer {
   flex: 1;                      /* take up remaining space */

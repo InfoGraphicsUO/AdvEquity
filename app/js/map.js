@@ -1277,23 +1277,23 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
   const districtList = Object.values(uniqLea).sort((a,b) => (a.name || '').localeCompare(b.name || ''));
 
-  const dropdownHtml = `
-    <br><br><label for="districtPicker" style="align-self: center;">Jump to District<br>(select LEAID)</label>
-<select id="districtPicker" style="align-self: center; margin-bottom: 10px; max-width: 360px;">
-  ${districtList.map(d => `<option value="${d.lea}">${toTitleCase(d.name)}${d.state ? ' ('+d.state+')' : ''} — ${d.lea}</option>`).join('')}
- </select>
-   `;
+  const normLatestLea = String(latest.LEAID || '').replace(/^0+/, '');
+  const optionsHtml = districtList.map(d => {
+    const isSelected = String(d.lea) === String(normLatestLea) ? ' selected' : '';
+    // Display name
+    const label = `${toTitleCase(d.name)}${d.state ? ' (' + d.state + ')' : ''}`;
+    return `<option value="${d.lea}"${isSelected}>${label}</option>`;
+  }).join('');
 
   // --- Build factsheet HTML (District) ---
   factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
-    <div class="opportunity-row"><h2><b>${toTitleCase(leaName)} Factsheet</b></h2></div>
-    <!-- Jump-to selector placed immediately under title so it's visible on open -->
-    <div class="opportunity-row">
-      <div class="opportunity-column">
-        ${dropdownHtml}
-      </div>
-    </div>
+    <div class="opportunity-row"><h2>
+        <select id="districtPicker" class="district-dropdown">
+          ${optionsHtml}
+        </select>
+        <span class="factsheet-label">Factsheet</span>
+      </h2></div>
     <div class="opportunity-row">
     <div class="opportunity-column">
       <p><b>Latest information</b></p>
