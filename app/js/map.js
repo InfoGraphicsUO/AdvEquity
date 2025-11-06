@@ -1270,18 +1270,20 @@ function showDistrictFactsheet(clickedFeature, districtData) {
       uniqLea[lea] = {
         lea,
         name: d.LEA_NAME || d.NAME || 'Unknown',
-        state: d.LEA_STATE || d.STATE || ''
+        state: d.LEA_STATE || d.STATE || '',
+        // preserve GIS flag (1 = has geometry, 0 = no geometry)
+        gis: (d.GIS !== undefined) ? d.GIS : (d.gis !== undefined ? d.gis : 1)
       };
     }
   }
 
   const districtList = Object.values(uniqLea).sort((a,b) => (a.name || '').localeCompare(b.name || ''));
-
   const normLatestLea = String(latest.LEAID || '').replace(/^0+/, '');
   const optionsHtml = districtList.map(d => {
     const isSelected = String(d.lea) === String(normLatestLea) ? ' selected' : '';
-    // Display name
-    const label = `${toTitleCase(d.name)}${d.state ? ' (' + d.state + ')' : ''}`;
+    // Display name and append a (No Geometry) tag for districts without geometry
+    const noGeo = (d.gis === 0 || String(d.gis) === '0') ? ' (No Geometry)' : '';
+    const label = `${toTitleCase(d.name)}${d.state ? ' (' + d.state + ')' : ''}${noGeo}`;
     return `<option value="${d.lea}"${isSelected}>${label}</option>`;
   }).join('');
 
@@ -1294,6 +1296,10 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         </select>
         <span class="factsheet-label">Factsheet</span>
       </h2></div>
+    <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
+      <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+      <strong>Note:</strong> This district doesn't feature spatial data, so it cannot be found on our map.
+    </div>
     <div class="opportunity-row">
     <div class="opportunity-column">
       <p><b>Latest information</b></p>
@@ -1343,6 +1349,18 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     </div>  <!-- end column -->
   `  ;
 
+  // Show or hide the no-geometry notice based on the latest record's GIS flag
+  try {
+    const noGeoDiv = document.getElementById('noGeometryNotice');
+    if (noGeoDiv) {
+      if (latest.GIS === 0 || String(latest.GIS) === '0' || latest.gis === 0 || String(latest.gis) === '0') {
+        noGeoDiv.style.display = 'block';
+      } else {
+        noGeoDiv.style.display = 'none';
+      }
+    }
+  } catch (e) { /* non-fatal */ }
+
   // --- Prepare comp data ---
   const compData = {
     WH: latest.PCT_ENR_WH,
@@ -1378,6 +1396,18 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         }
 
         const targetId = String(rec.LEAID || rec.GEOID || '').replace(/^0+/, '');
+
+        // If this district has no geometry, show the factsheet and a notice rather
+        // than attempting to find a map feature / zoom to it.
+        if (rec.GIS === 0 || String(rec.GIS) === '0' || rec.gis === 0 || String(rec.gis) === '0') {
+          const fakeFeature = { properties: { GEOID: String(rec.LEAID || rec.GEOID || '').replace(/^0+/, ''), STATE_ABBR: rec.LEA_STATE || '', STATEFP: rec.STATEFP || '' }, geometry: null };
+          try {
+            showDistrictFactsheet(fakeFeature, districtData);
+          } catch (err) {
+            console.warn('Could not open factsheet for no-geometry district:', err);
+          }
+          return;
+        }
 
         // query map source features for the districts layer and attempt to match
         let foundFeature = null;

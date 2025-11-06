@@ -384,3 +384,19 @@ h2 {
 .mapboxgl-popup {
   z-index: 11; /*so it appears over the widgets*/
 }
+
+.no-geometry-notice {
+  background: #fff7e6; 
+  border: 1px solid #f0c36d;
+  color: #333;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.no-geometry-notice i.fa {
+  color: #c57b00;
+  font-size: 1.15rem;
+}
