@@ -419,7 +419,8 @@ mapboxgl.accessToken =  MAPBOXTOKEN
 
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v11',
+  // style: 'mapbox://styles/mapbox/dark-v11',
+  style: 'mapbox://styles/infographics/cmh5hw4m800l001sr4kx07py4',
   maxZoom : 10, 
   minZoom : 1, 
   // zoom: 3,
