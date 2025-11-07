@@ -195,6 +195,18 @@ h2 {
   font-size: 1.1rem;
 }
 
+#factSheetContainer h2 {
+  font-variant: small-caps;
+  font-weight: 600;
+}
+
+h3 {
+  /* flex: 0; */
+  display:inline;
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
 /* layout rows (title row, content row, etc.) */
 .opportunity-row {
   display: flex;

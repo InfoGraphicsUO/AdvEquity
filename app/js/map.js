@@ -1445,10 +1445,11 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
     <div class="opportunity-row"><h2>
+        <span class="factsheet-label">Factsheet for </span>
         <select id="districtPicker" class="district-dropdown">
           ${optionsHtml}
         </select>
-        <span class="factsheet-label">Factsheet</span>
+
       </h2></div>
     <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
       <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
