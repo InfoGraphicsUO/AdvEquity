@@ -2,6 +2,7 @@
 let geojsonCache = null;
 let stateDataCache = null;
 let districtDataCache = null;
+let currentDistrictValueMap = {};
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -86,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hideGraphs();
       // show the state factsheet (fips may need padding to match keys)
       try {
-        initFactSheet(stateDataCache, fipsToUse, 'ENR_AP_GAP_BL');
+        initFactSheet(stateDataCache, fipsToUse, window.currentRaceField || 'ENR_AP_GAP_BL');
       } catch (e) { console.warn('initFactSheet failed', e); }
       // scroll state info into view
       const info = document.getElementById('infoContainer');
@@ -194,6 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let userHasInteracted = false;
   // track aggregation selection separately from canonical map view
   window.aggLevel = 'state'; // 'state' or 'district'
+  // track currently selected race field
+  window.currentRaceField = 'ENR_AP_GAP_BL'; // default to Black students
 
 
 
@@ -213,10 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // switch map view to state (not full US)
         if (typeof setMapView === 'function') setMapView('state');
         console.log("clickedState")
-        $('#race-selectBlk').click() // trigger returning to US view wiht Opportunity Estimate for Black Students
+        // hide district layers
         map.setLayoutProperty('state-fills', 'visibility', 'visible');
-        map.setLayoutProperty('district-fills', 'visibility', 'none');
-        map.setLayoutProperty('district-lines', 'visibility', 'none');
+        if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
+        if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
+        // redraw state map with currently selected race field
+        if (geojsonCache && stateDataCache && window.currentRaceField) {
+          fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
+        }
         // update control states if function exists
         if (typeof updateControlStates === 'function') updateControlStates();
       } else if (this.id === 'agg-selectDist'){
@@ -229,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // hide state layer
         map.setLayoutProperty('state-fills', 'visibility', 'none');
 
-        //draw state data:
+        //draw district data with currently selected race field:
         if (!map.getLayer('district-fills')) {
           map.addLayer({
             id: 'district-fills',
@@ -247,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         getDistrictData('all').then(districtData => {
-          fillDistrictMap(map, districtData, 'all', 'all', 'ENR_AP_GAP_BL');
+          fillDistrictMap(map, districtData, 'all', 'all', window.currentRaceField || 'ENR_AP_GAP_BL');
           if (typeof updateControlStates === 'function') updateControlStates();
         });
       }
@@ -272,8 +279,47 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#currentRaceDesc').html('Hispanic');
     }
 
-    // Fill map
-    fillStateMap(map, geojsonCache, stateDataCache, fieldName);
+    // hlobal var for current race
+    window.currentRaceField = fieldName;
+
+    // update map based on current view
+    // mapView can be: 'full', 'state', 'district'
+    if (window.mapView === 'full') {
+      map.setLayoutProperty('state-fills', 'visibility', 'visible');
+      if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
+      if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
+      fillStateMap(map, geojsonCache, stateDataCache, fieldName);
+      // Clear stored state info when in full view
+      window.currentStateFIPS = null;
+      window.currentStateAbbrev = null;
+    } else if (window.mapView === 'state' || window.mapView === 'district') {
+      //zoomed into a state showing districts OR clicked on a district
+      map.setLayoutProperty('state-fills', 'visibility', 'none');
+      if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'visible');
+      if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'visible');
+      
+      // get district data and filter for the currently viewed state
+      getDistrictData('all').then(districtData => {
+        // Filter districts by the currently viewed state
+        const stateAbbrev = window.currentStateAbbrev;
+        const stateFIPS = window.currentStateFIPS;
+        
+        if (stateAbbrev && stateFIPS) {
+          // Filter district data for the specific state
+          const filteredDistrictData = districtData.filter(d => 
+            d.LEA_STATE === stateAbbrev || String(d.STATEFP).padStart(2, '0') === String(stateFIPS).padStart(2, '0')
+          );
+          console.log('Race switch - filtered districts for', stateAbbrev, ':', filteredDistrictData.length);
+          
+          // Update district map and table with filtered data
+          fillDistrictMap(map, filteredDistrictData, stateAbbrev, stateFIPS, fieldName);
+          buildDistrictTable(filteredDistrictData, fieldName);
+        } else {
+          //show all districts (for when district aggregation button was used)
+          fillDistrictMap(map, districtData, 'all', 'all', fieldName);
+        }
+      });
+    }
 
     // mark that the user has interacted to allow sorting
     userHasInteracted = true;
@@ -327,15 +373,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // document.getElementById('mapLegend').style.display = 'none'; // hide legend
     map.fitBounds([[ -126, 24], [-66, 50]]); // albers
     //map.jumpTo({ center: [-99.2, 40.0], zoom: 3 })
-    // remove district layer if it exists
+    
+    // Hide district layers
     if (map.getLayer("district-lines")){
-      map.removeLayer('district-lines');
-      map.removeLayer('district-fills');
+      map.setLayoutProperty('district-lines', 'visibility', 'none');
+      map.setLayoutProperty('district-fills', 'visibility', 'none');
     }
+    // Show state layer
+    if (map.getLayer('state-fills')) {
+      map.setLayoutProperty('state-fills', 'visibility', 'visible');
+    }
+    
     hideGraphs();
-  $('#race-selectBlk').click(); // trigger returning to US view Opportunity Estimate for Black Students
-  // mark full US view active and update controls
-  if (typeof setMapView === 'function') setMapView('full');
+    
+    // clear stored state info
+    window.currentStateFIPS = null;
+    window.currentStateAbbrev = null;
+    
+    // redraw state map with current race field
+    if (geojsonCache && stateDataCache && window.currentRaceField) {
+      fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
+    }
+    
+    // mark full US view active and update controls
+    if (typeof setMapView === 'function') setMapView('full');
     //StateOverview.style.display = 'none'; // hide state panel
 
   });
@@ -556,7 +617,7 @@ getStateData().then(({ geojson, stateData }) => {
         `
           <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
             <strong>${props.STATE_NAME}</strong>
-            ${getStateOpportunityEstimates(fips,'ENR_AP_GAP_BL')}
+            ${getStateOpportunityEstimates(fips, window.currentRaceField || 'ENR_AP_GAP_BL')}
 
           </div>
         `;
@@ -669,8 +730,15 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
       { selected: true }
     );
 
+    // store currently viewed state info globally for race switching
+    window.currentStateFIPS = clickedFeature.id;
+    // get state abbreviation from the clicked feature or from stateDataCache
+    const fipsKey = String(clickedFeature.id).padStart(2, '0');
+    const stateEntry = stateDataCache[fipsKey];
+    window.currentStateAbbrev = stateEntry?.[0]?.state_abbrev ?? stateEntry?.[0]?.LEA_STATE ?? null;
+
     // fill fact sheet
-    const fieldName = 'ENR_AP_GAP_BL';
+    const fieldName = window.currentRaceField || 'ENR_AP_GAP_BL';
   initFactSheet(stateDataCache, clickedFeature.id, fieldName);
   // update canonical map view to 'state' and refresh controls
   if (typeof setMapView === 'function') setMapView('state');
@@ -1201,7 +1269,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
-  console.log(filtered)
+  console.log(`Building valueMap for field: ${fieldName}, filtered data count: ${filtered.length}`);
 
 for (const d of filtered) {
   const raw = d[fieldName];
@@ -1216,6 +1284,11 @@ for (const d of filtered) {
     if (val > maxVal) maxVal = val;
   }
 }
+
+  // Store valueMap globally for later updates
+  currentDistrictValueMap = valueMap;
+  
+  console.log(`ValueMap built: ${Object.keys(valueMap).length} districts, min: ${minVal}, max: ${maxVal}`);
 
   if (!isFinite(minVal) || !isFinite(maxVal)) {
     console.warn(`No valid data for ${state_abbrev} / ${fieldName} / ${targetYear}`);
@@ -1249,16 +1322,45 @@ for (const d of filtered) {
     '#333'
   ]);
 
+  // immediately set feature states for all districts
+  // and Query all features in the district layer
+  try {
+    const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
+      sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
+    });
+    
+    console.log(`Setting feature states for ${features.length} district features with field: ${fieldName}`);
+    
+    for (const f of features) {
+      const geoId = String(f.id);
+      const val = valueMap[geoId];
+      
+      // set the value (or clear it if no data 
+      map.setFeatureState(
+        {
+          source: 'SCHOOLDIST_TL24',
+          sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+          id: geoId
+        },
+        { value: val !== undefined ? val : null }
+      );
+    }
+  } catch (err) {
+    console.warn('Error setting district feature states:', err);
+  }
 
-  // Assign feature states after data loads
-  map.on('sourcedata', (e) => {
+  // Also assign feature states after data loads (for when tiles load later)
+  // remove any existing sourcedata listeners 
+  map.off('sourcedata', updateDistrictFeatureStates);
+  
+  function updateDistrictFeatureStates(e) {
     if (e.sourceId === 'SCHOOLDIST_TL24' && e.isSourceLoaded) {
       const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
         sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
       });
       for (const f of features) {
         const geoId = String(f.id);
-        const val = valueMap[geoId];
+        const val = currentDistrictValueMap[geoId]; // Use global valueMap
         if (val !== undefined) {
           map.setFeatureState(
             {
@@ -1271,7 +1373,9 @@ for (const d of filtered) {
         }
       }
     }
-  });
+  }
+  
+  map.on('sourcedata', updateDistrictFeatureStates);
 
   // Tooltip for hover
   map.on('mousemove', 'district-fills', (e) => {

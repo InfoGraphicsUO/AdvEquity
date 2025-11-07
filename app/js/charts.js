@@ -242,7 +242,7 @@ function initFactSheet(stateData, fips, fieldName) {
     );
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
     //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
-    buildDistrictTable(filteredDistrictData, 'ENR_AP_GAP_BL') // actually fills the table, given the data are loaded
+    buildDistrictTable(filteredDistrictData, fieldName) // actually fills the table, given the data are loaded
     // populate # districts in the factsheet by counting unique LEAID (might be changed later)
     try {
       const nd = document.getElementById('numDistricts');
@@ -251,7 +251,7 @@ function initFactSheet(stateData, fips, fieldName) {
         nd.textContent = unique.size.toLocaleString();
       }
     } catch(e) { console.warn('Could not set numDistricts', e); }
-    fillDistrictMap(map, filteredDistrictData, state_abbrev, fips, 'ENR_AP_GAP_BL'); // default map coloring
+    fillDistrictMap(map, filteredDistrictData, state_abbrev, fips, fieldName); // default map coloring
   };
 
   if (districtDataCache) {
