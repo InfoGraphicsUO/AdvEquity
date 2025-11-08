@@ -4,6 +4,7 @@
   max-width: 100%;
   margin: 0 auto;
   font-size: 14px;
+  line-height: 1;
 }
 
 .row {
@@ -71,6 +72,10 @@
   .header-row {
     display: none;
   }
+}
+
+#compBar{
+  margin-right: 10px;
 }
 
 #us-table.dataTable tbody tr.selected td {

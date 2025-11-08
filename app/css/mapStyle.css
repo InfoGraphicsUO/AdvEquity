@@ -28,8 +28,8 @@ body, html {
 
 #mapWidgetsQuery {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    left: 5px;
     z-index: 10;
     background: var(--lightgrey);
     padding: 8px 12px;
@@ -41,8 +41,8 @@ body, html {
 
 #mapWidgetsRace {
     position: absolute;
-    top: 10px;
-    left: 0px;
+    top: 5px;
+    right: 5px;
     z-index: 10;
     background: var(--lightgrey);
     padding: 8px 12px;
@@ -59,7 +59,7 @@ body, html {
 
 
 .search_query input {
-    padding: 4px 8px;
+    padding: 0px 2em;
     font-size: 14px;
 }
 
@@ -91,13 +91,13 @@ button:hover {
 #backToStateMapBtn {
   display: block;
   /* margin-top: 6px; */
-  min-width: 110px;
+  /* min-width: 110px; */
   width: auto;
   box-sizing: border-box;
-  padding: 6px 10px;
+  /* padding: 6px 10px; */
   border-radius: 2px;
-  font-size: 0.95rem;
-  height: 37px;
+  font-size: 0.9rem;
+  height: 2.2rem;
 }
 
 .control-disabled {
@@ -107,7 +107,7 @@ button:hover {
 
 .race-toggle, .aggregation-toggle{
   display: inline-flex;
-  border: 2px solid var(--green);
+  border: 1.5px solid var(--green);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 2px;
@@ -213,8 +213,15 @@ h3 {
   flex-direction: row;          /* horizontal layout for columns */
   align-items: flex-start;      /* top-align content */
   justify-content: center;      /* center-align content */
-  gap: 5em;
+  /* gap: 5em; */  /* no gap best for state-level table */
   margin-top: 0.25em;
+}
+
+.container :first-child {
+  /* Allow the first child to shrink */
+  flex-shrink: 1;
+  /* Optional: Set a starting point for shrinking. 
+     Using flex-basis: 0 or width: 0 might be useful if you want it to shrink as much as possible. */
 }
 
 /* full-width top row ONLY when explicitly requested */
@@ -230,7 +237,7 @@ h3 {
   display: flex;
   flex-direction: column;       /* stack content inside each column */
   align-items: flex-start;      /* left-align text and charts */
-  min-width: 280px;             /* responsive floor */
+  /* min-width: 280px;             responsive floor 280, but no mid-width best for state fact sheet in iframe */
   gap: 0.5em;
 }
 
@@ -280,22 +287,6 @@ h3 {
 
 /* end popup */
 
-#StateOverviewContainer {
-  display: none; /* initially hidden */
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 10;
-  background: var(--lightgrey);
-  width: 25%;
-  max-width: 350px;
-  height: 100%;
-  padding: 8px 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  opacity: 0.9;
-  border-radius: 4px;
-}
-
 /* State Overview Container */
 #StateOverviewContainer {
     display: none;
@@ -305,7 +296,7 @@ h3 {
     z-index: 10;
     background: var(--lightgrey);
     width: 40vh;
-    height: 57vh;
+    height: 50vh;
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);

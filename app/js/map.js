@@ -3,6 +3,7 @@ let geojsonCache = null;
 let stateDataCache = null;
 let districtDataCache = null;
 let currentDistrictValueMap = {};
+let firstSymbolId = null;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -422,7 +423,7 @@ const map = new mapboxgl.Map({
   // style: 'mapbox://styles/mapbox/dark-v11',
   style: 'mapbox://styles/infographics/cmh5hw4m800l001sr4kx07py4',
   maxZoom : 10, 
-  minZoom : 1, 
+  minZoom : 0, 
   // zoom: 3,
   bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
   maxBounds: [[ -140, 25],[-50, 65]], // bounding box (southwest corner, northeast corner)
@@ -446,51 +447,60 @@ var districtPopup = new mapboxgl.Popup({
 
 map.on('load', () => {
 
-  // hide basemap layers/labels that we don't want
-  const hiddenLayers = [
-    'country-label',
-    'continent-label',
-    'waterway-label',
-    'water-line-label',
-    'water-point-label'
-  ];
+  // // hide basemap layers/labels that we don't want
+  // const hiddenLayers = [
+  //   'country-label',
+  //   'continent-label',
+  //   'waterway-label',
+  //   'water-line-label',
+  //   'water-point-label'
+  // ];
 
-  hiddenLayers.forEach(layerId => {
-    if (map.getLayer(layerId)) {
-      map.setLayoutProperty(layerId, 'visibility', 'none');
-    }
-  });
+  // hiddenLayers.forEach(layerId => {
+  //   if (map.getLayer(layerId)) {
+  //     map.setLayoutProperty(layerId, 'visibility', 'none');
+  //   }
+  // });
 
 
-  // hide labels that we don't want
-  // List of label layers that use the worldview property
-  const labelLayers = [
-  'state-label',
-  'settlement-label',
-  'settlement-subdivision-label',
-  'airport-label',
-  'road-label-simple',
-  'natural-line-label',
-  'natural-point-label',
-  'poi-label',
-  'settlement-minor-label',
-  'settlement-major-label',
-  ];
+  // // hide labels that we don't want
+  // // List of label layers that use the worldview property
+  // const labelLayers = [
+  // 'state-label',
+  // 'settlement-label',
+  // 'settlement-subdivision-label',
+  // 'airport-label',
+  // 'road-label-simple',
+  // 'natural-line-label',
+  // 'natural-point-label',
+  // 'poi-label',
+  // 'settlement-minor-label',
+  // 'settlement-major-label',
+  // ];
 
   // Filter to show only US 
-labelLayers.forEach(layerId => {
-    // Check if the layer exists before applying the filter
-    if (map.getLayer(layerId)) {
-      // Use the 'any' expression to check multiple possible country code properties
-      map.setFilter(layerId, [
-        'any',
-        ['==', ['get', 'iso_3166_1'], 'US'], // For country-level features
-        ['==', ['get', 'iso_3166_2'], 'US'], // For state/province-level features (may not apply)
-        ['==', ['get', 'country_code'], 'USA'], // Another common property name
-      ]);
-    }
-  });
+// labelLayers.forEach(layerId => {
+//     // Check if the layer exists before applying the filter
+//     if (map.getLayer(layerId)) {
+//       // Use the 'any' expression to check multiple possible country code properties
+//       map.setFilter(layerId, [
+//         'any',
+//         ['==', ['get', 'iso_3166_1'], 'US'], // For country-level features
+//         ['==', ['get', 'iso_3166_2'], 'US'], // For state/province-level features (may not apply)
+//         ['==', ['get', 'country_code'], 'USA'], // Another common property name
+//       ]);
+//     }
+//   });
 
+ const layers = map.getStyle().layers;
+        // Find the index of the first symbol layer in the map style.
+        let firstSymbolId;
+        for (const layer of layers) {
+            if (layer.type === 'symbol') {
+                firstSymbolId = layer.id;
+                break;
+            }
+        }
 
 
   // SOURCES
@@ -500,12 +510,12 @@ labelLayers.forEach(layerId => {
     promoteId: 'STATE_ID'  // use STATE_ID as the unique ID
   });
 
-  // oregon districts only - JSON in repo
-  map.addSource('oregon_districts', {
-      type: 'geojson',
-      data: '/assets/data/geojson/oregon_districts.geojson',
-      promoteId: 'GEOID'  // use GEOID as the unique ID
-  });
+  // // oregon districts only - JSON in repo
+  // map.addSource('oregon_districts', {
+  //     type: 'geojson',
+  //     data: '/assets/data/geojson/oregon_districts.geojson',
+  //     promoteId: 'GEOID'  // use GEOID as the unique ID
+  // });
 
   // all districts - mapbox hosted tileset
   map.addSource('SCHOOLDIST_TL24', {
@@ -554,7 +564,7 @@ labelLayers.forEach(layerId => {
       ],
       'fill-opacity': 0.8
     }
-});
+  }, firstSymbolId);
 
 getStateData().then(({ geojson, stateData }) => {
   geojsonCache = geojson;
@@ -575,9 +585,9 @@ getStateData().then(({ geojson, stateData }) => {
         'case',
         ['boolean', ['feature-state', 'hover'], false],
         yellow,   // when hover = true
-        green       // default
+        almostBlack       // default
       ],
-      'line-width': 1.5,
+      'line-width': 1,
       'line-offset': [
       'case',
       ['boolean', ['feature-state', 'hover'], false],
@@ -585,7 +595,7 @@ getStateData().then(({ geojson, stateData }) => {
         0   // default border no shift
       ]
     }
-  });
+  }, firstSymbolId);
 
 
   map.on('mousemove', 'state-fills', (e) => {
@@ -1558,7 +1568,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
       </h2></div>
     <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
       <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-      <strong>Note:</strong> This district doesn't feature spatial data, so it cannot be found on our map.
+      <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
     </div>
     <div class="opportunity-row">
     <div class="opportunity-column">
