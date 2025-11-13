@@ -263,6 +263,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   raceSelectionButton.forEach(btn => {
   btn.addEventListener('click', function() {
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    
     // Remove active class from all buttons
     raceSelectionButton.forEach(b => b.classList.remove('active'));
 
@@ -292,6 +295,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Clear stored state info when in full view
       window.currentStateFIPS = null;
       window.currentStateAbbrev = null;
+      
+      map.once('idle', () => {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+      });
     } else if (window.mapView === 'state' || window.mapView === 'district') {
       //zoomed into a state showing districts OR clicked on a district
       map.setLayoutProperty('state-fills', 'visibility', 'none');
@@ -318,6 +325,10 @@ document.addEventListener('DOMContentLoaded', () => {
           //show all districts (for when district aggregation button was used)
           fillDistrictMap(map, districtData, 'all', 'all', fieldName);
         }
+        
+        map.once('idle', () => {
+          if (loadingOverlay) loadingOverlay.style.display = 'none';
+        });
       });
     }
 
