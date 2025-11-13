@@ -422,6 +422,84 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
 
   const xStep = w / (Math.max(1, years.length - 1));
 
+  // create/get tooltip element
+  let tooltip = document.getElementById(`tooltip-${canvasId}`);
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = `tooltip-${canvasId}`;
+    tooltip.className = 'chart-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
+  // data points for hover detection
+  const dataPoints = [];
+  Object.entries(series).forEach(([key, values]) => {
+    values.forEach((v, i) => {
+      if (v != null && !isNaN(v)) {
+        const x = padLeft + i * xStep;
+        const y = padTop + h - ((v - min) / (max - min)) * h;
+        dataPoints.push({ x, y, value: v, year: years[i], series: key, color: colors[key] });
+      }
+    });
+  });
+
+  const handleMouseMove = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // find closest data point
+    let closestPoint = null;
+    let minDist = Infinity;
+    const hoverRadius = 8;
+
+    dataPoints.forEach(point => {
+      const dist = Math.sqrt(Math.pow(mouseX - point.x, 2) + Math.pow(mouseY - point.y, 2));
+      if (dist < hoverRadius && dist < minDist) {
+        minDist = dist;
+        closestPoint = point;
+      }
+    });
+
+    if (closestPoint) {
+      // group all series values for this year
+      const yearData = dataPoints.filter(p => p.year === closestPoint.year);
+      
+      // build tooltip
+      let tooltipHTML = `<div class="chart-tooltip-year">Year: ${closestPoint.year}</div>`;
+      yearData.forEach(d => {
+        tooltipHTML += `<div class="chart-tooltip-value" style="color: ${d.color}">${d.series}: ${d.value.toFixed(2)}</div>`;
+      });
+      
+      tooltip.innerHTML = tooltipHTML;
+      tooltip.className = 'chart-tooltip visible';
+      tooltip.style.left = `${e.clientX + 10}px`;
+      tooltip.style.top = `${e.clientY - 10}px`;
+      
+      canvas.style.cursor = 'pointer';
+    } else {
+      tooltip.className = 'chart-tooltip';
+      canvas.style.cursor = 'default';
+    }
+  };
+
+  const handleMouseLeave = () => {
+    tooltip.className = 'chart-tooltip';
+    canvas.style.cursor = 'default';
+  };
+
+  // remove old event listeners if exist
+  canvas.removeEventListener('mousemove', canvas._chartMouseMove);
+  canvas.removeEventListener('mouseleave', canvas._chartMouseLeave);
+  
+  // store references to handlers
+  canvas._chartMouseMove = handleMouseMove;
+  canvas._chartMouseLeave = handleMouseLeave;
+  
+  // new event listeners
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('mouseleave', handleMouseLeave);
+
   // Draw background grid lines
   ctx.save();
   const gridColor = (typeof lightgrey !== 'undefined' && lightgrey) ? lightgrey : '#ddd';
