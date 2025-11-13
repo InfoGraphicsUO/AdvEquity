@@ -556,6 +556,18 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
     ctx.fillText(label, padLeft - 6, y + 3);
   }
 
+  // y axis
+  if (yLabel) {
+    ctx.save();
+    ctx.fillStyle = '#555';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.translate(10, padTop + h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(yLabel, 0, 0);
+    ctx.restore();
+  }
+
   ctx.fillStyle = '#555';
   ctx.font = '10px sans-serif';
   years.forEach((yr, i) => {
