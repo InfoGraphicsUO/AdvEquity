@@ -405,7 +405,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
 
   const padLeft = 42;
   const padRight = 42;
-  const padTop = 12;
+  const padTop = 20;
   const padBottom = 26;
 
   const w = canvas.width - padLeft - padRight;
@@ -420,7 +420,15 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
     max = max + 1;
   }
 
-  const xStep = w / (Math.max(1, years.length - 1));
+  // Calculate proportional x positions based on year gaps
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+  const yearRange = maxYear - minYear;
+  
+  // Function to get x position for a given year
+  const getXForYear = (year) => {
+    return padLeft + ((year - minYear) / yearRange) * w;
+  };
 
   // create/get tooltip element
   let tooltip = document.getElementById(`tooltip-${canvasId}`);
@@ -436,7 +444,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
   Object.entries(series).forEach(([key, values]) => {
     values.forEach((v, i) => {
       if (v != null && !isNaN(v)) {
-        const x = padLeft + i * xStep;
+        const x = getXForYear(years[i]);
         const y = padTop + h - ((v - min) / (max - min)) * h;
         dataPoints.push({ x, y, value: v, year: years[i], series: key, color: colors[key] });
       }
@@ -508,7 +516,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
   ctx.globalAlpha = 1.0;
 
   years.forEach((yr, i) => {
-    const x = padLeft + i * xStep;
+    const x = getXForYear(yr);
     ctx.beginPath();
     ctx.moveTo(x, padTop);
     ctx.lineTo(x, padTop + h);
@@ -551,7 +559,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
   ctx.fillStyle = '#555';
   ctx.font = '10px sans-serif';
   years.forEach((yr, i) => {
-    const x = padLeft + i * xStep;
+    const x = getXForYear(yr);
     ctx.textAlign = 'center';
     ctx.fillText(yr.toString(), x, padTop + h + 16);
   });
@@ -563,7 +571,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
 
     values.forEach((v, i) => {
       if (v == null || isNaN(v)) return;
-      const x = padLeft + i * xStep;
+      const x = getXForYear(years[i]);
       const y = padTop + h - ((v - min) / (max - min)) * h;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
@@ -573,7 +581,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
     const dotR = key === 'District' ? 3.5 : 2.5;
     values.forEach((v, i) => {
       if (v == null || isNaN(v)) return;
-      const x = padLeft + i * xStep;
+      const x = getXForYear(years[i]);
       const y = padTop + h - ((v - min) / (max - min)) * h;
       ctx.beginPath();
       ctx.arc(x, y, dotR, 0, Math.PI * 2);
