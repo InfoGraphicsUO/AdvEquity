@@ -31,6 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const stateFP = window.lastDistrictStateFP || null;
     const stateAbbrev = window.lastDistrictStateAbbrev || null;
+    
+    // If no valid state info exists, do nothing (prevents error on initial load)
+    if (!stateFP && !stateAbbrev) {
+      console.warn('Back to state: No state info available');
+      return;
+    }
 
     // try geojsonCache first
     let stateFeature = null;
@@ -166,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateControlStates() {
     try {
       if (backToStateMapBtn) {
-        if (window.mapView === 'district') {
+        const hasValidStateInfo = !!(window.lastDistrictStateFP || window.lastDistrictStateAbbrev);
+        
+        if (window.mapView === 'district' && hasValidStateInfo) {
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
         } else {
@@ -1505,9 +1513,23 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
   if (!records.length) {
     factSheetContainer.innerHTML = `
-      <h2><b>No data found for District ID ${geoId}</b></h2>
+      <h2><b>Error: No data found for District ID ${geoId}</b></h2>
       <div class="opportunity-column">No district data available.</div>
+      <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
     `;
+    // click handler to return button
+    setTimeout(() => {
+      const returnBtn = document.getElementById('returnToFullView');
+      if (returnBtn) {
+        returnBtn.addEventListener('click', () => {
+          map.fitBounds([[ -126, 24], [-66, 50]]);
+          if (typeof setMapView === 'function') setMapView('full');
+          hideGraphs();
+          const info = document.getElementById('infoContainer');
+          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+      }
+    }, 0);
     return;
   }
 

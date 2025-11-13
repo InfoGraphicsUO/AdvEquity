@@ -137,7 +137,23 @@ function initFactSheet(stateData, fips, fieldName) {
   const stateEntry = stateData[fipsKey];
 
   if (!stateEntry) {
-    factSheetContainer.innerHTML = `<p>No data found for FIPS ${fips}</p>`;
+    factSheetContainer.innerHTML = `
+      <h2><b>Error: No data found for FIPS ${fips}</b></h2>
+      <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
+    `;
+    // click handler to return button
+    setTimeout(() => {
+      const returnBtn = document.getElementById('returnToFullView');
+      if (returnBtn) {
+        returnBtn.addEventListener('click', () => {
+          map.fitBounds([[ -126, 24], [-66, 50]]);
+          if (typeof setMapView === 'function') setMapView('full');
+          hideGraphs();
+          const info = document.getElementById('infoContainer');
+          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+      }
+    }, 0);
     return;
   }
 
