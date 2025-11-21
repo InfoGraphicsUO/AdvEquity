@@ -84,3 +84,36 @@
   background-color: var(--yellow);
 }
 
+/* chart tooltip */
+.chart-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: none;
+  -webkit-text-stroke: 0.3px rgba(255, 255, 255, 0.5);
+  text-shadow: 
+    0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.chart-tooltip.visible {
+  display: block;
+}
+
+.chart-tooltip-year {
+  font-weight: bold;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 4px;
+}
+
+.chart-tooltip-value {
+  margin: 2px 0;
+}
+

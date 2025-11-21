@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const stateFP = window.lastDistrictStateFP || null;
     const stateAbbrev = window.lastDistrictStateAbbrev || null;
+    
+    // If no valid state info exists, do nothing (prevents error on initial load)
+    if (!stateFP && !stateAbbrev) {
+      console.warn('Back to state: No state info available');
+      return;
+    }
 
     // try geojsonCache first
     let stateFeature = null;
@@ -167,7 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateControlStates() {
     try {
       if (backToStateMapBtn) {
-        if (window.mapView === 'district') {
+        const hasValidStateInfo = !!(window.lastDistrictStateFP || window.lastDistrictStateAbbrev);
+        
+        if (window.mapView === 'district' && hasValidStateInfo) {
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
         } else {
@@ -264,6 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   raceSelectionButton.forEach(btn => {
   btn.addEventListener('click', function() {
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    
     // Remove active class from all buttons
     raceSelectionButton.forEach(b => b.classList.remove('active'));
 
@@ -293,6 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Clear stored state info when in full view
       window.currentStateFIPS = null;
       window.currentStateAbbrev = null;
+      
+      map.once('idle', () => {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+      });
     } else if (window.mapView === 'state' || window.mapView === 'district') {
       //zoomed into a state showing districts OR clicked on a district
       map.setLayoutProperty('state-fills', 'visibility', 'none');
@@ -319,6 +334,10 @@ document.addEventListener('DOMContentLoaded', () => {
           //show all districts (for when district aggregation button was used)
           fillDistrictMap(map, districtData, 'all', 'all', fieldName);
         }
+        
+        map.once('idle', () => {
+          if (loadingOverlay) loadingOverlay.style.display = 'none';
+        });
       });
     }
 
@@ -1504,9 +1523,23 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
   if (!records.length) {
     factSheetContainer.innerHTML = `
-      <h2><b>No data found for District ID ${geoId}</b></h2>
+      <h2><b>Error: No data found for District ID ${geoId}</b></h2>
       <div class="opportunity-column">No district data available.</div>
+      <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
     `;
+    // click handler to return button
+    setTimeout(() => {
+      const returnBtn = document.getElementById('returnToFullView');
+      if (returnBtn) {
+        returnBtn.addEventListener('click', () => {
+          map.fitBounds([[ -126, 24], [-66, 50]]);
+          if (typeof setMapView === 'function') setMapView('full');
+          hideGraphs();
+          const info = document.getElementById('infoContainer');
+          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+      }
+    }, 0);
     return;
   }
 
@@ -1596,23 +1629,23 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     <div class="opportunity-column">
       <p><b>Historic/temporal information</b></p>
       <p style="font-size:0.9em;color: black">AP Participation Gap by Year</p>
-      <canvas id="gapChart" width="300" height="120"></canvas>
+      <canvas id="gapChart" width="400" height="160"></canvas>
       <div id="gapLegend" style="font-size:0.85em;"></div>
   <!-- New sparkline: Students - Percentage of non-white students -->
   <p style="font-size:0.9em;color: black">Students - Percentage of non-white students (by year)</p>
-  <canvas id="nonwhiteChart" width="300" height="120"></canvas>
+  <canvas id="nonwhiteChart" width="400" height="160"></canvas>
   <div id="nonwhiteLegend" style="font-size:0.85em;"></div>
   <!-- New sparkline: HS students taking ≥1 AP (PCT_ENR_AP) -->
   <p style="font-size:0.9em;color: black">HS students taking at least 1 AP course (by year)</p>
-  <canvas id="apChart" width="300" height="120"></canvas>
+  <canvas id="apChart" width="400" height="160"></canvas>
   <div id="apLegend" style="font-size:0.85em;"></div>
   <!-- New sparkline: Student-teacher ratio (STU_TEACH_RAT) -->
   <p style="font-size:0.9em;color: black">Student–teacher ratio (by year)</p>
-  <canvas id="stChart" width="300" height="120"></canvas>
+  <canvas id="stChart" width="400" height="160"></canvas>
   <div id="stLegend" style="font-size:0.85em;"></div>
   <!-- New sparkline: Modal AP courses offered in district (SCH_APCOURSES) -->
   <p style="font-size:0.9em;color: black">Modal number of AP courses offered (by year)</p>
-  <canvas id="apCoursesChart" width="300" height="120"></canvas>
+  <canvas id="apCoursesChart" width="400" height="160"></canvas>
   <div id="apCoursesLegend" style="font-size:0.85em;"></div>
       
     </div> <!-- end row -->

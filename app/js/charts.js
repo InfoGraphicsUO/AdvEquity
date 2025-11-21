@@ -137,7 +137,23 @@ function initFactSheet(stateData, fips, fieldName) {
   const stateEntry = stateData[fipsKey];
 
   if (!stateEntry) {
-    factSheetContainer.innerHTML = `<p>No data found for FIPS ${fips}</p>`;
+    factSheetContainer.innerHTML = `
+      <h2><b>Error: No data found for FIPS ${fips}</b></h2>
+      <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
+    `;
+    // click handler to return button
+    setTimeout(() => {
+      const returnBtn = document.getElementById('returnToFullView');
+      if (returnBtn) {
+        returnBtn.addEventListener('click', () => {
+          map.fitBounds([[ -126, 24], [-66, 50]]);
+          if (typeof setMapView === 'function') setMapView('full');
+          hideGraphs();
+          const info = document.getElementById('infoContainer');
+          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+      }
+    }, 0);
     return;
   }
 
@@ -405,7 +421,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
 
   const padLeft = 42;
   const padRight = 42;
-  const padTop = 12;
+  const padTop = 20;
   const padBottom = 26;
 
   const w = canvas.width - padLeft - padRight;
@@ -420,7 +436,93 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
     max = max + 1;
   }
 
-  const xStep = w / (Math.max(1, years.length - 1));
+  // Calculate proportional x positions based on year gaps
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+  const yearRange = maxYear - minYear;
+  
+  // Function to get x position for a given year
+  const getXForYear = (year) => {
+    return padLeft + ((year - minYear) / yearRange) * w;
+  };
+
+  // create/get tooltip element
+  let tooltip = document.getElementById(`tooltip-${canvasId}`);
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = `tooltip-${canvasId}`;
+    tooltip.className = 'chart-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
+  // data points for hover detection
+  const dataPoints = [];
+  Object.entries(series).forEach(([key, values]) => {
+    values.forEach((v, i) => {
+      if (v != null && !isNaN(v)) {
+        const x = getXForYear(years[i]);
+        const y = padTop + h - ((v - min) / (max - min)) * h;
+        dataPoints.push({ x, y, value: v, year: years[i], series: key, color: colors[key] });
+      }
+    });
+  });
+
+  const handleMouseMove = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // find closest data point
+    let closestPoint = null;
+    let minDist = Infinity;
+    const hoverRadius = 8;
+
+    dataPoints.forEach(point => {
+      const dist = Math.sqrt(Math.pow(mouseX - point.x, 2) + Math.pow(mouseY - point.y, 2));
+      if (dist < hoverRadius && dist < minDist) {
+        minDist = dist;
+        closestPoint = point;
+      }
+    });
+
+    if (closestPoint) {
+      // group all series values for this year
+      const yearData = dataPoints.filter(p => p.year === closestPoint.year);
+      
+      // build tooltip
+      let tooltipHTML = `<div class="chart-tooltip-year">Year: ${closestPoint.year}</div>`;
+      yearData.forEach(d => {
+        tooltipHTML += `<div class="chart-tooltip-value" style="color: ${d.color}">${d.series}: ${d.value.toFixed(2)}</div>`;
+      });
+      
+      tooltip.innerHTML = tooltipHTML;
+      tooltip.className = 'chart-tooltip visible';
+      tooltip.style.left = `${e.clientX + 10}px`;
+      tooltip.style.top = `${e.clientY - 10}px`;
+      
+      canvas.style.cursor = 'pointer';
+    } else {
+      tooltip.className = 'chart-tooltip';
+      canvas.style.cursor = 'default';
+    }
+  };
+
+  const handleMouseLeave = () => {
+    tooltip.className = 'chart-tooltip';
+    canvas.style.cursor = 'default';
+  };
+
+  // remove old event listeners if exist
+  canvas.removeEventListener('mousemove', canvas._chartMouseMove);
+  canvas.removeEventListener('mouseleave', canvas._chartMouseLeave);
+  
+  // store references to handlers
+  canvas._chartMouseMove = handleMouseMove;
+  canvas._chartMouseLeave = handleMouseLeave;
+  
+  // new event listeners
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('mouseleave', handleMouseLeave);
 
   // Draw background grid lines
   ctx.save();
@@ -430,7 +532,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
   ctx.globalAlpha = 1.0;
 
   years.forEach((yr, i) => {
-    const x = padLeft + i * xStep;
+    const x = getXForYear(yr);
     ctx.beginPath();
     ctx.moveTo(x, padTop);
     ctx.lineTo(x, padTop + h);
@@ -470,10 +572,22 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
     ctx.fillText(label, padLeft - 6, y + 3);
   }
 
+  // y axis
+  if (yLabel) {
+    ctx.save();
+    ctx.fillStyle = '#555';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.translate(10, padTop + h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(yLabel, 0, 0);
+    ctx.restore();
+  }
+
   ctx.fillStyle = '#555';
   ctx.font = '10px sans-serif';
   years.forEach((yr, i) => {
-    const x = padLeft + i * xStep;
+    const x = getXForYear(yr);
     ctx.textAlign = 'center';
     ctx.fillText(yr.toString(), x, padTop + h + 16);
   });
@@ -485,7 +599,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
 
     values.forEach((v, i) => {
       if (v == null || isNaN(v)) return;
-      const x = padLeft + i * xStep;
+      const x = getXForYear(years[i]);
       const y = padTop + h - ((v - min) / (max - min)) * h;
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
@@ -495,7 +609,7 @@ function drawMiniChart(canvasId, years, series, colors, yLabel = '') {
     const dotR = key === 'District' ? 3.5 : 2.5;
     values.forEach((v, i) => {
       if (v == null || isNaN(v)) return;
-      const x = padLeft + i * xStep;
+      const x = getXForYear(years[i]);
       const y = padTop + h - ((v - min) / (max - min)) * h;
       ctx.beginPath();
       ctx.arc(x, y, dotR, 0, Math.PI * 2);
