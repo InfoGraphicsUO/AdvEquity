@@ -1461,10 +1461,18 @@ for (const d of filtered) {
         try {
           geoId = String(feat.id || props.GEOID || props.LEAID || '').replace(/^0+/, '');
           console.log(geoId)
-          // console.log(districtData) // all data
+          //console.log(districtData) // all data
+
           if (Array.isArray(districtData)) {
-            hoveredDistrictData = districtData.find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === geoId) || null;
-          }
+          hoveredDistrictData = districtData
+            .filter(d =>
+              String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === geoId
+            )
+            // just get value from most recent year
+            .reduce((latest, d) =>
+              d.YEAR > (latest?.YEAR ?? -Infinity) ? d : latest
+            , null);
+        }
         } catch (err) { hoveredDistrictData = null; }
         console.log(hoveredDistrictData)
 
@@ -1478,10 +1486,10 @@ for (const d of filtered) {
         directionClass = '';
         description = `
           <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
-            <strong>${props.NAME || props.LEA_NAME || 'District'}</strong>
+            <strong>${props.NAME || props.LEA_NAME || 'District'} (2021)</strong>
             ${grades ? `<div>Grades: ${grades}</div>` : ''}
-            <div>Students: ${students}</div>
-            <div>Teachers (FTE): ${teachers}</div>
+            <div>Students: ${fmtValue(students, 2021)}</div>
+            <div>Teachers (FTE):${fmtValue(teachers, 2021)}</div>
           </div>
         `;
 
@@ -2095,7 +2103,7 @@ function fmtValue(val, year, targetYear = 2021) {
   // Format number: if integer, keep as is; if float, round to 2 decimals
   let formatted;
   if (typeof val === "number") {
-    formatted = Number.isInteger(val) ? val.toLocaleString() : val.toFixed(2);
+    formatted = Number.isInteger(val) ? val.toLocaleString() : Number(val.toFixed(2)).toLocaleString();
   } else {
     formatted = val;
   }
