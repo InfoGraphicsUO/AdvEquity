@@ -1408,6 +1408,20 @@ for (const d of filtered) {
   map.on('sourcedata', updateDistrictFeatureStates);
 
   // Tooltip for hover
+  // load tooltip on mouseenter
+  map.on('mouseenter', 'district-fills', (e) => {       
+    // only show district tooltip when viewing a state or when district aggregation is active
+    if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
+      try { districtPopup.remove(); } catch (err) { }
+      map.getCanvas().style.cursor = '';
+      return;
+    }
+
+    hoveredDistrictPolygonID = ''
+      // Add the popup the first time the feature is entered
+      districtPopup.setLngLat(e.lngLat).setHTML("").addTo(map);
+  });
+
   map.on('mousemove', 'district-fills', (e) => {
     // only show district tooltip when viewing a state or when district aggregation is active
     if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
@@ -1421,43 +1435,71 @@ for (const d of filtered) {
     map.getCanvas().style.cursor = 'pointer';
     const feat = e.features[0];
     const props = feat.properties || {};
+    console.log(hoveredDistrictPolygonID)
+    // console.log(props)
+
+    // for tooltip
+    let directionClass = '';
+    let description = feat.id;
+    let geoId = '';
 
     // manage hover feature state so districts can be visually highlighted if desired
     try {
       const fid = String(feat.id);
-      if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
+      // console.log(fid)
+      if (hoveredDistrictPolygonID !== fid) {
+        // new feature
+        console.log("NEW FEATURE")
+        console.log(hoveredDistrictPolygonID)
+        // clear last outline
         map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: false });
+
+        // set other new values
+        hoveredDistrictPolygonID = fid
+        // Find matching district record from provided districtData (if available)
+        let hoveredDistrictData = null;
+        try {
+          geoId = String(feat.id || props.GEOID || props.LEAID || '').replace(/^0+/, '');
+          console.log(geoId)
+          // console.log(districtData) // all data
+          if (Array.isArray(districtData)) {
+            hoveredDistrictData = districtData.find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === geoId) || null;
+          }
+        } catch (err) { hoveredDistrictData = null; }
+        console.log(hoveredDistrictData)
+
+        console.log(geoId)
+
+        const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
+        const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
+
+        const grades = (props.LOGRADE || props.LGRADE || props.L_GRADE || '') && (props.HIGRADE || props.HGRADE || props.H_GRADE || '') ? `${props.LOGRADE || props.LGRADE || props.L_GRADE}–${props.HIGRADE || props.HGRADE || props.H_GRADE}` : '';
+
+        directionClass = '';
+        description = `
+          <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
+            <strong>${props.NAME || props.LEA_NAME || 'District'}</strong>
+            ${grades ? `<div>Grades: ${grades}</div>` : ''}
+            <div>Students: ${students}</div>
+            <div>Teachers (FTE): ${teachers}</div>
+          </div>
+        `;
+
+        console.log(description)
+        districtPopup.setHTML(description);
+
       }
-      hoveredDistrictPolygonID = fid;
+      else {
+        // same feature
+        // just change lat/long
       map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: true });
+      }
     } catch (err) { /* non-fatal */ }
 
-    // Find matching district record from provided districtData (if available)
-    let hoveredDistrictData = null;
+    
+    // set the popup
     try {
-      const geoId = String(feat.id || props.GEOID || props.LEAID || '').replace(/^0+/, '');
-      if (Array.isArray(districtData)) {
-        hoveredDistrictData = districtData.find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === geoId) || null;
-      }
-    } catch (err) { hoveredDistrictData = null; }
-
-    const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
-    const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
-
-    const grades = (props.LOGRADE || props.LGRADE || props.L_GRADE || '') && (props.HIGRADE || props.HGRADE || props.H_GRADE || '') ? `${props.LOGRADE || props.LGRADE || props.L_GRADE}–${props.HIGRADE || props.HGRADE || props.H_GRADE}` : '';
-
-    const directionClass = '';
-    const description = `
-      <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
-        <strong>${props.NAME || props.LEA_NAME || 'District'}</strong>
-        ${grades ? `<div>Grades: ${grades}</div>` : ''}
-        <div>Students: ${students}</div>
-        <div>Teachers (FTE): ${teachers}</div>
-      </div>
-    `;
-
-    try {
-      districtPopup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+      districtPopup.setLngLat(e.lngLat);
     } catch (err) { console.warn('Could not show district popup', err); }
   });
 
