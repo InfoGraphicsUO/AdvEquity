@@ -381,6 +381,10 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBox.mapboxgl = mapboxgl;
     searchBox.componentOptions = { allowReverse: true, flipCoordinates: true };
     console.log('loaded search box')
+    // searchBox.addEventListener('onretrieve', (event) => {
+    //   console.log('set to district view')
+    //   window.setMapView('district')
+    // })
     //map.addControl(searchBox, 'top-right');
     document.getElementById('search_box_holder').appendChild(searchBox);
     searchBox.bindMap(map);
