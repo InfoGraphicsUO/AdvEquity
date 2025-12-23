@@ -1180,6 +1180,7 @@ function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
 }
 
 function fillStateMap(map, geojson, stateData, fieldName) {
+  console.log('fillStateMap: ', fieldName)
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
@@ -1217,14 +1218,32 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   }
 
   // Update map coloring
+        // minVal, "#5a6251",
+        // maxVal, "#e5e8e3"
   if (map.getLayer('state-fills')) {
-    map.setPaintProperty('state-fills', 'fill-color', [
-      "interpolate",
-      ["linear"],
-      ["get", fieldName],
-      minVal, "#5a6251",
-      maxVal, "#e5e8e3"
-    ]);
+    var legendBar = $('#legendBar')
+    // get toggle setting
+    if (fieldName =='ENR_AP_GAP_BL') { //black
+      legendBar.removeClass('legendHis')
+      legendBar.addClass('legendBlk')
+      map.setPaintProperty('state-fills', 'fill-color', [
+        "interpolate",
+        ["linear"],
+        ["get", fieldName],
+        minVal, "#5a6251",
+        maxVal, "#e5e8e3"
+      ]);
+    } else { //hispanic - TODO: finalize colors
+    legendBar.removeClass('legendBlk')
+    legendBar.addClass('legendHis')
+      map.setPaintProperty('state-fills', 'fill-color', [
+        "interpolate",
+        ["linear"],
+        ["get", fieldName],
+        minVal, "#776401",
+        maxVal, "#e3ddbf"
+      ]);
+    }
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
   }
@@ -1237,6 +1256,7 @@ function getStateValues(stateData, state, fieldName) {
 }
 
 function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, targetYear = 2021) {
+  console.log('fillDistrictMap: ', fieldName)
   map.setPaintProperty('state-fills', 'fill-color', 'transparent');
 
   // Determine if we're showing all states
@@ -1305,19 +1325,19 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   let maxVal = -Infinity;
   console.log(`Building valueMap for field: ${fieldName}, filtered data count: ${filtered.length}`);
 
-for (const d of filtered) {
-  const raw = d[fieldName];
-  if (raw !== null && raw !== undefined && !isNaN(Number(raw))) {
-    const val = Number(raw);
+  for (const d of filtered) {
+    const raw = d[fieldName];
+    if (raw !== null && raw !== undefined && !isNaN(Number(raw))) {
+      const val = Number(raw);
 
-    // Convert LEAID to string and pad to 7 digits (standard for NCES / FIPS IDs)
-    const leaId = String(d.LEAID).padStart(7, '0'); 
+      // Convert LEAID to string and pad to 7 digits (standard for NCES / FIPS IDs)
+      const leaId = String(d.LEAID).padStart(7, '0'); 
 
-    valueMap[leaId] = val;
-    if (val < minVal) minVal = val;
-    if (val > maxVal) maxVal = val;
+      valueMap[leaId] = val;
+      if (val < minVal) minVal = val;
+      if (val > maxVal) maxVal = val;
+    }
   }
-}
 
   // Store valueMap globally for later updates
   currentDistrictValueMap = valueMap;
@@ -1337,16 +1357,36 @@ for (const d of filtered) {
   const cappedMax = Math.min(maxVal, 3);
   updateLegendTicks(minVal, cappedMax, maxVal, steps = 2)
 
-  const colorRamp = [
-    "interpolate",
-    ["linear"],
-    ["feature-state", "value"],
-    minVal, "#4a4f41",         // darkest
-    minVal + (cappedMax - minVal) * 0.25, "#7a816e",
-    minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
-    minVal + (cappedMax - minVal) * 0.75, "#ccd1c4",
-    cappedMax, "#e8ebe5"          // lightest
-  ];
+  //field specific colors 
+  var legendBar = $('#legendBar')
+  let colorRamp;
+  if (fieldName == 'ENR_AP_GAP_BL') { //black students
+    legendBar.removeClass('legendHis')
+    legendBar.addClass('legendBlk')
+    colorRamp = [
+      "interpolate",
+      ["linear"],
+      ["feature-state", "value"],
+      minVal, "#4a4f41",         // darkest
+      minVal + (cappedMax - minVal) * 0.25, "#7a816e",
+      minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
+      minVal + (cappedMax - minVal) * 0.75, "#ccd1c4",
+      cappedMax, "#e8ebe5"          // lightest
+    ];
+  } else { //hispanic students - TODO: work on these colors
+    legendBar.removeClass('legendBlk')
+    legendBar.addClass('legendHis')
+    colorRamp = [
+      "interpolate",
+      ["linear"],
+      ["feature-state", "value"],
+      minVal, "#776401",         // darkest
+      minVal + (cappedMax - minVal) * 0.25, "#bfa939",
+      minVal + (cappedMax - minVal) * 0.5,  "#e6da9b",
+      minVal + (cappedMax - minVal) * 0.75, "#e7deb3",
+      cappedMax, "#efeee7"          // lightest
+    ];
+  }
 
   map.setPaintProperty('district-fills', 'fill-color', colorRamp);
   map.setPaintProperty('district-fills', 'fill-outline-color', [
@@ -1613,8 +1653,9 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   }
 
   // Unified colors for both charts
-  const colors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
-
+  // const colors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
+  const colors = { WH: "#a0a0a0", HI: "#e6da9b", BL: "#718168", AS: "#a1b9a0", OTH: "#ccc" };
+      
   // --- Dropdown of districts (unique by LEAID) ---
   // Build a map keyed by normalized LEAID (remove leading zeros) so each option is unique
   const uniqLea = {};

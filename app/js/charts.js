@@ -241,7 +241,12 @@ function initFactSheet(stateData, fips, fieldName) {
         AS: stateLatest.PCT_ENR_AS,
         OTH: stateLatest.PCT_ENR_OTH
       };
-      const compColors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
+      // const compColors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
+      const compColors = { WH: "#a0a0a0", HI: "#e6da9b", BL: "#718168", AS: "#a1b9a0", OTH: "#ccc" };
+      // other yellow (less saturated): #e6da9b
+      // yellow from AdvEq site: #e4dd4f
+      // green from AdvEq site: #818d74, #718168
+     
       // drawCompositionBar is defined in map.js and loaded before this script in map.html
       try { drawCompositionBar('stateCompBar', compData, compColors); } catch (e) { console.warn('drawCompositionBar unavailable', e); }
     }

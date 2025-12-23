@@ -3,7 +3,9 @@
   --darkgrey: #a1a1a1;
   --lightgrey: #bdbfbf;
   --green: #808c73;
+  --greenBlk: #718168;
   --yellow: #e5de54;
+  --yellowHis: #e6da9b;
   --almostBlack: #303333;
   --offwhite: #f4f4f4;
   --darkGreen: #224722;
@@ -129,6 +131,17 @@ button:hover {
 .race-selectBtn.active, .agg-selectBtn.active {
   background-color: var(--green);
   color: var(--offwhite);
+  font-weight: bold;
+}
+
+#race-selectBlk.race-selectBtn.active {
+  background-color: var(--greenBlk);
+  color: var(--offwhite);
+  font-weight: bold;
+}
+#race-selectHis.race-selectBtn.active {
+  background-color: var(--yellowHis);
+  color: var(--almostBlack);
   font-weight: bold;
 }
 
@@ -321,7 +334,7 @@ h3 {
   height: 12px;
 }
 
-.legend-gradient {
+.legend-gradient.legendBlk {
   width: 100%;
   height: 100%;
   border-radius: 6px;
@@ -332,6 +345,20 @@ h3 {
     #a8ae9c,
     #ccd1c4,
     #e8ebe5
+  );
+}
+
+.legend-gradient.legendHis {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(
+    to right,
+    #776401,
+    #bfa939,
+    #e6da9b,
+    #e7deb3,
+    #efeee7
   );
 }
 
