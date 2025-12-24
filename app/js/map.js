@@ -1254,8 +1254,8 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "interpolate",
         ["linear"],
         ["get", fieldName],
-        minVal, "#776401",
-        maxVal, "#e3ddbf"
+        minVal, "#9b7f12",
+        maxVal, "#fbf7df"
       ]);
     }
   } else {
@@ -1394,11 +1394,11 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       "interpolate",
       ["linear"],
       ["feature-state", "value"],
-      minVal, "#776401",         // darkest
-      minVal + (cappedMax - minVal) * 0.25, "#bfa939",
-      minVal + (cappedMax - minVal) * 0.5,  "#e6da9b",
-      minVal + (cappedMax - minVal) * 0.75, "#e7deb3",
-      cappedMax, "#efeee7"          // lightest
+      minVal, "#9b7f12",         // darkest
+      minVal + (cappedMax - minVal) * 0.25, "#c7a92f",
+      minVal + (cappedMax - minVal) * 0.5,  "#e6ce53",
+      minVal + (cappedMax - minVal) * 0.75, "#f1df8a",
+      cappedMax, "#fbf7df"          // lightest
     ];
   }
 
