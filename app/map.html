@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Adv Equity Map</title>
+  <link rel="preconnect" href="https://kit.fontawesome.com" crossorigin>  <!-- can we use fontawesome?? -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <script defer id="search-js" src="https://api.mapbox.com/search-js/v1.5.0/web.js"></script>  <!-- mapbox search -->
@@ -45,11 +46,11 @@
     </div> -->
     
     <div id="mapWidgetsQuery">
-      <div id="search_box_holder" class="search_query">
+      <div id="resizeQueryButton"><i class="fa-solid fa-angles-right"></i></div>       <div id="search_box_holder" class="search_query">
         <!-- <input type="text" placeholder="Search Query Tool..." />
         <button>Go</button> -->
       </div> 
-      <button id="full_extent">View US</button>
+      <button id="full_extent" class ="mapControlBtn">View US</button>
 
     </div>
 

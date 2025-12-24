@@ -41,6 +41,19 @@ body, html {
     gap: 6px;
 }
 
+#mapWidgetsQuery.qbExpanded {
+  width: var(--expanded-width);
+  /* overflow? */
+}
+#mapWidgetsQuery.qbCollapsed {
+  width: var(--collapsed-width);
+  /* overflow? */
+}
+
+#resizeQueryButton {
+  margin: -.3rem;
+}
+
 #mapWidgetsRace {
     position: absolute;
     top: 5px;

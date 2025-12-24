@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // map-level "Back to state" button 
   const backToStateMapBtn = document.createElement('button');
   backToStateMapBtn.id = 'backToStateMapBtn';
+  backToStateMapBtn.classList.add('mapControlBtn');
   backToStateMapBtn.textContent = 'Back to state';
   // insert after the fullExtentButton if present
   if (fullExtentButton && fullExtentButton.parentNode) {
@@ -437,6 +438,19 @@ document.addEventListener('DOMContentLoaded', () => {
         StateOverview.style.display = 'none';
       });
     }
+
+    queryBarWidth = document.getElementById('mapWidgetsQuery').getBoundingClientRect().width;
+    // console.log('select box height',baseMenuHeight)
+    
+    initQueryWidth()
+    $('#resizeQueryButton').on('click', function() {
+      resizeQueryBar('qbExpanded')
+    })
+
+    map.on('zoomend', function () {
+      resizeQueryBar('qbCollapsed')
+    })
+
 });
 
 mapboxgl.accessToken =  MAPBOXTOKEN
@@ -2154,4 +2168,61 @@ function fmtValue(val, year, targetYear = 2021) {
   }
 
   return year !== targetYear ? `${formatted} (${year})` : formatted;
+}
+
+//responsive search box
+
+//init globals
+const queryBar = document.getElementById('mapWidgetsQuery')
+let queryBarWidth;
+
+//init width function
+function initQueryWidth(){
+  //get resize button width
+  const resizeButton = document.getElementById('resizeQueryButton');
+  resizeButton.style.display = '';
+  const buttonWidth = resizeButton.getBoundingClientRect().width;
+  resizeButton.style.display = 'none';
+  
+  //set style properties i.e. 
+  queryBar.style.setProperty('--expanded-width', `${queryBarWidth}px`);
+  queryBar.style.setProperty('--collapsed-width', `${buttonWidth}px`);
+
+  // Start in expanded state
+  queryBar.classList.add('qbExpanded');
+  queryBar.classList.remove('qbCollapsed');
+}
+
+//expand/collapse function
+function resizeQueryBar(targetClass) {
+  //targetClass: qbCollapsed = shrink searchbar, show only expand button
+  //             qbExpanded = show full search bar
+  console.log(`resizeQueryBar(${targetClass})`)
+  const resizeButton = document.getElementById('resizeQueryButton'); //only visible when collapsed?
+  const mapButtons = document.getElementsByClassName('mapControlBtn')
+  const searchBox = document.getElementById('search_box_holder')
+    
+  // remove both classes
+  queryBar.classList.remove('qbExpanded', 'qbCollapsed');
+  // Add the target class
+  queryBar.classList.add(targetClass);
+
+  if (targetClass === 'qbExpanded') {
+    console.log('expanding query bar')
+    resizeButton.style.display = 'none';
+    // mapButtons.style.display = '';
+    searchBox.style.display = '';
+  } else if (targetClass === 'qbCollapsed') {
+    console.log('shrinking query bar')
+    resizeButton.style.display = '';
+    // mapButtons.style.display = 'none';
+    searchBox.style.display = 'none';
+    //set display=none for  searchBox and mapBttons
+  }
+
+  if (mapButtons && mapButtons.length) {
+        Array.from(mapButtons).forEach(mapButtons => {
+            mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
+        });
+    }
 }
