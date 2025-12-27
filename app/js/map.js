@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.warn('querySourceFeatures fallback failed', e);
     }
-// this should fix issue with non geometry districts still being able to use Back to state button
+    // this should fix issue with non geometry districts still being able to use Back to state button
     try {
       if ((!stateFeature || !stateFP) && stateAbbrev && typeof stateDataCache === 'object') {
         const upperAbbrev = String(stateAbbrev).toUpperCase();
@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (backToStateMapBtn) {
         const hasValidStateInfo = !!(window.lastDistrictStateFP || window.lastDistrictStateAbbrev);
-        
         if (window.mapView === 'district' && hasValidStateInfo) {
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
@@ -208,66 +207,80 @@ document.addEventListener('DOMContentLoaded', () => {
   // track currently selected race field
   window.currentRaceField = 'ENR_AP_GAP_BL'; // default to Black students
 
+  function activateStateView(){
+    window.aggLevel = 'state';
+    // switch map view to state (not full US)
+    if (typeof setMapView === 'function') setMapView('state');
+    console.log("clickedState")
+    // hide district layers
+    map.setLayoutProperty('state-fills', 'visibility', 'visible');
+    if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
+    if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
+    // redraw state map with currently selected race field
+    if (geojsonCache && stateDataCache && window.currentRaceField) {
+      fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
+    }
+    // update control states if function exists
+    if (typeof updateControlStates === 'function') updateControlStates();
 
+    $('#agg-selectState').addClass('active')
+    $('#agg-selectDist').removeClass('active')
+    
+  }
+
+  function activateDistrictView(){
+    window.aggLevel = 'district';
+    // switch map view to district-level (enables Back)
+    if (typeof setMapView === 'function') setMapView('district');
+    // display district level data 
+    console.log("clickedDistrict")
+    if (typeof updateControlStates === 'function') updateControlStates();
+    // hide state layer
+    map.setLayoutProperty('state-fills', 'visibility', 'none');
+
+    //draw district data with currently selected race field:
+    if (!map.getLayer('district-fills')) {
+      map.addLayer({
+        id: 'district-fills',
+        type: 'fill',
+        source: 'SCHOOLDIST_TL24',
+        'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+        paint: {
+          'fill-color': 'transparent',
+          'fill-opacity': 0.9
+        }
+      }, 'state-borders');//add below district-fills to keep hover color above
+    } else {
+      map.setLayoutProperty('district-fills', 'visibility', 'visible');
+      map.setLayoutProperty('district-lines', 'visibility', 'visible');
+    }
+
+    getDistrictData('all').then(districtData => {
+      fillDistrictMap(map, districtData, 'all', 'all', window.currentRaceField || 'ENR_AP_GAP_BL');
+      if (typeof updateControlStates === 'function') updateControlStates();
+    });
+
+    $('#agg-selectState').removeClass('active')
+    $('#agg-selectDist').addClass('active')
+  }
 
   // data
   aggSelectionButton.forEach(btn => {
     btn.addEventListener('click', function() {
-    // Remove active class from all buttons
-    aggSelectionButton.forEach(b => b.classList.remove('active'));
+      // Remove active class from all buttons
+      aggSelectionButton.forEach(b => b.classList.remove('active'));
 
-    // Add active class to clicked button
-    this.classList.add('active');
+      // Add active class to clicked button
+      this.classList.add('active');
 
 
-    // display State level data
-  if (this.id === 'agg-selectState'){
-    window.aggLevel = 'state';
-        // switch map view to state (not full US)
-        if (typeof setMapView === 'function') setMapView('state');
-        console.log("clickedState")
-        // hide district layers
-        map.setLayoutProperty('state-fills', 'visibility', 'visible');
-        if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
-        if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
-        // redraw state map with currently selected race field
-        if (geojsonCache && stateDataCache && window.currentRaceField) {
-          fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
-        }
-        // update control states if function exists
-        if (typeof updateControlStates === 'function') updateControlStates();
+      // display State level data
+      if (this.id === 'agg-selectState'){
+        activateStateView()
       } else if (this.id === 'agg-selectDist'){
-        window.aggLevel = 'district';
-        // switch map view to district-level (enables Back)
-        if (typeof setMapView === 'function') setMapView('district');
-       // display district level data 
-        console.log("clickedDistrict")
-        if (typeof updateControlStates === 'function') updateControlStates();
-        // hide state layer
-        map.setLayoutProperty('state-fills', 'visibility', 'none');
-
-        //draw district data with currently selected race field:
-        if (!map.getLayer('district-fills')) {
-          map.addLayer({
-            id: 'district-fills',
-            type: 'fill',
-            source: 'SCHOOLDIST_TL24',
-            'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-            paint: {
-              'fill-color': 'transparent',
-              'fill-opacity': 0.9
-            }
-          }, 'state-borders');//add below district-fills to keep hover color above
-        } else {
-          map.setLayoutProperty('district-fills', 'visibility', 'visible');
-          map.setLayoutProperty('district-lines', 'visibility', 'visible');
-        }
-
-        getDistrictData('all').then(districtData => {
-          fillDistrictMap(map, districtData, 'all', 'all', window.currentRaceField || 'ENR_AP_GAP_BL');
-          if (typeof updateControlStates === 'function') updateControlStates();
-        });
+        activateDistrictView()
       }
+
     })
   });
 
@@ -424,32 +437,56 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof setMapView === 'function') setMapView('full');
     //StateOverview.style.display = 'none'; // hide state panel
 
-  });
+    });
 
 
 
 
-   // State Overview close button and other interactions
-    const closeBtnState = document.getElementById('closeStateOverview');
-    const StateOverview = document.getElementById('StateOverviewContainer');
+  // State Overview close button and other interactions
+  const closeBtnState = document.getElementById('closeStateOverview');
+  const StateOverview = document.getElementById('StateOverviewContainer');
 
-    if (closeBtnState && StateOverview) {
-      closeBtnState.addEventListener('click', () => {
-        StateOverview.style.display = 'none';
-      });
-    }
+  if (closeBtnState && StateOverview) {
+    closeBtnState.addEventListener('click', () => {
+      StateOverview.style.display = 'none';
+    });
+  }
 
-    queryBarWidth = document.getElementById('mapWidgetsQuery').getBoundingClientRect().width;
-    // console.log('select box height',baseMenuHeight)
+  queryBarWidth = document.getElementById('mapWidgetsQuery').getBoundingClientRect().width;
+  // console.log('select box height',baseMenuHeight)
+  
+  initQueryWidth()
+  $('#resizeQueryButton').on('click', function() {
+    resizeQueryBar('qbExpanded')
+  })
+
+  map.on('zoomend', function () {
+    console.log('zoom level: ', map.getZoom());
+    resizeQueryBar('qbCollapsed');
     
-    initQueryWidth()
-    $('#resizeQueryButton').on('click', function() {
-      resizeQueryBar('qbExpanded')
-    })
+    console.log('zoomend mapView: ', window.mapView)
+    if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
+      if (window.mapView == 'full' ){
+        console.log('full -> district view')
+        // activateStateView()
+        activateDistrictView()
+      } else if (window.mapView == 'state') {
+        console.log('state -> district view')
+        // activateStateView()
+        activateDistrictView()
+      } else {
+        console.log('district view -> district view')
+        //reactivate all districts. required due to click path variation
+        // activateStateView()
+        activateDistrictView()
+      }
+    };
 
-    map.on('zoomend', function () {
-      resizeQueryBar('qbCollapsed')
-    })
+    // updateControlStates() //not working backToStateBtn not activating
+    $('#backToStateBtn').removeClass('control-disabled')
+
+
+  });
 
 });
 
@@ -741,6 +778,7 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
 
   map.on('click', 'state-fills', function (e) {
     const clickedFeature = e.features[0];
+    console.log('clickedFeature: ')
     console.log(clickedFeature)
     // document.getElementById('mapLegend').style.display = 'block'; // display legend
 
@@ -1295,7 +1333,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       showAllStates ? true : ['==', ['get', 'STATEFP'], statefips]
     );
     map.setLayoutProperty('district-fills', 'visibility', 'visible');
-    map.setLayoutProperty('district-lines', 'visibility', 'visible');
+    if (map.getLayer('district-lines')) {
+      map.setLayoutProperty('district-lines', 'visibility', 'visible');
+    }
+    
   }
 
   // Add or update district outlines
