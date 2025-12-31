@@ -114,7 +114,8 @@ button:hover {
   height: 2.2rem;
 }
 #mapWidgetsQuery button#full_extent {
-  min-width: 5.5rem;
+  padding: .3rem;
+  /* min-width: 5.5rem; */
 }
 #mapWidgetsQuery button#backToStateMapBtn {
   min-width: 6.75rem;
