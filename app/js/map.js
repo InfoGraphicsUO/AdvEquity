@@ -207,6 +207,65 @@ document.addEventListener('DOMContentLoaded', () => {
   // track currently selected race field
   window.currentRaceField = 'ENR_AP_GAP_BL'; // default to Black students
 
+  // update map based on race selection from gap chart picker
+  window.updateMapForRace = function(raceCode) {
+    const loadingOverlay = document.getElementById('mapLoadingOverlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+    const fieldName = raceCode === 'BL' ? 'ENR_AP_GAP_BL' : 'ENR_AP_GAP_HI';
+    window.currentRaceField = fieldName;
+
+    const raceDesc = raceCode === 'BL' ? 'Black' : 'Hispanic';
+    $('#currentRaceDesc').html(raceDesc);
+
+    const raceButtons = document.querySelectorAll('.race-selectBtn');
+    raceButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if ((raceCode === 'BL' && btn.id === 'race-selectBlk') || 
+          (raceCode === 'HI' && btn.id === 'race-selectHis')) {
+        btn.classList.add('active');
+      }
+    });
+
+    // Update map based on current view
+    if (window.mapView === 'full') {
+      map.setLayoutProperty('state-fills', 'visibility', 'visible');
+      if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
+      if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
+      fillStateMap(map, geojsonCache, stateDataCache, fieldName);
+      
+      map.once('idle', () => {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+      });
+    } else if (window.mapView === 'state' || window.mapView === 'district') {
+      map.setLayoutProperty('state-fills', 'visibility', 'none');
+      if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'visible');
+      if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'visible');
+      
+      getDistrictData('all').then(districtData => {
+        const stateAbbrev = window.currentStateAbbrev;
+        const stateFIPS = window.currentStateFIPS;
+        
+        if (stateAbbrev && stateFIPS) {
+          const filteredDistrictData = districtData.filter(d => 
+            d.LEA_STATE === stateAbbrev || String(d.STATEFP).padStart(2, '0') === String(stateFIPS).padStart(2, '0')
+          );
+          fillDistrictMap(map, filteredDistrictData, stateAbbrev, stateFIPS, fieldName);
+          buildDistrictTable(filteredDistrictData, fieldName);
+        } else {
+          fillDistrictMap(map, districtData, 'all', 'all', fieldName);
+        }
+
+        map.once('idle', () => {
+          if (loadingOverlay) loadingOverlay.style.display = 'none';
+        });
+      }).catch(err => {
+        console.error('Error updating map for race:', err);
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+      });
+    }
+  };
+
   function activateStateView(){
     window.aggLevel = 'state';
     // switch map view to state (not full US)
@@ -1951,39 +2010,38 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   };
 
   // state level and national level series for BL and HI (if available)
-  try {
-    // determine state abbreviation for this district (used to look up state series)
-    const stateAbbrev = latest.LEA_STATE || clickedFeature.properties?.STATE_ABBR || window.lastDistrictStateAbbrev || null;
-    // find state entry in stateDataCache by matching abbreviation
-    let stateSeriesBL = Array(years.length).fill(null);
-    let stateSeriesHI = Array(years.length).fill(null);
+  // determine state abbreviation for this district (used to look up state series)
+  const stateAbbrev = latest.LEA_STATE || clickedFeature.properties?.STATE_ABBR || window.lastDistrictStateAbbrev || null;
+  // find state entry in stateDataCache by matching abbreviation
+  let stateSeriesBL = Array(years.length).fill(null);
+  let stateSeriesHI = Array(years.length).fill(null);
 
-    if (typeof stateDataCache === 'object' && stateAbbrev) {
-      const stateKey = Object.keys(stateDataCache).find(k => {
-        const arr = stateDataCache[k] || [];
-        return arr.some(d => d.state_abbrev === stateAbbrev);
+  if (typeof stateDataCache === 'object' && stateAbbrev) {
+    const stateKey = Object.keys(stateDataCache).find(k => {
+      const arr = stateDataCache[k] || [];
+      return arr.some(d => d.state_abbrev === stateAbbrev);
+    });
+
+    if (stateKey) {
+      const sRecords = stateDataCache[stateKey].slice().sort((a,b)=>a.YEAR-b.YEAR);
+      // build year-indexed lookup
+      const sLookup = {};
+      for (const s of sRecords) sLookup[Number(s.YEAR)] = s;
+      years.forEach((y, i) => {
+        const row = sLookup[Number(y)];
+        if (row) {
+          stateSeriesBL[i] = row.ENR_AP_GAP_BL ?? null;
+          stateSeriesHI[i] = row.ENR_AP_GAP_HI ?? null;
+        }
       });
-
-      if (stateKey) {
-        const sRecords = stateDataCache[stateKey].slice().sort((a,b)=>a.YEAR-b.YEAR);
-        // build year-indexed lookup
-        const sLookup = {};
-        for (const s of sRecords) sLookup[Number(s.YEAR)] = s;
-        years.forEach((y, i) => {
-          const row = sLookup[Number(y)];
-          if (row) {
-            stateSeriesBL[i] = row.ENR_AP_GAP_BL ?? null;
-            stateSeriesHI[i] = row.ENR_AP_GAP_HI ?? null;
-          }
-        });
-      }
     }
+  }
 
-    // fetch national series (promise) and draw chart after
-    const natUrl = '../assets/data/json/ap_equity_national.json';
-    fetch(natUrl)
-      .then(res => res.json())
-      .then(natData => {
+  // fetch national series (promise) and draw chart after
+  const natUrl = '../assets/data/json/ap_equity_national.json';
+  fetch(natUrl)
+    .then(res => res.json())
+    .then(natData => {
         const natLookup = {};
         if (Array.isArray(natData)) {
           for (const n of natData) natLookup[Number(n.YEAR)] = n;
@@ -1992,127 +2050,119 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         const natSeriesBL = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].ENR_AP_GAP_BL ?? null : null));
         const natSeriesHI = years.map(y => (natLookup[Number(y)] ? natLookup[Number(y)].ENR_AP_GAP_HI ?? null : null));
 
-        // extend series object with state & national lines (label suffixes: _state, _nat)
-        const extendedSeries = Object.assign({}, series, {
-          'BL_state': stateSeriesBL,
-          'BL_nat': natSeriesBL,
-          'HI_state': stateSeriesHI,
-          'HI_nat': natSeriesHI
-        });
-
-        // color map: use the same (district) colors for state and national as requested
-        const colorMap = {
-          BL: colors.BL,
-          'BL_state': colors.BL,
-          'BL_nat': colors.BL,
-          HI: colors.HI,
-          'HI_state': colors.HI,
-          'HI_nat': colors.HI
+        // store data for both races with district/state/national for each
+        const gapChartData = {
+          BL: {
+            District: series.BL,
+            State: stateSeriesBL,
+            National: natSeriesBL
+          },
+          HI: {
+            District: series.HI,
+            State: stateSeriesHI,
+            National: natSeriesHI
+          }
         };
 
-        // simple bubble picker to toggle which aggregation is shown (district/state/national)
+        const sparklineColors = { District: '#000', State: '#555', National: '#888' };
+
+        let currentRace = 'BL';
+
+        // draw gap chart for selected race
+        const drawGapChartForRace = (race) => {
+          currentRace = race;
+          const raceData = gapChartData[race];
+          if (raceData) {
+            drawMiniChart('gapChart', years, raceData, sparklineColors, 'AP participation gap');
+            drawSimpleLegend('gapLegend', { District: 'District', State: 'State', National: 'National' }, sparklineColors, raceData);
+          }
+        };
+
+        // race picker for ap gap
         const gapLegend = document.getElementById('gapLegend');
         if (gapLegend) {
-          // remove existing picker wrapper if present (remove whole wrapper that contains the label)
-          const existingWrapper = document.getElementById('gapPickerWrapper');
+          // Remove existing picker wrapper if present
+          const existingWrapper = document.getElementById('gapRacePickerWrapper');
           if (existingWrapper) existingWrapper.remove();
-          else {
-            // fallback: remove inner picker if wrapper wasn't used previously
-            const existing = document.getElementById('gapPicker');
-            if (existing) existing.remove();
-          }
-
-          const picker = document.createElement('div');
-          picker.id = 'gapPicker';
-          picker.style.display = 'flex';
-          picker.style.gap = '8px';
-          picker.style.marginBottom = '6px';
-
-          // label above picker
-          const pickerLabel = document.createElement('div');
-          pickerLabel.textContent = 'Level:';
-          pickerLabel.style.fontSize = '12px';
-          pickerLabel.style.marginBottom = '6px';
 
           const pickerWrapper = document.createElement('div');
-          pickerWrapper.id = 'gapPickerWrapper';
+          pickerWrapper.id = 'gapRacePickerWrapper';
           pickerWrapper.style.display = 'flex';
           pickerWrapper.style.flexDirection = 'column';
+          pickerWrapper.style.marginBottom = '8px';
+
+          // Label
+          const pickerLabel = document.createElement('div');
+          pickerLabel.style.fontSize = '12px';
+          pickerLabel.style.marginBottom = '6px';
           pickerWrapper.appendChild(pickerLabel);
 
-          const views = ['district','state','national'];
-          views.forEach(v => {
+          // buttons
+          const racePicker = document.createElement('div');
+          racePicker.id = 'gapRacePicker';
+          racePicker.style.display = 'flex';
+          racePicker.style.gap = '8px';
+
+          const races = [
+            { code: 'BL', label: 'Black' },
+            { code: 'HI', label: 'Hispanic' }
+          ];
+
+          races.forEach(({ code, label }) => {
             const btn = document.createElement('button');
-            btn.className = 'gap-btn';
-            btn.dataset.view = v;
-            btn.title = v;
-            // show full word on the button
-            btn.textContent = v.charAt(0).toUpperCase() + v.slice(1);
-            btn.style.padding = '4px 8px';
+            btn.className = 'gap-race-btn';
+            btn.dataset.race = code;
+            btn.textContent = label;
+            btn.style.padding = '4px 12px';
             btn.style.borderRadius = '16px';
             btn.style.border = '1px solid rgba(0,0,0,0.15)';
-            btn.style.background = v === 'district' ? '#111' : '#fff';
-            btn.style.color = v === 'district' ? '#fff' : '#111';
+            if (code === 'BL') {
+              btn.style.background = '#718168'; // greenBlk
+              btn.style.color = '#f4f4f4'; // offwhite
+              btn.style.fontWeight = 'bold';
+            } else {
+              btn.style.background = 'transparent';
+              btn.style.color = '#303333'; // almostBlack
+              btn.style.fontWeight = 'normal';
+            }
             btn.style.cursor = 'pointer';
-            btn.addEventListener('click', () => {
-              // update active styling
-              Array.from(picker.children).forEach(c => {
-                c.style.background = '#fff';
-                c.style.color = '#111';
-              });
-              btn.style.background = '#111';
-              btn.style.color = '#fff';
+            btn.style.fontSize = '13px';
 
-              // draw appropriate series
-              if (v === 'district') {
-                const s = { BL: extendedSeries.BL, HI: extendedSeries.HI };
-                const cm = { BL: colorMap.BL, HI: colorMap.HI };
-                drawMiniChart('gapChart', years, s, cm, 'AP participation gap');
-                drawLegend('gapLegend', s, cm);
-              } else if (v === 'state') {
-                const s = { 'BL_state': extendedSeries.BL_state, 'HI_state': extendedSeries.HI_state };
-                const cm = { 'BL_state': colorMap['BL_state'], 'HI_state': colorMap['HI_state'] };
-                drawMiniChart('gapChart', years, s, cm, 'AP participation gap');
-                drawLegend('gapLegend', s, cm);
-              } else if (v === 'national') {
-                const s = { 'BL_nat': extendedSeries.BL_nat, 'HI_nat': extendedSeries.HI_nat };
-                const cm = { 'BL_nat': colorMap['BL_nat'], 'HI_nat': colorMap['HI_nat'] };
-                drawMiniChart('gapChart', years, s, cm, 'AP participation gap');
-                drawLegend('gapLegend', s, cm);
+            btn.addEventListener('click', () => {
+              // Update styling
+              Array.from(racePicker.children).forEach(c => {
+                const raceCode = c.dataset.race;
+                c.style.background = 'transparent';
+                c.style.color = '#303333';
+                c.style.fontWeight = 'normal';
+              });
+              if (code === 'BL') {
+                btn.style.background = '#718168'; // greenBlk
+                btn.style.color = '#f4f4f4'; // offwhite
+              } else {
+                btn.style.background = '#e6da9b'; // yellowHis
+                btn.style.color = '#303333'; // almostBlack
+              }
+              btn.style.fontWeight = 'bold';
+
+              // chart for selected race
+              drawGapChartForRace(code);
+
+              // map show selected race
+              if (window.updateMapForRace) {
+                window.updateMapForRace(code);
               }
             });
-            picker.appendChild(btn);
+
+            racePicker.appendChild(btn);
           });
 
-          pickerWrapper.appendChild(picker);
+          pickerWrapper.appendChild(racePicker);
           gapLegend.parentNode.insertBefore(pickerWrapper, gapLegend);
         }
 
-  // draw default (district)
-  const defaultSeries = { BL: extendedSeries.BL, HI: extendedSeries.HI };
-  const defaultColors = { BL: colorMap.BL, HI: colorMap.HI };
-  drawMiniChart('gapChart', years, defaultSeries, defaultColors, 'AP participation gap');
-  drawLegend('gapLegend', defaultSeries, defaultColors);
-        // helper to build state series for a given field (shared by all sparklines)
-        const buildStateSeries = (field) => {
-          const arr = Array(years.length).fill(null);
-          if (typeof stateDataCache === 'object' && stateAbbrev) {
-            const stateKey = Object.keys(stateDataCache).find(k => {
-              const a = stateDataCache[k] || [];
-              return a.some(d => d.state_abbrev === stateAbbrev);
-            });
-            if (stateKey) {
-              const sRecords = stateDataCache[stateKey].slice().sort((a,b)=>a.YEAR-b.YEAR);
-              const sLookup = {};
-              for (const s of sRecords) sLookup[Number(s.YEAR)] = s;
-              years.forEach((y,i)=>{
-                const row = sLookup[Number(y)];
-                if (row) arr[i] = row[field] ?? null;
-              });
-            }
-          }
-          return arr;
-        };
+        // default
+        drawGapChartForRace('BL');
 
         // Draw sparklines (District + State + National) using helper
         try {
@@ -2121,78 +2171,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           prepareAndDrawSparkline({ canvasId: 'stChart', legendId: 'stLegend', title: 'Student–teacher ratio', field: 'STU_TEACH_RAT', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES', records, years, natLookup, stateAbbrev });
         } catch (e) { console.warn('Could not draw detail sparklines', e); }
-      })
-      .catch(err => {
-        console.warn('Failed to load national data for gap chart:', err);
-        // fallback: draw only district series and remove picker
-        const fallbackSeries = { BL: series.BL, HI: series.HI };
-        const fallbackColors = { BL: colors.BL, HI: colors.HI };
-        // remove picker wrapper if exists
-        const existingWrapper = document.getElementById('gapPickerWrapper');
-        if (existingWrapper) existingWrapper.remove();
-        else {
-          const existing = document.getElementById('gapPicker');
-          if (existing) existing.remove();
-        }
-  drawMiniChart('gapChart', years, fallbackSeries, fallbackColors, 'AP participation gap');
-        drawLegend('gapLegend', fallbackSeries, fallbackColors);
-
-        // In fallback (no national data) draw District + State sparklines via helper
-        try {
-          prepareAndDrawSparkline({ canvasId: 'nonwhiteChart', legendId: 'nonwhiteLegend', title: 'Percent non-white', field: 'PCT_ENR_NON_WH', records, years, natLookup: null, stateAbbrev });
-          prepareAndDrawSparkline({ canvasId: 'apChart', legendId: 'apLegend', title: 'AP participation (%)', field: 'PCT_ENR_AP', records, years, natLookup: null, stateAbbrev });
-          prepareAndDrawSparkline({ canvasId: 'stChart', legendId: 'stLegend', title: 'Student–teacher ratio', field: 'STU_TEACH_RAT', records, years, natLookup: null, stateAbbrev });
-          prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES', records, years, natLookup: null, stateAbbrev });
-        } catch (e) { console.warn('Could not draw fallback sparklines', e); }
       });
-
-    // exit here to avoid drawing twice (we draw in the fetch callback)
-    return;
-  } catch (e) {
-    console.warn('Error preparing state/national series:', e);
-  }
-
-  // default fallback if something goes wrong
-  drawMiniChart("gapChart", years, series, { BL: colors.BL, HI: colors.HI }, 'AP participation gap');
-  drawLegend("gapLegend", series, { BL: colors.BL, HI: colors.HI });
-  // draw nonwhite & AP sparklines in default fallback
-  try {
-    const nonwhiteVals = records.map(r => {
-      const v = r.PCT_ENR_NON_WH;
-      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
-    });
-    if (nonwhiteVals.some(v => v !== null)) {
-  drawMiniChart('nonwhiteChart', years, { 'Non-white %': nonwhiteVals }, { 'Non-white %': '#333' }, 'Percent non-white');
-    }
-  } catch (e) { console.warn('Could not draw nonwhite sparkline (default fallback)', e); }
-
-  try {
-    const apVals = records.map(r => {
-      const v = r.PCT_ENR_AP;
-      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
-    });
-    if (apVals.some(v => v !== null)) {
-  drawMiniChart('apChart', years, { 'AP %': apVals }, { 'AP %': '#444' }, 'AP participation (%)');
-    }
-  } catch (e) { console.warn('Could not draw AP participation sparkline (default fallback)', e); }
-  try {
-    const stVals = records.map(r => {
-      const v = r.STU_TEACH_RAT;
-      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
-    });
-    if (stVals.some(v => v !== null)) {
-  drawMiniChart('stChart', years, { 'Stu-Teach': stVals }, { 'Stu-Teach': '#2a9d8f' }, 'Student–teacher ratio');
-    }
-  } catch (e) { console.warn('Could not draw student-teacher ratio sparkline (default fallback)', e); }
-  try {
-    const apCoursesVals = records.map(r => {
-      const v = r.SCH_APCOURSES;
-      return (v === null || v === undefined || isNaN(Number(v))) ? null : Number(v);
-    });
-    if (apCoursesVals.some(v => v !== null)) {
-  drawMiniChart('apCoursesChart', years, { 'AP Courses': apCoursesVals }, { 'AP Courses': '#e76f51' }, 'Modal AP courses');
-    }
-  } catch (e) { console.warn('Could not draw AP courses sparkline (default fallback)', e); }
 }
 
 
