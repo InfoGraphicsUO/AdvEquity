@@ -1,0 +1,116 @@
+#us-opportunity-table {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.row {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 0;
+  align-items: center;
+}
+
+/* Flex row inside the opportunity column for title + search */
+.table-header {
+  display: flex;
+  justify-content: space-between; /* title left, search right */
+  align-items: center;            /* vertical align */
+  width: 100%;
+  margin-bottom: 0.5rem;          /* spacing below header */
+}
+
+/* Style the title */
+#districtTitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.header-row {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #999;
+}
+
+.cell {
+  padding: 0 10px;
+  flex-shrink: 0;
+  overflow-wrap: break-word;
+}
+
+/* Set column widths */
+.cell.state {
+  flex-basis: 25%;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.cell.ap-classes,
+.cell.opp-11,
+.cell.opp-21 {
+  flex-basis: 25%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cell {
+    flex-basis: 100% !important;
+    padding: 4px 0;
+  }
+
+  .header-row {
+    display: none;
+  }
+}
+
+#compBar{
+  margin-right: 10px;
+}
+
+#us-table.dataTable tbody tr.selected td {
+  color:var(--almostBlack);
+  background-color: var(--yellow) !important;
+  transition: background-color 0.3s ease;
+  box-shadow: none !important;   /* remove blue inset highlight */
+  outline: none !important;
+}
+
+#us-table.dataTable tbody td:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+
+.table tbody tr:hover td, .table tbody tr:hover th {
+    background-color: var(--yellow) !important;
+}
+
+
+#us-table tbody td:first-child,
+#district-table tbody td:first-child {
+  cursor: pointer;
+}
+
+#district-table tbody td:first-child {
+  text-decoration: underline;
+}
+
+/** style for mini graphs **/
+/* spacing above titles*/
+div.opportunity-column:nth-child(2) > p{
+  margin: 1.25em 0 0 0 !important;
+  
+}
+
+/* to move move inine CSS for charts from JS to here */

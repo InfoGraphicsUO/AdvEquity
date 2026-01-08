@@ -1,0 +1,119 @@
+.plotly{
+  font-family: jaf-bernina-sans, sans-serif;
+}
+
+.district-column {
+  position: relative; /* make absolute positioning relative to this container */
+}
+
+.floatText {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+  z-index: 10;
+  background: var(--offwhite); /* optional: cover table border underneath */
+  padding: 0 4px;             /* optional spacing */
+}
+
+/* top padding to the table below header */
+.district-column table {
+  margin-top: 0.5em;
+}
+
+.chart-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* or space-evenly */
+  gap: 10px;
+  align-items: flex-end; /* align to bottom */
+}
+
+.chart-block {
+  flex: 1 1 18%; /* Adjust basis to fit ~5 items per row */
+  min-width: 100px;
+  max-width: 100px;
+}
+
+.chart {
+  width: 100%;
+  height: 150px;
+}
+
+.chart-caption {
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: var(--almostBlack);
+  word-wrap: break-word;
+  text-align: center;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: var(--almostBlack);
+}
+
+.legend-row h3{
+  margin: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 3px;
+  display: inline-block;
+}
+
+.region-line {
+  background-color: var(--almostBlack);
+}
+
+.state-line {
+  background-color: var(--yellow);
+}
+
+/* chart tooltip */
+.chart-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: none;
+  -webkit-text-stroke: 0.3px rgba(255, 255, 255, 0.5);
+  text-shadow: 
+    0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.chart-tooltip.visible {
+  display: block;
+}
+
+.chart-tooltip-year {
+  font-weight: bold;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 4px;
+}
+
+.chart-tooltip-value {
+  margin: 2px 0;
+}
+

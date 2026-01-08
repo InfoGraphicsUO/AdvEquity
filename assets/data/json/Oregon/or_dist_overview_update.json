@@ -14,8 +14,8 @@
             },
             "num_students": 406,
             "num_teachers": 2,
-            "opp_est_11-12": 0,
-            "opp_est_21-22": 0
+            "opp_est_11-12": 0.6,
+            "opp_est_21-22": 0.5
         },
         {
             "state": "OR",
@@ -31,8 +31,8 @@
             },
             "num_students": 1650,
             "num_teachers": 7,
-            "opp_est_11-12": 0,
-            "opp_est_21-22": 0
+            "opp_est_11-12": 0.9,
+            "opp_est_21-22": 0.10
         },
         {
             "state": "OR",
@@ -48,8 +48,8 @@
             },
             "num_students": 2037,
             "num_teachers": 15,
-            "opp_est_11-12": 0,
-            "opp_est_21-22": 0
+            "opp_est_11-12": 0.8,
+            "opp_est_21-22": 0.3
         },
         {
             "state": "OR",
