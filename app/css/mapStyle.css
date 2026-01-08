@@ -358,7 +358,7 @@ h3 {
   height: 100%;
   border-radius: 6px;
   background: linear-gradient(
-    to right,
+    to left,
     #4a4f41,
     #7a816e,
     #a8ae9c,
@@ -372,7 +372,7 @@ h3 {
   height: 100%;
   border-radius: 6px;
   background: linear-gradient(
-    to right,
+    to left,
     #9b7f12,
     #c7a92f,
     #e6ce53,
