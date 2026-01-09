@@ -215,8 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const fieldName = raceCode === 'BL' ? 'ENR_AP_GAP_BL' : 'ENR_AP_GAP_HI';
     window.currentRaceField = fieldName;
 
-    const raceDesc = raceCode === 'BL' ? 'Black' : 'Hispanic';
-    $('#currentRaceDesc').html(raceDesc);
+
+
+// // $('#currentRaceDesc')
+// //   .html(raceCode === 'BL' ? 'Black' : 'Hispanic')
+// //   .attr('style', raceCode === 'BL'
+// //     ? 'color:#2c7a2c !important;'
+// //     : 'color:#f9c400 !important;'  
+// //   );
+
+//   $('#currentRaceDesc').css('color', 'blue')
+
+
 
     const raceButtons = document.querySelectorAll('.race-selectBtn');
     raceButtons.forEach(btn => {
@@ -354,15 +364,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add active class to clicked button
     this.classList.add('active');
 
-    // Determine field based on button ID
-    let fieldName;
-    if (this.id === 'race-selectBlk') {
-      fieldName = 'ENR_AP_GAP_BL';
-       $('#currentRaceDesc').html('Black');
-    } else if (this.id === 'race-selectHis') {
-      fieldName = 'ENR_AP_GAP_HI';
-      $('#currentRaceDesc').html('Hispanic');
-    }
+
+// Determine field based on button ID
+let fieldName;
+if (this.id === 'race-selectBlk') {
+  fieldName = 'ENR_AP_GAP_BL';
+  $('#currentRaceDesc')
+    .text('Black')                // safer than .html for plain text
+    .css('color', green);     // dark green for readability
+} else if (this.id === 'race-selectHis') {
+  fieldName = 'ENR_AP_GAP_HI';
+  $('#currentRaceDesc')
+    .text('Hispanic')
+    .css('color', yellow);     // gold-ish yellow (better contrast than pure yellow)
+}
 
     // hlobal var for current race
     window.currentRaceField = fieldName;
@@ -554,7 +569,8 @@ mapboxgl.accessToken =  MAPBOXTOKEN
 const map = new mapboxgl.Map({
   container: 'map',
   // style: 'mapbox://styles/mapbox/dark-v11',
-  style: 'mapbox://styles/infographics/cmh5hw4m800l001sr4kx07py4',
+  // style: 'mapbox://styles/infographics/cmh5hw4m800l001sr4kx07py4', // dark
+  style: 'mapbox://styles/infographics/cmk1ok3vi005701svffff2c16', // light
   maxZoom : 10, 
   minZoom : 0, 
   // zoom: 3,
@@ -718,9 +734,9 @@ getStateData().then(({ geojson, stateData }) => {
         'case',
         ['boolean', ['feature-state', 'hover'], false],
         yellow,   // when hover = true
-        almostBlack       // default
+        verydarkgrey       // default
       ],
-      'line-width': 1,
+      'line-width': 0.5,
       'line-offset': [
       'case',
       ['boolean', ['feature-state', 'hover'], false],
@@ -1341,8 +1357,8 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "interpolate",
         ["linear"],
         ["get", fieldName],
-        minVal, "#5a6251",
-        maxVal, "#e5e8e3"
+        minVal, "#e5e8e3",
+        maxVal, "#5a6251"
       ]);
     } else { //hispanic - TODO: finalize colors
     legendBar.removeClass('legendBlk')
@@ -1351,8 +1367,8 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "interpolate",
         ["linear"],
         ["get", fieldName],
-        minVal, "#9b7f12",
-        maxVal, "#fbf7df"
+        minVal, "#fbf7df",
+        maxVal, "#9b7f12"
       ]);
     }
   } else {
@@ -1412,7 +1428,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
           'case',
           ['boolean', ['feature-state', 'hover'], false],
           (typeof yellow !== 'undefined' ? yellow : '#ffcc00'),
-          '#333'
+          offwhite
         ],
         'line-width': [
           'case',
@@ -1480,12 +1496,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     colorRamp = [
       "interpolate",
       ["linear"],
-      ["feature-state", "value"],
-      minVal, "#4a4f41",         // darkest
-      minVal + (cappedMax - minVal) * 0.25, "#7a816e",
+      ["coalesce", ["feature-state", "value"], 0],
+      minVal, "#e8ebe5",         // lightest
+      minVal + (cappedMax - minVal) * 0.25, "#ccd1c4",
       minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
-      minVal + (cappedMax - minVal) * 0.75, "#ccd1c4",
-      cappedMax, "#e8ebe5"          // lightest
+      minVal + (cappedMax - minVal) * 0.75, "#7a816e",
+      cappedMax, "#4a4f41"          // darkest
     ];
   } else { //hispanic students - TODO: work on these colors
     legendBar.removeClass('legendBlk')
@@ -1493,21 +1509,22 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     colorRamp = [
       "interpolate",
       ["linear"],
-      ["feature-state", "value"],
-      minVal, "#9b7f12",         // darkest
-      minVal + (cappedMax - minVal) * 0.25, "#c7a92f",
+      ["coalesce", ["feature-state", "value"], 0],
+      minVal, "#fbf7df",         // lightest
+      minVal + (cappedMax - minVal) * 0.25, "#f1df8a",
       minVal + (cappedMax - minVal) * 0.5,  "#e6ce53",
-      minVal + (cappedMax - minVal) * 0.75, "#f1df8a",
-      cappedMax, "#fbf7df"          // lightest
+      minVal + (cappedMax - minVal) * 0.75, "#c7a92f",
+      cappedMax, "#9b7f12"       // darkest
     ];
+
   }
 
   map.setPaintProperty('district-fills', 'fill-color', colorRamp);
   map.setPaintProperty('district-fills', 'fill-outline-color', [
     'case',
     ['boolean', ['feature-state', 'hover'], false],
-    (typeof almostBlack !== 'undefined' ? almostBlack : '#111'),
-    '#333'
+    (typeof offwhite !== 'undefined' ? offwhite : offwhite),
+    offwhite
   ]);
 
   // immediately set feature states for all districts
@@ -1802,7 +1819,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
 
-    <div class="opportunity-column">
+    <div class="opportunity-column" id='factsheet-left'>
         <div class="opportunity-row">
       <h2>
         <span class="factsheet-label">Factsheet for </span>
@@ -1816,7 +1833,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
         <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
       </div>
-      <p><b>Latest information</b></p>
+      <br><p><b>Latest information</b></p>
       <p>
         Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
         Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
@@ -1826,13 +1843,14 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         Modal AP courses: ${fmtValue(latest.SCH_APCOURSES, latestYear)}<br>
         Number of schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
 
+
       </p>
-      <p><b>District Composition</b>
+      <br><b>District Composition</b>
       <label class="composition-toggle">
         <input type="checkbox" id="compToggle" checked>
         <small>show as bar</small>
-      </label>
-      </p>
+      </label><br>
+
       <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
       <canvas id="compBar" width="300" height="100"></canvas>
     </div>

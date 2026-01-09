@@ -29,6 +29,11 @@ body, html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+#currentRaceDesc{
+  font-weight: bold;
+  color: var(--green)
+}
+
 #mapWidgetsQuery {
     position: absolute;
     top: 5px;
@@ -218,7 +223,6 @@ button:hover {
   padding: 10px 20px 0 20px;
 }
 
-
 /* whichever is shown will stretch */
 #infoContainer.show,
 #factSheetContainer.show {
@@ -289,6 +293,10 @@ h3 {
   min-height: 0;                  /* CRITICAL for scrolling inside flex/grid */
   /* Optional: set a max-height to ensure it doesn't bleed out of the container */
   max-height: 100%;               /* fill available height of the parent container */
+}
+
+#factsheet-left{
+ display: block;
 }
 
 
@@ -377,7 +385,7 @@ h3 {
   height: 100%;
   border-radius: 6px;
   background: linear-gradient(
-    to right,
+    to left,
     #4a4f41,
     #7a816e,
     #a8ae9c,
@@ -391,7 +399,7 @@ h3 {
   height: 100%;
   border-radius: 6px;
   background: linear-gradient(
-    to right,
+    to left,
     #9b7f12,
     #c7a92f,
     #e6ce53,

@@ -794,6 +794,10 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 function toTitleCase(str) {
   return str.replace(/\w\S*/g, txt => {
     return txt.length <= 2 ? txt : txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
+
+    // or substring is Isd 
+    // let "of" be lower
+    //
   });
 }
 
