@@ -23,7 +23,8 @@ body, html {
 
 #map {
   width: 100%;
-  min-height: 475px;
+  min-height: 350px;
+  height: 50vh;
   flex: 0 0 auto; /* fixed at min height, no shrinking */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -168,8 +169,9 @@ button:hover {
 
 #factSheetContainer {
   display: none;                /* hidden by default */
-  flex-direction: column;       /* stack rows vertically */
+  flex-direction: row;       /* stack rows vertically */
   background: var(--offwhite);
+  max-height: 50vh;
 }
 
 #factSheetContainer h2,
@@ -206,6 +208,8 @@ button:hover {
   vertical-align: middle;
 }
 
+
+/* Lower half containers */
 #infoContainer,
 #factSheetContainer {
   flex: 1;                      /* take up remaining space */
@@ -213,6 +217,7 @@ button:hover {
   background: #f9f9f9;
   padding: 10px 20px 0 20px;
 }
+
 
 /* whichever is shown will stretch */
 #infoContainer.show,
@@ -228,7 +233,7 @@ h2 {
 }
 
 #factSheetContainer h2 {
-  font-variant: small-caps;
+  /* font-variant: small-caps; */
   font-weight: 600;
 }
 
@@ -240,13 +245,16 @@ h3 {
 }
 
 /* layout rows (title row, content row, etc.) */
+/* Factsheet inner layout */
 .opportunity-row {
   display: flex;
+  flex-grow:1;
   flex-direction: row;          /* horizontal layout for columns */
   align-items: flex-start;      /* top-align content */
   justify-content: center;      /* center-align content */
   /* gap: 5em; */  /* no gap best for state-level table */
   margin-top: 0.25em;
+  flex-wrap: wrap;                /* nice responsive behavior */
 }
 
 .container :first-child {
@@ -271,7 +279,18 @@ h3 {
   align-items: flex-start;      /* left-align text and charts */
   /* min-width: 280px;             responsive floor 280, but no mid-width best for state fact sheet in iframe */
   gap: 0.5em;
+   flex: 1 1 300px;                /* keep original responsive behavior */
 }
+
+
+/* Make RIGHT column scroll inside the capped container */
+#factsheet-right {
+  overflow: auto;                 /* only this div scrolls */
+  min-height: 0;                  /* CRITICAL for scrolling inside flex/grid */
+  /* Optional: set a max-height to ensure it doesn't bleed out of the container */
+  max-height: 100%;               /* fill available height of the parent container */
+}
+
 
 /* Responsive stacking for narrow screens */
 @media (max-width: 700px) {
