@@ -215,8 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const fieldName = raceCode === 'BL' ? 'ENR_AP_GAP_BL' : 'ENR_AP_GAP_HI';
     window.currentRaceField = fieldName;
 
-    const raceDesc = raceCode === 'BL' ? 'Black' : 'Hispanic';
-    $('#currentRaceDesc').html(raceDesc);
+
+
+// // $('#currentRaceDesc')
+// //   .html(raceCode === 'BL' ? 'Black' : 'Hispanic')
+// //   .attr('style', raceCode === 'BL'
+// //     ? 'color:#2c7a2c !important;'
+// //     : 'color:#f9c400 !important;'  
+// //   );
+
+//   $('#currentRaceDesc').css('color', 'blue')
+
+
 
     const raceButtons = document.querySelectorAll('.race-selectBtn');
     raceButtons.forEach(btn => {
@@ -354,15 +364,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add active class to clicked button
     this.classList.add('active');
 
-    // Determine field based on button ID
-    let fieldName;
-    if (this.id === 'race-selectBlk') {
-      fieldName = 'ENR_AP_GAP_BL';
-       $('#currentRaceDesc').html('Black');
-    } else if (this.id === 'race-selectHis') {
-      fieldName = 'ENR_AP_GAP_HI';
-      $('#currentRaceDesc').html('Hispanic');
-    }
+
+// Determine field based on button ID
+let fieldName;
+if (this.id === 'race-selectBlk') {
+  fieldName = 'ENR_AP_GAP_BL';
+  $('#currentRaceDesc')
+    .text('Black')                // safer than .html for plain text
+    .css('color', green);     // dark green for readability
+} else if (this.id === 'race-selectHis') {
+  fieldName = 'ENR_AP_GAP_HI';
+  $('#currentRaceDesc')
+    .text('Hispanic')
+    .css('color', yellow);     // gold-ish yellow (better contrast than pure yellow)
+}
 
     // hlobal var for current race
     window.currentRaceField = fieldName;

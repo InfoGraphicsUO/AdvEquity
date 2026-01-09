@@ -29,6 +29,11 @@ body, html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+#currentRaceDesc{
+  font-weight: bold;
+  color: var(--green)
+}
+
 #mapWidgetsQuery {
     position: absolute;
     top: 5px;
