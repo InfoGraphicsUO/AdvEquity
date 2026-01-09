@@ -1803,7 +1803,10 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   // --- Build factsheet HTML (District) ---
   factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
-    <div class="opportunity-row"><h2>
+
+    <div class="opportunity-column" id='factsheet-left'>
+        <div class="opportunity-row">
+      <h2>
         <span class="factsheet-label">Factsheet for </span>
         <select id="districtPicker" class="district-dropdown">
           ${optionsHtml}
@@ -1814,9 +1817,11 @@ function showDistrictFactsheet(clickedFeature, districtData) {
       <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
       <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
     </div>
-    <div class="opportunity-row">
-    <div class="opportunity-column">
-      <p><b>Latest information</b></p>
+      <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
+      </div>
+      <br><p><b>Latest information</b></p>
       <p>
         Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
         Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
@@ -1826,13 +1831,14 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         Modal AP courses: ${fmtValue(latest.SCH_APCOURSES, latestYear)}<br>
         Number of schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
 
+
       </p>
-      <p><b>District Composition</b>
+      <br><b>District Composition</b>
       <label class="composition-toggle">
         <input type="checkbox" id="compToggle" checked>
         <small>show as bar</small>
-      </label>
-      </p>
+      </label><br>
+
       <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
       <canvas id="compBar" width="300" height="100"></canvas>
     </div>
