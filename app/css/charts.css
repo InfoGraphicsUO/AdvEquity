@@ -117,3 +117,33 @@
   margin: 2px 0;
 }
 
+.gap-race-btn{
+  padding: 4px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background-color: transparent;
+  color: var(--almostBlack);
+  font-weight: normal;
+  cursor: pointer;
+  font-size: 13px;
+}
+/* #gapRaceBlk.gap-race-btn{
+  background-color: transparent;
+  color: var(--almostBlack);
+  font-weight: normal;
+}
+#gapRaceHis.gap-race-btn{
+  background-color: transparent;
+  color: var(--almostBlack);
+  font-weight: normal;
+} */
+#gapRaceBlk.gap-race-btn.active{
+  background-color: var(--greenBlk);
+  color: var(--offwhite);
+  font-weight: bold;
+}
+#gapRaceHis.gap-race-btn.active{
+  background-color: var(--yellowHis);
+  color: var(--almostBlack);
+  font-weight: bold;
+}
