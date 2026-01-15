@@ -29,7 +29,7 @@ body, html {
 .site-header{
     display: flex;
     background-color: var(--almostBlack);
-    height: 130px;
+    height: 115px; /* 115px renders like live site */
     justify-content: space-between;
 }
 
