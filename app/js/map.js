@@ -215,18 +215,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const fieldName = raceCode === 'BL' ? 'ENR_AP_GAP_BL' : 'ENR_AP_GAP_HI';
     window.currentRaceField = fieldName;
 
+    // // $('#currentRaceDesc')
+    // //   .html(raceCode === 'BL' ? 'Black' : 'Hispanic')
+    // //   .attr('style', raceCode === 'BL'
+    // //     ? 'color:#2c7a2c !important;'
+    // //     : 'color:#f9c400 !important;'  
+    // //   );
 
-
-// // $('#currentRaceDesc')
-// //   .html(raceCode === 'BL' ? 'Black' : 'Hispanic')
-// //   .attr('style', raceCode === 'BL'
-// //     ? 'color:#2c7a2c !important;'
-// //     : 'color:#f9c400 !important;'  
-// //   );
-
-//   $('#currentRaceDesc').css('color', 'blue')
-
-
+    //   $('#currentRaceDesc').css('color', 'blue')
 
     const raceButtons = document.querySelectorAll('.race-selectBtn');
     raceButtons.forEach(btn => {
@@ -235,6 +231,19 @@ document.addEventListener('DOMContentLoaded', () => {
           (raceCode === 'HI' && btn.id === 'race-selectHis')) {
         btn.classList.add('active');
       }
+    });
+
+    const aggButtons = document.querySelectorAll('.agg-selectBtn');
+    console.log(aggButtons)
+    aggButtons.forEach(btn => {
+      //if active, background color should be driven by race selection
+      if (raceCode === 'BL') {
+        btn.classList.remove('agg-selectHis');
+        btn.classList.add('agg-selectBlk');
+      } else if (raceCode === 'HI') {
+        btn.classList.remove('agg-selectBlk');
+        btn.classList.add('agg-selectHis');
+      } 
     });
 
     // Update map based on current view
@@ -354,103 +363,128 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   raceSelectionButton.forEach(btn => {
-  btn.addEventListener('click', function() {
-    const loadingOverlay = document.getElementById('mapLoadingOverlay');
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
-    
-    // Remove active class from all buttons
-    raceSelectionButton.forEach(b => b.classList.remove('active'));
-
-    // Add active class to clicked button
-    this.classList.add('active');
-
-
-// Determine field based on button ID
-let fieldName;
-if (this.id === 'race-selectBlk') {
-  fieldName = 'ENR_AP_GAP_BL';
-  $('#currentRaceDesc')
-    .text('Black')                // safer than .html for plain text
-    .css('color', green);     // dark green for readability
-} else if (this.id === 'race-selectHis') {
-  fieldName = 'ENR_AP_GAP_HI';
-  $('#currentRaceDesc')
-    .text('Hispanic')
-    .css('color', yellow);     // gold-ish yellow (better contrast than pure yellow)
-}
-
-    // hlobal var for current race
-    window.currentRaceField = fieldName;
-
-    // update map based on current view
-    // mapView can be: 'full', 'state', 'district'
-    if (window.mapView === 'full') {
-      map.setLayoutProperty('state-fills', 'visibility', 'visible');
-      if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
-      if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
-      fillStateMap(map, geojsonCache, stateDataCache, fieldName);
-      // Clear stored state info when in full view
-      window.currentStateFIPS = null;
-      window.currentStateAbbrev = null;
+    btn.addEventListener('click', function() {
+      const loadingOverlay = document.getElementById('mapLoadingOverlay');
+      if (loadingOverlay) loadingOverlay.style.display = 'flex';
       
-      map.once('idle', () => {
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
-      });
-    } else if (window.mapView === 'state' || window.mapView === 'district') {
-      //zoomed into a state showing districts OR clicked on a district
-      map.setLayoutProperty('state-fills', 'visibility', 'none');
-      if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'visible');
-      if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'visible');
-      
-      // get district data and filter for the currently viewed state
-      getDistrictData('all').then(districtData => {
-        // Filter districts by the currently viewed state
-        const stateAbbrev = window.currentStateAbbrev;
-        const stateFIPS = window.currentStateFIPS;
-        
-        if (stateAbbrev && stateFIPS) {
-          // Filter district data for the specific state
-          const filteredDistrictData = districtData.filter(d => 
-            d.LEA_STATE === stateAbbrev || String(d.STATEFP).padStart(2, '0') === String(stateFIPS).padStart(2, '0')
-          );
-          console.log('Race switch - filtered districts for', stateAbbrev, ':', filteredDistrictData.length);
-          
-          // Update district map and table with filtered data
-          fillDistrictMap(map, filteredDistrictData, stateAbbrev, stateFIPS, fieldName);
-          buildDistrictTable(filteredDistrictData, fieldName);
-        } else {
-          //show all districts (for when district aggregation button was used)
-          fillDistrictMap(map, districtData, 'all', 'all', fieldName);
+      // Remove active class from all buttons
+      raceSelectionButton.forEach(b => b.classList.remove('active'));
+
+      // Add active class to clicked button
+      this.classList.add('active');
+
+
+      // Determine field based on button ID
+      let fieldName;
+      if (this.id === 'race-selectBlk') {
+        fieldName = 'ENR_AP_GAP_BL';
+        $('#currentRaceDesc')
+          .text('Black')                // safer than .html for plain text
+          .css('color', green);     // dark green for readability
+
+        //assign classes for agg button color
+        aggSelectionButton.forEach(aggBtn => {
+          aggBtn.classList.remove('agg-selectHis');
+          aggBtn.classList.add('agg-selectBlk');
+        });
+        //style buttons in factsheet legend
+        $('#gapRaceHis').removeClass('active');
+        $('#gapRaceBlk').addClass('active');
+        if (window.drawGapChartForRace) { // if factsheet open, update gap chart
+          window.drawGapChartForRace('BL');
         }
+      } else if (this.id === 'race-selectHis') {
+        fieldName = 'ENR_AP_GAP_HI';
+        $('#currentRaceDesc')
+          .text('Hispanic')
+          .css('color', yellow);     // gold-ish yellow (better contrast than pure yellow)
+        
+        //assign classes for agg button color
+        aggSelectionButton.forEach(aggBtn => {
+          aggBtn.classList.remove('agg-selectBlk');
+          aggBtn.classList.add('agg-selectHis');
+        });
+        //style buttons in factsheet legend
+        $('#gapRaceBlk').removeClass('active');
+        $('#gapRaceHis').addClass('active');
+
+        if (window.drawGapChartForRace) { // if factsheet open, update gap chart
+          window.drawGapChartForRace('HI');
+        }
+      }
+
+      // global var for current race
+      window.currentRaceField = fieldName;
+
+      // update map based on current view
+      // mapView can be: 'full', 'state', 'district'
+      if (window.mapView === 'full') {
+        map.setLayoutProperty('state-fills', 'visibility', 'visible');
+        if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
+        if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
+        fillStateMap(map, geojsonCache, stateDataCache, fieldName);
+        // Clear stored state info when in full view
+        window.currentStateFIPS = null;
+        window.currentStateAbbrev = null;
         
         map.once('idle', () => {
           if (loadingOverlay) loadingOverlay.style.display = 'none';
         });
-      });
-    }
-
-    // mark that the user has interacted to allow sorting
-    userHasInteracted = true;
-
-    // rebuild the state table so the table values reflect the newly selected race field
-    // and then sort highest -> lowest on the 2021 column (index 3)
-    if (stateDataCache) {
-      buildStateTable(stateDataCache, fieldName);
-
-      try {
-        // only sort after an explicit user interaction
-        if (userHasInteracted) {
-          const table = $('#us-table').DataTable();
-          // order by 2021 column (index 4) descending
-          table.order([[4, 'desc']]).draw();
-          console.log(`Table sorted by ${fieldName} (highest to lowest)`);
-        }
-      } catch (err) {
-        console.warn('Unable to sort table after race selection:', err);
+      } else if (window.mapView === 'state' || window.mapView === 'district') {
+        //zoomed into a state showing districts OR clicked on a district
+        map.setLayoutProperty('state-fills', 'visibility', 'none');
+        if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'visible');
+        if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'visible');
+        
+        // get district data and filter for the currently viewed state
+        getDistrictData('all').then(districtData => {
+          // Filter districts by the currently viewed state
+          const stateAbbrev = window.currentStateAbbrev;
+          const stateFIPS = window.currentStateFIPS;
+          
+          if (stateAbbrev && stateFIPS) {
+            // Filter district data for the specific state
+            const filteredDistrictData = districtData.filter(d => 
+              d.LEA_STATE === stateAbbrev || String(d.STATEFP).padStart(2, '0') === String(stateFIPS).padStart(2, '0')
+            );
+            console.log('Race switch - filtered districts for', stateAbbrev, ':', filteredDistrictData.length);
+            
+            // Update district map and table with filtered data
+            fillDistrictMap(map, filteredDistrictData, stateAbbrev, stateFIPS, fieldName);
+            buildDistrictTable(filteredDistrictData, fieldName);
+          } else {
+            //show all districts (for when district aggregation button was used)
+            fillDistrictMap(map, districtData, 'all', 'all', fieldName);
+          }
+          
+          map.once('idle', () => {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+          });
+        });
       }
-    }
+
+      // mark that the user has interacted to allow sorting
+      userHasInteracted = true;
+
+      // rebuild the state table so the table values reflect the newly selected race field
+      // and then sort highest -> lowest on the 2021 column (index 3)
+      if (stateDataCache) {
+        buildStateTable(stateDataCache, fieldName);
+
+        try {
+          // only sort after an explicit user interaction
+          if (userHasInteracted) {
+            const table = $('#us-table').DataTable();
+            // order by 2021 column (index 4) descending
+            table.order([[4, 'desc']]).draw();
+            console.log(`Table sorted by ${fieldName} (highest to lowest)`);
+          }
+        } catch (err) {
+          console.warn('Unable to sort table after race selection:', err);
+        }
+      }
+    });
   });
-});
 
 
   // searchButton.addEventListener('click', () => {
@@ -583,6 +617,11 @@ const map = new mapboxgl.Map({
   // center: [-99.2, 40.0],
   // parallels: [27.5, 44.55]
 });
+
+// Add zoom buttons - position defined in mapStyle.css .mapboxgl-ctrl-top-left
+map.addControl(new mapboxgl.NavigationControl({
+    showCompass: false 
+}), 'top-left');
 
 let hoveredPolygonId = null; // highlight state
 let previousHighlightedRowId = null; // for highlighting state in table
@@ -877,8 +916,8 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
     map.fitBounds(bounds, { padding: 30 });
 
       // clear old selection
-  if (selectedPolygonId !== null) {
-    map.setFeatureState(
+    if (selectedPolygonId !== null) {
+      map.setFeatureState(
         { source: 'states', id: selectedPolygonId },
         { selected: false }
       );
@@ -900,9 +939,9 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
 
     // fill fact sheet
     const fieldName = window.currentRaceField || 'ENR_AP_GAP_BL';
-  initFactSheet(stateDataCache, clickedFeature.id, fieldName);
-  // update canonical map view to 'state' and refresh controls
-  if (typeof setMapView === 'function') setMapView('state');
+    initFactSheet(stateDataCache, clickedFeature.id, fieldName);
+    // update canonical map view to 'state' and refresh controls
+    if (typeof setMapView === 'function') setMapView('state');
 
 
     //   map.on('mousemove', 'district-fills', (e) => {
@@ -2086,10 +2125,15 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
         const sparklineColors = { District: '#000', State: '#555', National: '#888' };
 
-        let currentRace = 'BL';
+        //default
+        // let currentRace = 'BL'; 
+        //grab race from active select button
+        let currentRace = $('#race-selectBlk').hasClass('active') ?  'BL' : 'HI';
+        // console.log('currentRace: ', currentRace)
 
         // draw gap chart for selected race
-        const drawGapChartForRace = (race) => {
+        // const drawGapChartForRace = (race) => {
+        window.drawGapChartForRace = function (race) { //global scope to allow call from race-select handler
           currentRace = race;
           const raceData = gapChartData[race];
           if (raceData) {
@@ -2133,39 +2177,46 @@ function showDistrictFactsheet(clickedFeature, districtData) {
             btn.className = 'gap-race-btn';
             btn.dataset.race = code;
             btn.textContent = label;
-            btn.style.padding = '4px 12px';
-            btn.style.borderRadius = '16px';
-            btn.style.border = '1px solid rgba(0,0,0,0.15)';
+            //moved most stylingto charts.css
+
             if (code === 'BL') {
-              btn.style.background = '#718168'; // greenBlk
-              btn.style.color = '#f4f4f4'; // offwhite
-              btn.style.fontWeight = 'bold';
+              btn.id = 'gapRaceBlk';
+
             } else {
-              btn.style.background = 'transparent';
-              btn.style.color = '#303333'; // almostBlack
-              btn.style.fontWeight = 'normal';
+              btn.id = 'gapRaceHis';
+
             }
-            btn.style.cursor = 'pointer';
-            btn.style.fontSize = '13px';
+
+            //active race select button determines active gap button
+            if( $('#race-selectBlk').hasClass('active')  && code === 'BL') {
+              btn.classList.add('active') 
+            } else if( $('#race-selectHis').hasClass('active')  && code === 'HI') {
+              btn.classList.add('active')
+            }
+
 
             btn.addEventListener('click', () => {
-              // Update styling
-              Array.from(racePicker.children).forEach(c => {
-                const raceCode = c.dataset.race;
-                c.style.background = 'transparent';
-                c.style.color = '#303333';
-                c.style.fontWeight = 'normal';
-              });
-              if (code === 'BL') {
-                btn.style.background = '#718168'; // greenBlk
-                btn.style.color = '#f4f4f4'; // offwhite
-              } else {
-                btn.style.background = '#e6da9b'; // yellowHis
-                btn.style.color = '#303333'; // almostBlack
-              }
-              btn.style.fontWeight = 'bold';
+              // Update styling -- MOVED THIS TO charts.css/raceSlelectionButton listener
+              // Array.from(racePicker.children).forEach(c => {
+              //   const raceCode = c.dataset.race;
+              //   // c.style.background = 'transparent';
+              //   // c.style.color = '#303333';
+              //   // c.style.fontWeight = 'normal';
+              // });
+              // if (code === 'BL') {
+              //   // btn.style.background = '#718168'; // greenBlk
+              //   // btn.style.color = '#f4f4f4'; // offwhite
+              // } else {
+              //   // btn.style.background = '#e6da9b'; // yellowHis
+              //   // btn.style.color = '#303333'; // almostBlack
+              // }
+              // btn.style.fontWeight = 'bold';
 
-              // chart for selected race
+              racePicker.querySelectorAll('.gap-race-btn').forEach(b => 
+                b.classList.remove('active'));
+              btn.classList.add('active');
+
+              // draw chart when button is clicked
               drawGapChartForRace(code);
 
               // map show selected race
@@ -2181,8 +2232,8 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           gapLegend.parentNode.insertBefore(pickerWrapper, gapLegend);
         }
 
-        // default
-        drawGapChartForRace('BL');
+        // draw chart when factsheet loads for district
+        drawGapChartForRace(currentRace);
 
         // Draw sparklines (District + State + National) using helper
         try {

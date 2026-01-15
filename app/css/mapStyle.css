@@ -29,6 +29,11 @@ body, html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+.mapboxgl-ctrl-top-left{
+    left: -.25rem;
+    top: 3.5rem;
+}
+
 #currentRaceDesc{
   font-weight: bold;
   color: var(--green)
@@ -53,11 +58,14 @@ body, html {
 }
 #mapWidgetsQuery.qbCollapsed {
   width: var(--collapsed-width);
+  padding: .5rem 1rem;
   /* overflow? */
 }
 
 #resizeQueryButton {
-  margin: -.4rem;
+  margin: -.3rem;
+  /* padding: .3rem .7rem;  */
+  cursor: pointer; 
 }
 
 #mapWidgetsRace {
@@ -85,7 +93,8 @@ body, html {
 }
 
 button {
-    background-color: var(--green);
+    /* background-color: var(--green); */
+    background-color: var(--verydarkgrey); /* generic color to not match one data set */
     color: var(--offwhite);
     border: none;
     padding: 5px 10px;
@@ -103,7 +112,7 @@ button:hover {
 }
 .control-disabled:hover {
   /* keep same background on hover so color doesn't change */
-  background-color: var(--green) !important;
+  background-color: var(--darkgrey) !important;
   cursor: not-allowed;
 }
 
@@ -160,6 +169,17 @@ button:hover {
 }
 
 #race-selectBlk.race-selectBtn.active {
+  background-color: var(--greenBlk);
+  color: var(--offwhite);
+  font-weight: bold;
+}
+.agg-selectHis.agg-selectBtn.active {
+  background-color: var(--yellowHis);
+  color: var(--almostBlack);
+  font-weight: bold;
+}
+
+.agg-selectBlk.agg-selectBtn.active {
   background-color: var(--greenBlk);
   color: var(--offwhite);
   font-weight: bold;
