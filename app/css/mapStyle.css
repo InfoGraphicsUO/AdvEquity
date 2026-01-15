@@ -58,11 +58,14 @@ body, html {
 }
 #mapWidgetsQuery.qbCollapsed {
   width: var(--collapsed-width);
+  padding: .5rem 1rem;
   /* overflow? */
 }
 
 #resizeQueryButton {
-  margin: -.4rem;
+  margin: -.3rem;
+  /* padding: .3rem .7rem;  */
+  cursor: pointer; 
 }
 
 #mapWidgetsRace {
