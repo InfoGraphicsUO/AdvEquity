@@ -9,6 +9,21 @@
   --almostBlack: #303333;
   --offwhite: #f4f4f4;
   --darkGreen: #224722;
+  --no-data-color: #dddddd;
+  --no-disparity-color:#b3ceb1;
+  --hispanic-class-1-color:#e3edf7;
+  --hispanic-class-2-color:#cee0f0;
+  --hispanic-class-3-color:#86bee2;
+  --hispanic-class-4-color:#5999cd;
+  --hispanic-class-5-color:#5581bb;
+  --black-class-1-color:#fcf9d5;
+  --black-class-2-color:#ffefad;
+  --black-class-3-color:#fede8a;
+  --black-class-4-color:#fdbd68;
+  --black-class-5-color:#f2924d;
+  --asian-class-4-color: #7fbfc3; /* soft teal */
+  --white-class-4-color: #c59ac9; /* muted cool pink */
+  --native-american-class-4-color: #9fc49a; /* soft green */
 }
 
 body, html {
