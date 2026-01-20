@@ -1573,29 +1573,50 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   if (fieldName == 'ENR_AP_GAP_BL') { //black students
     legendBar.removeClass('legendHis')
     legendBar.addClass('legendBlk')
+    // colorRamp = [
+    //   "interpolate",
+    //   ["linear"],
+    //   ["coalesce", ["feature-state", "value"], 0],
+    //   minVal, "#e8ebe5",         // lightest
+    //   minVal + (cappedMax - minVal) * 0.25, "#ccd1c4",
+    //   minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
+    //   minVal + (cappedMax - minVal) * 0.75, "#7a816e",
+    //   cappedMax, "#4a4f41"          // darkest
+    // ];
     colorRamp = [
-      "interpolate",
-      ["linear"],
-      ["coalesce", ["feature-state", "value"], 0],
-      minVal, "#e8ebe5",         // lightest
-      minVal + (cappedMax - minVal) * 0.25, "#ccd1c4",
-      minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
-      minVal + (cappedMax - minVal) * 0.75, "#7a816e",
-      cappedMax, "#4a4f41"          // darkest
+      "step",
+      ["coalesce", ["feature-state", "value"], -999],
+      noDataColor,
+      0,   blackClass1Color,
+      0.6, blackClass2Color,
+      1.2, blackClass3Color,
+      1.8, blackClass4Color,
+      2.4, blackClass5Color
     ];
   } else { //hispanic students
     legendBar.removeClass('legendBlk')
     legendBar.addClass('legendHis')
+    // colorRamp = [
+    //   "interpolate",
+    //   ["linear"],
+    //   ["coalesce", ["feature-state", "value"], 0],
+    //   minVal, "#fbf7df",         // lightest
+    //   minVal + (cappedMax - minVal) * 0.25, "#f1df8a",
+    //   minVal + (cappedMax - minVal) * 0.5,  "#e6ce53",
+    //   minVal + (cappedMax - minVal) * 0.75, "#c7a92f",
+    //   cappedMax, "#9b7f12"       // darkest
+    // ];
     colorRamp = [
-      "interpolate",
-      ["linear"],
-      ["coalesce", ["feature-state", "value"], 0],
-      minVal, "#fbf7df",         // lightest
-      minVal + (cappedMax - minVal) * 0.25, "#f1df8a",
-      minVal + (cappedMax - minVal) * 0.5,  "#e6ce53",
-      minVal + (cappedMax - minVal) * 0.75, "#c7a92f",
-      cappedMax, "#9b7f12"       // darkest
+      "step",
+      ["coalesce", ["feature-state", "value"], -999],
+      noDataColor,
+      0,   hispanicClass1Color,
+      0.6, hispanicClass2Color,
+      1.2, hispanicClass3Color,
+      1.8, hispanicClass4Color,
+      2.4, hispanicClass5Color
     ];
+
 
   }
 
