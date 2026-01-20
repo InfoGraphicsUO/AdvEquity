@@ -5,6 +5,27 @@ let districtDataCache = null;
 let currentDistrictValueMap = {};
 let firstSymbolId = null;
 
+// color variables (should match with css)
+// Pull CSS variables used by the canvas chart utilities
+const _root = document.documentElement;
+const noDataColor = getComputedStyle(_root).getPropertyValue('--no-data-color').trim();
+const noDisparityColor = getComputedStyle(_root).getPropertyValue('--no-disparity-color').trim();
+const hispanicClass1Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-1-color').trim();
+const hispanicClass2Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-2-color').trim();
+const hispanicClass3Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-3-color').trim();
+const hispanicClass4Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-4-color').trim();
+const hispanicClass5Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-5-color').trim();
+const blackClass1Color = getComputedStyle(_root).getPropertyValue('--black-class-1-color').trim();
+const blackClass2Color = getComputedStyle(_root).getPropertyValue('--black-class-2-color').trim();
+const blackClass3Color = getComputedStyle(_root).getPropertyValue('--black-class-3-color').trim();
+const blackClass4Color = getComputedStyle(_root).getPropertyValue('--black-class-4-color').trim();
+const blackClass5Color = getComputedStyle(_root).getPropertyValue('--black-class-5-color').trim();
+const whiteClass4Color = getComputedStyle(_root).getPropertyValue('--white-class-4-color').trim();
+const asianClass4Color = getComputedStyle(_root).getPropertyValue('--asian-class-4-color').trim();
+const nativeAmericanClass4Color = getComputedStyle(_root).getPropertyValue('--native-american-class-4-color').trim();
+
+const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
+     
 
 document.addEventListener('DOMContentLoaded', () => {
   // const searchInput = document.querySelector('.search_query input');
@@ -1941,8 +1962,8 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     OTH: latest.PCT_ENR_OTH
   };
 
-  drawCompDonutChart("compDonut", compData, colors);
-  drawCompositionBar("compBar", compData, colors);
+  drawCompDonutChart("compDonut", compData, compColors);
+  drawCompositionBar("compBar", compData, compColors);
 
   // Toggle between donut and bar
   document.getElementById("compToggle").addEventListener("change", function() {

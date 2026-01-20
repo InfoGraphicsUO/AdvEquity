@@ -247,8 +247,9 @@ function initFactSheet(stateData, fips, fieldName) {
       // yellow from AdvEq site: #e4dd4f
       // green from AdvEq site: #818d74, #718168
 
-      //from colorSchemes3 1/16/26
-      const compColors = { WH: '#c59ac9', HI: "#5999cd", BL: "#fdbd68", AS: "#7fbfc3", OTH: "#9fc49a" };
+      //from colorSchemes3 1/16/26 - moved to map.js
+      // const compColors = { WH: '#c59ac9', HI: "#5999cd", BL: "#fdbd68", AS: "#7fbfc3", OTH: "#9fc49a" };
+      // const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
      
       // drawCompositionBar is defined in map.js and loaded before this script in map.html
       try { drawCompositionBar('stateCompBar', compData, compColors); } catch (e) { console.warn('drawCompositionBar unavailable', e); }
@@ -288,7 +289,7 @@ function initFactSheet(stateData, fips, fieldName) {
   }
 }
 // Pull CSS variables used by the canvas chart utilities
-const _root = document.documentElement;
+// const _root = document.documentElement;
 const verydarkgrey = getComputedStyle(_root).getPropertyValue('--verydarkgrey').trim();
 const darkgrey = getComputedStyle(_root).getPropertyValue('--darkgrey').trim();
 const lightgrey = getComputedStyle(_root).getPropertyValue('--lightgrey').trim();
