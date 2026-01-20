@@ -23,6 +23,7 @@ const layout = {
   showlegend: false
 };
 
+// get colors from CSS
 const colorBlack = getComputedStyle(document.documentElement).getPropertyValue('--almostBlack').trim();
 const colorYellow = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim();
 
@@ -109,23 +110,41 @@ function getStateOpportunityEstimates(state,fieldName) {
     }
   }
 
+  const oppChangeText= getOpEstChangeText(val2011Raw, val2021Raw) 
+
   // Return formatted HTML
+  // to do: add a chip after 2021 with the fill color of the hovered state
   const opphtml = `
     <br><b>Opportunity Estimates</b>
     <div class="opportunity-row opportunity-estimates">
       <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
         2011–12: ${val2011}<br>
-        2021–22: ${val2021}
+        2021–22: <b>${val2021}</b>
       </div>
     </div>
-    <small>placeholder for description of the change</small>
+    <small>${oppChangeText}</small>
   `;
 
   return opphtml;
 }
 
+function getOpEstChangeText(val2011Raw, val2021Raw) {
+  if (typeof val2011Raw !== 'number' || typeof val2021Raw !== 'number') {
+    return 'Data error';
+  }
 
+  const diff = val2021Raw - val2011Raw;
+  const formattedDiff = Math.abs(diff).toFixed(2);
+
+  if (diff > 0) {
+    return `Estimate increased by ${formattedDiff}`;
+  } else if (diff < 0) {
+    return `Estimate dropped by ${formattedDiff}`;
+  }
+
+  return 'Estimate did not change';
+}
 
 function initFactSheet(stateData, fips, fieldName) {
   showGraphs(); // hid the US level details, show the state details

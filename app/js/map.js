@@ -1750,10 +1750,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
             , null);
         }
         } catch (err) { hoveredDistrictData = null; }
-        console.log(hoveredDistrictData)
-
         console.log(geoId)
 
+        // VALUES FOR TOOLTIP
+        // handle blanks
+        // get opp est based on current race toggle
+        const oppEst = hoveredDistrictData ? (hoveredDistrictData[window.currentRaceField] ?? '—') : '—';
         const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
         const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
 
@@ -1764,6 +1766,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
           <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
             <strong>${props.NAME || props.LEA_NAME || 'District'} (2021)</strong>
             ${grades ? `<div>Grades: ${grades}</div>` : ''}
+            <div>Opp Est:  <b>${fmtValue(oppEst,2021)}</div></b>
             <div>Students: ${fmtValue(students, 2021)}</div>
             <div>Teachers (FTE):${fmtValue(teachers, 2021)}</div>
           </div>
