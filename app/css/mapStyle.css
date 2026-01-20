@@ -51,7 +51,7 @@ body, html {
 
 #currentRaceDesc{
   font-weight: bold;
-  color: var(--green)
+  color: var(--black-class-4-color)
 }
 
 #mapWidgetsQuery {
@@ -158,7 +158,7 @@ button:hover {
 
 .race-toggle, .aggregation-toggle{
   display: inline-flex;
-  border: 1.5px solid var(--green);
+  border: 1.5px solid var(--verydarkgrey);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 2px;
@@ -184,24 +184,24 @@ button:hover {
 }
 
 #race-selectBlk.race-selectBtn.active {
-  background-color: var(--greenBlk);
-  color: var(--offwhite);
+  background-color: var(--black-class-4-color);
+  color: var(--almostBlack);
   font-weight: bold;
 }
 .agg-selectHis.agg-selectBtn.active {
-  background-color: var(--yellowHis);
-  color: var(--almostBlack);
+  background-color: var(--hispanic-class-4-color);
+  color: var(--offwhite);
   font-weight: bold;
 }
 
 .agg-selectBlk.agg-selectBtn.active {
-  background-color: var(--greenBlk);
-  color: var(--offwhite);
+  background-color: var(--black-class-4-color);
+  color: var(--almostBlack);
   font-weight: bold;
 }
 #race-selectHis.race-selectBtn.active {
-  background-color: var(--yellowHis);
-  color: var(--almostBlack);
+  background-color: var(--hispanic-class-4-color);
+  color: var(--offwhite);
   font-weight: bold;
 }
 
@@ -415,17 +415,19 @@ h3 {
   height: 12px;
 }
 
+/* TODO: classed legend instead of ramp */
 .legend-gradient.legendBlk {
   width: 100%;
   height: 100%;
   border-radius: 6px;
   background: linear-gradient(
     to left,
-    #4a4f41,
-    #7a816e,
-    #a8ae9c,
-    #ccd1c4,
-    #e8ebe5
+    var(--black-class-5-color),
+    var(--black-class-4-color),
+    var(--black-class-3-color),
+    var(--black-class-2-color),
+    var(--black-class-1-color),
+    var(--no-data-color)
   );
 }
 
@@ -435,11 +437,12 @@ h3 {
   border-radius: 6px;
   background: linear-gradient(
     to left,
-    #9b7f12,
-    #c7a92f,
-    #e6ce53,
-    #f1df8a,
-    #fbf7df
+    var(--hispanic-class-5-color),
+    var(--hispanic-class-4-color),
+    var(--hispanic-class-3-color),
+    var(--hispanic-class-2-color),
+    var(--hispanic-class-1-color),
+    var(--no-data-color)
   );
 }
 

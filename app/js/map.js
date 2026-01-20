@@ -401,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldName = 'ENR_AP_GAP_BL';
         $('#currentRaceDesc')
           .text('Black')                // safer than .html for plain text
-          .css('color', green);     // dark green for readability
+          .css('color', blackClass4Color);     // bright gold - may need to adjust
 
         //assign classes for agg button color
         aggSelectionButton.forEach(aggBtn => {
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldName = 'ENR_AP_GAP_HI';
         $('#currentRaceDesc')
           .text('Hispanic')
-          .css('color', yellow);     // gold-ish yellow (better contrast than pure yellow)
+          .css('color', hispanicClass4Color);     // medium blue
         
         //assign classes for agg button color
         aggSelectionButton.forEach(aggBtn => {
@@ -1413,22 +1413,42 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     if (fieldName =='ENR_AP_GAP_BL') { //black
       legendBar.removeClass('legendHis')
       legendBar.addClass('legendBlk')
+      // map.setPaintProperty('state-fills', 'fill-color', [
+      //   "interpolate",
+      //   ["linear"],
+      //   ["get", fieldName],
+      //   minVal, "#e5e8e3",
+      //   maxVal, "#5a6251"
+      // ]);
       map.setPaintProperty('state-fills', 'fill-color', [
-        "interpolate",
-        ["linear"],
+        "step",
         ["get", fieldName],
-        minVal, "#e5e8e3",
-        maxVal, "#5a6251"
+        noDataColor,
+        0,   blackClass1Color,
+        0.6, blackClass2Color,
+        1.2, blackClass3Color,
+        1.8, blackClass4Color,
+        2.4, blackClass5Color
       ]);
-    } else { //hispanic - TODO: finalize colors
+    } else { //hispanic
     legendBar.removeClass('legendBlk')
     legendBar.addClass('legendHis')
+      // map.setPaintProperty('state-fills', 'fill-color', [
+      //   "interpolate",
+      //   ["linear"],
+      //   ["get", fieldName],
+      //   minVal, "#fbf7df",
+      //   maxVal, "#9b7f12"
+      // ]);
       map.setPaintProperty('state-fills', 'fill-color', [
-        "interpolate",
-        ["linear"],
+        "step",
         ["get", fieldName],
-        minVal, "#fbf7df",
-        maxVal, "#9b7f12"
+        noDataColor,
+        0,   hispanicClass1Color,
+        0.6, hispanicClass2Color,
+        1.2, hispanicClass3Color,
+        1.8, hispanicClass4Color,
+        2.4, hispanicClass5Color
       ]);
     }
   } else {
@@ -1563,7 +1583,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       minVal + (cappedMax - minVal) * 0.75, "#7a816e",
       cappedMax, "#4a4f41"          // darkest
     ];
-  } else { //hispanic students - TODO: work on these colors
+  } else { //hispanic students
     legendBar.removeClass('legendBlk')
     legendBar.addClass('legendHis')
     colorRamp = [

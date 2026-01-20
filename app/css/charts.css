@@ -138,12 +138,12 @@
   font-weight: normal;
 } */
 #gapRaceBlk.gap-race-btn.active{
-  background-color: var(--greenBlk);
-  color: var(--offwhite);
+  background-color: var(--black-class-4-color);
+  color: var(--almostBlack);
   font-weight: bold;
 }
 #gapRaceHis.gap-race-btn.active{
-  background-color: var(--yellowHis);
-  color: var(--almostBlack);
+  background-color: var(--hispanic-class-4-color);
+  color: var(--offwhite);
   font-weight: bold;
 }
