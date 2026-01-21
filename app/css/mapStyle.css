@@ -400,53 +400,53 @@ h3 {
 
 /* map legend */
 
-.legend {
+.map-legend {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
   font-family: sans-serif;
-  width: 280px;
+  /* width: 280px; */
 }
 
-.legend-gradient-wrapper {
-  position: relative;
-  flex: 1;
-  height: 12px;
+.legend-swatch {
+  width: 1rem;
+  height: 1rem;
+  /* border-radius: 3px; */
 }
 
-/* TODO: classed legend instead of ramp */
-.legend-gradient.legendBlk {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  background: linear-gradient(
-    to left,
-    var(--black-class-5-color),
-    var(--black-class-4-color),
-    var(--black-class-3-color),
-    var(--black-class-2-color),
-    var(--black-class-1-color),
-    var(--no-data-color)
-  );
+.legend-chips {
+  display: flex;
+  overflow: hidden; 
+  border-radius: 4px;
+  /* gap: 4px; */
 }
 
-.legend-gradient.legendHis {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  background: linear-gradient(
-    to left,
-    var(--hispanic-class-5-color),
-    var(--hispanic-class-4-color),
-    var(--hispanic-class-3-color),
-    var(--hispanic-class-2-color),
-    var(--hispanic-class-1-color),
-    var(--no-data-color)
-  );
+.legend-label {
+  font-size: 12px;
+  white-space: nowrap;
 }
 
-.legend-ticks {
+/* ---------- Black legend ---------- */
+.legend-blk .class-5 { background: var(--black-class-5-color); }
+.legend-blk .class-4 { background: var(--black-class-4-color); }
+.legend-blk .class-3 { background: var(--black-class-3-color); }
+.legend-blk .class-2 { background: var(--black-class-2-color); }
+.legend-blk .class-1 { background: var(--black-class-1-color); }
+
+/* ---------- Hispanic legend ---------- */
+.legend-his .class-5 { background: var(--hispanic-class-5-color); }
+.legend-his .class-4 { background: var(--hispanic-class-4-color); }
+.legend-his .class-3 { background: var(--hispanic-class-3-color); }
+.legend-his .class-2 { background: var(--hispanic-class-2-color); }
+.legend-his .class-1 { background: var(--hispanic-class-1-color); }
+
+/* ---------- No data ---------- */
+.legend-swatch.na {
+  background: var(--no-data-color);
+}
+
+/* .legend-ticks {
   position: absolute;
   width: 100%;
   display: flex;
@@ -454,7 +454,7 @@ h3 {
   font-size: 11px;
   color: #333;
   line-height: 1.1;
-}
+} */
 
 
 /* end legend */

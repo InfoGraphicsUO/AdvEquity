@@ -1346,25 +1346,26 @@ function clearTableHighlights() {
   table.$('tr.selected').removeClass('selected');
 }
 
-function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
-  const ticksContainer = document.querySelector('.legend .legend-ticks');
-  if (!ticksContainer) return;
+// remove function? - was for continuous legend
+// function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
+//   const ticksContainer = document.querySelector('.legend .legend-ticks');
+//   if (!ticksContainer) return;
 
-  ticksContainer.innerHTML = ''; // clear previous ticks
+//   ticksContainer.innerHTML = ''; // clear previous ticks
 
-  for (let i = 0; i <= steps; i++) {
-    let value = minVal + (i / steps) * (cappedMax - minVal);
-    const tick = document.createElement('span');
+//   for (let i = 0; i <= steps; i++) {
+//     let value = minVal + (i / steps) * (cappedMax - minVal);
+//     const tick = document.createElement('span');
 
-    if (cappedMax !== null && value > cappedMax && i === steps) {
-      tick.textContent = `> ${cappedMax.toFixed(1)}`;
-    } else {
-      tick.textContent = value.toFixed(1); // cap to 2 digits
-    }
+//     if (cappedMax !== null && value > cappedMax && i === steps) {
+//       tick.textContent = `> ${cappedMax.toFixed(1)}`;
+//     } else {
+//       tick.textContent = value.toFixed(1); // cap to 2 digits
+//     }
 
-    ticksContainer.appendChild(tick);
-  }
-}
+//     ticksContainer.appendChild(tick);
+//   }
+// }
 
 function fillStateMap(map, geojson, stateData, fieldName) {
   console.log('fillStateMap: ', fieldName)
@@ -1384,9 +1385,15 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     }
   }
 
-  // Cap max for color ramp at 5, anything above that gets the max color
-  const cappedMax = Math.min(maxVal, 5);
-  updateLegendTicks(minVal, cappedMax, steps = 2)
+  // Cap max for color ramp at 3, anything above that gets the max color
+  const cappedMax = Math.min(maxVal, 3);
+  //updateLegendTicks(minVal, cappedMax, steps = 2)
+
+  // update legend values
+  const formatVal = v =>
+  typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+  document.getElementById('legendLow').textContent  = formatVal(minVal);
+  document.getElementById('legendHigh').textContent = formatVal(cappedMax);
 
   // Make a copy of geojson so we don't mutate the original
   const geojsonCopy = JSON.parse(JSON.stringify(geojson));
@@ -1405,21 +1412,11 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   }
 
   // Update map coloring
-        // minVal, "#5a6251",
-        // maxVal, "#e5e8e3"
   if (map.getLayer('state-fills')) {
-    var legendBar = $('#legendBar')
+      const legend = $('#mapLegend');
     // get toggle setting
     if (fieldName =='ENR_AP_GAP_BL') { //black
-      legendBar.removeClass('legendHis')
-      legendBar.addClass('legendBlk')
-      // map.setPaintProperty('state-fills', 'fill-color', [
-      //   "interpolate",
-      //   ["linear"],
-      //   ["get", fieldName],
-      //   minVal, "#e5e8e3",
-      //   maxVal, "#5a6251"
-      // ]);
+      legend.removeClass('legend-his').addClass('legend-blk');
       map.setPaintProperty('state-fills', 'fill-color', [
         "step",
         ["get", fieldName],
@@ -1431,15 +1428,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         2.4, blackClass5Color
       ]);
     } else { //hispanic
-    legendBar.removeClass('legendBlk')
-    legendBar.addClass('legendHis')
-      // map.setPaintProperty('state-fills', 'fill-color', [
-      //   "interpolate",
-      //   ["linear"],
-      //   ["get", fieldName],
-      //   minVal, "#fbf7df",
-      //   maxVal, "#9b7f12"
-      // ]);
+      legend.removeClass('legend-blk').addClass('legend-his');
       map.setPaintProperty('state-fills', 'fill-color', [
         "step",
         ["get", fieldName],
@@ -1563,26 +1552,33 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   if (minVal === maxVal) maxVal = minVal + 0.00001;
   if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
 
-  // Cap max for color ramp at 5, anything above that gets the max color
+  // Cap max for color ramp at 3, anything above that gets the max color
   const cappedMax = Math.min(maxVal, 3);
-  updateLegendTicks(minVal, cappedMax, maxVal, steps = 2)
+
+  // update legend values
+  const formatVal = v =>
+    typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+
+  // Low label 
+  document.getElementById('legendLow').textContent = isFinite(minVal) ? formatVal(minVal) : '—';
+
+  // High label (add ≥ if capped)
+  if (isFinite(maxVal) && isFinite(cappedMax)) {
+    if (maxVal > cappedMax) {
+      document.getElementById('legendHigh').textContent = `≥ ${formatVal(cappedMax)}`;
+    } else {
+      document.getElementById('legendHigh').textContent = formatVal(cappedMax);
+    }
+  } else {
+    document.getElementById('legendHigh').textContent = '—';
+  }
 
   //field specific colors 
-  var legendBar = $('#legendBar')
+  var legend  = $('#mapLegend')
+  
   let colorRamp;
   if (fieldName == 'ENR_AP_GAP_BL') { //black students
-    legendBar.removeClass('legendHis')
-    legendBar.addClass('legendBlk')
-    // colorRamp = [
-    //   "interpolate",
-    //   ["linear"],
-    //   ["coalesce", ["feature-state", "value"], 0],
-    //   minVal, "#e8ebe5",         // lightest
-    //   minVal + (cappedMax - minVal) * 0.25, "#ccd1c4",
-    //   minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
-    //   minVal + (cappedMax - minVal) * 0.75, "#7a816e",
-    //   cappedMax, "#4a4f41"          // darkest
-    // ];
+    legend.removeClass('legend-his').addClass('legend-blk')
     colorRamp = [
       "step",
       ["coalesce", ["feature-state", "value"], -999],
@@ -1594,18 +1590,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       2.4, blackClass5Color
     ];
   } else { //hispanic students
-    legendBar.removeClass('legendBlk')
-    legendBar.addClass('legendHis')
-    // colorRamp = [
-    //   "interpolate",
-    //   ["linear"],
-    //   ["coalesce", ["feature-state", "value"], 0],
-    //   minVal, "#fbf7df",         // lightest
-    //   minVal + (cappedMax - minVal) * 0.25, "#f1df8a",
-    //   minVal + (cappedMax - minVal) * 0.5,  "#e6ce53",
-    //   minVal + (cappedMax - minVal) * 0.75, "#c7a92f",
-    //   cappedMax, "#9b7f12"       // darkest
-    // ];
+    legend.removeClass('legend-blk').addClass('legend-his')
     colorRamp = [
       "step",
       ["coalesce", ["feature-state", "value"], -999],
