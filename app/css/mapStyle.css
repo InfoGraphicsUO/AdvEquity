@@ -446,6 +446,9 @@ h3 {
 .legend-swatch.na {
   background: var(--no-data-color);
 }
+.legend-swatch.nd {
+  background: var(--no-disparity-color);
+}
 
 /* .legend-ticks {
   position: absolute;

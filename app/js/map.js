@@ -1412,7 +1412,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   }
 
   // Update map coloring
-  if (map.getLayer('state-fills')) {
+  if (map.getLayer('state-fills')) {  //TODO: change class steps to quantile
       const legend = $('#mapLegend');
     // get toggle setting
     if (fieldName =='ENR_AP_GAP_BL') { //black
@@ -1421,11 +1421,12 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "step",
         ["get", fieldName],
         noDataColor,
-        0,   blackClass1Color,
-        0.6, blackClass2Color,
-        1.2, blackClass3Color,
-        1.8, blackClass4Color,
-        2.4, blackClass5Color
+        .3,   blackClass1Color,
+        .7, blackClass2Color,
+        1,   noDisparityColor,
+        1.1, blackClass3Color,
+        1.2, blackClass4Color,
+        1.3, blackClass5Color
       ]);
     } else { //hispanic
       legend.removeClass('legend-blk').addClass('legend-his');
@@ -1433,11 +1434,12 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "step",
         ["get", fieldName],
         noDataColor,
-        0,   hispanicClass1Color,
-        0.6, hispanicClass2Color,
-        1.2, hispanicClass3Color,
-        1.8, hispanicClass4Color,
-        2.4, hispanicClass5Color
+        .3,   hispanicClass1Color,
+        .7, hispanicClass2Color,
+        1,   noDisparityColor,
+        1.1, hispanicClass3Color,
+        1.2, hispanicClass4Color,
+        1.3, hispanicClass5Color
       ]);
     }
   } else {
@@ -1576,18 +1578,19 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   //field specific colors 
   var legend  = $('#mapLegend')
   
-  let colorRamp;
+  let colorRamp;  //TODO: change class steps to quantile
   if (fieldName == 'ENR_AP_GAP_BL') { //black students
     legend.removeClass('legend-his').addClass('legend-blk')
     colorRamp = [
       "step",
       ["coalesce", ["feature-state", "value"], -999],
       noDataColor,
-      0,   blackClass1Color,
-      0.6, blackClass2Color,
-      1.2, blackClass3Color,
-      1.8, blackClass4Color,
-      2.4, blackClass5Color
+      .3,   blackClass1Color,
+      .7, blackClass2Color,
+      1, noDisparityColor,
+      1.1, blackClass3Color,
+      1.2, blackClass4Color,
+      1.3, blackClass5Color
     ];
   } else { //hispanic students
     legend.removeClass('legend-blk').addClass('legend-his')
@@ -1595,11 +1598,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       "step",
       ["coalesce", ["feature-state", "value"], -999],
       noDataColor,
-      0,   hispanicClass1Color,
-      0.6, hispanicClass2Color,
-      1.2, hispanicClass3Color,
-      1.8, hispanicClass4Color,
-      2.4, hispanicClass5Color
+      .3,   hispanicClass1Color,
+      .7, hispanicClass2Color,
+      1, noDisparityColor,
+      1.1, hispanicClass3Color,
+      1.2, hispanicClass4Color,
+      1.3, hispanicClass5Color
     ];
 
 
