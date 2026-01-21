@@ -315,12 +315,15 @@ const offwhite = getComputedStyle(_root).getPropertyValue('--offwhite').trim();
 
 function showGraphs(){
   try { document.querySelector('#infoContainer').style.display = 'none' } catch(e) {}
-  try { document.querySelector('#factSheetContainer').style.display = 'flex' } catch(e) {}
+  try { 
+      document.querySelector('#factSheetContainer').style.display = 'flex'
+   } catch(e) {}
 }
 
 function hideGraphs(){
   try { document.querySelector('#infoContainer').style.display = 'block' } catch(e) {}
-  try { document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
+  try { 
+    document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
 }
 
 function drawCompDonutChart(canvasId, data, colors) {

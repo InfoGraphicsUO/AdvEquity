@@ -209,9 +209,16 @@ button:hover {
 
 #factSheetContainer {
   display: none;                /* hidden by default */
-  flex-direction: row;       /* stack rows vertically */
+  flex-direction: column;       /* stack rows vertically */
   background: var(--offwhite);
   max-height: 50vh;
+  overflow: hidden;   /* or just remove overflow entirely */
+}
+
+/* Content row: take remaining space */
+#factSheetContainer > .opportunity-row:not(#factsheetTitle) {
+  flex: 1 1 auto;
+  min-height: 0;      /*for nested scrolling */
 }
 
 #factSheetContainer h2,
@@ -233,7 +240,7 @@ button:hover {
   font-size: 1.05rem;
   color: #111;
   cursor: pointer;
-  max-width: 60%;
+  max-width: 70%;
 }
 
 .district-dropdown:focus {
@@ -242,16 +249,14 @@ button:hover {
 }
 
 .factsheet-label {
-  margin-left: 12px;
   font-weight: 700;
   font-size: 1.05rem;
   vertical-align: middle;
 }
 
-
 /* Lower half containers */
 #infoContainer,
-#factSheetContainer {
+#factSheetContainer{
   flex: 1;                      /* take up remaining space */
   overflow: auto;               /* scroll if content is long */
   background: #f9f9f9;
@@ -262,7 +267,10 @@ button:hover {
 #infoContainer.show,
 #factSheetContainer.show {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;       /* important */
 }
 
 h2 {
@@ -283,33 +291,22 @@ h3 {
   font-size: 1rem;
 }
 
-/* layout rows (title row, content row, etc.) */
-/* Factsheet inner layout */
 .opportunity-row {
   display: flex;
-  flex-grow:1;
-  flex-direction: row;          /* horizontal layout for columns */
-  align-items: flex-start;      /* top-align content */
-  justify-content: center;      /* center-align content */
-  /* gap: 5em; */  /* no gap best for state-level table */
-  margin-top: 0.25em;
-  flex-wrap: wrap;                /* nice responsive behavior */
-}
-
-.container :first-child {
-  /* Allow the first child to shrink */
-  flex-shrink: 1;
-  /* Optional: Set a starting point for shrinking. 
-     Using flex-basis: 0 or width: 0 might be useful if you want it to shrink as much as possible. */
-}
-
-/* full-width top row ONLY when explicitly requested */
-.full-width .opportunity-row:first-child {
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
   width: 100%;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 0.25em;
 }
+
+/* .container :first-child {
+  /* Allow the first child to shrink 
+  flex-shrink: 1;
+   Optional: Set a starting point for shrinking. 
+     Using flex-basis: 0 or width: 0 might be useful if you want it to shrink as much as possible. 
+} */
 
 /* layout columns inside each row */
 .opportunity-column {
@@ -332,6 +329,10 @@ h3 {
 
 #factsheet-left{
  display: block;
+}
+
+#factsheetTitle {
+  flex: 0 0 auto;   /* do not grow, do not shrink */
 }
 
 
