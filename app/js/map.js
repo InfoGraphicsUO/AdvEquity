@@ -1423,9 +1423,9 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         noDataColor,
         .01,   noDisparityColor,
         1,   blackClass1Color,
-        1.02, blackClass2Color,
-        1.06, blackClass3Color,
-        1.09, blackClass4Color,
+        1.09, blackClass2Color,
+        1.17, blackClass3Color,
+        1.24, blackClass4Color,
         1.3, blackClass5Color
       ]);
     } else { //hispanic
@@ -1434,7 +1434,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "step",
         ["get", fieldName],
         noDataColor,
-        .01,   noDisparityColor,
+        1,   noDisparityColor,
         1.01,   hispanicClass1Color,
         1.09, hispanicClass2Color,
         1.17, hispanicClass3Color,
