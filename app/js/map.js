@@ -1421,11 +1421,11 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "step",
         ["get", fieldName],
         noDataColor,
-        .3,   blackClass1Color,
-        .7, blackClass2Color,
-        1,   noDisparityColor,
-        1.1, blackClass3Color,
-        1.2, blackClass4Color,
+        .01,   noDisparityColor,
+        1,   blackClass1Color,
+        1.02, blackClass2Color,
+        1.06, blackClass3Color,
+        1.09, blackClass4Color,
         1.3, blackClass5Color
       ]);
     } else { //hispanic
@@ -1434,11 +1434,11 @@ function fillStateMap(map, geojson, stateData, fieldName) {
         "step",
         ["get", fieldName],
         noDataColor,
-        .3,   hispanicClass1Color,
-        .7, hispanicClass2Color,
-        1,   noDisparityColor,
-        1.1, hispanicClass3Color,
-        1.2, hispanicClass4Color,
+        .01,   noDisparityColor,
+        1.01,   hispanicClass1Color,
+        1.09, hispanicClass2Color,
+        1.17, hispanicClass3Color,
+        1.24, hispanicClass4Color,
         1.3, hispanicClass5Color
       ]);
     }
@@ -1585,11 +1585,11 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       "step",
       ["coalesce", ["feature-state", "value"], -999],
       noDataColor,
-      .3,   blackClass1Color,
-      .7, blackClass2Color,
-      1, noDisparityColor,
-      1.1, blackClass3Color,
-      1.2, blackClass4Color,
+      .01, noDisparityColor,
+      1,   blackClass1Color,
+      1.09, blackClass2Color,
+      1.17, blackClass3Color,
+      1.24, blackClass4Color,
       1.3, blackClass5Color
     ];
   } else { //hispanic students
@@ -1598,11 +1598,11 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       "step",
       ["coalesce", ["feature-state", "value"], -999],
       noDataColor,
-      .3,   hispanicClass1Color,
-      .7, hispanicClass2Color,
-      1, noDisparityColor,
-      1.1, hispanicClass3Color,
-      1.2, hispanicClass4Color,
+      .01, noDisparityColor,
+      1,   hispanicClass1Color,
+      1.09, hispanicClass2Color,
+      1.17, hispanicClass3Color,
+      1.24, hispanicClass4Color,
       1.3, hispanicClass5Color
     ];
 
