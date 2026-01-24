@@ -5,6 +5,27 @@ let districtDataCache = null;
 let currentDistrictValueMap = {};
 let firstSymbolId = null;
 
+// color variables (should match with css)
+// Pull CSS variables used by the canvas chart utilities
+const _root = document.documentElement;
+const noDataColor = getComputedStyle(_root).getPropertyValue('--no-data-color').trim();
+const noDisparityColor = getComputedStyle(_root).getPropertyValue('--no-disparity-color').trim();
+const hispanicClass1Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-1-color').trim();
+const hispanicClass2Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-2-color').trim();
+const hispanicClass3Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-3-color').trim();
+const hispanicClass4Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-4-color').trim();
+const hispanicClass5Color = getComputedStyle(_root).getPropertyValue('--hispanic-class-5-color').trim();
+const blackClass1Color = getComputedStyle(_root).getPropertyValue('--black-class-1-color').trim();
+const blackClass2Color = getComputedStyle(_root).getPropertyValue('--black-class-2-color').trim();
+const blackClass3Color = getComputedStyle(_root).getPropertyValue('--black-class-3-color').trim();
+const blackClass4Color = getComputedStyle(_root).getPropertyValue('--black-class-4-color').trim();
+const blackClass5Color = getComputedStyle(_root).getPropertyValue('--black-class-5-color').trim();
+const whiteClass4Color = getComputedStyle(_root).getPropertyValue('--white-class-4-color').trim();
+const asianClass4Color = getComputedStyle(_root).getPropertyValue('--asian-class-4-color').trim();
+const nativeAmericanClass4Color = getComputedStyle(_root).getPropertyValue('--native-american-class-4-color').trim();
+
+const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
+     
 
 document.addEventListener('DOMContentLoaded', () => {
   // const searchInput = document.querySelector('.search_query input');
@@ -380,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldName = 'ENR_AP_GAP_BL';
         $('#currentRaceDesc')
           .text('Black')                // safer than .html for plain text
-          .css('color', green);     // dark green for readability
+          .css('color', blackClass4Color);     // bright gold - may need to adjust
 
         //assign classes for agg button color
         aggSelectionButton.forEach(aggBtn => {
@@ -397,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldName = 'ENR_AP_GAP_HI';
         $('#currentRaceDesc')
           .text('Hispanic')
-          .css('color', yellow);     // gold-ish yellow (better contrast than pure yellow)
+          .css('color', hispanicClass4Color);     // medium blue
         
         //assign classes for agg button color
         aggSelectionButton.forEach(aggBtn => {
@@ -1325,25 +1346,26 @@ function clearTableHighlights() {
   table.$('tr.selected').removeClass('selected');
 }
 
-function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
-  const ticksContainer = document.querySelector('.legend .legend-ticks');
-  if (!ticksContainer) return;
+// remove function? - was for continuous legend
+// function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
+//   const ticksContainer = document.querySelector('.legend .legend-ticks');
+//   if (!ticksContainer) return;
 
-  ticksContainer.innerHTML = ''; // clear previous ticks
+//   ticksContainer.innerHTML = ''; // clear previous ticks
 
-  for (let i = 0; i <= steps; i++) {
-    let value = minVal + (i / steps) * (cappedMax - minVal);
-    const tick = document.createElement('span');
+//   for (let i = 0; i <= steps; i++) {
+//     let value = minVal + (i / steps) * (cappedMax - minVal);
+//     const tick = document.createElement('span');
 
-    if (cappedMax !== null && value > cappedMax && i === steps) {
-      tick.textContent = `> ${cappedMax.toFixed(1)}`;
-    } else {
-      tick.textContent = value.toFixed(1); // cap to 2 digits
-    }
+//     if (cappedMax !== null && value > cappedMax && i === steps) {
+//       tick.textContent = `> ${cappedMax.toFixed(1)}`;
+//     } else {
+//       tick.textContent = value.toFixed(1); // cap to 2 digits
+//     }
 
-    ticksContainer.appendChild(tick);
-  }
-}
+//     ticksContainer.appendChild(tick);
+//   }
+// }
 
 function fillStateMap(map, geojson, stateData, fieldName) {
   console.log('fillStateMap: ', fieldName)
@@ -1363,9 +1385,15 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     }
   }
 
-  // Cap max for color ramp at 5, anything above that gets the max color
-  const cappedMax = Math.min(maxVal, 5);
-  updateLegendTicks(minVal, cappedMax, steps = 2)
+  // Cap max for color ramp at 3, anything above that gets the max color
+  const cappedMax = Math.min(maxVal, 3);
+  //updateLegendTicks(minVal, cappedMax, steps = 2)
+
+  // update legend values
+  const formatVal = v =>
+  typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+  document.getElementById('legendLow').textContent  = formatVal(minVal);
+  document.getElementById('legendHigh').textContent = formatVal(cappedMax);
 
   // Make a copy of geojson so we don't mutate the original
   const geojsonCopy = JSON.parse(JSON.stringify(geojson));
@@ -1384,30 +1412,34 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   }
 
   // Update map coloring
-        // minVal, "#5a6251",
-        // maxVal, "#e5e8e3"
-  if (map.getLayer('state-fills')) {
-    var legendBar = $('#legendBar')
+  if (map.getLayer('state-fills')) {  //TODO: change class steps to quantile
+      const legend = $('#mapLegend');
     // get toggle setting
     if (fieldName =='ENR_AP_GAP_BL') { //black
-      legendBar.removeClass('legendHis')
-      legendBar.addClass('legendBlk')
+      legend.removeClass('legend-his').addClass('legend-blk');
       map.setPaintProperty('state-fills', 'fill-color', [
-        "interpolate",
-        ["linear"],
+        "step",
         ["get", fieldName],
-        minVal, "#e5e8e3",
-        maxVal, "#5a6251"
+        noDataColor,
+        .01,   noDisparityColor,
+        1,   blackClass1Color,
+        1.09, blackClass2Color,
+        1.17, blackClass3Color,
+        1.24, blackClass4Color,
+        1.3, blackClass5Color
       ]);
-    } else { //hispanic - TODO: finalize colors
-    legendBar.removeClass('legendBlk')
-    legendBar.addClass('legendHis')
+    } else { //hispanic
+      legend.removeClass('legend-blk').addClass('legend-his');
       map.setPaintProperty('state-fills', 'fill-color', [
-        "interpolate",
-        ["linear"],
+        "step",
         ["get", fieldName],
-        minVal, "#fbf7df",
-        maxVal, "#9b7f12"
+        noDataColor,
+        1,   noDisparityColor,
+        1.01,   hispanicClass1Color,
+        1.09, hispanicClass2Color,
+        1.17, hispanicClass3Color,
+        1.24, hispanicClass4Color,
+        1.3, hispanicClass5Color
       ]);
     }
   } else {
@@ -1522,39 +1554,58 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   if (minVal === maxVal) maxVal = minVal + 0.00001;
   if (minVal > maxVal) [minVal, maxVal] = [maxVal, minVal];
 
-  // Cap max for color ramp at 5, anything above that gets the max color
+  // Cap max for color ramp at 3, anything above that gets the max color
   const cappedMax = Math.min(maxVal, 3);
-  updateLegendTicks(minVal, cappedMax, maxVal, steps = 2)
+
+  // update legend values
+  const formatVal = v =>
+    typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+
+  // Low label 
+  document.getElementById('legendLow').textContent = isFinite(minVal) ? formatVal(minVal) : '—';
+
+  // High label (add ≥ if capped)
+  if (isFinite(maxVal) && isFinite(cappedMax)) {
+    if (maxVal > cappedMax) {
+      document.getElementById('legendHigh').textContent = `≥ ${formatVal(cappedMax)}`;
+    } else {
+      document.getElementById('legendHigh').textContent = formatVal(cappedMax);
+    }
+  } else {
+    document.getElementById('legendHigh').textContent = '—';
+  }
 
   //field specific colors 
-  var legendBar = $('#legendBar')
-  let colorRamp;
+  var legend  = $('#mapLegend')
+  
+  let colorRamp;  //TODO: change class steps to quantile
   if (fieldName == 'ENR_AP_GAP_BL') { //black students
-    legendBar.removeClass('legendHis')
-    legendBar.addClass('legendBlk')
+    legend.removeClass('legend-his').addClass('legend-blk')
     colorRamp = [
-      "interpolate",
-      ["linear"],
-      ["coalesce", ["feature-state", "value"], 0],
-      minVal, "#e8ebe5",         // lightest
-      minVal + (cappedMax - minVal) * 0.25, "#ccd1c4",
-      minVal + (cappedMax - minVal) * 0.5,  "#a8ae9c",
-      minVal + (cappedMax - minVal) * 0.75, "#7a816e",
-      cappedMax, "#4a4f41"          // darkest
+      "step",
+      ["coalesce", ["feature-state", "value"], -999],
+      noDataColor,
+      .01, noDisparityColor,
+      1,   blackClass1Color,
+      1.09, blackClass2Color,
+      1.17, blackClass3Color,
+      1.24, blackClass4Color,
+      1.3, blackClass5Color
     ];
-  } else { //hispanic students - TODO: work on these colors
-    legendBar.removeClass('legendBlk')
-    legendBar.addClass('legendHis')
+  } else { //hispanic students
+    legend.removeClass('legend-blk').addClass('legend-his')
     colorRamp = [
-      "interpolate",
-      ["linear"],
-      ["coalesce", ["feature-state", "value"], 0],
-      minVal, "#fbf7df",         // lightest
-      minVal + (cappedMax - minVal) * 0.25, "#f1df8a",
-      minVal + (cappedMax - minVal) * 0.5,  "#e6ce53",
-      minVal + (cappedMax - minVal) * 0.75, "#c7a92f",
-      cappedMax, "#9b7f12"       // darkest
+      "step",
+      ["coalesce", ["feature-state", "value"], -999],
+      noDataColor,
+      .01, noDisparityColor,
+      1,   hispanicClass1Color,
+      1.09, hispanicClass2Color,
+      1.17, hispanicClass3Color,
+      1.24, hispanicClass4Color,
+      1.3, hispanicClass5Color
     ];
+
 
   }
 
@@ -1688,10 +1739,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
             , null);
         }
         } catch (err) { hoveredDistrictData = null; }
-        console.log(hoveredDistrictData)
-
         console.log(geoId)
 
+        // VALUES FOR TOOLTIP
+        // handle blanks
+        // get opp est based on current race toggle
+        const oppEst = hoveredDistrictData ? (hoveredDistrictData[window.currentRaceField] ?? '—') : '—';
         const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
         const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
 
@@ -1702,6 +1755,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
           <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
             <strong>${props.NAME || props.LEA_NAME || 'District'} (2021)</strong>
             ${grades ? `<div>Grades: ${grades}</div>` : ''}
+            <div>Opp Est:  <b>${fmtValue(oppEst,2021)}</div></b>
             <div>Students: ${fmtValue(students, 2021)}</div>
             <div>Teachers (FTE):${fmtValue(teachers, 2021)}</div>
           </div>
@@ -1855,69 +1909,77 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   }).join('');
 
   // --- Build factsheet HTML (District) ---
-  factSheetContainer.classList.add("full-width"); // full width top row
+
+  // <div class="opportunity-row full-width">
+  //     <h2>
+  //       <span class="factsheet-label">Factsheet for </span>
+  //       <select id="districtPicker" class="district-dropdown">
+  //         ${optionsHtml}
+  //       </select>
+  //     </h2>
+  // </div>
+
+  // factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
-
-    <div class="opportunity-column" id='factsheet-left'>
-        <div class="opportunity-row">
-      <h2>
-        <span class="factsheet-label">Factsheet for </span>
-        <select id="districtPicker" class="district-dropdown">
-          ${optionsHtml}
-        </select>
-
-      </h2>
-    </div>
-      <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
-        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
+      <div id="factsheetTitle" class="opportunity-row full-width">
+       <h2>
+         <span class="factsheet-label">Factsheet for </span>
+          <select id="districtPicker" class="district-dropdown">
+            ${optionsHtml}
+          </select>
+        </h2>
       </div>
-      <br><p><b>Latest information</b></p>
-      <p>
-        Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
-        Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
-        HS Enrollment: ${fmtValue(latest.ENR_HS_TOT, latestYear)}<br>
-        Student-teacher ratio: ${fmtValue(latest.STU_TEACH_RAT, latestYear)}<br>
-        AP Enrollment: ${fmtValue(latest.ENR_AP, latestYear)}<br>
-        Modal AP courses: ${fmtValue(latest.SCH_APCOURSES, latestYear)}<br>
-        Number of schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
+  <div class="opportunity-row full-width">
+    <div class="opportunity-column" id='factsheet-left'>
+    <div class="opportunity-row">
+        <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
+        </div>
+        <br><h3>Latest information</h3>
+        <div class="opportunity-row">
+          Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
+          Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
+          HS Enrollment: ${fmtValue(latest.ENR_HS_TOT, latestYear)}<br>
+          Student-teacher ratio: ${fmtValue(latest.STU_TEACH_RAT, latestYear)}<br>
+          AP Enrollment: ${fmtValue(latest.ENR_AP, latestYear)}<br>
+          Modal AP courses: ${fmtValue(latest.SCH_APCOURSES, latestYear)}<br>
+          Number of schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
+        </div>
+        <h3>District Composition</h3>
+        <div class="opportunity-row">
+        <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
+        <canvas id="compBar" width="300" height="100"></canvas>
+        </div>
+      </div>
+    </div> <!-- LEFT COLUMN -->
 
+      <div class="opportunity-column" id='factsheet-right'>
+        <p><b>Historic/temporal information</b></p>
+        <p style="font-size:0.9em;color: black">AP Participation Gap by Year</p>
+        <canvas id="gapChart" width="400" height="160"></canvas>
+        <div id="gapLegend" style="font-size:0.85em;"></div>
+        <!-- New sparkline: Students - Percentage of non-white students -->
+        <p style="font-size:0.9em;color: black">Students - Percentage of non-white students (by year)</p>
+        <canvas id="nonwhiteChart" width="400" height="160"></canvas>
+        <div id="nonwhiteLegend" style="font-size:0.85em;"></div>
+        <!-- New sparkline: HS students taking ≥1 AP (PCT_ENR_AP) -->
+        <p style="font-size:0.9em;color: black">HS students taking at least 1 AP course (by year)</p>
+        <canvas id="apChart" width="400" height="160"></canvas>
+        <div id="apLegend" style="font-size:0.85em;"></div>
+        <!-- New sparkline: Student-teacher ratio (STU_TEACH_RAT) -->
+        <p style="font-size:0.9em;color: black">Student–teacher ratio (by year)</p>
+        <canvas id="stChart" width="400" height="160"></canvas>
+        <div id="stLegend" style="font-size:0.85em;"></div>
+        <!-- New sparkline: Modal AP courses offered in district (SCH_APCOURSES) -->
+        <p style="font-size:0.9em;color: black">Modal number of AP courses offered (by year)</p>
+        <canvas id="apCoursesChart" width="400" height="160"></canvas>
+        <div id="apCoursesLegend" style="font-size:0.85em;"></div>
+        
 
-      </p>
-      <br><b>District Composition</b>
-      <label class="composition-toggle">
-        <input type="checkbox" id="compToggle" checked>
-        <small>show as bar</small>
-      </label><br>
+      </div>  <!-- end column -->
 
-      <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
-      <canvas id="compBar" width="300" height="100"></canvas>
-    </div>
-
-    <div class="opportunity-column" id='factsheet-right'>
-      <p><b>Historic/temporal information</b></p>
-      <p style="font-size:0.9em;color: black">AP Participation Gap by Year</p>
-      <canvas id="gapChart" width="400" height="160"></canvas>
-      <div id="gapLegend" style="font-size:0.85em;"></div>
-      <!-- New sparkline: Students - Percentage of non-white students -->
-      <p style="font-size:0.9em;color: black">Students - Percentage of non-white students (by year)</p>
-      <canvas id="nonwhiteChart" width="400" height="160"></canvas>
-      <div id="nonwhiteLegend" style="font-size:0.85em;"></div>
-      <!-- New sparkline: HS students taking ≥1 AP (PCT_ENR_AP) -->
-      <p style="font-size:0.9em;color: black">HS students taking at least 1 AP course (by year)</p>
-      <canvas id="apChart" width="400" height="160"></canvas>
-      <div id="apLegend" style="font-size:0.85em;"></div>
-      <!-- New sparkline: Student-teacher ratio (STU_TEACH_RAT) -->
-      <p style="font-size:0.9em;color: black">Student–teacher ratio (by year)</p>
-      <canvas id="stChart" width="400" height="160"></canvas>
-      <div id="stLegend" style="font-size:0.85em;"></div>
-      <!-- New sparkline: Modal AP courses offered in district (SCH_APCOURSES) -->
-      <p style="font-size:0.9em;color: black">Modal number of AP courses offered (by year)</p>
-      <canvas id="apCoursesChart" width="400" height="160"></canvas>
-      <div id="apCoursesLegend" style="font-size:0.85em;"></div>
-      
-
-    </div>  <!-- end column -->
+  </div> <!-- end  full-width" -->
   `  ;
 
   // Show or hide the no-geometry notice based on the latest record's GIS flag
@@ -1941,15 +2003,15 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     OTH: latest.PCT_ENR_OTH
   };
 
-  drawCompDonutChart("compDonut", compData, colors);
-  drawCompositionBar("compBar", compData, colors);
+  drawCompDonutChart("compDonut", compData, compColors);
+  drawCompositionBar("compBar", compData, compColors);
 
-  // Toggle between donut and bar
-  document.getElementById("compToggle").addEventListener("change", function() {
-    const showBar = this.checked;
-    document.getElementById("compDonut").style.display = showBar ? "none" : "block";
-    document.getElementById("compBar").style.display = showBar ? "block" : "none";
-  });
+  // // Toggle between donut and bar
+  // document.getElementById("compToggle").addEventListener("change", function() {
+  //   const showBar = this.checked;
+  //   document.getElementById("compDonut").style.display = showBar ? "none" : "block";
+  //   document.getElementById("compBar").style.display = showBar ? "block" : "none";
+  // });
 
 //jump to district
   try {

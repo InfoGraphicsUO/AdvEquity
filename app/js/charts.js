@@ -23,6 +23,7 @@ const layout = {
   showlegend: false
 };
 
+// get colors from CSS
 const colorBlack = getComputedStyle(document.documentElement).getPropertyValue('--almostBlack').trim();
 const colorYellow = getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim();
 
@@ -109,23 +110,41 @@ function getStateOpportunityEstimates(state,fieldName) {
     }
   }
 
+  const oppChangeText= getOpEstChangeText(val2011Raw, val2021Raw) 
+
   // Return formatted HTML
+  // to do: add a chip after 2021 with the fill color of the hovered state
   const opphtml = `
-    <br><b>Opportunity Estimates</b>
+    <h3>Opportunity Estimates</h3>
     <div class="opportunity-row opportunity-estimates">
       <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
         2011–12: ${val2011}<br>
-        2021–22: ${val2021}
+        2021–22: <b>${val2021}</b>
       </div>
     </div>
-    <small>placeholder for description of the change</small>
+    <small>${oppChangeText}</small>
   `;
 
   return opphtml;
 }
 
+function getOpEstChangeText(val2011Raw, val2021Raw) {
+  if (typeof val2011Raw !== 'number' || typeof val2021Raw !== 'number') {
+    return 'Data error';
+  }
 
+  const diff = val2021Raw - val2011Raw;
+  const formattedDiff = Math.abs(diff).toFixed(2);
+
+  if (diff > 0) {
+    return `Estimate increased by ${formattedDiff}`;
+  } else if (diff < 0) {
+    return `Estimate dropped by ${formattedDiff}`;
+  }
+
+  return 'Estimate did not change';
+}
 
 function initFactSheet(stateData, fips, fieldName) {
   showGraphs(); // hid the US level details, show the state details
@@ -191,15 +210,15 @@ function initFactSheet(stateData, fips, fieldName) {
   <div class="opportunity-row">
     <div class="opportunity-column">
     <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
-    <div><h3>Number of districts:</h3> <span id="numDistricts">—</span></div>
+    <div>Number of districts: <span id="numDistricts">—</span></div>
     <div>Modal number of AP classes offered in schools<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
     </div>
 
     ${oppestHTML}
       <!-- State composition bar: placed below the opportunity column -->
       <div style="margin-bottom:8px;">
-        <b>State Composition</b><br>
-        <canvas id="stateCompBar" width="360" height="90"></canvas>
+        <h3>State Composition</h3><br>
+        <canvas id="stateCompBar" width="360" height="70"></canvas>
       </div>
     </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column district-column">
@@ -241,11 +260,10 @@ function initFactSheet(stateData, fips, fieldName) {
         AS: stateLatest.PCT_ENR_AS,
         OTH: stateLatest.PCT_ENR_OTH
       };
-      // const compColors = { WH: "#a6cee3", HI: "#d95f02", BL: "#1b9e77", AS: "#7570b3", OTH: "#555" };
-      const compColors = { WH: "#a0a0a0", HI: "#e6da9b", BL: "#718168", AS: "#a1b9a0", OTH: "#ccc" };
-      // other yellow (less saturated): #e6da9b
-      // yellow from AdvEq site: #e4dd4f
-      // green from AdvEq site: #818d74, #718168
+
+      //from colorSchemes3 1/16/26 - moved to map.js
+      // const compColors = { WH: '#c59ac9', HI: "#5999cd", BL: "#fdbd68", AS: "#7fbfc3", OTH: "#9fc49a" };
+      // const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
      
       // drawCompositionBar is defined in map.js and loaded before this script in map.html
       try { drawCompositionBar('stateCompBar', compData, compColors); } catch (e) { console.warn('drawCompositionBar unavailable', e); }
@@ -285,7 +303,7 @@ function initFactSheet(stateData, fips, fieldName) {
   }
 }
 // Pull CSS variables used by the canvas chart utilities
-const _root = document.documentElement;
+// const _root = document.documentElement;
 const verydarkgrey = getComputedStyle(_root).getPropertyValue('--verydarkgrey').trim();
 const darkgrey = getComputedStyle(_root).getPropertyValue('--darkgrey').trim();
 const lightgrey = getComputedStyle(_root).getPropertyValue('--lightgrey').trim();
@@ -297,12 +315,15 @@ const offwhite = getComputedStyle(_root).getPropertyValue('--offwhite').trim();
 
 function showGraphs(){
   try { document.querySelector('#infoContainer').style.display = 'none' } catch(e) {}
-  try { document.querySelector('#factSheetContainer').style.display = 'flex' } catch(e) {}
+  try { 
+      document.querySelector('#factSheetContainer').style.display = 'flex'
+   } catch(e) {}
 }
 
 function hideGraphs(){
   try { document.querySelector('#infoContainer').style.display = 'block' } catch(e) {}
-  try { document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
+  try { 
+    document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
 }
 
 function drawCompDonutChart(canvasId, data, colors) {
@@ -366,7 +387,7 @@ function drawCompositionBar(canvasId, data, colors) {
   if (!total || total <= 0) return; // nothing to draw
 
   const barHeight = 30;
-  const startY = 20;
+  const startY = 5;
   let x = 0;
   const legendEntries = [];
 

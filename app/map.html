@@ -34,17 +34,7 @@
     <div id="mapLoadingOverlay" class="map-loading-overlay" style="display: none;">
       <div class="loading-spinner"></div>
     </div>
-    
-    <!-- <div id="mapLegend">
-      <h4>AP Opportunity estimate</h4>
-      <div class="map-legend-item"><span style="background:#b9ffb9"></span>5 (most opportunity)</div>
-      <div class="map-legend-item"><span style="background:#80e27e"></span>4</div>
-      <div class="map-legend-item"><span style="background:#4caf50"></span>3</div>
-      <div class="map-legend-item"><span style="background:#2c7a2c"></span>2</div>
-      <div class="map-legend-item"><span style="background:#145214"></span>1 (least opportunity)</div>
-      <div class="map-legend-item"><span style="background: var(--verydarkgrey)"></span>N/A</div>
-    </div> -->
-    
+       
     <div id="mapWidgetsQuery">
       <div id="resizeQueryButton"><i class="fa-solid fa-angles-right"></i></div>       <div id="search_box_holder" class="search_query">
         <!-- <input type="text" placeholder="Search Query Tool..." />
@@ -56,17 +46,17 @@
 
         
   <div id="mapWidgetsRace">
-    <b>Map of 2021 Opportunity estimates</b><br>
-    Display data for
+    <b>Opportunity estimates, 2021</b><br>
+    Data for
     <div class="race-toggle">
       <button id="race-selectBlk" class="race-selectBtn active" data-field="ENR_AP_GAP_BL">
-        Black Students
+        Black
       </button>
       <button id="race-selectHis" class="race-selectBtn" data-field="ENR_AP_GAP_HI">
-        Hispanic Students
-      </button>
-    </div><br>
-    Display data by
+        Hispanic
+      </button> 
+    </div> Students<br>
+    by
     <div class="aggregation-toggle">
       <button id="agg-selectState" class="agg-selectBtn agg-selectBlk active">
         State
@@ -76,13 +66,26 @@
       </button>
     </div>
       <!-- Legend -->
-    <div class="legend">
-      <span class="legend-label">Low</span>
-      <div class="legend-gradient-wrapper">
-        <div id="legendBar" class="legend-gradient"></div>
-        <div class="legend-ticks"></div>
+
+    <div id="mapLegend" class="map-legend legend-blk">
+      <span class="legend-label">
+        Low <span id="legendLow">—</span>
+      </span>
+
+      <div class="legend-chips">
+        <span class="legend-swatch na"></span>
+        <span class="legend-swatch nd"></span>
+        <span class="legend-swatch class-1"></span>
+        <span class="legend-swatch class-2"></span>
+        <span class="legend-swatch class-3"></span>
+        <span class="legend-swatch class-4"></span>
+        <span class="legend-swatch class-5"></span>
+        <!-- <span class="legend-swatch na"></span> -->
       </div>
-      <span class="legend-label">High</span>
+
+      <span class="legend-label">
+        High <span id="legendHigh">—</span>
+      </span>
     </div>
   </div>
 
@@ -91,7 +94,7 @@
 
   <div id="infoContainer">
     <!-- <h2>Information</h2> -->
-    <p>Place hader text for descriptive info at US level trends or other information. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus..</p>
+    <p>Place holder text for descriptive info at US level trends or other information. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus..</p>
     
     <!-- TABLE -->
      <h2>School districts where White students are more likely to be in an Advanced Placement class, compared with <span id="currentRaceDesc">Black</span> students, <small>by state in 2011-12 and 2021-22</small></h2>
@@ -122,6 +125,7 @@
     </table>
 
   </div>
+
 
   <div id="factSheetContainer"></div>
 
