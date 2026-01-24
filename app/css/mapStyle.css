@@ -38,8 +38,8 @@ body, html {
 
 #map {
   width: 100%;
-  min-height: 350px;
-  height: 50vh;
+  min-height: 300px;
+  height: 40vh;
   flex: 0 0 auto; /* fixed at min height, no shrinking */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -211,7 +211,7 @@ button:hover {
   display: none;                /* hidden by default */
   flex-direction: column;       /* stack rows vertically */
   background: var(--offwhite);
-  max-height: 50vh;
+  max-height: 60vh;
   overflow: hidden;   /* or just remove overflow entirely */
 }
 
@@ -221,9 +221,13 @@ button:hover {
   min-height: 0;      /*for nested scrolling */
 }
 
-#factSheetContainer h2,
-#factSheetContainer h3 {
+#factSheetContainer h2{
   margin: 0;
+}
+
+#factSheetContainer h3 {
+  margin: 0.5rem 0 0 0;
+  font-weight: 700;
 }
 
 .district-dropdown {
@@ -261,6 +265,7 @@ button:hover {
   overflow: auto;               /* scroll if content is long */
   background: #f9f9f9;
   padding: 10px 20px 0 20px;
+  line-height: 1;
 }
 
 /* whichever is shown will stretch */
@@ -298,7 +303,7 @@ h3 {
   align-items: flex-start;
   justify-content: flex-start;
   flex-wrap: wrap;
-  margin-top: 0.25em;
+  margin-top: 0;
 }
 
 /* .container :first-child {

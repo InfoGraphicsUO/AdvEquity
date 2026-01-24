@@ -115,7 +115,7 @@ function getStateOpportunityEstimates(state,fieldName) {
   // Return formatted HTML
   // to do: add a chip after 2021 with the fill color of the hovered state
   const opphtml = `
-    <br><b>Opportunity Estimates</b>
+    <h3>Opportunity Estimates</h3>
     <div class="opportunity-row opportunity-estimates">
       <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
@@ -210,15 +210,15 @@ function initFactSheet(stateData, fips, fieldName) {
   <div class="opportunity-row">
     <div class="opportunity-column">
     <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
-    <div><h3>Number of districts:</h3> <span id="numDistricts">—</span></div>
+    <div>Number of districts: <span id="numDistricts">—</span></div>
     <div>Modal number of AP classes offered in schools<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
     </div>
 
     ${oppestHTML}
       <!-- State composition bar: placed below the opportunity column -->
       <div style="margin-bottom:8px;">
-        <b>State Composition</b><br>
-        <canvas id="stateCompBar" width="360" height="90"></canvas>
+        <h3>State Composition</h3><br>
+        <canvas id="stateCompBar" width="360" height="70"></canvas>
       </div>
     </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column district-column">
@@ -387,7 +387,7 @@ function drawCompositionBar(canvasId, data, colors) {
   if (!total || total <= 0) return; // nothing to draw
 
   const barHeight = 30;
-  const startY = 20;
+  const startY = 5;
   let x = 0;
   const legendEntries = [];
 

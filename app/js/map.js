@@ -1936,8 +1936,8 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
         </div>
-        <br><p><b>Latest information</b></p>
-        <p>
+        <br><h3>Latest information</h3>
+        <div class="opportunity-row">
           Teachers (FTE): ${fmtValue(latest.SCH_FTETEACH_TOT, latestYear)}<br>
           Enrollment: ${fmtValue(latest.ENR, latestYear)}<br>
           HS Enrollment: ${fmtValue(latest.ENR_HS_TOT, latestYear)}<br>
@@ -1945,17 +1945,12 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           AP Enrollment: ${fmtValue(latest.ENR_AP, latestYear)}<br>
           Modal AP courses: ${fmtValue(latest.SCH_APCOURSES, latestYear)}<br>
           Number of schools: ${fmtValue(latest.SCHOOLS, latestYear)}<br>
-
-
-        </p>
-        <br><b>District Composition</b>
-        <label class="composition-toggle">
-          <input type="checkbox" id="compToggle" checked>
-          <small>show as bar</small>
-        </label><br>
-
+        </div>
+        <h3>District Composition</h3>
+        <div class="opportunity-row">
         <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
         <canvas id="compBar" width="300" height="100"></canvas>
+        </div>
       </div>
     </div> <!-- LEFT COLUMN -->
 
@@ -2011,12 +2006,12 @@ function showDistrictFactsheet(clickedFeature, districtData) {
   drawCompDonutChart("compDonut", compData, compColors);
   drawCompositionBar("compBar", compData, compColors);
 
-  // Toggle between donut and bar
-  document.getElementById("compToggle").addEventListener("change", function() {
-    const showBar = this.checked;
-    document.getElementById("compDonut").style.display = showBar ? "none" : "block";
-    document.getElementById("compBar").style.display = showBar ? "block" : "none";
-  });
+  // // Toggle between donut and bar
+  // document.getElementById("compToggle").addEventListener("change", function() {
+  //   const showBar = this.checked;
+  //   document.getElementById("compDonut").style.display = showBar ? "none" : "block";
+  //   document.getElementById("compBar").style.display = showBar ? "block" : "none";
+  // });
 
 //jump to district
   try {
