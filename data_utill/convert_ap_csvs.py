@@ -12,7 +12,7 @@ output: assets/data/json/<csvname>.json
 Instructions for use:
 
 to convert with minify (to reduce file size), run:
-python .\data_utill_convert_ap_csvs.py --minify
+python .\data_utill\convert_ap_csvs.py --minify
 - using minify will drop about 100mb off of the larger jsons
 
 to convert with gzip + precision 3 + drop nulls (for further file size reduction), run:

@@ -1073,7 +1073,7 @@ function getStateData() {
   ])
   .then(([geojson, stateData]) => {
     console.log('Fetched GeoJSON:', geojson);
-    console.log('Fetched State JSON:', stateData);
+    // console.log('Fetched State JSON:', stateData);
     return { geojson, stateData };
   })
   .catch(error => {
@@ -1346,54 +1346,121 @@ function clearTableHighlights() {
   table.$('tr.selected').removeClass('selected');
 }
 
-// remove function? - was for continuous legend
-// function updateLegendTicks(minVal, cappedMax, maxVal, steps = 2) {
-//   const ticksContainer = document.querySelector('.legend .legend-ticks');
-//   if (!ticksContainer) return;
 
-//   ticksContainer.innerHTML = ''; // clear previous ticks
+async function loadStateBreaks() {
+  const text = await fetch(stateDataUrl).then(r => r.text());
+  const [header, ...rows] = text.trim().split('\n');
 
-//   for (let i = 0; i <= steps; i++) {
-//     let value = minVal + (i / steps) * (cappedMax - minVal);
-//     const tick = document.createElement('span');
+  const keys = header.split(',');
 
-//     if (cappedMax !== null && value > cappedMax && i === steps) {
-//       tick.textContent = `> ${cappedMax.toFixed(1)}`;
-//     } else {
-//       tick.textContent = value.toFixed(1); // cap to 2 digits
-//     }
+  return rows.map(row => {
+    const values = row.split(',');
+    return Object.fromEntries(
+      keys.map((k, i) => [k, values[i]])
+    );
+  });
+}
 
-//     ticksContainer.appendChild(tick);
-//   }
-// }
+const stateDataUrl = '../../assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv'
+let breaks2021;
+let blackPaint, hispanicPaint;
+let paintsReady = false;
+
+function parseBreaks2021(csvRows) {
+  return csvRows
+    .filter(d => Number(d['"YEAR"']) === 2021) // use actual key with quotes
+    .reduce((acc, d) => {
+      const gapVar = d['"gap_var"'].replace(/^"+|"+$/g, ''); // strip quotes from value
+      if (!gapVar) return acc;
+
+      acc[gapVar] = {
+        b1: Number(d['"b1"']),
+        b2: Number(d['"b2"']),
+        b3: Number(d['"b3"']),
+        b4: Number(d['"b4"']),
+        min: Number(d['"min"']),
+        max: Number(d['"max"'])
+      };
+      return acc;
+    }, {});
+}
+
+
+loadStateBreaks().then(csvData => {
+  // Step 2a: log raw CSV data
+  console.log('CSV rows loaded:', csvData);  // log raw array
+
+  if (!csvData || !csvData.length) {
+    console.error('CSV data missing or empty', csvData);
+    return;
+  }
+
+  // Parse breaks
+  breaks2021 = parseBreaks2021(csvData);
+  console.log('Parsed 2021 breaks:', breaks2021);
+
+  if (!breaks2021.ENR_AP_GAP_BL || !breaks2021.ENR_AP_GAP_HI) {
+    console.error('Missing 2021 breaks for BL or HI', breaks2021);
+    return;
+  }
+
+  // Build paints ONCE
+  blackPaint = buildGapPaint(
+    'ENR_AP_GAP_BL',
+    breaks2021.ENR_AP_GAP_BL,
+    {
+      noData: noDataColor,
+      noDisparity: noDisparityColor,
+      class1: blackClass1Color,
+      class2: blackClass2Color,
+      class3: blackClass3Color,
+      class4: blackClass4Color,
+      class5: blackClass5Color
+    }
+  );
+
+  hispanicPaint = buildGapPaint(
+    'ENR_AP_GAP_HI',
+    breaks2021.ENR_AP_GAP_HI,
+    {
+      noData: noDataColor,
+      noDisparity: noDisparityColor,
+      class1: hispanicClass1Color,
+      class2: hispanicClass2Color,
+      class3: hispanicClass3Color,
+      class4: hispanicClass4Color,
+      class5: hispanicClass5Color
+    }
+  );
+
+  paintsReady = true;
+  console.log('State paints ready');
+})
+.catch(err => console.error('Error loading CSV:', err));;
+
 
 function fillStateMap(map, geojson, stateData, fieldName) {
+    if (!blackPaint || !hispanicPaint) {
+      console.warn('Paints not ready yet');
+      return;
+    }
+
   console.log('fillStateMap: ', fieldName)
   const valueMap = {};
   let minVal = Infinity;
   let maxVal = -Infinity;
   const targetYear = 2021; // assumes map is always 2021 data
 
-  // Extract values & track min/max
-  for (let state in stateData) {
-    const row = stateData[state].find(d => d.YEAR === targetYear);
-    const valRaw = row?.[fieldName];
-    if (typeof valRaw === 'number') {
-      valueMap[state] = valRaw;
-      if (valRaw < minVal) minVal = valRaw;
-      if (valRaw > maxVal) maxVal = valRaw;
-    }
-  }
-
-  // Cap max for color ramp at 3, anything above that gets the max color
-  const cappedMax = Math.min(maxVal, 3);
-  //updateLegendTicks(minVal, cappedMax, steps = 2)
-
   // update legend values
-  const formatVal = v =>
-  typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
-  document.getElementById('legendLow').textContent  = formatVal(minVal);
-  document.getElementById('legendHigh').textContent = formatVal(cappedMax);
+// select the current breaks object based on the field
+const breaks = fieldName === 'ENR_AP_GAP_BL' 
+  ? breaks2021.ENR_AP_GAP_BL 
+  : breaks2021.ENR_AP_GAP_HI;
+
+// update legend using the min and max from the CSV breaks
+const formatVal = v => typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+// document.getElementById('legendLow').textContent  = formatVal(breaks.min);
+document.getElementById('legendHigh').textContent = formatVal(breaks.max);
 
   // Make a copy of geojson so we don't mutate the original
   const geojsonCopy = JSON.parse(JSON.stringify(geojson));
@@ -1401,8 +1468,9 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // Merge selected field's 2021 values into copy
   geojsonCopy.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
-    if (valueMap[stateId] !== undefined) {
-      f.properties[fieldName] = valueMap[stateId];
+    const row = stateData[stateId]?.find(d => Number(d.YEAR) === 2021);
+    if (row && typeof row[fieldName] === 'number') {
+      f.properties[fieldName] = row[fieldName];
     }
   });
 
@@ -1411,40 +1479,54 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     map.getSource('states').setData(geojsonCopy);
   }
 
+  
+
   // Update map coloring
   if (map.getLayer('state-fills')) {  //TODO: change class steps to quantile
       const legend = $('#mapLegend');
     // get toggle setting
     if (fieldName =='ENR_AP_GAP_BL') { //black
+      console.log(blackPaint)
       legend.removeClass('legend-his').addClass('legend-blk');
-      map.setPaintProperty('state-fills', 'fill-color', [
-        "step",
-        ["get", fieldName],
-        noDataColor,
-        .01,   noDisparityColor,
-        1,   blackClass1Color,
-        1.09, blackClass2Color,
-        1.17, blackClass3Color,
-        1.24, blackClass4Color,
-        1.3, blackClass5Color
-      ]);
+      map.setPaintProperty('state-fills', 'fill-color', blackPaint);
     } else { //hispanic
+      console.log(hispanicPaint)
       legend.removeClass('legend-blk').addClass('legend-his');
-      map.setPaintProperty('state-fills', 'fill-color', [
-        "step",
-        ["get", fieldName],
-        noDataColor,
-        1,   noDisparityColor,
-        1.01,   hispanicClass1Color,
-        1.09, hispanicClass2Color,
-        1.17, hispanicClass3Color,
-        1.24, hispanicClass4Color,
-        1.3, hispanicClass5Color
-      ]);
+      map.setPaintProperty('state-fills', 'fill-color', hispanicPaint);
     }
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
   }
+}
+
+function buildGapPaint(fieldName, breaks, colors) {
+  const { b1, b2, b3, b4 } = breaks;
+
+  return [
+    "case",
+
+    // missing or null
+    ["any",
+      ["!", ["has", fieldName]],
+      ["==", ["get", fieldName], null]
+    ],
+    colors.noData,
+
+    // exactly 1 → no disparity
+    ["==", ["get", fieldName], 1],
+    colors.noDisparity,
+
+    // otherwise step classification (>1)
+    [
+      "step",
+      ["get", fieldName],
+      colors.class1,  // >1 up to b1
+      b1, colors.class2,
+      b2, colors.class3,
+      b3, colors.class4,
+      b4, colors.class5
+    ]
+  ];
 }
 
 function getStateValues(stateData, state, fieldName) {
@@ -1562,7 +1644,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
 
   // Low label 
-  document.getElementById('legendLow').textContent = isFinite(minVal) ? formatVal(minVal) : '—';
+  // document.getElementById('legendLow').textContent = isFinite(minVal) ? formatVal(minVal) : '—';
 
   // High label (add ≥ if capped)
   if (isFinite(maxVal) && isFinite(cappedMax)) {
@@ -1761,7 +1843,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
           </div>
         `;
 
-        console.log(description)
+        // console.log(description)
         districtPopup.setHTML(description);
 
       }
