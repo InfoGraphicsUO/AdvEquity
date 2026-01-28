@@ -1063,7 +1063,8 @@ const popup = new mapboxgl.Popup({
 });
 
 // Fetch data
-function getStateData() {
+function getStateData(){
+
   const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
   const stateDataUrl = '../assets/data/json/ap_equity_states.json';
 
@@ -1347,65 +1348,95 @@ function clearTableHighlights() {
 }
 
 
-async function loadStateBreaks() {
-  const text = await fetch(stateDataUrl).then(r => r.text());
+// async function loadStateBreaks() {
+//   const text = await fetch(stateDataUrl).then(r => r.text());
+//   const [header, ...rows] = text.trim().split('\n');
+
+//   const keys = header
+//     .split(',')
+//     .map(k => k.replace(/"/g, '').trim()); 
+
+//   return rows.map(row => {
+//     const values = row.split(',').map(v => v.replace(/"/g, '').trim());
+//     return Object.fromEntries(
+//       keys.map((k, i) => [k, values[i]])
+//     );
+//   });
+// }
+
+
+
+// to store paints
+const paints = {
+  State_National_Breaks: {
+    black: null,
+    hispanic: null
+  },
+  District_National_Breaks: {
+    black: null,
+    hispanic: null
+  }
+};
+
+// to store break value
+const breaksByAggregation = {
+  State_National_Breaks: null,
+  District_National_Breaks: null
+};
+
+const BREAKS_URLS = {
+  State_National_Breaks:
+    '../../assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv',
+
+  District_National_Breaks:
+    '../../assets/data/AP%20Data/class%20breaks/ap_equity_district_national_breaks.csv'
+};
+
+let breaks2021;
+let blackPaint, hispanicPaint;
+let paintsReady = false;
+
+async function loadBreaksCsv(url) {
+  const text = await fetch(url).then(r => r.text());
   const [header, ...rows] = text.trim().split('\n');
 
-  const keys = header.split(',');
+  const keys = header
+    .split(',')
+    .map(k => k.replace(/"/g, '').trim());
 
   return rows.map(row => {
-    const values = row.split(',');
+    const values = row.split(',').map(v => v.replace(/"/g, '').trim());
     return Object.fromEntries(
       keys.map((k, i) => [k, values[i]])
     );
   });
 }
 
-const stateDataUrl = '../../assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv'
-let breaks2021;
-let blackPaint, hispanicPaint;
-let paintsReady = false;
-
 function parseBreaks2021(csvRows) {
   return csvRows
-    .filter(d => Number(d['"YEAR"']) === 2021) // use actual key with quotes
+    .filter(d => Number(d.YEAR) === 2021)
     .reduce((acc, d) => {
-      const gapVar = d['"gap_var"'].replace(/^"+|"+$/g, ''); // strip quotes from value
-      if (!gapVar) return acc;
-
-      acc[gapVar] = {
-        b1: Number(d['"b1"']),
-        b2: Number(d['"b2"']),
-        b3: Number(d['"b3"']),
-        b4: Number(d['"b4"']),
-        min: Number(d['"min"']),
-        max: Number(d['"max"'])
+      acc[d.gap_var] = {
+        b1: Number(d.b1),
+        b2: Number(d.b2),
+        b3: Number(d.b3),
+        b4: Number(d.b4),
+        min: Number(d.min),
+        max: Number(d.max)
       };
       return acc;
     }, {});
 }
 
+async function loadPaintsForAggregation(aggregationLevel) {
+  const url = BREAKS_URLS[aggregationLevel];
 
-loadStateBreaks().then(csvData => {
-  // Step 2a: log raw CSV data
-  console.log('CSV rows loaded:', csvData);  // log raw array
+  const csvData = await loadBreaksCsv(url);
+  const breaks2021 = parseBreaks2021(csvData);
 
-  if (!csvData || !csvData.length) {
-    console.error('CSV data missing or empty', csvData);
-    return;
-  }
+  breaksByAggregation[aggregationLevel] = breaks2021;
 
-  // Parse breaks
-  breaks2021 = parseBreaks2021(csvData);
-  console.log('Parsed 2021 breaks:', breaks2021);
-
-  if (!breaks2021.ENR_AP_GAP_BL || !breaks2021.ENR_AP_GAP_HI) {
-    console.error('Missing 2021 breaks for BL or HI', breaks2021);
-    return;
-  }
-
-  // Build paints ONCE
-  blackPaint = buildGapPaint(
+  paints[aggregationLevel].black = buildGapPaint(
     'ENR_AP_GAP_BL',
     breaks2021.ENR_AP_GAP_BL,
     {
@@ -1419,7 +1450,7 @@ loadStateBreaks().then(csvData => {
     }
   );
 
-  hispanicPaint = buildGapPaint(
+  paints[aggregationLevel].hispanic = buildGapPaint(
     'ENR_AP_GAP_HI',
     breaks2021.ENR_AP_GAP_HI,
     {
@@ -1433,42 +1464,117 @@ loadStateBreaks().then(csvData => {
     }
   );
 
-  paintsReady = true;
-  console.log('State paints ready');
-})
-.catch(err => console.error('Error loading CSV:', err));;
+  console.log(`${aggregationLevel} paints ready`);
+}
 
+async function loadClassBreaksForAggregation(aggregationLevel) {
+  const url = BREAKS_URLS[aggregationLevel];
+
+  if (!url) {
+    throw new Error(`Unknown aggregation level: ${aggregationLevel}`);
+  }
+
+  const csvData = await loadBreaksCsv(url);
+
+  if (!csvData || !csvData.length) {
+    throw new Error(`No break data loaded for ${aggregationLevel}`);
+  }
+
+  const breaks2021 = parseBreaks2021(csvData);
+
+  if (!breaks2021.ENR_AP_GAP_BL || !breaks2021.ENR_AP_GAP_HI) {
+    throw new Error(`Missing 2021 BL or HI breaks for ${aggregationLevel}`);
+  }
+
+  return {
+    breaks2021,
+
+    blackPaint: buildGapPaint(
+      'ENR_AP_GAP_BL',
+      breaks2021.ENR_AP_GAP_BL,
+      {
+        noData: noDataColor,
+        noDisparity: noDisparityColor,
+        class1: blackClass1Color,
+        class2: blackClass2Color,
+        class3: blackClass3Color,
+        class4: blackClass4Color,
+        class5: blackClass5Color
+      }
+    ),
+
+    hispanicPaint: buildGapPaint(
+      'ENR_AP_GAP_HI',
+      breaks2021.ENR_AP_GAP_HI,
+      {
+        noData: noDataColor,
+        noDisparity: noDisparityColor,
+        class1: hispanicClass1Color,
+        class2: hispanicClass2Color,
+        class3: hispanicClass3Color,
+        class4: hispanicClass4Color,
+        class5: hispanicClass5Color
+      }
+    )
+  };
+}
+
+Promise.all([
+  loadPaintsForAggregation('State_National_Breaks'),
+  loadPaintsForAggregation('District_National_Breaks')
+])
+.then(() => {
+  console.log('All paints ready');
+})
+.catch(err => console.error('Error loading paints', err));
 
 function fillStateMap(map, geojson, stateData, fieldName) {
-    if (!blackPaint || !hispanicPaint) {
-      console.warn('Paints not ready yet');
-      return;
-    }
+  const paintSet  = paints.State_National_Breaks;
+  const breaksSet = breaksByAggregation.State_National_Breaks;
 
-  console.log('fillStateMap: ', fieldName)
-  const valueMap = {};
-  let minVal = Infinity;
-  let maxVal = -Infinity;
+  if (!paintSet || !paintSet.black || !paintSet.hispanic) {
+    console.warn('Paints not ready yet (State_National_Breaks)');
+    return;
+  }
+
+  if (!breaksSet) {
+    console.warn('Breaks not ready yet (State_National_Breaks)');
+    return;
+  }
+
+  console.log('fillStateMap:', fieldName);
+
   const targetYear = 2021; // assumes map is always 2021 data
 
+  // --------------------------------------------------
   // update legend values
-// select the current breaks object based on the field
-const breaks = fieldName === 'ENR_AP_GAP_BL' 
-  ? breaks2021.ENR_AP_GAP_BL 
-  : breaks2021.ENR_AP_GAP_HI;
+  // select the current breaks object based on the field
+  const breaks =
+    fieldName === 'ENR_AP_GAP_BL'
+      ? breaksSet.ENR_AP_GAP_BL
+      : breaksSet.ENR_AP_GAP_HI;
 
-// update legend using the min and max from the CSV breaks
-const formatVal = v => typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
-// document.getElementById('legendLow').textContent  = formatVal(breaks.min);
-document.getElementById('legendHigh').textContent = formatVal(breaks.max);
+  if (!breaks) {
+    console.warn('Missing state breaks for field:', fieldName);
+    return;
+  }
 
+  // update legend using the min and max from the CSV breaks
+  const formatVal = v =>
+    typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+
+  // document.getElementById('legendLow').textContent  = formatVal(breaks.min);
+  document.getElementById('legendHigh').textContent = formatVal(breaks.max);
+
+  // --------------------------------------------------
   // Make a copy of geojson so we don't mutate the original
   const geojsonCopy = JSON.parse(JSON.stringify(geojson));
 
   // Merge selected field's 2021 values into copy
   geojsonCopy.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
-    const row = stateData[stateId]?.find(d => Number(d.YEAR) === 2021);
+    const row = stateData[stateId]?.find(d => Number(d.YEAR) === targetYear);
+
     if (row && typeof row[fieldName] === 'number') {
       f.properties[fieldName] = row[fieldName];
     }
@@ -1479,25 +1585,27 @@ document.getElementById('legendHigh').textContent = formatVal(breaks.max);
     map.getSource('states').setData(geojsonCopy);
   }
 
-  
-
+  // --------------------------------------------------
   // Update map coloring
-  if (map.getLayer('state-fills')) {  //TODO: change class steps to quantile
-      const legend = $('#mapLegend');
-    // get toggle setting
-    if (fieldName =='ENR_AP_GAP_BL') { //black
-      console.log(blackPaint)
+  if (map.getLayer('state-fills')) {
+    const legend = $('#mapLegend');
+
+    if (fieldName === 'ENR_AP_GAP_BL') { // black
+      console.log('Using BLACK state paint');
       legend.removeClass('legend-his').addClass('legend-blk');
-      map.setPaintProperty('state-fills', 'fill-color', blackPaint);
-    } else { //hispanic
-      console.log(hispanicPaint)
+      map.setPaintProperty('state-fills', 'fill-color', paintSet.black);
+
+    } else { // hispanic
+      console.log('Using HISPANIC state paint');
       legend.removeClass('legend-blk').addClass('legend-his');
-      map.setPaintProperty('state-fills', 'fill-color', hispanicPaint);
+      map.setPaintProperty('state-fills', 'fill-color', paintSet.hispanic);
     }
+
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
   }
 }
+
 
 function buildGapPaint(fieldName, breaks, colors) {
   const { b1, b2, b3, b4 } = breaks;
