@@ -85,7 +85,7 @@ function getStateOpportunityEstimates(state,fieldName) {
   }
 
   if (!stateEntry) return `<div>State data not found for "${stateStr}"</div>`;
-  console.log(stateEntry)
+  // console.log(stateEntry) DEBUG
 
   // Extract values
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
