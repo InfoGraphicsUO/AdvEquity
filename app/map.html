@@ -70,21 +70,21 @@
     <div id="mapLegend" class="map-legend legend-blk">
       <div class="legend-main">
 
-        <!-- Low / High labels -->
-        <div class="legend-labels-top">
-          <div class="legend-label">Quantiles 20% of states </div>
-        </div>
+
             <!-- Color chips -->
         <div class="legend-chips">
           <div class="legend-swatch na">No data</div>
-          <div class="legend-swatch nd">1.0</div>
-          <div class="legend-swatch class-1">>1</div>
-          <div class="legend-swatch class-2"></div>
-          <div class="legend-swatch class-3"></div>
-          <div class="legend-swatch class-4"></div>
-          <div class="legend-swatch class-5"><span id="legendHigh">-</span></div>
+          <div class="legend-swatch nd"> &lt;1</div>
+          <div class="legend-swatch class-1"><div id="legendb1" class="legendBreakVal">-</div></div>
+          <div class="legend-swatch class-2"><div id="legendb2" class="legendBreakVal">-</div></div>
+          <div class="legend-swatch class-3"><div id="legendb3" class="legendBreakVal">-</div></div>
+          <div class="legend-swatch class-4"><div id="legendb4" class="legendBreakVal">-</div></div>
+          <span id="legendHigh">-</span>
         </div>
-
+        <!-- Low / High labels -->
+        <div class="legend-labels-top">
+          <div class="legend-label">Quantiles 20% of <span id="quantLabel">state</span>s</div>
+        </div>
 
 
         <!-- Class breaks

@@ -261,10 +261,7 @@ function initFactSheet(stateData, fips, fieldName) {
         OTH: stateLatest.PCT_ENR_OTH
       };
 
-      //from colorSchemes3 1/16/26 - moved to map.js
-      // const compColors = { WH: '#c59ac9', HI: "#5999cd", BL: "#fdbd68", AS: "#7fbfc3", OTH: "#9fc49a" };
-      // const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
-     
+   
       // drawCompositionBar is defined in map.js and loaded before this script in map.html
       try { drawCompositionBar('stateCompBar', compData, compColors); } catch (e) { console.warn('drawCompositionBar unavailable', e); }
     }

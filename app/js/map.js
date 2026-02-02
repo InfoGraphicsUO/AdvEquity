@@ -319,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (geojsonCache && stateDataCache && window.currentRaceField) {
       fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
     }
+    quantLabel.innerHTML= 'state';
     // update control states if function exists
     if (typeof updateControlStates === 'function') updateControlStates();
 
@@ -334,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // display district level data 
     console.log("clickedDistrict")
     if (typeof updateControlStates === 'function') updateControlStates();
+    quantLabel.innerHTML= 'district';
     // hide state layer
     map.setLayoutProperty('state-fills', 'visibility', 'none');
 
@@ -1580,6 +1582,11 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
 
   // document.getElementById('legendLow').textContent  = formatVal(breaks.min);
+  
+  document.getElementById('legendb1').textContent = formatVal(breaks.b1);
+  document.getElementById('legendb2').textContent = formatVal(breaks.b2);
+  document.getElementById('legendb3').textContent = formatVal(breaks.b3);
+  document.getElementById('legendb4').textContent = formatVal(breaks.b4);
   document.getElementById('legendHigh').textContent = formatVal(breaks.max);
 
   // --------------------------------------------------
@@ -1636,8 +1643,8 @@ function buildGapPaint(fieldName, breaks, colors) {
     ],
     colors.noData,
 
-    // exactly 1 → no disparity
-    ["==", ["get", fieldName], 1],
+    //  <1 → no disparity
+    ["<", ["get", fieldName], 1],
     colors.noDisparity,
 
     // otherwise step classification (>1)
@@ -1702,6 +1709,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- update legend ---
   const formatVal = v => typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
+  document.getElementById('legendb1').textContent = formatVal(breaks.b1);
+  document.getElementById('legendb2').textContent = formatVal(breaks.b2);
+  document.getElementById('legendb3').textContent = formatVal(breaks.b3);
+  document.getElementById('legendb4').textContent = formatVal(breaks.b4);
   document.getElementById('legendHigh').textContent = formatVal(breaks.max);
 
   const legend = $('#mapLegend');
@@ -1789,12 +1800,13 @@ map.setPaintProperty('district-fills', 'fill-color', [
   "case",
   ["==", ["feature-state", "value"], null],
   "transparent",
-  ["==", ["feature-state", "value"], 1],
-  "#b3ceb1",
+  // ["<", ["feature-state", "value"], 1],
+  // "#b3ceb1",
   [
     "step",
     ["feature-state", "value"],
-    "#fcf9d5",
+    "#b3ceb1",
+    1.0,"#fcf9d5",
     1.40142021720969, "#ffefad",
     1.78638941398866, "#fede8a",
     2.30771265340669, "#fdbd68",
