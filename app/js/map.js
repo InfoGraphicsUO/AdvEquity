@@ -639,7 +639,8 @@ const map = new mapboxgl.Map({
   fitBoundsOptions: {
     padding: 30 // padding to keep the bounds away from the edge of the map
   },
-  projection: 'albers',
+  // projection: 'albers',
+  projection: 'globe',
   // projection: 'mercator',
   // center: [-99.2, 40.0],
   // parallels: [27.5, 44.55]
@@ -1627,6 +1628,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   $('#legendb2').text(formatVal(breaks.b2));
   $('#legendb3').text(formatVal(breaks.b3));
   $('#legendb4').text(formatVal(breaks.b4));
+  $('#legendb5').text(formatVal(breaks.b5));
   $('#legendHigh').text(formatVal(breaks.max));
 
   // --------------------------------------------------

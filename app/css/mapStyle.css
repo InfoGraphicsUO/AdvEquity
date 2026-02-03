@@ -444,8 +444,8 @@ h3 {
 }
 
 .legendBreakVal{
-  align-self: flex-start;
-  text-align: start;
+  /* align-self: flex-start; */
+  text-align: end;
   /* position: absolute;
   left: 50%;
   transform: translateX(-50%);  */
