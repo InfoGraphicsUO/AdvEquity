@@ -1148,8 +1148,8 @@ function buildStateTable(stateData, fieldName) {
   for (let state in stateData) {
     const stateArray = stateData[state];
 
-    const yr2011 = stateArray.find(d => d.YEAR === 2011);
-    const yr2021 = stateArray.find(d => d.YEAR === 2021);
+  const yr2011 = stateArray.find(d => Number(String(d.YEAR).trim()) === 2011);
+  const yr2021 = stateArray.find(d => Number(String(d.YEAR).trim()) === 2021);
 
     const ap = yr2021?.SCH_APCOURSES ?? 'N/A';
     const val2011Raw = yr2011?.[fieldName];
@@ -1420,7 +1420,7 @@ async function loadBreaksCsv(url) {
 
 function parseBreaks2021(csvRows) {
   return csvRows
-    .filter(d => Number(d.YEAR) === 2021)
+    .filter(d => Number(String(d.YEAR).trim()) === 2021)
     .reduce((acc, d) => {
       acc[d.gap_var] = {
         b1: Number(d.b1),
@@ -1433,6 +1433,7 @@ function parseBreaks2021(csvRows) {
       return acc;
     }, {});
 }
+
 
 async function loadPaintsForAggregation(aggregationLevel) {
   const url = BREAKS_URLS[aggregationLevel];
@@ -1635,12 +1636,28 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // Merge selected field's 2021 values into copy
   geojsonCopy.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
-    const row = stateData[stateId]?.find(d => Number(d.YEAR) === targetYear);
+
+    // Normalize YEAR before comparing
+    const row = stateData[stateId]?.find(d =>
+      Number(String(d.YEAR).trim()) === targetYear
+    );
+
+    if (stateId === 56) {
+      console.log("WY merge check:", {
+        stateId,
+        row,
+        mergedValue: row?.[fieldName],
+        geojsonBefore: f.properties[fieldName]
+      });
+    }
 
     if (row && typeof row[fieldName] === 'number') {
       f.properties[fieldName] = row[fieldName];
     }
   });
+
+
+  console.log("WY final property:", geojsonCopy.features.find(f => f.properties.STATE_ID == 56).properties[fieldName]);
 
   // Push updated geojson into map source
   if (map.getSource('states')) {
@@ -1670,19 +1687,23 @@ function fillStateMap(map, geojson, stateData, fieldName) {
 
 // Shared helper: builds the STEP expression using a getter expression
 function buildGapStep(getter, breaks, colors) {
-  const { b1, b2, b3, b4 } = breaks;
+  const { b1, b2, b3, b4, max,min } = breaks;
 
   return [
     "step",
     getter,
-    colors.noDisparity,   // < 1
-    1,  colors.class1,    // >= 1 and < b1
-    b1, colors.class2,    // >= b1 and < b2
-    b2, colors.class3,    // >= b2 and < b3
-    b3, colors.class4,    // >= b3 and < b4
-    b4, colors.class5     // >= b4
+    colors.noData,          // < min
+    min,  colors.noDisparity, // min ≤ value < 1
+    1.0,  colors.class1,      // 1 ≤ value < b1
+    b1,   colors.class2,      // b1 ≤ value < b2
+    b2,   colors.class3,      // b2 ≤ value < b3
+    b3,   colors.class4,      // b3 ≤ value < b4
+    b4,   colors.class5       // ≥ b4 (and < next stop, if any)
   ];
+
+
 }
+
 
 
 function buildGapPaintState(fieldName, breaks, colors) {
@@ -1701,27 +1722,11 @@ function buildGapPaintState(fieldName, breaks, colors) {
   ];
 }
 
-
 function buildGapPaintDistrict(breaksObj, colors) {
-  const breaks = [
-    Number(breaksObj.b1),
-    Number(breaksObj.b2),
-    Number(breaksObj.b3),
-    Number(breaksObj.b4)
-  ];
-
   const getter = ["coalesce", ["feature-state", "value"], -9999];
-
-  return [
-    "step",
-    getter,
-    colors.noData,
-    breaks[0], colors.class1,
-    breaks[1], colors.class2,
-    breaks[2], colors.class3,
-    breaks[3], colors.class4
-  ];
+  return buildGapStep(getter, breaksObj, colors);
 }
+
 
 
 
