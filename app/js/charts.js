@@ -146,35 +146,57 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
   return 'Estimate did not change';
 }
 
-function initFactSheet(stateData, fips, fieldName) {
+// // Promise that resolves when ALL breaks are loaded
+// let breaksReadyPromise = null;
+
+// function ensureBreaksLoaded() {
+//   if (breaksReadyPromise) return breaksReadyPromise;
+
+//   breaksReadyPromise = Promise.all([
+//     fetch(BREAKS_URLS.State_National_Breaks).then(r => r.text()).then(t => d3.csvParse(t)).then(parseBreaks2021),
+//     fetch(BREAKS_URLS.District_National_Breaks).then(r => r.text()).then(t => d3.csvParse(t)).then(parseBreaks2021),
+//     fetch(BREAKS_URLS.District_State_Breaks).then(r => r.text()).then(t => d3.csvParse(t)).then(parseDistrictStateBreaks)
+//   ]).then(([stateNat, distNat, distState]) => {
+//     breaksByAggregation.State_National_Breaks = stateNat;
+//     breaksByAggregation.District_National_Breaks = distNat;
+//     breaksByAggregation.District_State_Breaks = distState;
+
+//     console.log("All breaks loaded:", breaksByAggregation);
+//   });
+
+//   return breaksReadyPromise;
+// }
+
+
+function initFactSheet(stateEntry, fips, fieldName) {
   showGraphs(); // hid the US level details, show the state details
   console.log("building fact sheet")
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
 
-  const fipsKey = String(fips).padStart(2, '0');
-  const stateEntry = stateData[fipsKey];
+  // const fipsKey = String(fips).padStart(2, '0'); // should already be padded and a string.
+  // const stateEntry = stateData[fipsKey];
 
-  if (!stateEntry) {
-    factSheetContainer.innerHTML = `
-      <h2><b>Error: No data found for FIPS ${fips}</b></h2>
-      <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
-    `;
-    // click handler to return button
-    setTimeout(() => {
-      const returnBtn = document.getElementById('returnToFullView');
-      if (returnBtn) {
-        returnBtn.addEventListener('click', () => {
-          map.fitBounds([[ -126, 24], [-66, 50]]);
-          if (typeof setMapView === 'function') setMapView('full');
-          hideGraphs();
-          const info = document.getElementById('infoContainer');
-          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        });
-      }
-    }, 0);
-    return;
-  }
+  // if (!stateEntry) {
+  //   factSheetContainer.innerHTML = `
+  //     <h2><b>Error: No data found for FIPS ${fips}</b></h2>
+  //     <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
+  //   `;
+  //   // click handler to return button
+  //   setTimeout(() => {
+  //     const returnBtn = document.getElementById('returnToFullView');
+  //     if (returnBtn) {
+  //       returnBtn.addEventListener('click', () => {
+  //         map.fitBounds([[ -126, 24], [-66, 50]]);
+  //         if (typeof setMapView === 'function') setMapView('full');
+  //         hideGraphs();
+  //         const info = document.getElementById('infoContainer');
+  //         if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  //       });
+  //     }
+  //   }, 0);
+  //   return;
+  // }
 
   // State abbreviation and values
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
@@ -272,9 +294,10 @@ function initFactSheet(stateData, fips, fieldName) {
   // Load and filter district data
     const loadAndBuild = (data) => {
     districtDataCache = districtDataCache || data; // cache first load
-    console.log(data[0].LEA_STATE)
+   
+    // filter district data for current state and 2021 (year be a varibale later)
     const filteredDistrictData = data.filter(d =>
-      d.LEA_STATE == state_abbrev
+      d.LEA_STATE == state_abbrev && d.YEAR == 2021
     );
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
     //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
@@ -287,6 +310,8 @@ function initFactSheet(stateData, fips, fieldName) {
         nd.textContent = unique.size.toLocaleString();
       }
     } catch(e) { console.warn('Could not set numDistricts', e); }
+    console.log("state filteredDistrictData", filteredDistrictData)
+
     fillDistrictMap(map, filteredDistrictData, state_abbrev, fips, fieldName); // default map coloring
   };
 
