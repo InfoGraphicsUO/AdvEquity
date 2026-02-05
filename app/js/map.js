@@ -24,6 +24,27 @@ const whiteClass4Color = getComputedStyle(_root).getPropertyValue('--white-class
 const asianClass4Color = getComputedStyle(_root).getPropertyValue('--asian-class-4-color').trim();
 const nativeAmericanClass4Color = getComputedStyle(_root).getPropertyValue('--native-american-class-4-color').trim();
 
+const blackColors = {
+  noData: noDataColor,
+  noDisparity: noDisparityColor,
+  class1: blackClass1Color,
+  class2: blackClass2Color,
+  class3: blackClass3Color,
+  class4: blackClass4Color,
+  class5: blackClass5Color
+};
+
+const hispanicColors = {
+  noData: noDataColor,
+  noDisparity: noDisparityColor,
+  class1: hispanicClass1Color,
+  class2: hispanicClass2Color,
+  class3: hispanicClass3Color,
+  class4: hispanicClass4Color,
+  class5: hispanicClass5Color
+};
+
+
 const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
      
 
@@ -319,7 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (geojsonCache && stateDataCache && window.currentRaceField) {
       fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
     }
-    quantLabel.innerHTML= 'state';
+
+    $(quantLabel).text("state")
     // update control states if function exists
     if (typeof updateControlStates === 'function') updateControlStates();
 
@@ -333,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof setMapView === 'function') setMapView('district');
     if (typeof updateControlStates === 'function') updateControlStates();
 
-    quantLabel.innerHTML = 'district';
+    $(quantLabel).text("district")
     map.setLayoutProperty('state-fills', 'visibility', 'none');
 
     // Create the layer ONLY if it doesn't exist
@@ -1472,20 +1494,41 @@ function parseBreaks2021(csvRows) {
     }, {});
 }
 
+function parseDistrictStateBreaks(csvRows) {
+  const out = {};
 
-async function loadPaintsForAggregation(aggregationLevel) {
-  console.log("loading breaks for", aggregationLevel)
+  for (const d of csvRows) {
+    const year = Number(d.YEAR);
+    if (year !== 2021) continue;
 
-  const url = BREAKS_URLS[aggregationLevel];
+    const state = d.LEA_STATE.trim();
+    const gap = d.gap_var.trim();
 
-  if (!url) {
-    throw new Error(`Unknown aggregation level: ${aggregationLevel}`);
+    if (!out[state]) out[state] = {};
+
+    out[state][gap] = {
+      b1: Number(d.b1),
+      b2: Number(d.b2),
+      b3: Number(d.b3),
+      b4: Number(d.b4),
+      min: Number(d.min),
+      max: Number(d.max)
+    };
   }
 
+  return out;
+}
+
+
+async function loadPaintsForAggregation(aggregationLevel) {
+  const url = BREAKS_URLS[aggregationLevel];
   const csvData = await loadBreaksCsv(url);
 
-  if (!csvData || !csvData.length) {
-    throw new Error(`No break data loaded for ${aggregationLevel}`);
+  if (aggregationLevel === 'District_State_Breaks') {
+    // SPECIAL HANDLING FOR STATE‑SPECIFIC BREAKS
+    breaksByAggregation.District_State_Breaks = parseDistrictStateBreaks(csvData);
+    console.log("Loaded state‑specific district breaks");
+    return;   // IMPORTANT: STOP HERE — DO NOT BUILD PAINTS
   }
 
   const breaks2021 = parseBreaks2021(csvData);
@@ -1800,8 +1843,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- get district paints and breaks ---
   const natPaintSet  = paints.District_National_Breaks;
+  const statePaintSet  = paints.District_State_Breaks;
+
   const natBreaksSet = breaksByAggregation.District_National_Breaks;
   const stateBreaksAll = breaksByAggregation.District_State_Breaks;
+
+  console.log(stateBreaksAll)
 
   if (!natPaintSet || !natPaintSet.black || !natPaintSet.hispanic) {
     console.warn('Paints not ready yet (District_National_Breaks)');
@@ -1834,42 +1881,64 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   //  SELECT BREAKS (NATIONAL vs STATE‑SPECIFIC) 
   let breaks;
   let paintSet;
+  let basePaint;
 
   if (!showAllStates) {
     // We are zoomed into a single state → use state‑specific breaks
     console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
     console.log(breaksByAggregation.District_State_Breaks);
-    const stateBreaks = breaksByAggregation.District_State_Breaks[state_abbrev];
-    if (stateBreaks && stateBreaks[fieldName]) {
-      breaks = stateBreaks[fieldName];
-      console.log(breaks)
-      paintSet = paints.District_State_Breaks;
+    console.log("fieldName", fieldName);
+
+    breaks = breaksByAggregation.District_State_Breaks[state_abbrev]?.[fieldName];
+    console.log(breaks);
+
+    if (breaks) {
       console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
+      paintSet = buildGapPaintDistrict(
+        breaks,
+        fieldName === 'ENR_AP_GAP_BL' ? blackColors : hispanicColors
+      );
+      console.log("paintSet", paintSet);
+
+      // state-specific paintSet is already the full step expression
+      basePaint = paintSet;
+
     } else {
       // fallback to national if missing
+      console.log("fallback using national breaks");
       breaks = fieldName === 'ENR_AP_GAP_BL'
         ? natBreaksSet.ENR_AP_GAP_BL
         : natBreaksSet.ENR_AP_GAP_HI;
+
       paintSet = natPaintSet;
+
+      basePaint = fieldName === 'ENR_AP_GAP_BL'
+        ? paintSet.black
+        : paintSet.hispanic;
+
       console.warn("Missing state‑specific breaks, using NATIONAL instead");
     }
+
   } else {
     // National view
     breaks = fieldName === 'ENR_AP_GAP_BL'
       ? natBreaksSet.ENR_AP_GAP_BL
       : natBreaksSet.ENR_AP_GAP_HI;
+
     paintSet = natPaintSet;
+
+    basePaint = fieldName === 'ENR_AP_GAP_BL'
+      ? paintSet.black
+      : paintSet.hispanic;
+
     console.log("Using NATIONAL district breaks");
   }
   //  END BREAK SELECTION 
 
 
   // --- build paint expression ---
-  const basePaint = fieldName === 'ENR_AP_GAP_BL'
-    ? paintSet.black
-    : paintSet.hispanic;
-
   const paint = convertPaintToFeatureState(basePaint, fieldName);
+
 
   if (!breaks) {
     console.warn('District breaks missing for', fieldName);
@@ -1885,6 +1954,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   $('#legendb3').text(formatVal(breaks.b3));
   $('#legendb4').text(formatVal(breaks.b4));
   $('#legendHigh').text(formatVal(breaks.max));
+
+  $(quantLabel).text("district")
 
   const legend = $('#mapLegend');
   legend.toggleClass('legend-blk', fieldName === 'ENR_AP_GAP_BL')
