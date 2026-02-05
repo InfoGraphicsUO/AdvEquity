@@ -328,7 +328,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function activateStateView(){
+    //note and display state level view
     window.aggLevel = 'state';
+    $(quantLabel).text("state")
+    $('#agg-selectState').addClass('active')
+    $('#agg-selectDist').removeClass('active')
+
     // switch map view to state (not full US)
     if (typeof setMapView === 'function') setMapView('state');
     console.log("clickedState")
@@ -341,19 +346,19 @@ document.addEventListener('DOMContentLoaded', () => {
       fillStateMap(map, geojsonCache, stateDataCache, window.currentRaceField);
     }
 
-    $(quantLabel).text("state")
     // update control states if function exists
     if (typeof updateControlStates === 'function') updateControlStates();
-
-    $('#agg-selectState').addClass('active')
-    $('#agg-selectDist').removeClass('active')
-    
-  }
+     }
 
   function activateDistrictView() {
+    //note and display state level view
     window.aggLevel = 'district';
+    $(quantLabel).text("district")
+    $('#agg-selectState').removeClass('active');
+    $('#agg-selectDist').addClass('active');
     if (typeof setMapView === 'function') setMapView('district');
     if (typeof updateControlStates === 'function') updateControlStates();
+
 
     $(quantLabel).text("district")
     map.setLayoutProperty('state-fills', 'visibility', 'none');
@@ -384,9 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.currentRaceField || 'ENR_AP_GAP_BL'
       );
     });
-
-    $('#agg-selectState').removeClass('active');
-    $('#agg-selectDist').addClass('active');
   }
 
 
@@ -1774,6 +1776,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
 function buildGapStep(getter, breaks, colors) {
   const { b1, b2, b3, b4, max,min } = breaks;
 
+  if(min < 1){
   return [
     "step",
     getter,
@@ -1785,6 +1788,21 @@ function buildGapStep(getter, breaks, colors) {
     b3,   colors.class4,      // b3 ≤ value < b4
     b4,   colors.class5       // ≥ b4 (and < next stop, if any)
   ];
+} else {
+  // break values must be in order. So, if not values < 1, don't have a no-disparity bin
+  return [
+    "step",
+    getter,
+    colors.noData,          // < min
+    min,  colors.class1,      // min ≤ value < b1
+    b1,   colors.class2,      // b1 ≤ value < b2
+    b2,   colors.class3,      // b2 ≤ value < b3
+    b3,   colors.class4,      // b3 ≤ value < b4
+    b4,   colors.class5       // ≥ b4 (and < next stop, if any)
+  ];
+
+}
+
 
 
 }
@@ -2621,6 +2639,8 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 function fmtValue(val, year, targetYear = 2021) {
   if (val == null || isNaN(val)) return "N/A";
 
+  console.log(val)
+
   // Format number: if integer, keep as is; if float, round to 2 decimals
   let formatted;
   if (typeof val === "number") {
@@ -2628,9 +2648,11 @@ function fmtValue(val, year, targetYear = 2021) {
   } else {
     formatted = val;
   }
+  console.log("formatted", formatted)
 
   return year !== targetYear ? `${formatted} (${year})` : formatted;
 }
+
 
 //responsive search box
 

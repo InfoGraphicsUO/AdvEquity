@@ -169,7 +169,7 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 
 function initFactSheet(stateEntry, fips, fieldName) {
-  showGraphs(); // hid the US level details, show the state details
+  showGraphs(); // hide the US level details, show the state details
   console.log("building fact sheet")
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
@@ -290,6 +290,12 @@ function initFactSheet(stateEntry, fips, fieldName) {
   } catch (e) {
     console.warn('Could not build state composition data', e);
   }
+
+    //note and display state level view
+    window.aggLevel = 'district';
+    $(quantLabel).text("district")
+    $('#agg-selectState').removeClass('active');
+    $('#agg-selectDist').addClass('active');
 
   // Load and filter district data
     const loadAndBuild = (data) => {
