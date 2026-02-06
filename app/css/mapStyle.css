@@ -370,11 +370,11 @@ h3 {
   line-height: 1;
 }
 
-.arrow-up {
+.arrow-down {
   color: var(--green);
 }
 
-.arrow-down {
+.arrow-up {
   color: var(--yellow);
 }
 
@@ -385,6 +385,14 @@ h3 {
 .opportunity-estimates{
   gap:0.5em;
   align-items: center;
+}
+
+#popup_districtOppEstBullet{
+  display:inline-block;
+  width:0.6rem;
+  height:0.6rem;
+  border-radius:50%;
+  margin-left:4px;
 }
 
 /* end popup */

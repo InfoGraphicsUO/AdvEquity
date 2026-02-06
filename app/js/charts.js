@@ -111,9 +111,8 @@ function getStateOpportunityEstimates(state,fieldName) {
   }
 
   const oppChangeText= getOpEstChangeText(val2011Raw, val2021Raw) 
-
   // Return formatted HTML
-  // to do: add a chip after 2021 with the fill color of the hovered state
+  // TO DO: add a chip after 2021 with the fill color of the hovered state
   const opphtml = `
     <h3>Opportunity Estimates</h3>
     <div class="opportunity-row opportunity-estimates">
@@ -138,9 +137,9 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
   const formattedDiff = Math.abs(diff).toFixed(2);
 
   if (diff > 0) {
-    return `Estimate increased by ${formattedDiff}`;
+    return `Estimated gap increased by ${formattedDiff}`;
   } else if (diff < 0) {
-    return `Estimate dropped by ${formattedDiff}`;
+    return `Estimate gap dropped by ${formattedDiff}`;
   }
 
   return 'Estimate did not change';

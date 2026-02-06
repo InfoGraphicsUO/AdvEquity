@@ -1854,6 +1854,20 @@ function convertPaintToFeatureState(expr, fieldName) {
   return expr.map(item => convertPaintToFeatureState(item, fieldName));
 }
 
+// gets a color from the mapbox formatted paint step expression
+function getColorFromPaintSet(val, paintArray) {
+  if (val == null || isNaN(val)) return "#ccc";
+
+  let color = paintArray[2];
+  // iterate through the step expression
+  for (let i = 3; i < paintArray.length; i += 2) {
+    const breakpoint = paintArray[i];
+    const nextColor = paintArray[i + 1];
+    if (val < breakpoint) {return color; }
+    color = nextColor;
+  }
+  return color;
+}
 
 
 function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, targetYear = 2021) {
@@ -1920,6 +1934,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
       // state-specific paintSet is already the full step expression
       basePaint = paintSet;
+      window.currentDistrictBreaks = breaks; // store globally
+      window.currentDistrictPaintSet = basePaint; // store globally
 
     } else {
       // fallback to national if missing
@@ -2001,7 +2017,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
       filter: showAllStates ? ['all'] : ['==', ['get', 'STATEFP'], statefips],
       paint: {
-        'fill-color': 'transparent',
+        'fill-color': noDataColor,
         'fill-opacity': 0.9,
         'fill-outline-color': offwhite
       }
@@ -2070,55 +2086,110 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- tooltip & hover ---
   map.on('mouseenter', 'district-fills', e => {
-    if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
-      try { districtPopup.remove(); } catch {}
-      map.getCanvas().style.cursor = '';
-      return;
-    }
-    hoveredDistrictPolygonID = '';
-    districtPopup.setLngLat(e.lngLat).setHTML("").addTo(map);
-  });
+    // if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
+    //   try { districtPopup.remove(); } catch {}
+    //   map.getCanvas().style.cursor = '';
+    //   return;
+    // }
+    map.getCanvas().style.cursor = 'pointer'
 
-  map.on('mousemove', 'district-fills', e => {
-    if (!e.features || !e.features.length) return;
-    const feat = e.features[0];
-    const fid = String(feat.id);
-    map.getCanvas().style.cursor = 'pointer';
-
-    // reset old hover
-    if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
-      map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: false });
-    }
-
-    hoveredDistrictPolygonID = fid;
-    map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid }, { hover: true });
-
-    // tooltip content
-    let geoId = String(feat.id).padStart(7,'0');
-    let hoveredDistrictData = districtData.find(d => String(d.LEAID).padStart(7,'0') === geoId);
-    const oppEst = hoveredDistrictData ? (hoveredDistrictData[window.currentRaceField] ?? '—') : '—';
-    const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
-    const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
-
+    // build popup once
     districtPopup.setHTML(`
-      <div style="font-family:sans-serif;font-size:13px;line-height:1.4;">
-        <strong>${feat.properties.NAME || feat.properties.LEA_NAME || 'District'} (2021)</strong>
-        <div>Opp Est: <b>${fmtValue(oppEst,2021)}</b></div>
-        <div>Students: ${fmtValue(students,2021)}</div>
-        <div>Teachers (FTE): ${fmtValue(teachers,2021)}</div>
+      <div><strong><span id="popup_districtName"></span> (2021)</strong>
+        <div>
+          Opp Est:
+          <b>
+            <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
+          </b>
+        </div>
+        <div>Students: <span id="popup_districtStudents"></span></div>
+        <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
       </div>
     `);
-    districtPopup.setLngLat(e.lngLat);
+
+    districtPopup.setLngLat(e.lngLat).addTo(map);
+    map.getCanvas().style.cursor = 'pointer';
   });
+
+
+    map.on('mousemove', 'district-fills', e => {
+      if (!e.features || !e.features.length) return;
+
+      const feat = e.features[0];
+      const fid = String(feat.id);
+
+      map.getCanvas().style.cursor = 'pointer';
+
+      // if still on same district AND popup already filled for this district, only move popup
+      if (hoveredDistrictPolygonID === fid && lastPopupDistrictId === fid) {
+        districtPopup.setLngLat(e.lngLat);
+        return;
+      }
+
+      // reset old hover
+      if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
+        map.setFeatureState(
+          { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+          { hover: false }
+        );
+      }
+
+      // set new hover
+      hoveredDistrictPolygonID = fid;
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid },
+        { hover: true }
+      );
+
+      // lookup district data
+      // console.log(districtData) all data
+      const geoId = fid.padStart(7, '0'); 
+      const hoveredDistrictData = districtData.filter( d => String(d.LEAID).padStart(7, '0') === geoId );
+      // console.log(hoveredDistrictData) // filtered to this district
+
+      const oppEst = hoveredDistrictData ? (hoveredDistrictData[window.currentRaceField] ?? '—') : '—';
+      const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
+      const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
+
+      // POPULATE TOOLTIP
+      // district name from map feature
+      $("#popup_districtName").text( feat.properties.NAME || feat.properties.LEA_NAME || 'District' );
+      // fill tooltip with data filtered to each year
+      oppEstValue=getDistrictValueByYear(hoveredDistrictData, window.currentRaceField, 2021)
+      $("#popup_districtOppEst").text(oppEstValue);
+      console.log(currentRaceField)
+      // set bullet color
+      console.log(paint)
+      const paintArray = window.currentRaceField === 'ENR_AP_GAP_BL' ? paintSet.black : paintSet.hispanic;
+      const bulletColor = getColorFromPaintSet(oppEstValue, paintArray);
+      $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
+      // other values
+      $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
+      $("#popup_districtTeachers").text(getDistrictValueByYear(hoveredDistrictData, "SCH_FTETEACH_TOT", 2021));
+
+
+
+      // mark that the popup is now filled for this district
+      lastPopupDistrictId = fid;
+
+      districtPopup.setLngLat(e.lngLat);
+    });
+
+
 
   map.on('mouseleave', 'district-fills', () => {
     map.getCanvas().style.cursor = '';
     try { districtPopup.remove(); } catch {}
+
     if (hoveredDistrictPolygonID) {
-      map.setFeatureState({ source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID }, { hover: false });
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { hover: false }
+      );
       hoveredDistrictPolygonID = null;
     }
   });
+
 
   // --- click to zoom and outline ---
   map.on('click', 'district-fills', e => {
@@ -2636,22 +2707,40 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
 
 // get most recent year of data
-function fmtValue(val, year, targetYear = 2021) {
+function getDistrictValueByYear(hoveredDistrictData, field, preferredYear = 2021) {
+  if (!hoveredDistrictData || hoveredDistrictData.length === 0) return "N/A";
+
+  // try preferred year first
+  let thisYearData = hoveredDistrictData.find(r => r.YEAR === preferredYear);
+
+  // fallback to latest available year
+  if (!thisYearData) {
+    thisYearData = hoveredDistrictData.reduce((a, b) =>
+      a.YEAR > b.YEAR ? a : b
+    );
+  }
+
+  const val = thisYearData[field];
+  const year = thisYearData.YEAR;
+
+  // your original formatting logic
   if (val == null || isNaN(val)) return "N/A";
 
-  console.log(val)
-
-  // Format number: if integer, keep as is; if float, round to 2 decimals
   let formatted;
   if (typeof val === "number") {
-    formatted = Number.isInteger(val) ? val.toLocaleString() : Number(val.toFixed(2)).toLocaleString();
+    formatted = Number.isInteger(val)
+      ? val.toLocaleString()
+      : Number(val.toFixed(2)).toLocaleString();
   } else {
     formatted = val;
   }
-  console.log("formatted", formatted)
 
-  return year !== targetYear ? `${formatted} (${year})` : formatted;
+  // include year if it's not the preferred year
+  return year !== preferredYear
+    ? `${formatted} (${year})`
+    : formatted;
 }
+
 
 
 //responsive search box
