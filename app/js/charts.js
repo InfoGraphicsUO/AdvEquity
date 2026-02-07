@@ -291,7 +291,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   }
 
     //note and display state level view
-    window.aggLevel = 'district';
+    currentAgg = 'district';
     $(quantLabel).text("district")
     $('#agg-selectState').removeClass('active');
     $('#agg-selectDist').addClass('active');
