@@ -2105,7 +2105,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     //   return;
     // }
     map.getCanvas().style.cursor = 'pointer'
-
+    // console.log("enter new popup")
     // build popup once
     districtPopup.setHTML(`
       <div><strong><span id="popup_districtName"></span> (2021)</strong>
@@ -2126,6 +2126,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
 
     map.on('mousemove', 'district-fills', e => {
+      // console.log("move within district, fill popup")
       if (!e.features || !e.features.length) return;
 
       const feat = e.features[0];
@@ -2202,6 +2203,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         { hover: false }
       );
       hoveredDistrictPolygonID = null;
+      lastPopupDistrictId = null
     }
   });
 
