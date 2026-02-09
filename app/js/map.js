@@ -2114,8 +2114,9 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     console.log("updated district feature paint")
   }
 
-  map.off('idle', updateDistrictFeatureStates);
-  map.on('idle', updateDistrictFeatureStates);
+  // map.off('idle', updateDistrictFeatureStates);
+  // map.on('idle', updateDistrictFeatureStates);
+  map.once('idle', updateDistrictFeatureStates);
 
   // --- tooltip & hover ---
   map.on('mouseenter', 'district-fills', e => {
