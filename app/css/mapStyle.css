@@ -365,6 +365,10 @@ h3 {
   font-size: 13px;
 }
 
+.popup {
+  pointer-events: none;
+}
+
 .arrow {
   font-size: 20px;
   line-height: 1;

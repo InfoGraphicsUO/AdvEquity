@@ -1869,6 +1869,7 @@ function convertPaintToFeatureState(expr, fieldName) {
 // gets a color from the mapbox formatted paint step expression
 function getColorFromPaintSet(val, paintArray) {
   if (val == null || isNaN(val)) return "#ccc";
+  console.log(paintArray)
 
   let color = paintArray[2];
   // iterate through the step expression
@@ -2066,6 +2067,24 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips]);
     }
   }
+
+    // feature state color on hover
+    // --- Hover outline styling for district lines ---
+    map.setPaintProperty('district-lines', 'line-color', [
+      'case',
+      ['boolean', ['feature-state', 'hover'], false],
+      '#000',      // thick black outline on hover
+      offwhite     // default outline
+    ]);
+
+    map.setPaintProperty('district-lines', 'line-width', [
+      'case',
+      ['boolean', ['feature-state', 'hover'], false],
+      2.5,         // thick on hover
+      0.5          // normal width
+    ]);
+
+
   // --- set feature-states safely ---
   function applyFeatureStates() {
     try {
@@ -2092,6 +2111,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
     applyFeatureStates();
     map.setPaintProperty('district-fills', 'fill-color', currentMapPaint);
+    console.log("updated district feature paint")
   }
 
   map.off('idle', updateDistrictFeatureStates);
@@ -2172,11 +2192,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       oppEstValue=getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021)
       $("#popup_districtOppEst").text(oppEstValue);
 
-      // setl bullet color
-      console.log(paintSet)
-      // console.log(currentRaceField)
-      const paintArray = currentRaceField === 'ENR_AP_GAP_BL' ? paintSet.black : paintSet.hispanic;
-      const bulletColor = getColorFromPaintSet(oppEstValue, paintArray);
+      // set bullet color
+      const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint); // use global paint: currentMapPaint
       $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
       // other values
       $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
