@@ -1714,19 +1714,13 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     console.warn('Missing state breaks for field:', fieldName);
     return;
   }
-
-  // update legend using the min and max from the CSV breaks
-  const formatVal = v =>
-    typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
-
-  // document.getElementById('legendLow').textContent  = formatVal(breaks.min);
   
-  $('#legendb1').text(formatVal(breaks.b1));
-  $('#legendb2').text(formatVal(breaks.b2));
-  $('#legendb3').text(formatVal(breaks.b3));
-  $('#legendb4').text(formatVal(breaks.b4));
-  $('#legendb5').text(formatVal(breaks.b5));
-  $('#legendHigh').text(formatVal(breaks.max));
+  $('#legendb1').text(formatLegendVal(breaks.b1));
+  $('#legendb2').text(formatLegendVal(breaks.b2));
+  $('#legendb3').text(formatLegendVal(breaks.b3));
+  $('#legendb4').text(formatLegendVal(breaks.b4));
+  $('#legendb5').text(formatLegendVal(breaks.b5));
+  $('#legendHigh').text(formatLegendVal(breaks.max));
 
   // --------------------------------------------------
   // Make a copy of geojson so we don't mutate the original
@@ -1995,13 +1989,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     console.log("breaks", breaks)
   }
 
-  // --- update legend ---
-  formatVal = v => typeof v === 'number' && isFinite(v) ? v.toFixed(2) : '—';
-  $('#legendb1').text(formatVal(breaks.b1));
-  $('#legendb2').text(formatVal(breaks.b2));
-  $('#legendb3').text(formatVal(breaks.b3));
-  $('#legendb4').text(formatVal(breaks.b4));
-  $('#legendHigh').text(formatVal(breaks.max));
+    // --- update legend ---
+  $('#legendb1').text(formatLegendVal(breaks.b1));
+  $('#legendb2').text(formatLegendVal(breaks.b2));
+  $('#legendb3').text(formatLegendVal(breaks.b3));
+  $('#legendb4').text(formatLegendVal(breaks.b4));
+  $('#legendHigh').text(formatLegendVal(breaks.max));
 
   $(quantLabel).text("district")
 
@@ -2363,13 +2356,13 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         </div>
         <br><h3>Latest information</h3>
         <div class="opportunity-row">
-          Teachers (FTE): ${formatVal(latest.SCH_FTETEACH_TOT)}<br>
-          Enrollment: ${formatVal(latest.ENR)}<br>
-          HS Enrollment: ${formatVal(latest.ENR_HS_TOT)}<br>
-          Student-teacher ratio: ${formatVal(latest.STU_TEACH_RAT)}<br>
-          AP Enrollment: ${formatVal(latest.ENR_AP)}<br>
-          Modal AP courses: ${formatVal(latest.SCH_APCOURSES)}<br>
-          Number of schools: ${formatVal(latest.SCHOOLS)}<br>
+          Teachers (FTE): ${formatLegendVal(latest.SCH_FTETEACH_TOT)}<br>
+          Enrollment: ${formatLegendVal(latest.ENR)}<br>
+          HS Enrollment: ${formatLegendVal(latest.ENR_HS_TOT)}<br>
+          Student-teacher ratio: ${formatLegendVal(latest.STU_TEACH_RAT)}<br>
+          AP Enrollment: ${formatLegendVal(latest.ENR_AP)}<br>
+          Modal AP courses: ${formatLegendVal(latest.SCH_APCOURSES)}<br>
+          Number of schools: ${formatLegendVal(latest.SCHOOLS)}<br>
         </div>
         <h3>District Composition</h3>
         <div class="opportunity-row">
@@ -2745,6 +2738,21 @@ function getDistrictValueByYear(hoveredDistrictData, field, preferredYear = 2021
     ? `${formatted} (${year})`
     : formatted;
 }
+
+
+// return 2 decimals, or int, or a —
+function formatLegendVal(v) {
+    if (typeof v !== 'number' || !isFinite(v)) {
+        return '—';
+    }
+
+    const options = Number.isInteger(v)
+        ? { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+        : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+
+    return new Intl.NumberFormat(undefined, options).format(v);
+}
+
 
 
 
