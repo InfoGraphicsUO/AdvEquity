@@ -1463,14 +1463,19 @@ const breaksByAggregation = {
   District_State_Breaks: null
 };
 
+const isGitHubPages = window.location.hostname.includes('github.io');
+const BASE = isGitHubPages ? '/AdvEquity' : '';
+
+// paths work on github
 const BREAKS_URLS = {
   State_National_Breaks:
-    '../../assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv',
+    `${BASE}/assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv`,
   District_National_Breaks:
-    '../../assets/data/AP%20Data/class%20breaks/ap_equity_district_national_breaks.csv',
+    `${BASE}/assets/data/AP%20Data/class%20breaks/ap_equity_district_national_breaks.csv`,
   District_State_Breaks:
-    '../../assets/data/AP%20Data/class%20breaks/ap_equity_district_within_state_breaks.csv'
+    `${BASE}/assets/data/AP%20Data/class%20breaks/ap_equity_district_within_state_breaks.csv`
 };
+
 
 let breaks2021;
 let blackPaint, hispanicPaint;
