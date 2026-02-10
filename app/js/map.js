@@ -1345,7 +1345,7 @@ function buildDistrictTable(districtData, fieldName) {
       // Attempt to find the map feature and zoom to it
       let foundFeature = null;
       try {
-        const features = map.querySourceFeatures('SCHOOLDIST_TL24', { sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l' }) || [];
+        const features = map.querySourceFeatures('SCHOOLDIST_TL24', { 'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l' }) || [];
         foundFeature = features.find(f => {
           if (!f) return false;
           const fid = String(f.id || '').replace(/^0+/, '');
@@ -1863,7 +1863,7 @@ function convertPaintToFeatureState(expr, fieldName) {
 // gets a color from the mapbox formatted paint step expression
 function getColorFromPaintSet(val, paintArray) {
   if (val == null || isNaN(val)) return "#ccc";
-  console.log(paintArray)
+  //console.log(paintArray)
 
   let color = paintArray[2];
   // iterate through the step expression
@@ -2017,6 +2017,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- add / update district layers ---
   if (!map.getLayer('district-fills')) {
+    console.log("adding fresh district layer")
     map.addLayer({
       id: 'district-fills',
       type: 'fill',
@@ -2081,12 +2082,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   // --- set feature-states safely ---
   function applyFeatureStates() {
     try {
-      const features = map.querySourceFeatures('SCHOOLDIST_TL24', { sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l' });
+      const features = map.querySourceFeatures('SCHOOLDIST_TL24', { 'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l' });
       for (const f of features) {
         const geoId = String(f.id).padStart(7,'0');
         const val = currentDistrictValueMap[geoId];
         map.setFeatureState(
-          { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: f.id },
+          { source: 'SCHOOLDIST_TL24', 'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: f.id },
           { value: val !== undefined ? val : null }
         );
       }
@@ -2097,7 +2098,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   function updateDistrictFeatureStates() {
     const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
-      sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
     });
 
     if (features.length === 0) return;
@@ -2139,25 +2140,21 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   });
 
 
-    map.on('mousemove', 'district-fills', e => {
-      // console.log("move within district, fill popup")
-      if (!e.features || !e.features.length) return;
+  // map.on('mousemove', 'district-fills', e => {
 
       const feat = e.features[0];
       const fid = String(feat.id);
+  //   const fid = feat.id;  // <-- REQUIRED
 
       map.getCanvas().style.cursor = 'pointer';
 
-      // if still on same district AND popup already filled for this district, only move popup
       if (hoveredDistrictPolygonID === fid && lastPopupDistrictId === fid) {
         districtPopup.setLngLat(e.lngLat);
-        return;
       }
 
       // reset old hover
       if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
         map.setFeatureState(
-          { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
           { hover: false }
         );
       }
@@ -2165,42 +2162,44 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       // set new hover
       hoveredDistrictPolygonID = fid;
       map.setFeatureState(
-        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid },
         { hover: true }
       );
 
       // lookup district data
       // console.log(districtData) all data
       const geoId = fid.padStart(7, '0'); 
-      const hoveredDistrictData = districtData.filter( d => String(d.LEAID).padStart(7, '0') === geoId );
       // console.log(hoveredDistrictData) // filtered to this district
 
       const oppEst = hoveredDistrictData ? (hoveredDistrictData[currentRaceField] ?? '—') : '—';
       const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
       const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
+  //   hoveredDistrictPolygonID = fid;
 
       // POPULATE TOOLTIP
       // district name from map feature
       $("#popup_districtName").text( feat.properties.NAME || feat.properties.LEA_NAME || 'District' );
-      // fill tooltip with data filtered to each year
       oppEstValue=getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021)
       $("#popup_districtOppEst").text(oppEstValue);
 
       // set bullet color
       const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint); // use global paint: currentMapPaint
       $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
-      // other values
       $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
       $("#popup_districtTeachers").text(getDistrictValueByYear(hoveredDistrictData, "SCH_FTETEACH_TOT", 2021));
 
 
+  //     const geoId = fid.padStart(7, '0'); 
+  //     const hoveredDistrictData = districtData.filter( d => String(d.LEAID).padStart(7, '0') === geoId );
 
       // mark that the popup is now filled for this district
       lastPopupDistrictId = fid;
+  //     const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
 
+  //     // fill tooltip with data filtered to each year
 
       districtPopup.setLngLat(e.lngLat);
     });
+
 
 
 
@@ -2210,7 +2209,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
     if (hoveredDistrictPolygonID) {
       map.setFeatureState(
-        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { source: 'SCHOOLDIST_TL24', 'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
         { hover: false }
       );
       hoveredDistrictPolygonID = null;
@@ -2219,15 +2218,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   });
 
 
-  // --- click to zoom and outline ---
-  map.on('click', 'district-fills', e => {
-    const feat = e.features[0];
-    const fid = feat.id;
 
     // highlight clicked district outline in black
     if (map.getLayer('district-lines')) {
       map.setPaintProperty('district-lines', 'line-color', [
-        'case',
         ['==', ['id'], fid],
         '#000',
         offwhite
@@ -2237,7 +2231,6 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     if (!showAllStates) {
       const bounds = new mapboxgl.LngLatBounds();
       function extendBounds(coords) {
-        if (typeof coords[0][0] === 'number') coords.forEach(c => bounds.extend(c));
         else coords.forEach(extendBounds);
       }
       extendBounds(feat.geometry.coordinates);
@@ -2246,6 +2239,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       hideNoGeometryNotice();
     }
   });
+    showDistrictFactsheet(feat, window.districtData);
 }
 
 
@@ -2459,7 +2453,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
         let foundFeature = null;
         try {
           const features = map.querySourceFeatures('SCHOOLDIST_TL24', {
-            sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
+            'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l'
           }) || [];
 
           // match by feature id (some features have id == LEAID), by LEAID/GEOID property,
@@ -2794,12 +2788,12 @@ function resizeQueryBar(targetClass) {
   queryBar.classList.add(targetClass);
 
   if (targetClass === 'qbExpanded') {
-    console.log('expanding query bar')
+    // console.log('expanding query bar')
     resizeButton.style.display = 'none';
     // mapButtons.style.display = '';
     searchBox.style.display = '';
   } else if (targetClass === 'qbCollapsed') {
-    console.log('shrinking query bar')
+    // console.log('shrinking query bar')
     resizeButton.style.display = '';
     // mapButtons.style.display = 'none';
     searchBox.style.display = 'none';
