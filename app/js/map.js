@@ -670,14 +670,14 @@ const map = new mapboxgl.Map({
   maxZoom : 10, 
   minZoom : 0, 
   // zoom: 3,
-  bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
-  maxBounds: [[ -140, 25],[-50, 65]], // bounding box (southwest corner, northeast corner)
+  bounds: [[ -126, 24], [-66, 50]], // inital bounding box (southwest corner, northeast corner)
+  // maxBounds: [[ -140, 25],[-50, 65]], // bounding box (southwest corner, northeast corner)
   fitBoundsOptions: {
     padding: 30 // padding to keep the bounds away from the edge of the map
   },
   // projection: 'albers',
-  projection: 'globe',
-  // projection: 'mercator',
+  // projection: 'globe',
+  projection: 'mercator',
   // center: [-99.2, 40.0],
   // parallels: [27.5, 44.55]
 });
