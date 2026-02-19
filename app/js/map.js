@@ -559,8 +559,8 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBox.accessToken = mapboxgl.accessToken
     searchBox.options = {
         types: 'city,district,region,place,locality',
-        proximity: map.getCenter(),  
-        //bbox:[-135, 30, -90, 52] // Southwest coordinates, Northeast coordinates. Same as inset bounds
+        proximity: map.getCenter(), // bias to current map center 
+        country: 'US', // limit to United States
     };
     searchBox.mapboxgl = mapboxgl;
     searchBox.componentOptions = { allowReverse: true, flipCoordinates: true };
@@ -654,6 +654,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // updateControlStates() //not working backToStateBtn not activating
     $('#backToStateBtn').removeClass('control-disabled')
+
+    // set bias on search box
+    const center = map.getCenter();
+    searchBox.options = {
+      ...searchBox.options,
+      proximity: [center.lng, center.lat]
+    };
+    console.log("set bias")
 
 
   });
@@ -1463,14 +1471,19 @@ const breaksByAggregation = {
   District_State_Breaks: null
 };
 
+const isGitHubPages = window.location.hostname.includes('github.io');
+const BASE = isGitHubPages ? '/AdvEquity' : '';
+
+// paths work on github
 const BREAKS_URLS = {
   State_National_Breaks:
-    '../../assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv',
+    `${BASE}/assets/data/AP%20Data/class%20breaks/ap_equity_state_national_breaks.csv`,
   District_National_Breaks:
-    '../../assets/data/AP%20Data/class%20breaks/ap_equity_district_national_breaks.csv',
+    `${BASE}/assets/data/AP%20Data/class%20breaks/ap_equity_district_national_breaks.csv`,
   District_State_Breaks:
-    '../../assets/data/AP%20Data/class%20breaks/ap_equity_district_within_state_breaks.csv'
+    `${BASE}/assets/data/AP%20Data/class%20breaks/ap_equity_district_within_state_breaks.csv`
 };
+
 
 let breaks2021;
 let blackPaint, hispanicPaint;
