@@ -559,8 +559,8 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBox.accessToken = mapboxgl.accessToken
     searchBox.options = {
         types: 'city,district,region,place,locality',
-        proximity: map.getCenter(),  
-        //bbox:[-135, 30, -90, 52] // Southwest coordinates, Northeast coordinates. Same as inset bounds
+        proximity: map.getCenter(), // bias to current map center 
+        country: 'US', // limit to United States
     };
     searchBox.mapboxgl = mapboxgl;
     searchBox.componentOptions = { allowReverse: true, flipCoordinates: true };
@@ -654,6 +654,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // updateControlStates() //not working backToStateBtn not activating
     $('#backToStateBtn').removeClass('control-disabled')
+
+    // set bias on search box
+    const center = map.getCenter();
+    searchBox.options = {
+      ...searchBox.options,
+      proximity: [center.lng, center.lat]
+    };
+    console.log("set bias")
 
 
   });
