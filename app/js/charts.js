@@ -114,7 +114,7 @@ function getStateOpportunityEstimates(state,fieldName) {
   // Return formatted HTML
   // TO DO: add a chip after 2021 with the fill color of the hovered state
   const opphtml = `
-    <h3>Opportunity Estimates</h3>
+    <h3>Opportunity Gap Estimates</h3>
     <div class="opportunity-row opportunity-estimates">
       <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
@@ -169,7 +169,8 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 function initFactSheet(stateEntry, fips, fieldName) {
   showGraphs(); // hide the US level details, show the state details
-  console.log("building fact sheet")
+  console.log("building fact sheet ", stateEntry)
+  console.log("building fieldName", fieldName)
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
 
@@ -198,14 +199,22 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // }
 
   // State abbreviation and values
-  const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
-  const modal_school_APCOURSES = stateEntry[stateEntry.length - 1]?.SCH_APCOURSES ?? 'Unknown';
-  const val2011Raw = stateEntry[0]?.[fieldName];
-  const lastEntry = stateEntry[stateEntry.length - 1]; // last year = 2021
-  const val2021Raw = lastEntry?.[fieldName];
+  const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown'; // get from first entry
+  const lastEntry = stateEntry[stateEntry.length - 1]; // whole row. Assume last year = 2021 
 
-  // AP classes offered in 2021
-  const apNum2021 = lastEntry?.ENR_AP ?? '—';
+  // number of students enrolled in AP classes
+  const apNum2021 = lastEntry?.ENR_AP ?? '—'; // not used? 
+  // mode of AP classes offered in 2021
+  const modal_school_APCOURSES = lastEntry?.SCH_APCOURSES ?? 'Unknown'; // lst year (assume 2021)
+
+  
+  // GAP Values
+  // fieldName given race field e.g. ENR_AP_GAP_BL
+  const val2011Raw = stateEntry[0]?.[fieldName];// map value (gap) - assume first year 2011
+  const val2021Raw = lastEntry?.[fieldName]; // map value (gap) - assume last year 2021
+
+
+
 
   const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
   const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
