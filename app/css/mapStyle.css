@@ -322,7 +322,7 @@ h3 {
   align-items: flex-start;      /* left-align text and charts */
   /* min-width: 280px;             responsive floor 280, but no mid-width best for state fact sheet in iframe */
   gap: 0.5em;
-   flex: 1 1 300px;                /* keep original responsive behavior */
+  flex: 0 1 300px; /* grow, shrink, base width */
 }
 
 

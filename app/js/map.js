@@ -11,7 +11,6 @@ let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
 let currentRaceField  = 'ENR_AP_GAP_BL'; // fields with the data disparity data('ENR_AP_GAP_BL' |  'ENR_AP_GAP_HS')
 let currentRaceCode = 'BL' // ('BL' |  'HI')
 
-
 let lastDistrictStateFP = null;
 let lastDistrictStateAbbrev = null;
 let mapView; // extent of the map ('full' | 'state' | 'district')
@@ -57,7 +56,8 @@ const hispanicColors = {
 };
 
 const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
-     
+
+console.log("MAP JS loaded");
 
 document.addEventListener('DOMContentLoaded', () => {
   // const searchInput = document.querySelector('.search_query input');
@@ -705,7 +705,10 @@ var districtPopup = new mapboxgl.Popup({
   closeOnClick: false
 });
 
+
+
 map.on('load', () => {
+  console.log("MAP LOAD FIRED");
 
   // // hide basemap layers/labels that we don't want
   // const hiddenLayers = [
@@ -834,7 +837,52 @@ getStateData().then(({ geojson, stateData }) => {
   fillStateMap(map, geojsonCache, stateDataCache, 'ENR_AP_GAP_BL'); // default map coloring
 });
 
+// county labels
 
+  // 1. Add empty label source
+  map.addSource('county-labels', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features: [] }
+  });
+
+  // 2. Add label layer
+map.addLayer({
+  id: 'county-label-layer',
+  type: 'symbol',
+  source: 'county-labels',
+  layout: {
+    'text-field': ['get', 'NAME'],
+    'text-size': 8,            
+    'text-transform': 'uppercase',
+    'text-letter-spacing': 0.3,
+    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+  },
+  paint: {
+    'text-opacity':0.8,
+    'text-color': '#aaa'     
+  }
+});
+
+  // for adding county labels
+let needsLabelUpdate = false;
+
+map.on('moveend', () => {
+  if (map.getZoom() >= 5) {
+    needsLabelUpdate = true;
+  }
+});
+
+map.on('idle', () => {
+  if (needsLabelUpdate) {
+    console.log("Updating labels after moveend + idle");
+    needsLabelUpdate = false;
+    buildCountyPolylabels();
+  }
+});
+
+
+
+// interactive borders
   map.addLayer({
     id: 'state-borders',
     type: 'line',
@@ -1114,6 +1162,7 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
   });
 });
 
+
 const popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false
@@ -1245,6 +1294,7 @@ function buildStateTable(stateData, fieldName) {
  }
 
 function buildDistrictTable(districtData, fieldName) {
+  console.log("Building District Table")
   // Custom sort for N/A
   jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
     'na-last-asc': (a, b) => {
@@ -1290,8 +1340,9 @@ function buildDistrictTable(districtData, fieldName) {
 
     // Filter by year
     const yr2011 = records.find(r => r.YEAR === 2011);
-    // const yr2021 = records.find(r => r.YEAR === 2021 || r.YEAR === 2020 || r.YEAR === 2021); // pick last available if exact 2021 missing
-    const yr2021 = records.find(r => r.YEAR === 2021); // pick last available if exact 2021 missing
+    console.log('yr2011', yr2011)
+    const yr2021 = records.find(r => r.YEAR === 2021); 
+     console.log('yr2011', yr2021)
 
     const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
     const stateAbbrev = yr2021?.LEA_STATE ?? yr2011?.LEA_STATE ?? '—';
@@ -2048,7 +2099,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   }
 
   if (!map.getLayer('district-lines')) {
-    const layerDef = {
+    const districtLinesLayerDef = {
       id: 'district-lines',
       type: 'line',
       source: 'SCHOOLDIST_TL24',
@@ -2061,10 +2112,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     };
 
     if (!showAllStates) {
-      layerDef.filter = ['==', ['get', 'STATEFP'], statefips];
+      districtLinesLayerDef.filter = ['==', ['get', 'STATEFP'], statefips];
     }
 
-    map.addLayer(layerDef, 'state-borders');
+    map.addLayer(districtLinesLayerDef, 'Country-Labels_ne-10m-admin-2-counties');
   } else {
     if (showAllStates) {
       // remove filter entirely
@@ -2824,4 +2875,79 @@ function resizeQueryBar(targetClass) {
             mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
         });
     }
+}
+
+function buildCountyPolylabels() {
+  console.log("buildCountyPolylabels() called");
+
+  const polys = map.queryRenderedFeatures({
+    layers: ['County-Polygons_ne-10m-admin-2-counties']
+  });
+
+  console.log("polys found:", polys.length);
+
+  // Group polygons by county ID (use NAME if no GEOID)
+  const counties = {};
+
+  polys.forEach(f => {
+    if (!f.geometry || !f.geometry.coordinates) return;
+
+    const id = f.properties.GEOID || f.properties.NAME;
+    if (!id) return;
+
+    // Normalize geometry into an array of polygons
+    let polygons = [];
+
+    if (f.geometry.type === 'Polygon') {
+      polygons = [f.geometry.coordinates];
+    }
+
+    if (f.geometry.type === 'MultiPolygon') {
+      polygons = f.geometry.coordinates;
+    }
+
+    // Compute area for each polygon
+    polygons.forEach(coords => {
+      const area = turf.area({ type: 'Polygon', coordinates: coords });
+
+      if (!counties[id] || area > counties[id].area) {
+        counties[id] = {
+          id,
+          props: f.properties,
+          coords,
+          area
+        };
+      }
+    });
+  });
+
+  // Build label features
+  const labelFeatures = Object.values(counties).map(c => {
+    let center;
+
+    try {
+      center = polylabel(c.coords, 1.0);
+    } catch (e) {
+      console.warn("polylabel failed, using centroid", c.id);
+      center = turf.centroid({
+        type: 'Polygon',
+        coordinates: c.coords
+      }).geometry.coordinates;
+    }
+
+    return {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: center },
+      properties: c.props
+    };
+  });
+
+  console.log("labelFeatures:", labelFeatures.length);
+
+  map.getSource('county-labels').setData({
+    type: 'FeatureCollection',
+    features: labelFeatures
+  });
+
+  console.log("Labels updated");
 }

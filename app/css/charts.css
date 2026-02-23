@@ -4,6 +4,7 @@
 
 .district-column {
   position: relative; /* make absolute positioning relative to this container */
+  flex-grow: 1;
 }
 
 .floatText {

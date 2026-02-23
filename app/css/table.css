@@ -74,8 +74,8 @@
   }
 }
 
-#compBar{
-  margin-right: 10px;
+#compBar, #stateCompBar{
+  padding-right: 1em;
 }
 
 #us-table.dataTable tbody tr.selected td {

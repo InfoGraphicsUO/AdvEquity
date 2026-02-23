@@ -248,7 +248,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
       <!-- State composition bar: placed below the opportunity column -->
       <div style="margin-bottom:8px;">
         <h3>State Composition</h3><br>
-        <canvas id="stateCompBar" width="360" height="70"></canvas>
+        <canvas id="stateCompBar" width="350" height="70"></canvas>
       </div>
     </div> <!-- end "opportunity-column" -->
     <div class="opportunity-column district-column">
