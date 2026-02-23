@@ -332,6 +332,7 @@ h3 {
   min-height: 0;                  /* CRITICAL for scrolling inside flex/grid */
   /* Optional: set a max-height to ensure it doesn't bleed out of the container */
   max-height: 100%;               /* fill available height of the parent container */
+  flex: 1 0;
 }
 
 #factsheet-left{
