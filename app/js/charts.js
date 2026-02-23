@@ -313,9 +313,15 @@ function initFactSheet(stateEntry, fips, fieldName) {
     const filteredDistrictData = data.filter(d =>
       d.LEA_STATE == state_abbrev && d.YEAR == 2021
     );
+
+    const filteredDistrictTableData = data.filter(d =>
+      d.LEA_STATE == state_abbrev && (d.YEAR == 2021 || d.YEAR == 2011)
+    );
+
+
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
     //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
-    buildDistrictTable(filteredDistrictData, fieldName) // actually fills the table, given the data are loaded
+    buildDistrictTable(filteredDistrictTableData, fieldName) // actually fills the table, given the data are loaded
     // populate # districts in the factsheet by counting unique LEAID (might be changed later)
     try {
       const nd = document.getElementById('numDistricts');
