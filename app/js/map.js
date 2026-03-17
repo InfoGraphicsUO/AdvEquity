@@ -1276,7 +1276,7 @@ function buildStateTable(stateData, fieldName) {
   const yr2011 = stateArray.find(d => Number(String(d.YEAR).trim()) === 2011);
   const yr2021 = stateArray.find(d => Number(String(d.YEAR).trim()) === 2021);
 
-    const ap = yr2021?.SCH_APCOURSES ?? 'N/A';
+    const ap = yr2021?.SCH_APCOURSES_MODE ?? 'N/A';
     const val2011Raw = yr2011?.[fieldName];
     const val2021Raw = yr2021?.[fieldName];
     const stateAbbrev = yr2011?.state_abbrev ?? yr2021?.state_abbrev ?? '';
@@ -2425,7 +2425,6 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           HS Enrollment: ${formatLegendVal(latest.ENR_HS_TOT)}<br>
           Student-teacher ratio: ${formatLegendVal(latest.STU_TEACH_RAT)}<br>
           AP Enrollment: ${formatLegendVal(latest.ENR_AP)}<br>
-          Modal AP courses: ${formatLegendVal(latest.SCH_APCOURSES)}<br>
           Number of schools: ${formatLegendVal(latest.SCHOOLS)}<br>
         </div>
         <h3>District Composition</h3>
@@ -2762,7 +2761,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           prepareAndDrawSparkline({ canvasId: 'nonwhiteChart', legendId: 'nonwhiteLegend', title: 'Percent non-white', field: 'PCT_ENR_NON_WH', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'apChart', legendId: 'apLegend', title: 'AP participation (%)', field: 'PCT_ENR_AP', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'stChart', legendId: 'stLegend', title: 'Student–teacher ratio', field: 'STU_TEACH_RAT', records, years, natLookup, stateAbbrev });
-          prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES', records, years, natLookup, stateAbbrev });
+          prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES_MODE', records, years, natLookup, stateAbbrev });
         } catch (e) { console.warn('Could not draw detail sparklines', e); }
       });
 }

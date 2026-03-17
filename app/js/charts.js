@@ -205,7 +205,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // number of students enrolled in AP classes
   const apNum2021 = lastEntry?.ENR_AP ?? '—'; // not used? 
   // mode of AP classes offered in 2021
-  const modal_school_APCOURSES = lastEntry?.SCH_APCOURSES ?? 'Unknown'; // lst year (assume 2021)
+  const modal_school_APCOURSES = lastEntry?.SCH_APCOURSES_MODE ?? 'Unknown'; // lst year (assume 2021)
 
   
   // GAP Values
@@ -241,7 +241,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
     <div class="opportunity-column">
     <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
     <div>Number of districts: <span id="numDistricts">—</span></div>
-    <div>Modal number of AP classes offered in schools<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
+    <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
     </div>
 
     ${oppestHTML}
