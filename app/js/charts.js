@@ -199,6 +199,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // }
 
   // State abbreviation and values
+  currentAgg = "district"
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown'; // get from first entry
   const lastEntry = stateEntry[stateEntry.length - 1]; // whole row. Assume last year = 2021 
 
@@ -301,6 +302,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
     //note and display state level view
     currentAgg = 'district';
+    console.log('currentAgg',currentAgg)
     $(quantLabel).text("district")
     $('#agg-selectState').removeClass('active');
     $('#agg-selectDist').addClass('active');
@@ -314,8 +316,10 @@ function initFactSheet(stateEntry, fips, fieldName) {
       d.LEA_STATE == state_abbrev && d.YEAR == 2021
     );
 
+    // filter district data for current state (All years)
     const filteredDistrictTableData = data.filter(d =>
-      d.LEA_STATE == state_abbrev && (d.YEAR == 2021 || d.YEAR == 2011)
+      d.LEA_STATE == state_abbrev 
+      // d.LEA_STATE == state_abbrev && (d.YEAR == 2021 || d.YEAR == 2011)
     );
 
 
