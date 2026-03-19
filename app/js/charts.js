@@ -240,43 +240,44 @@ function initFactSheet(stateEntry, fips, fieldName) {
   factSheetContainer.innerHTML = `
   <div class="opportunity-row">
     <div class="opportunity-column">
-    <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
-    <div>Number of districts: <span id="numDistricts">—</span></div>
-    <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
-    </div>
-
-    ${oppestHTML}
-      <!-- State composition bar: placed below the opportunity column -->
-      <div style="margin-bottom:8px;">
-        <h3>State Composition</h3><br>
-        <canvas id="stateCompBar" width="350" height="70"></canvas>
+      <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
+      <div>Number of districts: <span id="numDistricts">—</span></div>
+      <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
       </div>
+
+      ${oppestHTML}
+        <!-- State composition bar: placed below the opportunity column -->
+        <div style="margin-bottom:8px;">
+          <h3>State Composition</h3><br>
+          <canvas id="stateCompBar" width="350" height="70"></canvas>
+        </div>
     </div> <!-- end "opportunity-column" -->
+
     <div class="opportunity-column district-column">
-    <div class="table-header-wrapper">
-      <h2 class="floatText">Districts in ${state_abbrev}</h2>
-      <table id="district-table" class="table table-striped">
-        <thead>
-          <tr>
-            <th>District</th>
-            <th>Enrollment</th>
-            <th>Teachers</th>
-            <th>Opp Est 2011</th>
-            <th>Opp Est 2021</th>
-          </tr>
-        </thead>
-        <tbody id="district-table-body"></tbody>
-        <tfoot>
-          <tr>
-            <th>District</th>
-            <th>Enrollment</th>
-            <th>Teachers</th>
-            <th>Opp Est 2011</th>
-            <th>Opp Est 2021</th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+      <div class="table-header-wrapper">
+        <h2 class="floatText">Districts in ${state_abbrev}</h2>
+        <table id="district-table" class="table table-striped">
+          <thead>
+            <tr>
+              <th>District</th>
+              <th>Enrollment</th>
+              <th>Teachers</th>
+              <th>Opp Est 2011</th>
+              <th>Opp Est 2021</th>
+            </tr>
+          </thead>
+          <tbody id="district-table-body"></tbody>
+          <tfoot>
+            <tr>
+              <th>District</th>
+              <th>Enrollment</th>
+              <th>Teachers</th>
+              <th>Opp Est 2011</th>
+              <th>Opp Est 2021</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
   </div>
   </div>
   `;

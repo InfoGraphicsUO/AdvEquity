@@ -78,12 +78,26 @@
   padding-right: 1em;
 }
 
+
+
+
+/* Optional: reduce the left column chart wrapper spacing a bit */
+#stateCompBar,
+#stateCompBar + .chart-legend {
+  margin-top: 4px;
+}
+
+
 #us-table.dataTable tbody tr.selected td {
   color:var(--almostBlack);
   background-color: var(--yellow) !important;
   transition: background-color 0.3s ease;
   box-shadow: none !important;   /* remove blue inset highlight */
   outline: none !important;
+}
+
+.table-header-wrapper{
+  max-width:100%; /*keep table in its column*/
 }
 
 #us-table.dataTable tbody td:focus {
@@ -103,7 +117,33 @@
 }
 
 #district-table tbody td:first-child {
-  text-decoration: underline;
+  text-decoration: none;       /* remove underline */
+  /* font-weight: 600;            give emphasis without clutter */
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+#district-table tbody td:first-child:hover {
+  text-decoration: underline;  /* optional: underline only on hover */
+}
+
+/* Table headers */
+.dt-column-title, #district-table thead th {
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color:var(--almostBlack);
+  /* border-bottom: 1px solid var(--lightgrey); */
+}
+
+/* Table body cells */
+#district-table tbody td {
+  font-family: sans-serif;     /* matches your numeric values everywhere else */
+  font-size: 0.85rem;
+  color: var(--almostBlack);
+  line-height: 1.2;
+  padding: 6px 8px;            /* tighter rows, but still usable */
 }
 
 /** style for mini graphs **/

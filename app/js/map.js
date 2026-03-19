@@ -2382,20 +2382,20 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   // factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
   <div id="factsheetTitle" class="opportunity-row full-width">
-    <h2>
+    <h2 id="factsheetTitle">
       <span class="factsheet-label">Factsheet for </span>
-      <select id="districtPicker" class="district-dropdown">
+      <select id="districtPicker" class="district-dropdown inline">
         ${optionsHtml}
       </select>
     </h2>
   </div>
+  <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
+  </div>
   <div class="opportunity-row full-width">
     <div class="opportunity-column" id='factsheet-left'>
       <div class="opportunity-row">
-        <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
-          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-          <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
-        </div>
         <h3>District Summary</h3>
         <div class="opportunity-row district-summary">
 
@@ -2461,7 +2461,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   </section>
 
   <section class="chart-section">
-    <p class="chart-subheader">Modal Number of AP Courses Offered (by year)</p>
+    <p class="chart-subheader">Number of AP Courses Offered by year (mode)</p>
     <canvas id="apCoursesChart" width="400" height="160"></canvas>
     <div id="apCoursesLegend" class="chart-legend"></div>
   </section>
@@ -2670,15 +2670,20 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
 
 
         currentRaceCode = $('#race-selectBlk').hasClass('active') ?  'BL' : 'HI';
-        const sparklineColors = { District: '#000', State: '#555', National: '#888' };
-
-
         // console.log('currentRaceCode: ', currentRaceCode)
 
         // draw gap chart for selected race
         // const drawGapChartForRace = (race) => {
         window.drawGapChartForRace = function (race) { //global scope to allow call from race-select handler
           currentRaceCode = race;
+          
+        // Build colors per race selection (District uses race color)
+        const sparklineColors = {
+            District: (compColors && compColors[currentRaceCode]) || '#000',
+            State: '#555',
+            National: '#888'
+        };
+
           const raceData = gapChartData[currentRaceCode];
           if (raceData) {
             drawMiniChart('gapChart', years, raceData, sparklineColors, 'AP participation gap');
