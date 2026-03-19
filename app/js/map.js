@@ -2278,7 +2278,7 @@ map.on('mousemove', 'district-fills', e => {
       }
       extendBounds(feat.geometry.coordinates);
       map.fitBounds(bounds, { padding: 30 });
-      showDistrictFactsheet(feat, districtData);
+      showDistrictFactsheet(feat, districtData, state_abbrev);
       hideNoGeometryNotice();
     }
   });
@@ -2295,13 +2295,17 @@ function hideNoGeometryNotice() {
   } catch (e) { /* non-fatal */ }
 }
 
-function showDistrictFactsheet(clickedFeature, districtData) {
-  console.log(districtData)
+function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
+  console.log(districtData) // currently, this was just filtered to 2021 for the map
+
+
   // ensure canonical view reflects district view (this will update controls)
   if (typeof setMapView === 'function') setMapView('district');
   const geoId = String(clickedFeature.properties.GEOID);
   console.log(geoId)
-  const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
+
+  // records uses the global cache, not the data passed that is only 2021, could remove that all together to steamline
+  const records = districtDataCache.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
   const factSheetContainer = document.getElementById("factSheetContainer");
 
   if (!records.length) {
