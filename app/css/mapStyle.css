@@ -223,13 +223,64 @@ button:hover {
   min-height: 0;      /*for nested scrolling */
 }
 
+/* "factsheet for..." */
 #factSheetContainer h2{
   margin: 0;
+  font-weight: 800;
 }
 
+/* Section Headers (“Latest information”, “District Composition”, etc.) */
 #factSheetContainer h3 {
-  margin: 0.5rem 0 0 0;
+  margin: 0.75rem 0 0.25rem 0; /* Tightened top/bottom margin */
   font-weight: 700;
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--almostBlack);;
+  border-bottom: 1px solid var(--lightgrey);
+}
+
+/* Labels (Teachers, Enrollment, AP Enrollment, etc.) */
+.summary-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.5rem; /* Horizontal space between items */
+  row-gap: 0.1rem;    /* Vertical space if it wraps */
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.summary-label {
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  /* font-weight: 400; */
+  font-size: 0.85rem;
+  /* color: #666; */
+}
+
+.summary-value {
+  /* font-weight: 500; */
+  font-size: 0.9rem;
+  color: #111;
+  font-family: sans-serif; /* Cleaner for numbers */
+}
+
+.summary-subtext {
+  font-size: 0.8rem;
+  color: var(--darkgrey);
+  margin-left: -0.2rem; /* Pulls closer to the enrollment number */
+}
+
+/* Subtle Vertical Divider */
+.spacer::after {
+  content: "|";
+  color: var(--lightgrey);
+  margin-left: 0.25rem;
+}
+
+/* Tighten the chart area */
+.chart-container {
+  margin-top: 4px;
 }
 
 .district-dropdown {
@@ -286,10 +337,6 @@ h2 {
   font-size: 1.1rem;
 }
 
-#factSheetContainer h2 {
-  /* font-variant: small-caps; */
-  font-weight: 600;
-}
 
 h3 {
   /* flex: 0; */
@@ -322,7 +369,7 @@ h3 {
   align-items: flex-start;      /* left-align text and charts */
   /* min-width: 280px;             responsive floor 280, but no mid-width best for state fact sheet in iframe */
   gap: 0.5em;
-  flex: 0 1 300px; /* grow, shrink, base width */
+  flex: 0 1 450px; /* grow, shrink, base width */
 }
 
 

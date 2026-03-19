@@ -2381,63 +2381,91 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
 
   // factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
-      <div id="factsheetTitle" class="opportunity-row full-width">
-       <h2>
-         <span class="factsheet-label">Factsheet for </span>
-          <select id="districtPicker" class="district-dropdown">
-            ${optionsHtml}
-          </select>
-        </h2>
-      </div>
+  <div id="factsheetTitle" class="opportunity-row full-width">
+    <h2>
+      <span class="factsheet-label">Factsheet for </span>
+      <select id="districtPicker" class="district-dropdown">
+        ${optionsHtml}
+      </select>
+    </h2>
+  </div>
   <div class="opportunity-row full-width">
     <div class="opportunity-column" id='factsheet-left'>
-    <div class="opportunity-row">
+      <div class="opportunity-row">
         <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
         </div>
-        <br><h3>Latest information</h3>
-        <div class="opportunity-row">
-          Teachers (FTE): ${formatLegendVal(latest.SCH_FTETEACH_TOT)}<br>
-          Enrollment: ${formatLegendVal(latest.ENR)}<br>
-          HS Enrollment: ${formatLegendVal(latest.ENR_HS_TOT)}<br>
-          Student-teacher ratio: ${formatLegendVal(latest.STU_TEACH_RAT)}<br>
-          AP Enrollment: ${formatLegendVal(latest.ENR_AP)}<br>
-          Modal AP courses: ${formatLegendVal(latest.SCH_APCOURSES_MODE)}<br>
-          Number of schools: ${formatLegendVal(latest.SCHOOLS)}<br>
+        <h3>District Summary</h3>
+        <div class="opportunity-row district-summary">
+
+          <div class="summary-line">
+            <span class="summary-label">Schools:</span>
+            <span class="summary-value">${formatLegendVal(latest.SCHOOLS)}</span>
+            <span class="spacer"></span>
+
+            <span class="summary-label">Enrollment:</span>
+            <span class="summary-value">${formatLegendVal(latest.ENR)}</span>
+            <span class="summary-subtext">HS: ${formatLegendVal(latest.ENR_HS_TOT)}            <span class="spacer"></span></span>
+
+            <span class="summary-subtext">AP: ${formatLegendVal(latest.ENR_AP)}</span>
+          </div>
+
+          <div class="summary-line">
+            <span class="summary-label">Teachers (FTE):</span>
+            <span class="summary-value">${formatLegendVal(latest.SCH_FTETEACH_TOT)}</span>
+            <span class="spacer"></span>
+            
+            <span class="summary-label">S/T Ratio:</span>
+            <span class="summary-value">${formatLegendVal(latest.STU_TEACH_RAT)}</span>
+            <span class="spacer"></span>
+            
+            <span class="summary-label">AP Courses (mode):</span>
+            <span class="summary-value">${formatLegendVal(latest.SCH_APCOURSES_MODE)}</span>
+          </div>
         </div>
+
+
+      <div class="opportunity-row chart-container">
         <h3>District Composition</h3>
-        <div class="opportunity-row">
-        <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
-        <canvas id="compBar" width="300" height="100"></canvas>
-        </div>
+        <canvas id="compDonut" width="300" height="100" style="display:none;"></canvas>
+        <canvas id="compBar" width="300" height="60"></canvas> </div>
       </div>
     </div> <!-- LEFT COLUMN -->
 
-      <div class="opportunity-column" id='factsheet-right'>
-        <p><b>Historic/temporal information</b></p>
-        <p style="font-size:0.9em;color: black">AP Participation Gap by Year</p>
-        <canvas id="gapChart" width="400" height="160"></canvas>
-        <div id="gapLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: Students - Percentage of non-white students -->
-        <p style="font-size:0.9em;color: black">Students - Percentage of non-white students (by year)</p>
-        <canvas id="nonwhiteChart" width="400" height="160"></canvas>
-        <div id="nonwhiteLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: HS students taking ≥1 AP (PCT_ENR_AP) -->
-        <p style="font-size:0.9em;color: black">HS students taking at least 1 AP course (by year)</p>
-        <canvas id="apChart" width="400" height="160"></canvas>
-        <div id="apLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: Student-teacher ratio (STU_TEACH_RAT) -->
-        <p style="font-size:0.9em;color: black">Student–teacher ratio (by year)</p>
-        <canvas id="stChart" width="400" height="160"></canvas>
-        <div id="stLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: Modal AP courses offered in district (SCH_APCOURSES) -->
-        <p style="font-size:0.9em;color: black">Modal number of AP courses offered (by year)</p>
-        <canvas id="apCoursesChart" width="400" height="160"></canvas>
-        <div id="apCoursesLegend" style="font-size:0.85em;"></div>
-        
+    <div class="opportunity-column" id="factsheet-right">
+  <h3>Historic/temporal information</h3>
 
-      </div>  <!-- end column -->
+  <section class="chart-section">
+    <p class="chart-subheader">AP Participation Gap by Year</p>
+    <canvas id="gapChart" width="400" height="160"></canvas>
+    <div id="gapLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">Students – Percentage of Non‑White Students (by year)</p>
+    <canvas id="nonwhiteChart" width="400" height="160"></canvas>
+    <div id="nonwhiteLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">HS Students Taking ≥1 AP (by year)</p>
+    <canvas id="apChart" width="400" height="160"></canvas>
+    <div id="apLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">Student–Teacher Ratio (by year)</p>
+    <canvas id="stChart" width="400" height="160"></canvas>
+    <div id="stLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">Modal Number of AP Courses Offered (by year)</p>
+    <canvas id="apCoursesChart" width="400" height="160"></canvas>
+    <div id="apCoursesLegend" class="chart-legend"></div>
+  </section>
+</div> <!-- end right column -->
 
   </div> <!-- end  full-width" -->
   `  ;
