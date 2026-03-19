@@ -2136,94 +2136,105 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   map.once('idle', updateDistrictFeatureStates);
 
   // --- tooltip & hover ---
-  map.on('mouseenter', 'district-fills', e => {
-    // if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
-    //   try { districtPopup.remove(); } catch {}
-    //   map.getCanvas().style.cursor = '';
-    //   return;
-    // }
-    map.getCanvas().style.cursor = 'pointer'
-    // console.log("enter new popup")
-    // build popup once
-    districtPopup.setHTML(`
-      <div><strong><span id="popup_districtName"></span> (2021)</strong>
-        <div>
-          Opp Est:
-          <b>
-            <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
-          </b>
-        </div>
-        <div>Students: <span id="popup_districtStudents"></span></div>
-        <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+  //create popup
+  districtPopup.setHTML(`
+    <div><strong><span id="popup_districtName"></span> (2021)</strong>
+      <div>
+        Opp Est:
+        <b>
+          <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
+        </b>
       </div>
-    `);
-
-    districtPopup.setLngLat(e.lngLat).addTo(map);
-    map.getCanvas().style.cursor = 'pointer';
-  });
-
-
-  map.on('mousemove', 'district-fills', e => {
-      // console.log("move within district, fill popup")
-      if (!e.features || !e.features.length) return;
-
-      const feat = e.features[0];
-      const fid = String(feat.id);
-
-      map.getCanvas().style.cursor = 'pointer';
-
-      // if still on same district AND popup already filled for this district, only move popup
-      if (hoveredDistrictPolygonID === fid && lastPopupDistrictId === fid) {
-        districtPopup.setLngLat(e.lngLat);
-        return;
-      }
-
-      // reset old hover
-      if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
-        map.setFeatureState(
-          { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
-          { hover: false }
-        );
-      }
-
-      // set new hover
-      hoveredDistrictPolygonID = fid;
-      map.setFeatureState(
-        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid },
-        { hover: true }
-      );
-
-      // lookup district data
-      // console.log(districtData) all data
-      const geoId = fid.padStart(7, '0'); 
-      const hoveredDistrictData = districtData.filter( d => String(d.LEAID).padStart(7, '0') === geoId );
-      // console.log(hoveredDistrictData) // filtered to this district
-
-      const oppEst = hoveredDistrictData ? (hoveredDistrictData[currentRaceField] ?? '—') : '—';
-      const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
-      const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
-
-      // POPULATE TOOLTIP
-      // district name from map feature
-      $("#popup_districtName").text( feat.properties.NAME || feat.properties.LEA_NAME || 'District' );
-      // fill tooltip with data filtered to each year
-      oppEstValue=getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021)
-      $("#popup_districtOppEst").text(oppEstValue);
-
-      // set bullet color
-      const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint); // use global paint: currentMapPaint
-      $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
-      // other values
-      $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
-      $("#popup_districtTeachers").text(getDistrictValueByYear(hoveredDistrictData, "SCH_FTETEACH_TOT", 2021));
+      <div>Students: <span id="popup_districtStudents"></span></div>
+      <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+    </div>
+  `);
 
 
 
-      // mark that the popup is now filled for this district
-      lastPopupDistrictId = fid;
+// Build popup HTML once
+districtPopup.setHTML(`
+  <div><strong><span id="popup_districtName"></span> (2021)</strong>
+    <div>
+      Opp Est:
+      <b>
+        <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
+      </b>
+    </div>
+    <div>Students: <span id="popup_districtStudents"></span></div>
+    <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+  </div>
+`);
+
+// state shared across events
+let hoveredDistrictPolygonID = null;
+let lastPopupDistrictId = null;
+
+// fast lookup from districtData array
+const districtLookup = {};
+
+districtData.forEach(d => {
+  const geoId = String(d.LEAID).padStart(7, '0');
+
+  if (!districtLookup[geoId]) {
+    districtLookup[geoId] = [];
+  }
+
+  districtLookup[geoId].push(d);
+});
 
 
+
+map.on('mouseenter', 'district-fills', e => {
+  map.getCanvas().style.cursor = 'pointer';
+  districtPopup.setLngLat(e.lngLat).addTo(map);
+});
+
+map.on('mousemove', 'district-fills', e => {
+    if (!e.features?.length) return;
+
+    const feat = e.features[0];
+    const fid = String(feat.id);
+    const geoId = fid.padStart(7, '0');
+
+    // If same district, just move popup
+    if (lastPopupDistrictId === fid) {
       districtPopup.setLngLat(e.lngLat);
+      return;
+    }
+
+    // Reset previous hover
+    if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { hover: false }
+      );
+    }
+
+    // Set new hover
+    hoveredDistrictPolygonID = fid;
+    map.setFeatureState(
+      { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid },
+      { hover: true }
+    );
+
+    // Lookup data
+    const hoveredDistrictData = districtLookup[geoId];
+
+    // Update popup content
+    $("#popup_districtName").text(feat.properties.NAME || feat.properties.LEA_NAME || 'District');
+
+    const oppEstValue = getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021);
+    $("#popup_districtOppEst").text(oppEstValue);
+
+    const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint);
+    $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
+
+    $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
+    $("#popup_districtTeachers").text(getDistrictValueByYear(hoveredDistrictData, "SCH_FTETEACH_TOT", 2021));
+
+    lastPopupDistrictId = fid;
+    districtPopup.setLngLat(e.lngLat);
   });
 
 
@@ -2243,7 +2254,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   });
 
 
-//   // --- click to zoom and outline ---
+  // --- click to zoom and outline ---
   map.off('click', 'district-fills')
   map.on('click', 'district-fills', e => {
     const feat = e.features[0];
