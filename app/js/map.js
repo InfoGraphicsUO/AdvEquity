@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // update control states if function exists
     if (typeof updateControlStates === 'function') updateControlStates();
-     }
+  }
 
   function activateDistrictView() {
     //note and display state level view
@@ -645,25 +645,25 @@ document.addEventListener('DOMContentLoaded', () => {
     resizeQueryBar('qbCollapsed');
     
     console.log('zoomend mapView: ', mapView)
-    if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
-      if (mapView == 'full' ){
-        console.log('full -> district view')
-        // activateStateView()
-        activateDistrictView()
-      } else if (mapView == 'state') {
-        console.log('state -> district view')
-        // activateStateView()
-        activateDistrictView()
-      } else {
-        console.log('district view -> district view')
-        //reactivate all districts. required due to click path variation
-        // activateStateView()
-        activateDistrictView()
-      }
-    };
+    // if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
+    //   if (mapView == 'full' ){
+    //     console.log('full -> district view')
+    //     // activateStateView()
+    //     activateDistrictView()
+    //   } else if (mapView == 'state') {
+    //     console.log('state -> district view')
+    //     // activateStateView()
+    //     activateDistrictView()
+    //   } else {
+    //     console.log('district view -> district view')
+    //     //reactivate all districts. required due to click path variation
+    //     // activateStateView()
+    //     activateDistrictView()
+    //   }
+    // };
 
-    // updateControlStates() //not working backToStateBtn not activating
-    $('#backToStateBtn').removeClass('control-disabled')
+    // // updateControlStates() //not working backToStateBtn not activating
+    // $('#backToStateBtn').removeClass('control-disabled')
 
     // set bias on search box
     const center = map.getCenter();
@@ -2005,8 +2005,6 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   // --- build paint expression ---
   currentMapPaint = convertPaintToFeatureState(basePaint, fieldName);
 
-
-
   if (!breaks) {
     console.warn('District breaks missing for', fieldName);
     return;
@@ -2087,21 +2085,21 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     }
   }
 
-    // feature state color on hover
-    // --- Hover outline styling for district lines ---
-    map.setPaintProperty('district-lines', 'line-color', [
-      'case',
-      ['boolean', ['feature-state', 'hover'], false],
-      '#000',      // thick black outline on hover
-      offwhite     // default outline
-    ]);
+  // feature state color on hover
+  // --- Hover outline styling for district lines ---
+  map.setPaintProperty('district-lines', 'line-color', [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    '#000',      // thick black outline on hover
+    offwhite     // default outline
+  ]);
 
-    map.setPaintProperty('district-lines', 'line-width', [
-      'case',
-      ['boolean', ['feature-state', 'hover'], false],
-      2.5,         // thick on hover
-      0.5          // normal width
-    ]);
+  map.setPaintProperty('district-lines', 'line-width', [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    2.5,         // thick on hover
+    0.5          // normal width
+  ]);
 
 
   // --- set feature-states safely ---
@@ -2165,7 +2163,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   });
 
 
-    map.on('mousemove', 'district-fills', e => {
+  map.on('mousemove', 'district-fills', e => {
       // console.log("move within district, fill popup")
       if (!e.features || !e.features.length) return;
 
@@ -2226,7 +2224,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
 
       districtPopup.setLngLat(e.lngLat);
-    });
+  });
 
 
 
@@ -2245,7 +2243,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   });
 
 
-  // --- click to zoom and outline ---
+//   // --- click to zoom and outline ---
+  map.off('click', 'district-fills')
   map.on('click', 'district-fills', e => {
     const feat = e.features[0];
     const fid = feat.id;
@@ -2273,6 +2272,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     }
   });
 }
+
 
 
 
