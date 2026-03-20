@@ -114,7 +114,7 @@ function getStateOpportunityEstimates(state,fieldName) {
   // Return formatted HTML
   // TO DO: add a chip after 2021 with the fill color of the hovered state
   const opphtml = `
-    <h3>Opportunity Estimates</h3>
+    <h3>Opportunity Gap Estimates</h3>
     <div class="opportunity-row opportunity-estimates">
       <div class="arrow ${arrowClass}">${arrowIcon}</div>
       <div class="opportunity-text">
@@ -169,7 +169,8 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 function initFactSheet(stateEntry, fips, fieldName) {
   showGraphs(); // hide the US level details, show the state details
-  console.log("building fact sheet")
+  console.log("building fact sheet ", stateEntry)
+  console.log("building fieldName", fieldName)
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
 
@@ -198,14 +199,23 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // }
 
   // State abbreviation and values
-  const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown';
-  const modal_school_APCOURSES = stateEntry[stateEntry.length - 1]?.SCH_APCOURSES ?? 'Unknown';
-  const val2011Raw = stateEntry[0]?.[fieldName];
-  const lastEntry = stateEntry[stateEntry.length - 1]; // last year = 2021
-  const val2021Raw = lastEntry?.[fieldName];
+  currentAgg = "district"
+  const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown'; // get from first entry
+  const lastEntry = stateEntry[stateEntry.length - 1]; // whole row. Assume last year = 2021 
 
-  // AP classes offered in 2021
-  const apNum2021 = lastEntry?.ENR_AP ?? '—';
+  // number of students enrolled in AP classes
+  const apNum2021 = lastEntry?.ENR_AP ?? '—'; // not used? 
+  // mode of AP classes offered in 2021
+  const modal_school_APCOURSES = lastEntry?.SCH_APCOURSES_MODE ?? 'Unknown'; // lst year (assume 2021)
+
+  
+  // GAP Values
+  // fieldName given race field e.g. ENR_AP_GAP_BL
+  const val2011Raw = stateEntry[0]?.[fieldName];// map value (gap) - assume first year 2011
+  const val2021Raw = lastEntry?.[fieldName]; // map value (gap) - assume last year 2021
+
+
+
 
   const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
   const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
@@ -230,43 +240,44 @@ function initFactSheet(stateEntry, fips, fieldName) {
   factSheetContainer.innerHTML = `
   <div class="opportunity-row">
     <div class="opportunity-column">
-    <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
-    <div>Number of districts: <span id="numDistricts">—</span></div>
-    <div>Modal number of AP classes offered in schools<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
-    </div>
-
-    ${oppestHTML}
-      <!-- State composition bar: placed below the opportunity column -->
-      <div style="margin-bottom:8px;">
-        <h3>State Composition</h3><br>
-        <canvas id="stateCompBar" width="360" height="70"></canvas>
+      <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
+      <div>Number of districts: <span id="numDistricts">—</span></div>
+      <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
       </div>
+
+      ${oppestHTML}
+        <!-- State composition bar: placed below the opportunity column -->
+        <div style="margin-bottom:8px;">
+          <h3>State Composition</h3><br>
+          <canvas id="stateCompBar" width="350" height="70"></canvas>
+        </div>
     </div> <!-- end "opportunity-column" -->
+
     <div class="opportunity-column district-column">
-    <div class="table-header-wrapper">
-      <h2 class="floatText">Districts in ${state_abbrev}</h2>
-      <table id="district-table" class="table table-striped">
-        <thead>
-          <tr>
-            <th>District</th>
-            <th>Enrollment</th>
-            <th>Teachers</th>
-            <th>Opp Est 2011</th>
-            <th>Opp Est 2021</th>
-          </tr>
-        </thead>
-        <tbody id="district-table-body"></tbody>
-        <tfoot>
-          <tr>
-            <th>District</th>
-            <th>Enrollment</th>
-            <th>Teachers</th>
-            <th>Opp Est 2011</th>
-            <th>Opp Est 2021</th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+      <div class="table-header-wrapper">
+        <h2 class="floatText">Districts in ${state_abbrev}</h2>
+        <table id="district-table" class="table table-striped">
+          <thead>
+            <tr>
+              <th>District</th>
+              <th>Enrollment</th>
+              <th>Teachers</th>
+              <th>Opp Est 2011</th>
+              <th>Opp Est 2021</th>
+            </tr>
+          </thead>
+          <tbody id="district-table-body"></tbody>
+          <tfoot>
+            <tr>
+              <th>District</th>
+              <th>Enrollment</th>
+              <th>Teachers</th>
+              <th>Opp Est 2011</th>
+              <th>Opp Est 2021</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
   </div>
   </div>
   `;
@@ -292,6 +303,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
     //note and display state level view
     currentAgg = 'district';
+    console.log('currentAgg',currentAgg)
     $(quantLabel).text("district")
     $('#agg-selectState').removeClass('active');
     $('#agg-selectDist').addClass('active');
@@ -304,9 +316,17 @@ function initFactSheet(stateEntry, fips, fieldName) {
     const filteredDistrictData = data.filter(d =>
       d.LEA_STATE == state_abbrev && d.YEAR == 2021
     );
+
+    // filter district data for current state (All years)
+    const filteredDistrictTableData = data.filter(d =>
+      d.LEA_STATE == state_abbrev 
+      // d.LEA_STATE == state_abbrev && (d.YEAR == 2021 || d.YEAR == 2011)
+    );
+
+
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
     //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
-    buildDistrictTable(filteredDistrictData, fieldName) // actually fills the table, given the data are loaded
+    buildDistrictTable(filteredDistrictTableData, fieldName) // actually fills the table, given the data are loaded
     // populate # districts in the factsheet by counting unique LEAID (might be changed later)
     try {
       const nd = document.getElementById('numDistricts');

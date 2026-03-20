@@ -208,6 +208,39 @@ button:hover {
 }
 
 /* Shared styles for the lower containers */
+#factsheetTitle .factsheet-label,
+#factsheetTitle .district-dropdown {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+/* Micro-nudge the select down */
+#factsheetTitle .district-dropdown {
+  transform: translateY(1px); /* adjust 0–2px */
+  line-height: 1.1;
+}
+
+/* Keep the same inline underlined style + lighter weight */
+.district-dropdown.inline {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--lightgrey, #ddd);
+  border-radius: 0;
+  padding: 4px 18px 2px 0;
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--almostBlack, #111);
+  cursor: pointer;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='14' height='14'><path fill='%2333' d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  background-size: 14px 14px;
+}
 
 #factSheetContainer {
   display: none;                /* hidden by default */
@@ -223,36 +256,138 @@ button:hover {
   min-height: 0;      /*for nested scrolling */
 }
 
+/* "factsheet for..." */
 #factSheetContainer h2{
   margin: 0;
+  font-weight: 800;
 }
 
+/* Section Headers (“Latest information”, “District Composition”, etc.) */
 #factSheetContainer h3 {
-  margin: 0.5rem 0 0 0;
+  margin: 0.75rem 0 0.25rem 0; /* Tightened top/bottom margin */
   font-weight: 700;
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--almostBlack);;
+  border-bottom: 1px solid var(--lightgrey);
 }
 
+/* Labels (Teachers, Enrollment, AP Enrollment, etc.) */
+.summary-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.5rem; /* Horizontal space between items */
+  row-gap: 0.1rem;    /* Vertical space if it wraps */
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.summary-label {
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  /* font-weight: 400; */
+  font-size: 0.85rem;
+  /* color: #666; */
+}
+
+.summary-value {
+  /* font-weight: 500; */
+  font-size: 0.9rem;
+  color: #111;
+  font-family: sans-serif; /* Cleaner for numbers */
+}
+
+.summary-subtext {
+  font-size: 0.8rem;
+  color: var(--darkgrey);
+  margin-left: -0.2rem; /* Pulls closer to the enrollment number */
+}
+
+/* Subtle Vertical Divider */
+.spacer::after {
+  content: "|";
+  color: var(--lightgrey);
+  margin-left: 0.25rem;
+}
+
+/* Tighten the chart area */
+.chart-container {
+  margin-top: 4px;
+}
+
+/* nicer district picker*/
+/* Inline, underlined select (text-on-a-line) */
 .district-dropdown {
+  max-width: 70%;
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
-  background-color: #fff;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='12' height='12'><path fill='%23333' d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding: 6px 36px 6px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.12);
-  font-size: 1.05rem;
-  color: #111;
+
+  background: transparent;                 /* remove white pill */
+  border: none;                             /* remove box */
+  border-bottom: 1.5px solid var(--lightgrey, #ddd);  /* the “line” */
+  border-radius: 0;
+
+  
+  font-weight: 700 !important;                     /* lighter */
+  font-family: jaf-bernino-sans-narrow, sans-serif !important;
+
+
+  padding: 4px 18px 2px 0;                 /* right padding for caret */
+  margin: 0;
+  font: inherit;                            /* match surrounding h2 text */
+  font-size:inherit;                       /*keep your current sizing*/
+  color: var(--almostBlack, #111);
   cursor: pointer;
-  max-width: 70%;
+
+  /* Replace native arrow with a subtle caret on the right */
+  background-image:
+    linear-gradient(to bottom, currentColor, currentColor); /* fallback for underline if border is removed */
+  background-size: 0 0;                     /* disable gradient underline (using border-bottom) */
+  background-repeat: no-repeat;
+  background-position: right 0.5ch center;   /* caret position */
+
+  /* Chevron using SVG; small, unobtrusive */
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path fill='%23333' d='M7 10l5 5 5-5z'/></svg>");
+  background-size: 14px 14px;
+  background-repeat: no-repeat;
+  background-position: right 0 center;       /* align to right edge */
 }
 
+/* Focus state: keep it accessible without the big glow */
 .district-dropdown:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(34,71,34,0.08);
+  border-bottom-color: var(--almostBlack, #333);
+  box-shadow: 0 1px 0 0 var(--almostBlack, #333);  /* subtle emphasis */
 }
+
+/* Hover (optional): softly darken the underline */
+.district-dropdown:hover {
+  border-bottom-color: var(--darkgrey, #aaa);
+}
+
+/* Disabled */
+.district-dropdown:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  border-bottom-style: dashed;
+}
+
+/* Remove inner focus ring in Firefox */
+.district-dropdown:-moz-focusring {
+  color: transparent;            /* FF quirk fix */
+  text-shadow: 0 0 0 var(--almostBlack, #111);
+}
+
+/* iOS Safari sometimes adds rounded corners—neutralize */
+@supports (-webkit-touch-callout: none) {
+  .district-dropdown {
+    border-radius: 0 !important;
+  }
+}
+/* end district picker */
 
 .factsheet-label {
   font-weight: 700;
@@ -266,7 +401,7 @@ button:hover {
   flex: 1;                      /* take up remaining space */
   overflow: auto;               /* scroll if content is long */
   background: #f9f9f9;
-  padding: 10px 20px 0 20px;
+  padding: 10px;
   line-height: 1;
 }
 
@@ -286,10 +421,6 @@ h2 {
   font-size: 1.1rem;
 }
 
-#factSheetContainer h2 {
-  /* font-variant: small-caps; */
-  font-weight: 600;
-}
 
 h3 {
   /* flex: 0; */
@@ -320,11 +451,10 @@ h3 {
   display: flex;
   flex-direction: column;       /* stack content inside each column */
   align-items: flex-start;      /* left-align text and charts */
-  /* min-width: 280px;             responsive floor 280, but no mid-width best for state fact sheet in iframe */
+  min-width: 0;             
   gap: 0.5em;
-   flex: 1 1 300px;                /* keep original responsive behavior */
+  flex: 0 1 400px; /* grow, shrink, base width */
 }
-
 
 /* Make RIGHT column scroll inside the capped container */
 #factsheet-right {
@@ -332,10 +462,12 @@ h3 {
   min-height: 0;                  /* CRITICAL for scrolling inside flex/grid */
   /* Optional: set a max-height to ensure it doesn't bleed out of the container */
   max-height: 100%;               /* fill available height of the parent container */
+  flex: 1 0;
 }
 
 #factsheet-left{
  display: block;
+ flex: 0 1 450px;
 }
 
 #factsheetTitle {
@@ -572,15 +704,17 @@ h3 {
 }
 
 .no-geometry-notice {
+  font-family: jaf-bernino-sans-narrow, sans-serif;
   background: #fff7e6; 
   border: 1px solid #f0c36d;
   color: #333;
-  padding: 8px 12px;
-  margin: 8px 0;
+  padding: 0.25rem;
+  margin: 0.5rem 0;
   border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.25rem;
+  width: fit-content;
 }
 .no-geometry-notice i.fa {
   color: #c57b00;

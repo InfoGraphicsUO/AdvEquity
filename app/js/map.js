@@ -1,21 +1,26 @@
-// define caches in outer scope
+// data caches 
 let geojsonCache = null;
 let stateDataCache = null;
-let districtDataCache = null;
+let districtDataCache = null; // all district data
+
+// current selections
 let currentDistrictValueMap = {};
 let firstSymbolId = null;
-
-// define other global vals 
 let currentMapPaint;
 let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
 let currentRaceField  = 'ENR_AP_GAP_BL'; // fields with the data disparity data('ENR_AP_GAP_BL' |  'ENR_AP_GAP_HS')
 let currentRaceCode = 'BL' // ('BL' |  'HI')
 
 
+
+// current site state
+let mapView; // extent of the map ('full' | 'state' | 'district')
+let showAllStates // --- determine if showing all states ---
+let currentAgg = 'state'; // how the data is currently aggregated in display (state | district), laods at state
+
+// last site state
 let lastDistrictStateFP = null;
 let lastDistrictStateAbbrev = null;
-let mapView; // extent of the map ('full' | 'state' | 'district')
-let currentAgg // how the data is currently aggregated in display (state | district)
 
 // color variables (should match with css)
 // Pull CSS variables used by the canvas chart utilities
@@ -57,7 +62,8 @@ const hispanicColors = {
 };
 
 const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
-     
+
+console.log("MAP JS loaded");
 
 document.addEventListener('DOMContentLoaded', () => {
   // const searchInput = document.querySelector('.search_query input');
@@ -77,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(backToStateMapBtn);
   }
 
-  // click handler- zoom back to the last district's state (stored when factsheet opens)
+  // click handler - zoom back to the last district's state (stored when factsheet opens)
   backToStateMapBtn.addEventListener('click', () => {
     // Only active when in district view
     if (mapView !== 'district') {
@@ -212,13 +218,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const info3 = document.getElementById('infoContainer');
     if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
   });
+
   // canonical view setter: 'full' | 'state' | 'district'
   // setMapView available globally so code outside this scope
   setMapView = function(view) {
     mapView = view; // canonical
     // backwards compatibility for older code/tests
     isFullUSView = (view === 'full');
-    currentAgg = (view === 'district') ? 'district' : 'state';
+    // currentAgg = (view === 'district') ? 'district' : 'state';
+    // console.log('currentAgg',currentAgg)
     if (typeof updateControlStates === 'function') updateControlStates();
   };
 
@@ -255,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // flag to determine whether user interaction has happened (don't sort on initial load)
   let userHasInteracted = false;
   // track aggregation selection separately from canonical map view
-  currentAgg = 'state'; // 'state' or 'district'
+  // currentAgg = 'state'; // 'state' or 'district'
   // track currently selected race field
   currentRaceField = 'ENR_AP_GAP_BL'; // default to Black students
   currentMapRace = 'black'
@@ -339,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function activateStateView(){
+    console.log("activateStateView")
     //note and display state level view
     currentAgg = 'state';
     $(quantLabel).text("state")
@@ -359,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // update control states if function exists
     if (typeof updateControlStates === 'function') updateControlStates();
-     }
+  }
 
   function activateDistrictView() {
     //note and display state level view
@@ -605,6 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // mark full US view active and update controls
     if (typeof setMapView === 'function') setMapView('full');
+    currentAgg = 'state';
     //StateOverview.style.display = 'none'; // hide state panel
 
     });
@@ -635,25 +645,25 @@ document.addEventListener('DOMContentLoaded', () => {
     resizeQueryBar('qbCollapsed');
     
     console.log('zoomend mapView: ', mapView)
-    if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
-      if (mapView == 'full' ){
-        console.log('full -> district view')
-        // activateStateView()
-        activateDistrictView()
-      } else if (mapView == 'state') {
-        console.log('state -> district view')
-        // activateStateView()
-        activateDistrictView()
-      } else {
-        console.log('district view -> district view')
-        //reactivate all districts. required due to click path variation
-        // activateStateView()
-        activateDistrictView()
-      }
-    };
+    // if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
+    //   if (mapView == 'full' ){
+    //     console.log('full -> district view')
+    //     // activateStateView()
+    //     activateDistrictView()
+    //   } else if (mapView == 'state') {
+    //     console.log('state -> district view')
+    //     // activateStateView()
+    //     activateDistrictView()
+    //   } else {
+    //     console.log('district view -> district view')
+    //     //reactivate all districts. required due to click path variation
+    //     // activateStateView()
+    //     activateDistrictView()
+    //   }
+    // };
 
-    // updateControlStates() //not working backToStateBtn not activating
-    $('#backToStateBtn').removeClass('control-disabled')
+    // // updateControlStates() //not working backToStateBtn not activating
+    // $('#backToStateBtn').removeClass('control-disabled')
 
     // set bias on search box
     const center = map.getCenter();
@@ -678,8 +688,8 @@ const map = new mapboxgl.Map({
   maxZoom : 10, 
   minZoom : 0, 
   // zoom: 3,
-  bounds: [[ -126, 24], [-66, 50]], // bounding box (southwest corner, northeast corner)
-  maxBounds: [[ -140, 25],[-50, 65]], // bounding box (southwest corner, northeast corner)
+  bounds: [[ -126, 24], [-66, 50]], // inital bounding box (southwest corner, northeast corner)
+  // maxBounds: [[ -140, 25],[-50, 65]], // bounding box (southwest corner, northeast corner)
   fitBoundsOptions: {
     padding: 30 // padding to keep the bounds away from the edge of the map
   },
@@ -705,7 +715,10 @@ var districtPopup = new mapboxgl.Popup({
   closeOnClick: false
 });
 
+
+
 map.on('load', () => {
+  console.log("MAP LOAD FIRED");
 
   // // hide basemap layers/labels that we don't want
   // const hiddenLayers = [
@@ -784,20 +797,19 @@ map.on('load', () => {
       promoteId: 'GEOID'  // use GEOID as the unique ID
   });
 
-
-
-
   // LAYERS
-  // map.addLayer({
-  //     id: 'district-fills',
-  //     type: 'fill', 
-  //     source: 'SCHOOLDIST_TL24', 
-  //     'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
-  //     paint: {
-  //         'fill-color': 'transparent',
-  //     }
-  // });
-
+  map.addLayer({
+      id: 'district-fills',
+      type: 'fill', 
+      source: 'SCHOOLDIST_TL24', 
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
+      paint: {
+          'fill-color': 'transparent',
+      },
+      layout: {
+        visibility: 'none'
+      }
+  });
 
   // map.addLayer({
   //     id: 'district-lines',
@@ -834,7 +846,53 @@ getStateData().then(({ geojson, stateData }) => {
   fillStateMap(map, geojsonCache, stateDataCache, 'ENR_AP_GAP_BL'); // default map coloring
 });
 
+// county labels
 
+  // 1. Add empty label source
+  map.addSource('county-labels', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features: [] }
+  });
+
+  // 2. Add label layer
+map.addLayer({
+  id: 'county-label-layer',
+  type: 'symbol',
+  source: 'county-labels',
+  layout: {
+    'text-field': ['get', 'NAME'],
+    'text-size': 8,            
+    'text-transform': 'uppercase',
+    'text-letter-spacing': 0.3,
+    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+  },
+  paint: {
+    'text-opacity':0.8,
+    'text-color': '#aaa'     
+  }
+});
+
+  // for adding county labels
+let needsLabelUpdate = false;
+
+map.on('moveend', () => {
+  if (map.getZoom() >= 5) {
+    needsLabelUpdate = true;
+  }
+});
+
+// to label counties
+// map.on('idle', () => {
+//   if (needsLabelUpdate) {
+//     console.log("Updating labels after moveend + idle");
+//     needsLabelUpdate = false;
+//     buildCountyPolylabels();
+//   }
+// });
+
+
+
+// interactive borders
   map.addLayer({
     id: 'state-borders',
     type: 'line',
@@ -927,45 +985,50 @@ getStateData().then(({ geojson, stateData }) => {
   // TABLE HOVER FUNCTIONALITY
   // --- When table row is hovered ---
 
-$('#us-table tbody').on('mouseenter', 'tr', function() {
-  const table = $('#us-table').DataTable();
-  const rowData = table.row(this).data();
-  if (!rowData) return;
+  $('#us-table tbody').on('mouseenter', 'tr', function() {
+    const table = $('#us-table').DataTable();
+    const rowData = table.row(this).data();
+    if (!rowData) return;
 
-  const fips = rowData[4]; // the last column
-  console.log(fips)
+    const fips = rowData[4]; // the last column
+    console.log(fips)
 
-  // Clear previous highlight
-  if (hoveredPolygonId !== null) {
-    map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
-  }
+    // Clear previous highlight
+    if (hoveredPolygonId !== null) {
+      map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
+    }
 
-  // Highlight new feature
-  hoveredPolygonId = fips;
-  map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
-});
+    // Highlight new feature
+    hoveredPolygonId = fips;
+    map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: true });
+  });
 
-$('#us-table tbody').on('mouseleave', 'tr', function() {
-  const table = $('#us-table').DataTable();
-  const rowData = table.row(this).data();
-  if (!rowData) return;
+  $('#us-table tbody').on('mouseleave', 'tr', function() {
+    const table = $('#us-table').DataTable();
+    const rowData = table.row(this).data();
+    if (!rowData) return;
 
-  const fips = rowData[4];
+    const fips = rowData[4];
 
-  // Remove highlight if it's the same one
-  if (hoveredPolygonId === fips) {
-    map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
-    hoveredPolygonId = null;
-  }
-});
+    // Remove highlight if it's the same one
+    if (hoveredPolygonId === fips) {
+      map.setFeatureState({ source: 'states', id: hoveredPolygonId }, { hover: false });
+      hoveredPolygonId = null;
+    }
+  });
 
-// END HOVER FUTIONALITY
+  // END HOVER FUTIONALITY
 
 
-  map.on('click', 'state-fills', function (e) {
-    const clickedFeature = e.features[0];
-    console.log('clickedFeature: ')
-    console.log(clickedFeature)
+  function onStateClick(e){
+    currentAgg = "district"
+    //     // don't fire on the districts as well
+    //  e.originalEvent.cancelBubble = true;   // stop bubbling
+    //  e.originalEvent.stopPropagation?.();   // extra safety
+
+    // const clickedFeature = e.features[0];
+    const clickedFeature = e;//
+    console.log('clickedFeature: ', clickedFeature)
     // document.getElementById('mapLegend').style.display = 'block'; // display legend
 
       // zoom to state
@@ -1003,6 +1066,7 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
       { selected: true }
     );
 
+
     // store currently viewed state info globally for race switching
     window.currentStateFIPS = clickedFeature.id;
     // get state abbreviation from the clicked feature or from stateDataCache
@@ -1011,6 +1075,7 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
 
     const stateEntry = stateDataCache[fipsKey]; // 
     window.currentStateAbbrev = stateEntry?.[0]?.state_abbrev ?? stateEntry?.[0]?.LEA_STATE ?? null;
+    
 
     // fill fact sheet
     const fieldName = currentRaceField || 'ENR_AP_GAP_BL';
@@ -1020,99 +1085,38 @@ $('#us-table tbody').on('mouseleave', 'tr', function() {
     initFactSheet(stateEntry, clickedFeature.id, fieldName);
     // update canonical map view to 'state' and refresh controls
     if (typeof setMapView === 'function') setMapView('state');
+  }
 
+  map.off('click')
+  map.on('click', e => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: ['district-fills', 'state-fills']
+    });
 
-    //   map.on('mousemove', 'district-fills', (e) => {
-    //     const feature = e.features[0];
-    //     const id = feature.id;
-    //     const props = feature.properties;
-    //     console.log(props)
-    //     if (!id) return;
+    if (!features.length) return;
 
-    //   });
+    const top = features[0];
 
-    //     // // Clear previous hover state
-    //     // if (hoveredDistrictPolygonID !== null) {
-    //     //   map.setFeatureState(
-    //     //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-    //     //     { hover: false }
-    //     //   );
-    //     // }
+    // // --- AGGREGATION LOGIC ---
+    // if (currentAgg === 'district') {
+    //   // Only respond to district clicks
+    //   // if (top.layer.id === 'district-fills') {
+    //     onDistrictClick(top);
+    //   // }
+    //   // return;
+    // }
 
-    //   //   hoveredDistrictPolygonID = id;
-
-    //   //   // Set new hover state
-    //   //   map.setFeatureState(
-    //   //     { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-    //   //     { hover: true }
-    //   //   );
-
-    //   //   console.log('Hovered district ID:', hoveredDistrictPolygonID);
-
-    //   //   // Fetch external district data
-    //   //   const DistDataUrl = '../assets/data/json/Oregon/OR_dist_overview_update.json';
-    //   //   fetch(DistDataUrl)
-    //   //     .then(res => res.json())
-    //   //     .then(stateData => {
-
-    //   //       // Find the district data matching the hovered polygon ID
-    //   //       const hoveredDistrictData = stateData.Data.find(
-    //   //         d => {
-    //   //           if (!hoveredDistrictPolygonID) return false;
-    //   //           return d.LEAID === hoveredDistrictPolygonID;
-    //   //         }
-    //   //       );
-    //   //       if (!hoveredDistrictData) {
-    //   //         console.warn('No matching LEAID found:', hoveredDistrictPolygonID);
-    //   //         return;
-    //   //       }
-
-    //   //       const isDownward = props.AWATER % 2 === 0;
-    //   //       const directionArrow = isDownward ? '🡻' : '🡹';
-    //   //       const directionClass = isDownward ? 'arrow-down' : 'arrow-up';
-
-    //   //       districtPopup
-    //   //         .setLngLat(e.lngLat)
-    //   //         .setHTML(`
-    //   //           <div class="popup-content">
-    //   //             <strong>${props.NAME}</strong><br>
-    //   //             Grades: ${props.LOGRADE}–${props.HIGRADE}<br>
-    //   //             Students: ${hoveredDistrictData.num_students}<br> 
-    //   //             Teachers: ${hoveredDistrictData.num_teachers}<br> 
-    //   //             <b>Opportunity Estimates</b><br>
-    //   //             <div class="opportunity-row">
-    //   //               <div class="arrow ${directionClass}">${directionArrow}</div>
-    //   //               <div class="opportunity-text">
-    //   //                 2011–12: xx<br>
-    //   //                 2021–22: xx
-    //   //               </div>
-    //   //             </div>
-    //   //           </div>
-    //   //         `)
-    //   //         .addTo(map);
-
-    //   //       showGraphs(); //only runs when data is available
-    //   //     })
-    //   //     .catch(error => {
-    //   //       console.error('Error loading data:', error);
-    //   //     });
-    //   // });
-
-
-    //   // map.on('mouseleave', 'district-fills', () => {
-    //   //   // Remove hover highlight
-    //   //   if (hoveredDistrictPolygonID !== null) {
-    //   //     map.setFeatureState(
-    //   //       { source: 'oregon_districts', id: hoveredDistrictPolygonID },
-    //   //       { hover: false }
-    //   //     );
-    //   //     hoveredDistrictPolygonID = null;
-    //   //   }
-
-
-
+    if (currentAgg === 'state') {
+      // Only respond to state clicks
+      // if (top.layer.id === 'state-fills') {
+        onStateClick(top);
+      // }
+      // return;
+    }
   });
+
 });
+
 
 const popup = new mapboxgl.Popup({
             closeButton: false,
@@ -1141,6 +1145,7 @@ function getStateData(){
 
 
 function getDistrictData(state) {
+  // to do: don't get if the state did not change?
   console.log(`getting data for ${state}`);
   const districtDataUrl = '../assets/data/json/ap_equity_districts.json';
 
@@ -1227,7 +1232,7 @@ function buildStateTable(stateData, fieldName) {
   const yr2011 = stateArray.find(d => Number(String(d.YEAR).trim()) === 2011);
   const yr2021 = stateArray.find(d => Number(String(d.YEAR).trim()) === 2021);
 
-    const ap = yr2021?.SCH_APCOURSES ?? 'N/A';
+    const ap = yr2021?.SCH_APCOURSES_MODE ?? 'N/A';
     const val2011Raw = yr2011?.[fieldName];
     const val2021Raw = yr2021?.[fieldName];
     const stateAbbrev = yr2011?.state_abbrev ?? yr2021?.state_abbrev ?? '';
@@ -1245,6 +1250,7 @@ function buildStateTable(stateData, fieldName) {
  }
 
 function buildDistrictTable(districtData, fieldName) {
+  console.log("Building District Table")
   // Custom sort for N/A
   jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
     'na-last-asc': (a, b) => {
@@ -1279,19 +1285,24 @@ function buildDistrictTable(districtData, fieldName) {
 
   // Group by LEAID
   const grouped = {};
-  for (const d of districtData) {
+//  for (const d of districtDataCache){ // all data?
+  console.log('districtData', districtData)
+  for (const d of districtData) {  // just 2021?
     const id = d.LEAID ?? Math.random();
     if (!grouped[id]) grouped[id] = [];
     grouped[id].push(d);
   }
+
+  console.log('grouped', grouped)
 
   for (const id in grouped) {
     const records = grouped[id];
 
     // Filter by year
     const yr2011 = records.find(r => r.YEAR === 2011);
-    // const yr2021 = records.find(r => r.YEAR === 2021 || r.YEAR === 2020 || r.YEAR === 2021); // pick last available if exact 2021 missing
-    const yr2021 = records.find(r => r.YEAR === 2021); // pick last available if exact 2021 missing
+    //console.log('yr2011', yr2011)
+    const yr2021 = records.find(r => r.YEAR === 2021); 
+    //console.log('yr2011', yr2021)
 
     const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
     const stateAbbrev = yr2021?.LEA_STATE ?? yr2011?.LEA_STATE ?? '—';
@@ -1876,7 +1887,7 @@ function convertPaintToFeatureState(expr, fieldName) {
 // gets a color from the mapbox formatted paint step expression
 function getColorFromPaintSet(val, paintArray) {
   if (val == null || isNaN(val)) return "#ccc";
-  console.log(paintArray)
+  //console.log(paintArray)
 
   let color = paintArray[2];
   // iterate through the step expression
@@ -1892,6 +1903,7 @@ function getColorFromPaintSet(val, paintArray) {
 
 function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, targetYear = 2021) {
   console.log('fillDistrictMap:', fieldName);
+  currentDistrictData = districtData;
 
   // --- get district paints and breaks ---
   const natPaintSet  = paints.District_National_Breaks;
@@ -1924,7 +1936,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   map.setPaintProperty('state-fills', 'fill-color', 'transparent');
 
   // --- determine if showing all states ---
-  const showAllStates = !statefips || statefips === 'all' || statefips === 'any';
+  showAllStates = !statefips || statefips === 'all' || statefips === 'any';
   console.log(showAllStates);
 
 
@@ -1993,8 +2005,6 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   // --- build paint expression ---
   currentMapPaint = convertPaintToFeatureState(basePaint, fieldName);
 
-
-
   if (!breaks) {
     console.warn('District breaks missing for', fieldName);
     return;
@@ -2041,14 +2051,15 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         'fill-opacity': 0.9,
         'fill-outline-color': offwhite
       }
-    }, 'state-fills');
+    }, 'state-borders');
   } else {
+    map.moveLayer('district-fills', 'state-fills'); // ensure lauer is above state-fill
     map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips]);
     map.setLayoutProperty('district-fills', 'visibility', 'visible');
   }
 
   if (!map.getLayer('district-lines')) {
-    const layerDef = {
+    const districtLinesLayerDef = {
       id: 'district-lines',
       type: 'line',
       source: 'SCHOOLDIST_TL24',
@@ -2061,10 +2072,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     };
 
     if (!showAllStates) {
-      layerDef.filter = ['==', ['get', 'STATEFP'], statefips];
+      districtLinesLayerDef.filter = ['==', ['get', 'STATEFP'], statefips];
     }
 
-    map.addLayer(layerDef, 'state-borders');
+    map.addLayer(districtLinesLayerDef, 'Country-Labels_ne-10m-admin-2-counties');
   } else {
     if (showAllStates) {
       // remove filter entirely
@@ -2074,21 +2085,21 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     }
   }
 
-    // feature state color on hover
-    // --- Hover outline styling for district lines ---
-    map.setPaintProperty('district-lines', 'line-color', [
-      'case',
-      ['boolean', ['feature-state', 'hover'], false],
-      '#000',      // thick black outline on hover
-      offwhite     // default outline
-    ]);
+  // feature state color on hover
+  // --- Hover outline styling for district lines ---
+  map.setPaintProperty('district-lines', 'line-color', [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    '#000',      // thick black outline on hover
+    offwhite     // default outline
+  ]);
 
-    map.setPaintProperty('district-lines', 'line-width', [
-      'case',
-      ['boolean', ['feature-state', 'hover'], false],
-      2.5,         // thick on hover
-      0.5          // normal width
-    ]);
+  map.setPaintProperty('district-lines', 'line-width', [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    2.5,         // thick on hover
+    0.5          // normal width
+  ]);
 
 
   // --- set feature-states safely ---
@@ -2125,95 +2136,106 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   map.once('idle', updateDistrictFeatureStates);
 
   // --- tooltip & hover ---
-  map.on('mouseenter', 'district-fills', e => {
-    // if (!(window.mapView === 'state' || window.mapView === 'district' || window.aggLevel === 'district')) {
-    //   try { districtPopup.remove(); } catch {}
-    //   map.getCanvas().style.cursor = '';
-    //   return;
-    // }
-    map.getCanvas().style.cursor = 'pointer'
-    // console.log("enter new popup")
-    // build popup once
-    districtPopup.setHTML(`
-      <div><strong><span id="popup_districtName"></span> (2021)</strong>
-        <div>
-          Opp Est:
-          <b>
-            <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
-          </b>
-        </div>
-        <div>Students: <span id="popup_districtStudents"></span></div>
-        <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+  //create popup
+  districtPopup.setHTML(`
+    <div><strong><span id="popup_districtName"></span> (2021)</strong>
+      <div>
+        Opp Est:
+        <b>
+          <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
+        </b>
       </div>
-    `);
-
-    districtPopup.setLngLat(e.lngLat).addTo(map);
-    map.getCanvas().style.cursor = 'pointer';
-  });
-
-
-    map.on('mousemove', 'district-fills', e => {
-      // console.log("move within district, fill popup")
-      if (!e.features || !e.features.length) return;
-
-      const feat = e.features[0];
-      const fid = String(feat.id);
-
-      map.getCanvas().style.cursor = 'pointer';
-
-      // if still on same district AND popup already filled for this district, only move popup
-      if (hoveredDistrictPolygonID === fid && lastPopupDistrictId === fid) {
-        districtPopup.setLngLat(e.lngLat);
-        return;
-      }
-
-      // reset old hover
-      if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
-        map.setFeatureState(
-          { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
-          { hover: false }
-        );
-      }
-
-      // set new hover
-      hoveredDistrictPolygonID = fid;
-      map.setFeatureState(
-        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid },
-        { hover: true }
-      );
-
-      // lookup district data
-      // console.log(districtData) all data
-      const geoId = fid.padStart(7, '0'); 
-      const hoveredDistrictData = districtData.filter( d => String(d.LEAID).padStart(7, '0') === geoId );
-      // console.log(hoveredDistrictData) // filtered to this district
-
-      const oppEst = hoveredDistrictData ? (hoveredDistrictData[currentRaceField] ?? '—') : '—';
-      const students = hoveredDistrictData ? (hoveredDistrictData.ENR ?? hoveredDistrictData.num_students ?? '—') : '—';
-      const teachers = hoveredDistrictData ? (hoveredDistrictData.SCH_FTETEACH_TOT ?? hoveredDistrictData.num_teachers ?? '—') : '—';
-
-      // POPULATE TOOLTIP
-      // district name from map feature
-      $("#popup_districtName").text( feat.properties.NAME || feat.properties.LEA_NAME || 'District' );
-      // fill tooltip with data filtered to each year
-      oppEstValue=getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021)
-      $("#popup_districtOppEst").text(oppEstValue);
-
-      // set bullet color
-      const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint); // use global paint: currentMapPaint
-      $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
-      // other values
-      $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
-      $("#popup_districtTeachers").text(getDistrictValueByYear(hoveredDistrictData, "SCH_FTETEACH_TOT", 2021));
+      <div>Students: <span id="popup_districtStudents"></span></div>
+      <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+    </div>
+  `);
 
 
 
-      // mark that the popup is now filled for this district
-      lastPopupDistrictId = fid;
+// Build popup HTML once
+districtPopup.setHTML(`
+  <div><strong><span id="popup_districtName"></span> (2021)</strong>
+    <div>
+      Opp Est:
+      <b>
+        <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
+      </b>
+    </div>
+    <div>Students: <span id="popup_districtStudents"></span></div>
+    <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+  </div>
+`);
+
+// state shared across events
+let hoveredDistrictPolygonID = null;
+let lastPopupDistrictId = null;
+
+// fast lookup from districtData array
+const districtLookup = {};
+
+districtData.forEach(d => {
+  const geoId = String(d.LEAID).padStart(7, '0');
+
+  if (!districtLookup[geoId]) {
+    districtLookup[geoId] = [];
+  }
+
+  districtLookup[geoId].push(d);
+});
 
 
+
+map.on('mouseenter', 'district-fills', e => {
+  map.getCanvas().style.cursor = 'pointer';
+  districtPopup.setLngLat(e.lngLat).addTo(map);
+});
+
+map.on('mousemove', 'district-fills', e => {
+    if (!e.features?.length) return;
+
+    const feat = e.features[0];
+    const fid = String(feat.id);
+    const geoId = fid.padStart(7, '0');
+
+    // If same district, just move popup
+    if (lastPopupDistrictId === fid) {
       districtPopup.setLngLat(e.lngLat);
-    });
+      return;
+    }
+
+    // Reset previous hover
+    if (hoveredDistrictPolygonID && hoveredDistrictPolygonID !== fid) {
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { hover: false }
+      );
+    }
+
+    // Set new hover
+    hoveredDistrictPolygonID = fid;
+    map.setFeatureState(
+      { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: fid },
+      { hover: true }
+    );
+
+    // Lookup data
+    const hoveredDistrictData = districtLookup[geoId];
+
+    // Update popup content
+    $("#popup_districtName").text(feat.properties.NAME || feat.properties.LEA_NAME || 'District');
+
+    const oppEstValue = getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021);
+    $("#popup_districtOppEst").text(oppEstValue);
+
+    const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint);
+    $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
+
+    $("#popup_districtStudents").text(getDistrictValueByYear(hoveredDistrictData, "ENR", 2021));
+    $("#popup_districtTeachers").text(getDistrictValueByYear(hoveredDistrictData, "SCH_FTETEACH_TOT", 2021));
+
+    lastPopupDistrictId = fid;
+    districtPopup.setLngLat(e.lngLat);
+  });
 
 
 
@@ -2233,6 +2255,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
 
   // --- click to zoom and outline ---
+  map.off('click', 'district-fills')
   map.on('click', 'district-fills', e => {
     const feat = e.features[0];
     const fid = feat.id;
@@ -2255,11 +2278,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       }
       extendBounds(feat.geometry.coordinates);
       map.fitBounds(bounds, { padding: 30 });
-      showDistrictFactsheet(feat, districtData);
+      showDistrictFactsheet(feat, districtData, state_abbrev);
       hideNoGeometryNotice();
     }
   });
 }
+
 
 
 
@@ -2271,12 +2295,17 @@ function hideNoGeometryNotice() {
   } catch (e) { /* non-fatal */ }
 }
 
-function showDistrictFactsheet(clickedFeature, districtData) {
-  console.log(districtData)
+function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
+  console.log(districtData) // currently, this was just filtered to 2021 for the map
+
+
   // ensure canonical view reflects district view (this will update controls)
   if (typeof setMapView === 'function') setMapView('district');
   const geoId = String(clickedFeature.properties.GEOID);
-  const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
+  console.log(geoId)
+
+  // records uses the global cache, not the data passed that is only 2021, could remove that all together to steamline
+  const records = districtDataCache.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
   const factSheetContainer = document.getElementById("factSheetContainer");
 
   if (!records.length) {
@@ -2344,7 +2373,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
     const isSelected = String(d.lea) === String(normLatestLea) ? ' selected' : '';
     // Display name and append a (No Geometry) tag for districts without geometry
     const noGeo = (d.gis === 0 || String(d.gis) === '0') ? ' (No Geometry)' : '';
-    const label = `${toTitleCase(d.name)}${d.state ? ' (' + d.state + ')' : ''}${noGeo}`;
+    const label = `${toTitleCase(d.name)}${d.state ? ', ' + d.state : ''}${noGeo}`;
     return `<option value="${d.lea}"${isSelected}>${label}</option>`;
   }).join('');
 
@@ -2352,63 +2381,91 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
   // factSheetContainer.classList.add("full-width"); // full width top row
   factSheetContainer.innerHTML = `
-      <div id="factsheetTitle" class="opportunity-row full-width">
-       <h2>
-         <span class="factsheet-label">Factsheet for </span>
-          <select id="districtPicker" class="district-dropdown">
-            ${optionsHtml}
-          </select>
-        </h2>
-      </div>
-  <div class="opportunity-row full-width">
-    <div class="opportunity-column" id='factsheet-left'>
-    <div class="opportunity-row">
-        <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
+  <div id="factsheetTitle" class="opportunity-row full-width">
+    <h2 id="factsheetTitle">
+      <span class="factsheet-label">Factsheet for </span>
+      <select id="districtPicker" class="district-dropdown inline">
+        ${optionsHtml}
+      </select>
+    </h2>
+  </div>
+  <div id="noGeometryNotice" class="no-geometry-notice" style="display:none;">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           <strong>Note:</strong> This district cannot be found on our map. Available data is shown below.
+  </div>
+  <div class="opportunity-row full-width">
+    <div class="opportunity-column" id='factsheet-left'>
+      <div class="opportunity-row">
+        <h3>District Summary</h3>
+        <div class="opportunity-row district-summary">
+
+          <div class="summary-line">
+            <span class="summary-label">Schools:</span>
+            <span class="summary-value">${formatLegendVal(latest.SCHOOLS)}</span>
+            <span class="spacer"></span>
+
+            <span class="summary-label">Enrollment:</span>
+            <span class="summary-value">${formatLegendVal(latest.ENR)}</span>
+            <span class="summary-subtext">HS: ${formatLegendVal(latest.ENR_HS_TOT)}            <span class="spacer"></span></span>
+
+            <span class="summary-subtext">AP: ${formatLegendVal(latest.ENR_AP)}</span>
+          </div>
+
+          <div class="summary-line">
+            <span class="summary-label">Teachers (FTE):</span>
+            <span class="summary-value">${formatLegendVal(latest.SCH_FTETEACH_TOT)}</span>
+            <span class="spacer"></span>
+            
+            <span class="summary-label">S/T Ratio:</span>
+            <span class="summary-value">${formatLegendVal(latest.STU_TEACH_RAT)}</span>
+            <span class="spacer"></span>
+            
+            <span class="summary-label">AP Courses (mode):</span>
+            <span class="summary-value">${formatLegendVal(latest.SCH_APCOURSES_MODE)}</span>
+          </div>
         </div>
-        <br><h3>Latest information</h3>
-        <div class="opportunity-row">
-          Teachers (FTE): ${formatLegendVal(latest.SCH_FTETEACH_TOT)}<br>
-          Enrollment: ${formatLegendVal(latest.ENR)}<br>
-          HS Enrollment: ${formatLegendVal(latest.ENR_HS_TOT)}<br>
-          Student-teacher ratio: ${formatLegendVal(latest.STU_TEACH_RAT)}<br>
-          AP Enrollment: ${formatLegendVal(latest.ENR_AP)}<br>
-          Modal AP courses: ${formatLegendVal(latest.SCH_APCOURSES)}<br>
-          Number of schools: ${formatLegendVal(latest.SCHOOLS)}<br>
-        </div>
+
+
+      <div class="opportunity-row chart-container">
         <h3>District Composition</h3>
-        <div class="opportunity-row">
-        <canvas id="compDonut" width="300" height="100"style="display:none;"></canvas>
-        <canvas id="compBar" width="300" height="100"></canvas>
-        </div>
+        <canvas id="compDonut" width="300" height="100" style="display:none;"></canvas>
+        <canvas id="compBar" width="300" height="60"></canvas> </div>
       </div>
     </div> <!-- LEFT COLUMN -->
 
-      <div class="opportunity-column" id='factsheet-right'>
-        <p><b>Historic/temporal information</b></p>
-        <p style="font-size:0.9em;color: black">AP Participation Gap by Year</p>
-        <canvas id="gapChart" width="400" height="160"></canvas>
-        <div id="gapLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: Students - Percentage of non-white students -->
-        <p style="font-size:0.9em;color: black">Students - Percentage of non-white students (by year)</p>
-        <canvas id="nonwhiteChart" width="400" height="160"></canvas>
-        <div id="nonwhiteLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: HS students taking ≥1 AP (PCT_ENR_AP) -->
-        <p style="font-size:0.9em;color: black">HS students taking at least 1 AP course (by year)</p>
-        <canvas id="apChart" width="400" height="160"></canvas>
-        <div id="apLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: Student-teacher ratio (STU_TEACH_RAT) -->
-        <p style="font-size:0.9em;color: black">Student–teacher ratio (by year)</p>
-        <canvas id="stChart" width="400" height="160"></canvas>
-        <div id="stLegend" style="font-size:0.85em;"></div>
-        <!-- New sparkline: Modal AP courses offered in district (SCH_APCOURSES) -->
-        <p style="font-size:0.9em;color: black">Modal number of AP courses offered (by year)</p>
-        <canvas id="apCoursesChart" width="400" height="160"></canvas>
-        <div id="apCoursesLegend" style="font-size:0.85em;"></div>
-        
+    <div class="opportunity-column" id="factsheet-right">
+  <h3>Historic/temporal information</h3>
 
-      </div>  <!-- end column -->
+  <section class="chart-section">
+    <p class="chart-subheader">AP Participation Gap by Year</p>
+    <canvas id="gapChart" width="400" height="160"></canvas>
+    <div id="gapLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">Students – Percentage of Non‑White Students (by year)</p>
+    <canvas id="nonwhiteChart" width="400" height="160"></canvas>
+    <div id="nonwhiteLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">HS Students Taking ≥1 AP (by year)</p>
+    <canvas id="apChart" width="400" height="160"></canvas>
+    <div id="apLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">Student–Teacher Ratio (by year)</p>
+    <canvas id="stChart" width="400" height="160"></canvas>
+    <div id="stLegend" class="chart-legend"></div>
+  </section>
+
+  <section class="chart-section">
+    <p class="chart-subheader">Number of AP Courses Offered by year (mode)</p>
+    <canvas id="apCoursesChart" width="400" height="160"></canvas>
+    <div id="apCoursesLegend" class="chart-legend"></div>
+  </section>
+</div> <!-- end right column -->
 
   </div> <!-- end  full-width" -->
   `  ;
@@ -2613,15 +2670,20 @@ function showDistrictFactsheet(clickedFeature, districtData) {
 
 
         currentRaceCode = $('#race-selectBlk').hasClass('active') ?  'BL' : 'HI';
-        const sparklineColors = { District: '#000', State: '#555', National: '#888' };
-
-
         // console.log('currentRaceCode: ', currentRaceCode)
 
         // draw gap chart for selected race
         // const drawGapChartForRace = (race) => {
         window.drawGapChartForRace = function (race) { //global scope to allow call from race-select handler
           currentRaceCode = race;
+          
+        // Build colors per race selection (District uses race color)
+        const sparklineColors = {
+            District: (compColors && compColors[currentRaceCode]) || '#000',
+            State: '#555',
+            National: '#888'
+        };
+
           const raceData = gapChartData[currentRaceCode];
           if (raceData) {
             drawMiniChart('gapChart', years, raceData, sparklineColors, 'AP participation gap');
@@ -2711,7 +2773,7 @@ function showDistrictFactsheet(clickedFeature, districtData) {
           prepareAndDrawSparkline({ canvasId: 'nonwhiteChart', legendId: 'nonwhiteLegend', title: 'Percent non-white', field: 'PCT_ENR_NON_WH', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'apChart', legendId: 'apLegend', title: 'AP participation (%)', field: 'PCT_ENR_AP', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'stChart', legendId: 'stLegend', title: 'Student–teacher ratio', field: 'STU_TEACH_RAT', records, years, natLookup, stateAbbrev });
-          prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES', records, years, natLookup, stateAbbrev });
+          prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES_MODE', records, years, natLookup, stateAbbrev });
         } catch (e) { console.warn('Could not draw detail sparklines', e); }
       });
 }
@@ -2824,4 +2886,79 @@ function resizeQueryBar(targetClass) {
             mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
         });
     }
+}
+
+function buildCountyPolylabels() {
+  console.log("buildCountyPolylabels() called");
+
+  const polys = map.queryRenderedFeatures({
+    layers: ['County-Polygons_ne-10m-admin-2-counties']
+  });
+
+  console.log("polys found:", polys.length);
+
+  // Group polygons by county ID (use NAME if no GEOID)
+  const counties = {};
+
+  polys.forEach(f => {
+    if (!f.geometry || !f.geometry.coordinates) return;
+
+    const id = f.properties.GEOID || f.properties.NAME;
+    if (!id) return;
+
+    // Normalize geometry into an array of polygons
+    let polygons = [];
+
+    if (f.geometry.type === 'Polygon') {
+      polygons = [f.geometry.coordinates];
+    }
+
+    if (f.geometry.type === 'MultiPolygon') {
+      polygons = f.geometry.coordinates;
+    }
+
+    // Compute area for each polygon
+    polygons.forEach(coords => {
+      const area = turf.area({ type: 'Polygon', coordinates: coords });
+
+      if (!counties[id] || area > counties[id].area) {
+        counties[id] = {
+          id,
+          props: f.properties,
+          coords,
+          area
+        };
+      }
+    });
+  });
+
+  // Build label features
+  const labelFeatures = Object.values(counties).map(c => {
+    let center;
+
+    try {
+      center = polylabel(c.coords, 1.0);
+    } catch (e) {
+      console.warn("polylabel failed, using centroid", c.id);
+      center = turf.centroid({
+        type: 'Polygon',
+        coordinates: c.coords
+      }).geometry.coordinates;
+    }
+
+    return {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: center },
+      properties: c.props
+    };
+  });
+
+  console.log("labelFeatures:", labelFeatures.length);
+
+  map.getSource('county-labels').setData({
+    type: 'FeatureCollection',
+    features: labelFeatures
+  });
+
+  console.log("Labels updated");
 }

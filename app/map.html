@@ -10,6 +10,12 @@
   <script defer id="search-js" src="https://api.mapbox.com/search-js/v1.5.0/web.js"></script>  <!-- mapbox search -->
   <script src="js/config.js"></script> <!-- Mapbox Token Config-->
 
+  <!--for county labeling -->
+  <script type="module"> import polylabel from "https://esm.run/polylabel";
+    window.polylabel = polylabel; </script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+
 
   <!-- For sortable data table-->
    <!-- https://datatables.net/examples/styling/bootstrap5 -->
@@ -25,6 +31,7 @@
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script> <!--  for charts -->
   <script defer src="https://kit.fontawesome.com/be4ea184d4.js" crossorigin="anonymous"></script>
 
+  <!-- style across the site -->
   <link rel="stylesheet" href="css/mapStyle.css" />
   <link rel="stylesheet" href="css/charts.css" />
   <link rel="stylesheet" href="css/table.css" />
