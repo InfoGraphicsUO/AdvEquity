@@ -2066,7 +2066,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
       paint: {
         'line-color': offwhite,
-        'line-width': 0.5,
+        // 'line-width': 0, // set by feature state
         'line-opacity': 0.9
       }
     };
@@ -2095,10 +2095,33 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   ]);
 
   map.setPaintProperty('district-lines', 'line-width', [
-    'case',
-    ['boolean', ['feature-state', 'hover'], false],
-    2.5,         // thick on hover
-    0.5          // normal width
+    'interpolate', ['linear'], ['zoom'],
+
+    // z = 0 → width 0 (unless hovered → 2.5)
+    0, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        0      // normal width at z=0
+    ],
+
+    // z = 3 → width 1 (unless hovered → 2.5)
+    5, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        0.5    // normal width at z=3
+    ],
+    // z = 6 → width 1 (unless hovered → 2.5)
+    8, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        0.75      // normal width beyond z=3
+    ],
+    //keep it flat after z=3 (still overridden by hover)
+    22, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        0.75      // normal width beyond z=3
+    ]
   ]);
 
 
