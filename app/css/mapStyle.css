@@ -253,37 +253,6 @@ button:hover {
   background-size: 14px 14px;
 }
 
-#factSheetContainer {
-  display: none;                /* hidden by default */
-  flex-direction: column;       /* stack rows vertically */
-  background: var(--offwhite);
-  max-height: 50vh;
-  overflow: hidden;   /* or just remove overflow entirely */
-}
-
-/* Content row: take remaining space */
-#factSheetContainer > .opportunity-row:not(#factsheetTitle) {
-  flex: 1 1 auto;
-  min-height: 0;      /*for nested scrolling */
-}
-
-/* "factsheet for..." */
-#factSheetContainer h2{
-  margin: 0;
-  font-weight: 800;
-}
-
-/* Section Headers (“Latest information”, “District Composition”, etc.) */
-#factSheetContainer h3 {
-  margin: 0.75rem 0 0.25rem 0; /* Tightened top/bottom margin */
-  font-weight: 700;
-  font-family: jaf-bernino-sans-narrow, sans-serif;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  color: var(--almostBlack);;
-  border-bottom: 1px solid var(--lightgrey);
-}
-
 /* Labels (Teachers, Enrollment, AP Enrollment, etc.) */
 .summary-line {
   display: flex;
@@ -406,25 +375,68 @@ button:hover {
   vertical-align: middle;
 }
 
-/* Lower half containers */
-#infoContainer,
-#factSheetContainer{
-  flex: 1;                      /* take up remaining space */
-  overflow: auto;               /* scroll if content is long */
-  background: #f9f9f9;
+/* Base container (hidden by default) */
+#factSheetContainer {
+  display: none;
+  flex-direction: column;
+  background: var(--offwhite);
+  max-height: 50vh;
+  overflow: hidden;
   padding: 10px;
   line-height: 1;
 }
 
-/* whichever is shown will stretch */
-#infoContainer.show,
+/* When shown, becomes a scrollable flex column */
 #factSheetContainer.show {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  height: 100%;       /* important */
+  height: 100%;
+  overflow: auto;
 }
+
+/* Content rows except the title */
+#factSheetContainer > .opportunity-row:not(#factsheetTitle) {
+  flex: 1 1 auto;
+  min-height: 0; /* enables nested scrolling */
+}
+
+/* H2: "Factsheet for..." */
+#factSheetContainer h2 {
+  margin: 0;
+  font-weight: 800;
+}
+
+/* Section headers */
+#factSheetContainer h3 {
+  margin: 0.75rem 0 0.25rem 0;
+  font-weight: 700;
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--almostBlack);
+  border-bottom: 1px solid var(--lightgrey);
+}
+
+/* Info container shares the same scroll + padding rules */
+#infoContainer {
+  flex: 1;
+  overflow: auto;
+  background: #f9f9f9;
+  padding: 10px;
+  line-height: 1;
+}
+
+/* When shown, same flex behavior */
+#infoContainer.show {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+}
+
 
 h2 {
   flex: 0;

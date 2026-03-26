@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backToStateMapBtn = document.createElement('button');
   backToStateMapBtn.id = 'backToStateMapBtn';
   backToStateMapBtn.innerHTML  = '<i class="fa-solid fa-arrow-rotate-left"></i>';
+  backToStateMapBtn.setAttribute('title', 'Back to state');
 
   // insert BEFORE the fullExtentButton if present
   if (fullExtentButton && fullExtentButton.parentNode) {
