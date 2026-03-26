@@ -1007,14 +1007,18 @@ map.on('moveend', () => {
         return; // already highlighted
       } else {
         // get new data
-        description = 
-        `
-          <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
-            <strong>${props.STATE_NAME}</strong>
-            ${getStateOpportunityEstimates(fips, currentRaceField || 'ENR_AP_GAP_BL')}
+        description = `
+        <div>
+          <div class="popup-title">${props.STATE_NAME}</div>
 
+          <div class="popup-row">
+            <span class="popup-value">
+              ${getStateOpportunityEstimates(fips, currentRaceField || 'ENR_AP_GAP_BL')}
+            </span>
           </div>
-        `;
+        </div>
+      `;
+
         try { if (typeof popup !== 'undefined' && popup && typeof popup.setLngLat === 'function') popup.setLngLat(e.lngLat).setHTML(description).addTo(map); } catch (err) { }
       }
 
@@ -2232,34 +2236,62 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- tooltip & hover ---
   //create popup
-  districtPopup.setHTML(`
-    <div><strong><span id="popup_districtName"></span> (2021)</strong>
-      <div>
-        Opp Est:
-        <b>
-          <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
-        </b>
-      </div>
-      <div>Students: <span id="popup_districtStudents"></span></div>
-      <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+districtPopup.setHTML(`
+  <div>
+    <div class="popup-title">
+      <span id="popup_districtName"></span> (2021)
     </div>
-  `);
+
+    <div class="popup-row">
+      <span class="popup-label">Opp Est:</span>
+      <span class="popup-value">
+        <span id="popup_districtOppEst"></span>
+        <span id="popup_districtOppEstBullet"></span>
+      </span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Students:</span>
+      <span class="popup-value" id="popup_districtStudents"></span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Teachers (FTE):</span>
+      <span class="popup-value" id="popup_districtTeachers"></span>
+    </div>
+  </div>
+`);
+
 
 
 
 // Build popup HTML once
 districtPopup.setHTML(`
-  <div><strong><span id="popup_districtName"></span> (2021)</strong>
-    <div>
-      Opp Est:
-      <b>
-        <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
-      </b>
+  <div>
+    <div class="popup-title">
+      <span id="popup_districtName"></span> (2021)
     </div>
-    <div>Students: <span id="popup_districtStudents"></span></div>
-    <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+
+    <div class="popup-row">
+      <span class="popup-label">Opp Est:</span>
+      <span class="popup-value">
+        <span id="popup_districtOppEst"></span>
+        <span id="popup_districtOppEstBullet"></span>
+      </span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Students:</span>
+      <span class="popup-value" id="popup_districtStudents"></span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Teachers (FTE):</span>
+      <span class="popup-value" id="popup_districtTeachers"></span>
+    </div>
   </div>
 `);
+
 
 // state shared across events
 let hoveredDistrictPolygonID = null;

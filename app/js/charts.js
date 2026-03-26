@@ -113,17 +113,27 @@ function getStateOpportunityEstimates(state,fieldName) {
   const oppChangeText= getOpEstChangeText(val2011Raw, val2021Raw) 
   // Return formatted HTML
   // TO DO: add a chip after 2021 with the fill color of the hovered state
-  const opphtml = `
-    <h3>Opportunity Gap Estimates</h3>
-    <div class="opportunity-row opportunity-estimates">
-      <div class="arrow ${arrowClass}">${arrowIcon}</div>
-      <div class="opportunity-text">
-        2011–12: ${val2011}<br>
-        2021–22: <b>${val2021}</b>
-      </div>
-    </div>
-    <small>${oppChangeText}</small>
-  `;
+const opphtml = `
+  <div class="popup-subheader">Opportunity Gap Estimates</div>
+
+  <div class="popup-row">
+    <span class="popup-label">2011–12:</span>
+    <span class="popup-value">${val2011}</span>
+  </div>
+
+  <div class="popup-row">
+    <span class="popup-label">2021–22:</span>
+    <span class="popup-value-strong">${val2021}</span>
+  </div>
+
+<div class="popup-row has-arrow">
+  <span class="arrow ${arrowClass}">${arrowIcon}</span>
+  <span class="popup-label">${oppChangeText}</span>
+</div>
+`;
+
+
+
 
   return opphtml;
 }

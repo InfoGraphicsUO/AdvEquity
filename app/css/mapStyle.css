@@ -548,21 +548,59 @@ h3 {
 }
 
 /* popup */
-
-.popup-content {
-  font-family: sans-serif;
+.mapboxgl-popup-content {
+  font-family: jaf-bernina-sans, sans-serif;
   font-size: 13px;
   pointer-events: none !important;
+  padding: 8px 10px;
+  line-height: 1.35;
+  max-width: 220px;        /* keeps tooltip narrow */
 }
 
-/* prevent errors with tooltip when moving mouse quickly */
-.mapboxgl-popup, .mapboxgl-popup-tip, .mapboxgl-popup-content{
-  pointer-events: none !important;
+/* Title */
+.popup-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+  text-align: center;      /* center title */
+  color: var(--almostBlack, #222);
+}
+
+/* Row container */
+.popup-row {
+  display: flex;
+  flex-wrap: wrap;         /* allows shrinking */
+  justify-content: center; /* centers content */
+  gap: 4px 6px;            /* spacing between label/value */
+  margin: 3px 0;
+  text-align: center;      /* fallback centering */
+}
+
+/* Label */
+.popup-label {
+  color: #555;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Value */
+.popup-value {
+  color: #000;
+  font-weight: 700;
+  font-size: 12px;
+  word-break: break-word;  /* prevents overflow */
+}
+
+/* Only affect rows that contain an arrow */
+.popup-row.has-arrow {
+  flex-wrap: nowrap;       /* arrow + text stay on one line */
+  justify-content: flex-start; /* arrow always at beginning */
 }
 
 .arrow {
   font-size: 20px;
   line-height: 1;
+  flex: 0 0 auto;
 }
 
 .arrow-down {
@@ -753,11 +791,6 @@ h3 {
   background-color: #4a90e2;
   color: white;
   border-color: #4a90e2;
-}
-
-/* tooltip */
-.mapboxgl-popup {
-  z-index: 11; /*so it appears over the widgets*/
 }
 
 .no-geometry-notice {
