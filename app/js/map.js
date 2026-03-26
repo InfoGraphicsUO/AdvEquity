@@ -1158,15 +1158,22 @@ map.on('moveend', () => {
     if (!features.length) return;
 
     const top = features[0];
+    const bottom = features[1];
 
     // // --- AGGREGATION LOGIC ---
-    // if (currentAgg === 'district') {
-    //   // Only respond to district clicks
-    //   // if (top.layer.id === 'district-fills') {
-    //     onDistrictClick(top);
-    //   // }
-    //   // return;
-    // }
+    if (currentAgg === 'district') {
+      console.log(top.layer.id)
+      //   // Only respond to district clicks
+      //   // if (top.layer.id === 'district-fills') {
+      //     onDistrictClick(top);
+      //   // }
+      //   // return;
+      
+      // If we are looking at a distict a clicked a neigbor state, view that state in district view
+      if (top.layer.id === 'state-fills') {
+          onStateClick(top);
+      }
+    }
 
     if (currentAgg === 'state') {
       // Only respond to state clicks
