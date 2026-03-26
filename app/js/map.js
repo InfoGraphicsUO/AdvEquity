@@ -2170,19 +2170,19 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     5, ['case',
         ['boolean', ['feature-state', 'hover'], false],
         2.5,   // hover width
-        0.5    // normal width at z=3
+        0.75    // normal width at z=3
     ],
     // z = 6 → width 1 (unless hovered → 2.5)
     8, ['case',
         ['boolean', ['feature-state', 'hover'], false],
         2.5,   // hover width
-        0.75      // normal width beyond z=3
+        1      // normal width beyond z=3
     ],
     //keep it flat after z=3 (still overridden by hover)
     22, ['case',
         ['boolean', ['feature-state', 'hover'], false],
         2.5,   // hover width
-        0.75      // normal width beyond z=3
+        1     // normal width beyond z=3
     ]
   ]);
 
