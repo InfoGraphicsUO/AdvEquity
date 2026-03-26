@@ -240,7 +240,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   factSheetContainer.innerHTML = `
   <div class="opportunity-row">
     <div class="opportunity-column">
-      <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
+      <h2>Factsheet for <span id="currentState">${states[state_abbrev]}</span></h2>
       <div>Number of districts: <span id="numDistricts">—</span></div>
       <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
       </div>
@@ -255,7 +255,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
     <div class="opportunity-column district-column">
       <div class="table-header-wrapper">
-        <h2 class="floatText">Districts in ${state_abbrev}</h2>
+        <h2 class="floatText">Districts in ${states[state_abbrev]}</h2>
         <table id="district-table" class="table table-striped">
           <thead>
             <tr>
