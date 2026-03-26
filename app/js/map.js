@@ -73,15 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // map-level "Back to state" button 
   const backToStateMapBtn = document.createElement('button');
   backToStateMapBtn.id = 'backToStateMapBtn';
-  backToStateMapBtn.classList.add('mapControlBtn');
-  backToStateMapBtn.textContent = 'Back to state';
-  // insert after the fullExtentButton if present
+  backToStateMapBtn.innerHTML  = '<i class="fa-solid fa-arrow-rotate-left"></i>';
+
+  // insert BEFORE the fullExtentButton if present
   if (fullExtentButton && fullExtentButton.parentNode) {
-    fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton.nextSibling);
+    fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton);
   } else {
     // fallback: append to body
     document.body.appendChild(backToStateMapBtn);
   }
+
 
   // click handler - zoom back to the last district's state (stored when factsheet opens)
   backToStateMapBtn.addEventListener('click', () => {
@@ -635,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
   queryBarWidth = document.getElementById('mapWidgetsQuery').getBoundingClientRect().width;
   // console.log('select box height',baseMenuHeight)
   
-  initQueryWidth()
+  // initQueryWidth()
   $('#resizeQueryButton').on('click', function() {
     resizeQueryBar('qbExpanded')
   })
@@ -698,12 +699,13 @@ const map = new mapboxgl.Map({
   // projection: 'mercator',
   // center: [-99.2, 40.0],
   // parallels: [27.5, 44.55]
+  logoPosition: 'bottom-right'
 });
 
 // Add zoom buttons - position defined in mapStyle.css .mapboxgl-ctrl-top-left
 map.addControl(new mapboxgl.NavigationControl({
     showCompass: false 
-}), 'top-left');
+}), 'bottom-left');
 
 let hoveredPolygonId = null; // highlight state
 let previousHighlightedRowId = null; // for highlighting state in table
@@ -2861,54 +2863,54 @@ const queryBar = document.getElementById('mapWidgetsQuery')
 let queryBarWidth;
 
 //init width function
-function initQueryWidth(){
-  //get resize button width
-  const resizeButton = document.getElementById('resizeQueryButton');
-  resizeButton.style.display = '';
-  const buttonWidth = resizeButton.getBoundingClientRect().width;
-  resizeButton.style.display = 'none';
+// function initQueryWidth(){
+//   //get resize button width
+//   const resizeButton = document.getElementById('resizeQueryButton');
+//   resizeButton.style.display = '';
+//   // const buttonWidth = resizeButton.getBoundingClientRect().width;
+//   resizeButton.style.display = 'none';
   
-  //set style properties i.e. 
-  queryBar.style.setProperty('--expanded-width', `${queryBarWidth}px`);
-  queryBar.style.setProperty('--collapsed-width', `${buttonWidth}px`);
+//   //set style properties i.e. 
+//   queryBar.style.setProperty('--expanded-width', `${queryBarWidth}px`);
+//   // queryBar.style.setProperty('--collapsed-width', `${buttonWidth}px`);
 
-  // Start in expanded state
-  queryBar.classList.add('qbExpanded');
-  queryBar.classList.remove('qbCollapsed');
-}
+//   // Start in expanded state
+//   queryBar.classList.add('qbExpanded');
+//   queryBar.classList.remove('qbCollapsed');
+// }
 
 //expand/collapse function
 function resizeQueryBar(targetClass) {
   //targetClass: qbCollapsed = shrink searchbar, show only expand button
   //             qbExpanded = show full search bar
   console.log(`resizeQueryBar(${targetClass})`)
-  const resizeButton = document.getElementById('resizeQueryButton'); //only visible when collapsed?
+  const resizeButton = document.getElementById('resizeQueryButton'); //only visible when collapsed
   const mapButtons = document.getElementsByClassName('mapControlBtn')
   const searchBox = document.getElementById('search_box_holder')
     
-  // remove both classes
-  queryBar.classList.remove('qbExpanded', 'qbCollapsed');
-  // Add the target class
-  queryBar.classList.add(targetClass);
+  // // remove both classes
+  // queryBar.classList.remove('qbExpanded', 'qbCollapsed');
+  // // Add the target class
+  // queryBar.classList.add(targetClass);
 
-  if (targetClass === 'qbExpanded') {
-    console.log('expanding query bar')
-    resizeButton.style.display = 'none';
-    // mapButtons.style.display = '';
-    searchBox.style.display = '';
-  } else if (targetClass === 'qbCollapsed') {
-    console.log('shrinking query bar')
-    resizeButton.style.display = '';
-    // mapButtons.style.display = 'none';
-    searchBox.style.display = 'none';
-    //set display=none for  searchBox and mapBttons
-  }
+  // if (targetClass === 'qbExpanded') {
+  //   console.log('expanding query bar')
+  //   resizeButton.style.display = 'none';
+  //   // mapButtons.style.display = '';
+  //   searchBox.style.display = '';
+  // } else if (targetClass === 'qbCollapsed') {
+  //   console.log('shrinking query bar')
+  //   resizeButton.style.display = '';
+  //   // mapButtons.style.display = 'none';
+  //   searchBox.style.display = 'none';
+  //   //set display=none for  searchBox and mapBttons
+  // }
 
-  if (mapButtons && mapButtons.length) {
-        Array.from(mapButtons).forEach(mapButtons => {
-            mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
-        });
-    }
+  // if (mapButtons && mapButtons.length) {
+  //       Array.from(mapButtons).forEach(mapButtons => {
+  //           mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
+  //       });
+  //   }
 }
 
 function buildCountyPolylabels() {

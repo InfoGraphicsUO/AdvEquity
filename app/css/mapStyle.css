@@ -46,10 +46,10 @@ body, html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.mapboxgl-ctrl-top-left{
+/* .mapboxgl-ctrl-top-left{
     left: -.25rem;
-    top: 3.5rem;
-}
+    top: 8rem;
+} */
 
 #currentRaceDesc{
   font-weight: bold;
@@ -58,15 +58,20 @@ body, html {
 
 #mapWidgetsQuery {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    bottom: 0;
+    left: 0;
     z-index: 10;
-    background: var(--lightgrey);
-    padding: 8px 12px;
+    /* background: var(--lightgrey); */
+    padding: 8px 12px 0 10px;
     border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    /* box-shadow: 0 1px 4px rgba(0,0,0,0.2); */
     display: flex;
     gap: 6px;
+    flex-direction: column;
+}
+
+.mapboxgl-ctrl-bottom-left {
+  bottom: 108px !important;
 }
 
 #mapWidgetsQuery.qbExpanded {
@@ -90,7 +95,7 @@ body, html {
     top: 5px;
     right: 5px;
     z-index: 10;
-    background: var(--lightgrey);
+    background: #f5f5f5de; /* a little transparent  */
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
@@ -111,11 +116,14 @@ body, html {
 
 button {
     /* background-color: var(--green); */
-    background-color: var(--verydarkgrey); /* generic color to not match one data set */
-    color: var(--offwhite);
-    border: none;
+    background-color: white;
+    color: #333333; /* match zoom control */
+    border: 0.5px solid var(--bs-border-color);
     padding: 5px 10px;
     cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    /* width: fit-content; */
+    border-radius: var(--bs-border-radius);
 }
 
 button:hover {
@@ -124,37 +132,40 @@ button:hover {
 
 /* disabled control style: greyed out, not-allowed cursor, no hover color change */
 .control-disabled {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: not-allowed;
+  background-color: var(--bs-border-color);
 }
 .control-disabled:hover {
   /* keep same background on hover so color doesn't change */
-  background-color: var(--darkgrey) !important;
+  background-color: var(--bs-border-color); /*!important; */
   cursor: not-allowed;
 }
 
 /* map control buttons */
 #mapWidgetsQuery button#full_extent,
 #backToStateMapBtn {
-  display: block;
+  /* display: block; */
   /* margin-top: 6px; */
-  width: auto;
+  width: fit-content;
   box-sizing: border-box;
-  padding: .5rem .6rem;
-  border-radius: 2px;
-  font-size: 0.9rem;
-  height: 2.2rem;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 1rem;
+  height: 29px;
+  width: 29px;
 }
 #mapWidgetsQuery button#full_extent {
-  padding: .3rem;
+  /* padding: .3rem; */
+  font-size: 0.8rem;
   /* min-width: 5.5rem; */
 }
 #mapWidgetsQuery button#backToStateMapBtn {
-  min-width: 6.75rem;
+  /* min-width: 6.75rem; */
 }
 
 .control-disabled {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: not-allowed;
 }
 
@@ -176,7 +187,7 @@ button:hover {
 }
 
 .race-selectBtn:hover, .agg-selectBtn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .race-selectBtn.active, .agg-selectBtn.active {
