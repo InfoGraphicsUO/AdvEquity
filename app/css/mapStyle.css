@@ -171,51 +171,85 @@ button:hover {
 
 .race-toggle, .aggregation-toggle{
   display: inline-flex;
-  border: 1.5px solid var(--verydarkgrey);
-  border-radius: 999px;
-  overflow: hidden;
+  border-radius: 4px;
+  overflow: visible;
   margin-bottom: 2px;
+}
+
+#aggregation-label{
+  margin-left: 1.9rem;
 }
 
 .race-selectBtn, .agg-selectBtn {
   background-color: transparent;
   color: var(--black);
-  border: none;
   padding: 0px 8px;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
+
+  /* Unselected state gets the grey outline */
+  border: 0.5px solid var(--lightgrey);
+  border-radius: 4px;
 }
 
-.race-selectBtn:hover, .agg-selectBtn:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+/* Remove double border between buttons */
+.race-selectBtn + .race-selectBtn,
+.agg-selectBtn + .agg-selectBtn {
+  border-left: none;
+  border-radius: 0 4px 4px 0; /* right button outer corners */
 }
 
-.race-selectBtn.active, .agg-selectBtn.active {
+/* Left button outer corners */
+.race-selectBtn:first-child,
+.agg-selectBtn:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Hover */
+.race-selectBtn:hover,
+.agg-selectBtn:hover {
+  background-color: rgba(42, 42, 42, 0.1);
+}
+
+/* ACTIVE BUTTON — no border, but keep outer corners rounded */
+.race-selectBtn.active,
+.agg-selectBtn.active {
   background-color: var(--green);
   color: var(--offwhite);
   font-weight: bold;
+  border: none;
+  cursor: default;
 }
 
-#race-selectBlk.race-selectBtn.active {
-  background-color: var(--black-class-4-color);
-  color: var(--almostBlack);
-  font-weight: bold;
-}
-.agg-selectHis.agg-selectBtn.active {
-  background-color: var(--hispanic-class-4-color);
-  color: var(--offwhite);
-  font-weight: bold;
+/* Active LEFT button keeps left rounding */
+.race-selectBtn.active:first-child,
+.agg-selectBtn.active:first-child {
+  border-radius: 4px 0 0 4px;
 }
 
+/* Active RIGHT button keeps right rounding */
+.race-selectBtn.active:last-child,
+.agg-selectBtn.active:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+/* Active MIDDLE button (if you ever have 3) stays square */
+.race-selectBtn.active:not(:first-child):not(:last-child),
+.agg-selectBtn.active:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+/* Race-specific active colors */
+#race-selectBlk.race-selectBtn.active,
 .agg-selectBlk.agg-selectBtn.active {
   background-color: var(--black-class-4-color);
   color: var(--almostBlack);
-  font-weight: bold;
 }
-#race-selectHis.race-selectBtn.active {
+
+#race-selectHis.race-selectBtn.active,
+.agg-selectHis.agg-selectBtn.active {
   background-color: var(--hispanic-class-4-color);
   color: var(--offwhite);
-  font-weight: bold;
 }
 
 /* Shared styles for the lower containers */
