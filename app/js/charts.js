@@ -113,17 +113,27 @@ function getStateOpportunityEstimates(state,fieldName) {
   const oppChangeText= getOpEstChangeText(val2011Raw, val2021Raw) 
   // Return formatted HTML
   // TO DO: add a chip after 2021 with the fill color of the hovered state
-  const opphtml = `
-    <h3>Opportunity Gap Estimates</h3>
-    <div class="opportunity-row opportunity-estimates">
-      <div class="arrow ${arrowClass}">${arrowIcon}</div>
-      <div class="opportunity-text">
-        2011–12: ${val2011}<br>
-        2021–22: <b>${val2021}</b>
-      </div>
-    </div>
-    <small>${oppChangeText}</small>
-  `;
+const opphtml = `
+  <div class="popup-subheader">Opportunity Gap Estimates</div>
+
+  <div class="popup-row">
+    <span class="popup-label">2011–12:</span>
+    <span class="popup-value">${val2011}</span>
+  </div>
+
+  <div class="popup-row">
+    <span class="popup-label">2021–22:</span>
+    <span class="popup-value-strong">${val2021}</span>
+  </div>
+
+<div class="popup-row has-arrow">
+  <span class="arrow ${arrowClass}">${arrowIcon}</span>
+  <span class="popup-label">${oppChangeText}</span>
+</div>
+`;
+
+
+
 
   return opphtml;
 }
@@ -169,34 +179,12 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 function initFactSheet(stateEntry, fips, fieldName) {
   showGraphs(); // hide the US level details, show the state details
+  
   console.log("building fact sheet ", stateEntry)
+  console.log("building fact sheet ", fips)
   console.log("building fieldName", fieldName)
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
-
-  // const fipsKey = String(fips).padStart(2, '0'); // should already be padded and a string.
-  // const stateEntry = stateData[fipsKey];
-
-  // if (!stateEntry) {
-  //   factSheetContainer.innerHTML = `
-  //     <h2><b>Error: No data found for FIPS ${fips}</b></h2>
-  //     <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
-  //   `;
-  //   // click handler to return button
-  //   setTimeout(() => {
-  //     const returnBtn = document.getElementById('returnToFullView');
-  //     if (returnBtn) {
-  //       returnBtn.addEventListener('click', () => {
-  //         map.fitBounds([[ -126, 24], [-66, 50]]);
-  //         if (typeof setMapView === 'function') setMapView('full');
-  //         hideGraphs();
-  //         const info = document.getElementById('infoContainer');
-  //         if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  //       });
-  //     }
-  //   }, 0);
-  //   return;
-  // }
 
   // State abbreviation and values
   currentAgg = "district"
@@ -213,9 +201,6 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // fieldName given race field e.g. ENR_AP_GAP_BL
   const val2011Raw = stateEntry[0]?.[fieldName];// map value (gap) - assume first year 2011
   const val2021Raw = lastEntry?.[fieldName]; // map value (gap) - assume last year 2021
-
-
-
 
   const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
   const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
@@ -240,7 +225,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   factSheetContainer.innerHTML = `
   <div class="opportunity-row">
     <div class="opportunity-column">
-      <h2>Factsheet for <span id="currentState">${state_abbrev}</span></h2>
+      <h2>Factsheet for <span id="currentState">${states[state_abbrev]}</span></h2>
       <div>Number of districts: <span id="numDistricts">—</span></div>
       <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
       </div>
@@ -255,7 +240,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
     <div class="opportunity-column district-column">
       <div class="table-header-wrapper">
-        <h2 class="floatText">Districts in ${state_abbrev}</h2>
+        <h2 class="floatText">Districts in ${states[state_abbrev]}</h2>
         <table id="district-table" class="table table-striped">
           <thead>
             <tr>

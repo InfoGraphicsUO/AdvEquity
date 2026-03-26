@@ -1,16 +1,15 @@
 // data caches 
 let geojsonCache = null;
-let stateDataCache = null;
+let stateDataCache = null; // all state data
 let districtDataCache = null; // all district data
 
 // current selections
 let currentDistrictValueMap = {};
 let firstSymbolId = null;
 let currentMapPaint;
-let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
+// let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
 let currentRaceField  = 'ENR_AP_GAP_BL'; // fields with the data disparity data('ENR_AP_GAP_BL' |  'ENR_AP_GAP_HS')
 let currentRaceCode = 'BL' // ('BL' |  'HI')
-
 
 
 // current site state
@@ -63,6 +62,62 @@ const hispanicColors = {
 
 const compColors = { WH: whiteClass4Color, HI: hispanicClass4Color, BL: blackClass4Color, AS: asianClass4Color, OTH: nativeAmericanClass4Color };
 
+const states = {
+  AL: "Alabama",
+  AK: "Alaska",
+  AZ: "Arizona",
+  AR: "Arkansas",
+  CA: "California",
+  CO: "Colorado",
+  CT: "Connecticut",
+  DE: "Delaware",
+  FL: "Florida",
+  GA: "Georgia",
+  HI: "Hawaii",
+  ID: "Idaho",
+  IL: "Illinois",
+  IN: "Indiana",
+  IA: "Iowa",
+  KS: "Kansas",
+  KY: "Kentucky",
+  LA: "Louisiana",
+  ME: "Maine",
+  MD: "Maryland",
+  MA: "Massachusetts",
+  MI: "Michigan",
+  MN: "Minnesota",
+  MS: "Mississippi",
+  MO: "Missouri",
+  MT: "Montana",
+  NE: "Nebraska",
+  NV: "Nevada",
+  NH: "New Hampshire",
+  NJ: "New Jersey",
+  NM: "New Mexico",
+  NY: "New York",
+  NC: "North Carolina",
+  ND: "North Dakota",
+  OH: "Ohio",
+  OK: "Oklahoma",
+  OR: "Oregon",
+  PA: "Pennsylvania",
+  RI: "Rhode Island",
+  SC: "South Carolina",
+  SD: "South Dakota",
+  TN: "Tennessee",
+  TX: "Texas",
+  UT: "Utah",
+  VT: "Vermont",
+  VA: "Virginia",
+  WA: "Washington",
+  WV: "West Virginia",
+  WI: "Wisconsin",
+  WY: "Wyoming",
+  PR: "Puerto Rico",
+  DC: "D.C."
+};
+
+
 console.log("MAP JS loaded");
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -73,11 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // map-level "Back to state" button 
   const backToStateMapBtn = document.createElement('button');
   backToStateMapBtn.id = 'backToStateMapBtn';
-  backToStateMapBtn.classList.add('mapControlBtn');
-  backToStateMapBtn.textContent = 'Back to state';
-  // insert after the fullExtentButton if present
+  backToStateMapBtn.innerHTML  = '<i class="fa-solid fa-arrow-rotate-left"></i>';
+  backToStateMapBtn.setAttribute('title', 'Back to state');
+
+  // insert BEFORE the fullExtentButton if present
   if (fullExtentButton && fullExtentButton.parentNode) {
-    fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton.nextSibling);
+    fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton);
   } else {
     // fallback: append to body
     document.body.appendChild(backToStateMapBtn);
@@ -99,9 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // try geojsonCache first
+    // locate laste state in the state geojsonCache
     let stateFeature = null;
     if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
+      console.log("locating", stateFP)
       stateFeature = geojsonCache.features.find(f => {
         const p = f.properties || {};
         return String(p.STATEFP) === String(stateFP) || String(p.STATE_ID) === String(stateFP) || String((p.STATE_ABBR || p.STATE)) === String(stateAbbrev);
@@ -122,27 +179,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const props = f.properties || {};
       let fipsToUse = fips;
-      if (!fipsToUse || fipsToUse === null) {
-        if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
-        else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
-        else if (props.STATE_ABBR || props.STATE) {
-          const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
-          try {
-            if (typeof stateDataCache === 'object') {
-              const stateKey = Object.keys(stateDataCache).find(k => {
-                const arr = stateDataCache[k] || [];
-                return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
-              });
-              if (stateKey) fipsToUse = stateKey;
-            }
-          } catch (e) { /* non-fatal */ }
-        }
-      }
+      console.log(fipsToUse)
+      // REMOVING BLOCK AS WE TRUST THE FIPS, PUT BACK IF THE FIPS CAUSES ERRORS
+      // if (!fipsToUse || fipsToUse === null) {
+      //   if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
+      //   else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
+      //   else if (props.STATE_ABBR || props.STATE) {
+      //     const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
+      //     try {
+      //       if (typeof stateDataCache === 'object') {
+      //         const stateKey = Object.keys(stateDataCache).find(k => {
+      //           const arr = stateDataCache[k] || [];
+      //           return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
+      //         });
+      //         if (stateKey) fipsToUse = stateKey;
+      //       }
+      //     } catch (e) { /* non-fatal */ }
+      //   }
+      // }
 
       // If feature has geometry, fit bounds; otherwise skip zoom but still show factsheet
       try {
         if (coords) {
           extendBounds(coords);
+          console.log("zooming to the state")
           map.fitBounds(bounds, { padding: 30 });
         }
       } catch (e) {
@@ -154,7 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
       hideGraphs();
       // show the state factsheet (fips may need padding to match keys)
       try {
-        initFactSheet(stateDataCache, fipsToUse, currentRaceField || 'ENR_AP_GAP_BL');
+        /*should be filerted to the state only at this point */
+        initFactSheet(stateDataCache[fipsToUse], fipsToUse, currentRaceField || 'ENR_AP_GAP_BL');
       } catch (e) { console.warn('initFactSheet failed', e); }
       // scroll state info into view
       const info = document.getElementById('infoContainer');
@@ -266,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // currentAgg = 'state'; // 'state' or 'district'
   // track currently selected race field
   currentRaceField = 'ENR_AP_GAP_BL'; // default to Black students
-  currentMapRace = 'black'
+  // currentMapRace = 'black'
 
   // update map based on race selection from gap chart picker
   window.updateMapForRace = function(raceCode) {
@@ -635,14 +696,14 @@ document.addEventListener('DOMContentLoaded', () => {
   queryBarWidth = document.getElementById('mapWidgetsQuery').getBoundingClientRect().width;
   // console.log('select box height',baseMenuHeight)
   
-  initQueryWidth()
+  // initQueryWidth()
   $('#resizeQueryButton').on('click', function() {
     resizeQueryBar('qbExpanded')
   })
 
   map.on('zoomend', function () {
     console.log('zoom level: ', map.getZoom());
-    resizeQueryBar('qbCollapsed');
+    // resizeQueryBar('qbCollapsed');
     
     console.log('zoomend mapView: ', mapView)
     // if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
@@ -662,8 +723,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //   }
     // };
 
-    // // updateControlStates() //not working backToStateBtn not activating
-    // $('#backToStateBtn').removeClass('control-disabled')
+    // // updateControlStates() //not working backToStateMapBtn not activating
+    if (currentAgg=='district' && lastDistrictStateFP != null ){
+      console.log("enableing back to state")
+      $('#backToStateMapBtn').removeClass('control-disabled')
+    }
 
     // set bias on search box
     const center = map.getCenter();
@@ -698,12 +762,13 @@ const map = new mapboxgl.Map({
   // projection: 'mercator',
   // center: [-99.2, 40.0],
   // parallels: [27.5, 44.55]
+  logoPosition: 'bottom-right'
 });
 
 // Add zoom buttons - position defined in mapStyle.css .mapboxgl-ctrl-top-left
 map.addControl(new mapboxgl.NavigationControl({
     showCompass: false 
-}), 'top-left');
+}), 'bottom-left');
 
 let hoveredPolygonId = null; // highlight state
 let previousHighlightedRowId = null; // for highlighting state in table
@@ -942,14 +1007,18 @@ map.on('moveend', () => {
         return; // already highlighted
       } else {
         // get new data
-        description = 
-        `
-          <div style="font-family:sans-serif; font-size:13px; line-height:1.4;">
-            <strong>${props.STATE_NAME}</strong>
-            ${getStateOpportunityEstimates(fips, currentRaceField || 'ENR_AP_GAP_BL')}
+        description = `
+        <div>
+          <div class="popup-title">${props.STATE_NAME}</div>
 
+          <div class="popup-row">
+            <span class="popup-value">
+              ${getStateOpportunityEstimates(fips, currentRaceField || 'ENR_AP_GAP_BL')}
+            </span>
           </div>
-        `;
+        </div>
+      `;
+
         try { if (typeof popup !== 'undefined' && popup && typeof popup.setLngLat === 'function') popup.setLngLat(e.lngLat).setHTML(description).addTo(map); } catch (err) { }
       }
 
@@ -1096,15 +1165,22 @@ map.on('moveend', () => {
     if (!features.length) return;
 
     const top = features[0];
+    const bottom = features[1];
 
     // // --- AGGREGATION LOGIC ---
-    // if (currentAgg === 'district') {
-    //   // Only respond to district clicks
-    //   // if (top.layer.id === 'district-fills') {
-    //     onDistrictClick(top);
-    //   // }
-    //   // return;
-    // }
+    if (currentAgg === 'district') {
+      console.log(top.layer.id)
+      //   // Only respond to district clicks
+      //   // if (top.layer.id === 'district-fills') {
+      //     onDistrictClick(top);
+      //   // }
+      //   // return;
+      
+      // If we are looking at a distict a clicked a neighbor state, view that state in district view
+      if (top.layer.id === 'state-fills') {
+          onStateClick(top);
+      }
+    }
 
     if (currentAgg === 'state') {
       // Only respond to state clicks
@@ -1243,7 +1319,7 @@ function buildStateTable(stateData, fieldName) {
     const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
     const apDisplay = typeof ap === 'number' ? ap.toLocaleString() : '—';
 
-    table.row.add([stateAbbrev, apDisplay, val2011, val2021, fips]);
+    table.row.add([states[stateAbbrev], apDisplay, val2011, val2021, fips]);
   }
 
   table.order([[4, 'desc']]).draw() 
@@ -2066,7 +2142,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
       paint: {
         'line-color': offwhite,
-        'line-width': 0.5,
+        // 'line-width': 0, // set by feature state
         'line-opacity': 0.9
       }
     };
@@ -2095,10 +2171,33 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   ]);
 
   map.setPaintProperty('district-lines', 'line-width', [
-    'case',
-    ['boolean', ['feature-state', 'hover'], false],
-    2.5,         // thick on hover
-    0.5          // normal width
+    'interpolate', ['linear'], ['zoom'],
+
+    // z = 0 → width 0 (unless hovered → 2.5)
+    0, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        0      // normal width at z=0
+    ],
+
+    // z = 3 → width 1 (unless hovered → 2.5)
+    5, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        0.75    // normal width at z=3
+    ],
+    // z = 6 → width 1 (unless hovered → 2.5)
+    8, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        1      // normal width beyond z=3
+    ],
+    //keep it flat after z=3 (still overridden by hover)
+    22, ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        2.5,   // hover width
+        1     // normal width beyond z=3
+    ]
   ]);
 
 
@@ -2137,34 +2236,62 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- tooltip & hover ---
   //create popup
-  districtPopup.setHTML(`
-    <div><strong><span id="popup_districtName"></span> (2021)</strong>
-      <div>
-        Opp Est:
-        <b>
-          <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
-        </b>
-      </div>
-      <div>Students: <span id="popup_districtStudents"></span></div>
-      <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+districtPopup.setHTML(`
+  <div>
+    <div class="popup-title">
+      <span id="popup_districtName"></span> (2021)
     </div>
-  `);
+
+    <div class="popup-row">
+      <span class="popup-label">Opp Est:</span>
+      <span class="popup-value">
+        <span id="popup_districtOppEst"></span>
+        <span id="popup_districtOppEstBullet"></span>
+      </span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Students:</span>
+      <span class="popup-value" id="popup_districtStudents"></span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Teachers (FTE):</span>
+      <span class="popup-value" id="popup_districtTeachers"></span>
+    </div>
+  </div>
+`);
+
 
 
 
 // Build popup HTML once
 districtPopup.setHTML(`
-  <div><strong><span id="popup_districtName"></span> (2021)</strong>
-    <div>
-      Opp Est:
-      <b>
-        <span id="popup_districtOppEst"></span><span id="popup_districtOppEstBullet"></span>
-      </b>
+  <div>
+    <div class="popup-title">
+      <span id="popup_districtName"></span> (2021)
     </div>
-    <div>Students: <span id="popup_districtStudents"></span></div>
-    <div>Teachers (FTE): <span id="popup_districtTeachers"></span></div>
+
+    <div class="popup-row">
+      <span class="popup-label">Opp Est:</span>
+      <span class="popup-value">
+        <span id="popup_districtOppEst"></span>
+        <span id="popup_districtOppEstBullet"></span>
+      </span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Students:</span>
+      <span class="popup-value" id="popup_districtStudents"></span>
+    </div>
+
+    <div class="popup-row">
+      <span class="popup-label">Teachers (FTE):</span>
+      <span class="popup-value" id="popup_districtTeachers"></span>
+    </div>
   </div>
 `);
+
 
 // state shared across events
 let hoveredDistrictPolygonID = null;
@@ -2838,54 +2965,54 @@ const queryBar = document.getElementById('mapWidgetsQuery')
 let queryBarWidth;
 
 //init width function
-function initQueryWidth(){
-  //get resize button width
-  const resizeButton = document.getElementById('resizeQueryButton');
-  resizeButton.style.display = '';
-  const buttonWidth = resizeButton.getBoundingClientRect().width;
-  resizeButton.style.display = 'none';
+// function initQueryWidth(){
+//   //get resize button width
+//   const resizeButton = document.getElementById('resizeQueryButton');
+//   resizeButton.style.display = '';
+//   // const buttonWidth = resizeButton.getBoundingClientRect().width;
+//   resizeButton.style.display = 'none';
   
-  //set style properties i.e. 
-  queryBar.style.setProperty('--expanded-width', `${queryBarWidth}px`);
-  queryBar.style.setProperty('--collapsed-width', `${buttonWidth}px`);
+//   //set style properties i.e. 
+//   queryBar.style.setProperty('--expanded-width', `${queryBarWidth}px`);
+//   // queryBar.style.setProperty('--collapsed-width', `${buttonWidth}px`);
 
-  // Start in expanded state
-  queryBar.classList.add('qbExpanded');
-  queryBar.classList.remove('qbCollapsed');
-}
+//   // Start in expanded state
+//   queryBar.classList.add('qbExpanded');
+//   queryBar.classList.remove('qbCollapsed');
+// }
 
 //expand/collapse function
 function resizeQueryBar(targetClass) {
   //targetClass: qbCollapsed = shrink searchbar, show only expand button
   //             qbExpanded = show full search bar
   console.log(`resizeQueryBar(${targetClass})`)
-  const resizeButton = document.getElementById('resizeQueryButton'); //only visible when collapsed?
+  const resizeButton = document.getElementById('resizeQueryButton'); //only visible when collapsed
   const mapButtons = document.getElementsByClassName('mapControlBtn')
   const searchBox = document.getElementById('search_box_holder')
     
-  // remove both classes
-  queryBar.classList.remove('qbExpanded', 'qbCollapsed');
-  // Add the target class
-  queryBar.classList.add(targetClass);
+  // // remove both classes
+  // queryBar.classList.remove('qbExpanded', 'qbCollapsed');
+  // // Add the target class
+  // queryBar.classList.add(targetClass);
 
-  if (targetClass === 'qbExpanded') {
-    console.log('expanding query bar')
-    resizeButton.style.display = 'none';
-    // mapButtons.style.display = '';
-    searchBox.style.display = '';
-  } else if (targetClass === 'qbCollapsed') {
-    console.log('shrinking query bar')
-    resizeButton.style.display = '';
-    // mapButtons.style.display = 'none';
-    searchBox.style.display = 'none';
-    //set display=none for  searchBox and mapBttons
-  }
+  // if (targetClass === 'qbExpanded') {
+  //   console.log('expanding query bar')
+  //   resizeButton.style.display = 'none';
+  //   // mapButtons.style.display = '';
+  //   searchBox.style.display = '';
+  // } else if (targetClass === 'qbCollapsed') {
+  //   console.log('shrinking query bar')
+  //   resizeButton.style.display = '';
+  //   // mapButtons.style.display = 'none';
+  //   searchBox.style.display = 'none';
+  //   //set display=none for  searchBox and mapBttons
+  // }
 
-  if (mapButtons && mapButtons.length) {
-        Array.from(mapButtons).forEach(mapButtons => {
-            mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
-        });
-    }
+  // if (mapButtons && mapButtons.length) {
+  //       Array.from(mapButtons).forEach(mapButtons => {
+  //           mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
+  //       });
+  //   }
 }
 
 function buildCountyPolylabels() {

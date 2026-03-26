@@ -46,10 +46,10 @@ body, html {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.mapboxgl-ctrl-top-left{
+/* .mapboxgl-ctrl-top-left{
     left: -.25rem;
-    top: 3.5rem;
-}
+    top: 8rem;
+} */
 
 #currentRaceDesc{
   font-weight: bold;
@@ -58,15 +58,20 @@ body, html {
 
 #mapWidgetsQuery {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    bottom: 0;
+    left: 0;
     z-index: 10;
-    background: var(--lightgrey);
-    padding: 8px 12px;
+    /* background: var(--lightgrey); */
+    padding: 8px 12px 0 10px;
     border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    /* box-shadow: 0 1px 4px rgba(0,0,0,0.2); */
     display: flex;
     gap: 6px;
+    flex-direction: column;
+}
+
+.mapboxgl-ctrl-bottom-left {
+  bottom: 108px !important;
 }
 
 #mapWidgetsQuery.qbExpanded {
@@ -90,7 +95,7 @@ body, html {
     top: 5px;
     right: 5px;
     z-index: 10;
-    background: var(--lightgrey);
+    background: #f5f5f5de; /* a little transparent  */
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
@@ -111,11 +116,14 @@ body, html {
 
 button {
     /* background-color: var(--green); */
-    background-color: var(--verydarkgrey); /* generic color to not match one data set */
-    color: var(--offwhite);
-    border: none;
+    background-color: white;
+    color: #333333; /* match zoom control */
+    border: 0.5px solid var(--bs-border-color);
     padding: 5px 10px;
     cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    /* width: fit-content; */
+    border-radius: var(--bs-border-radius);
 }
 
 button:hover {
@@ -124,87 +132,124 @@ button:hover {
 
 /* disabled control style: greyed out, not-allowed cursor, no hover color change */
 .control-disabled {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: not-allowed;
+  background-color: var(--bs-border-color);
 }
 .control-disabled:hover {
   /* keep same background on hover so color doesn't change */
-  background-color: var(--darkgrey) !important;
+  background-color: var(--bs-border-color); /*!important; */
   cursor: not-allowed;
 }
 
 /* map control buttons */
 #mapWidgetsQuery button#full_extent,
 #backToStateMapBtn {
-  display: block;
+  /* display: block; */
   /* margin-top: 6px; */
-  width: auto;
+  width: fit-content;
   box-sizing: border-box;
-  padding: .5rem .6rem;
-  border-radius: 2px;
-  font-size: 0.9rem;
-  height: 2.2rem;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 1rem;
+  height: 29px;
+  width: 29px;
 }
 #mapWidgetsQuery button#full_extent {
-  padding: .3rem;
+  /* padding: .3rem; */
+  font-size: 0.8rem;
   /* min-width: 5.5rem; */
 }
 #mapWidgetsQuery button#backToStateMapBtn {
-  min-width: 6.75rem;
+  /* min-width: 6.75rem; */
 }
 
 .control-disabled {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: not-allowed;
 }
 
 .race-toggle, .aggregation-toggle{
   display: inline-flex;
-  border: 1.5px solid var(--verydarkgrey);
-  border-radius: 999px;
-  overflow: hidden;
+  border-radius: 4px;
+  overflow: visible;
   margin-bottom: 2px;
+}
+
+#aggregation-label{
+  margin-left: 1.9rem;
 }
 
 .race-selectBtn, .agg-selectBtn {
   background-color: transparent;
   color: var(--black);
-  border: none;
   padding: 0px 8px;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
+
+  /* Unselected state gets the grey outline */
+  border: 0.5px solid var(--lightgrey);
+  border-radius: 4px;
 }
 
-.race-selectBtn:hover, .agg-selectBtn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+/* Remove double border between buttons */
+.race-selectBtn + .race-selectBtn,
+.agg-selectBtn + .agg-selectBtn {
+  border-left: none;
+  border-radius: 0 4px 4px 0; /* right button outer corners */
 }
 
-.race-selectBtn.active, .agg-selectBtn.active {
+/* Left button outer corners */
+.race-selectBtn:first-child,
+.agg-selectBtn:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Hover */
+.race-selectBtn:hover,
+.agg-selectBtn:hover {
+  background-color: rgba(42, 42, 42, 0.1);
+}
+
+/* ACTIVE BUTTON — no border, but keep outer corners rounded */
+.race-selectBtn.active,
+.agg-selectBtn.active {
   background-color: var(--green);
   color: var(--offwhite);
   font-weight: bold;
+  border: none;
+  cursor: default;
 }
 
-#race-selectBlk.race-selectBtn.active {
-  background-color: var(--black-class-4-color);
-  color: var(--almostBlack);
-  font-weight: bold;
-}
-.agg-selectHis.agg-selectBtn.active {
-  background-color: var(--hispanic-class-4-color);
-  color: var(--offwhite);
-  font-weight: bold;
+/* Active LEFT button keeps left rounding */
+.race-selectBtn.active:first-child,
+.agg-selectBtn.active:first-child {
+  border-radius: 4px 0 0 4px;
 }
 
+/* Active RIGHT button keeps right rounding */
+.race-selectBtn.active:last-child,
+.agg-selectBtn.active:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+/* Active MIDDLE button (if you ever have 3) stays square */
+.race-selectBtn.active:not(:first-child):not(:last-child),
+.agg-selectBtn.active:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+/* Race-specific active colors */
+#race-selectBlk.race-selectBtn.active,
 .agg-selectBlk.agg-selectBtn.active {
   background-color: var(--black-class-4-color);
   color: var(--almostBlack);
-  font-weight: bold;
 }
-#race-selectHis.race-selectBtn.active {
+
+#race-selectHis.race-selectBtn.active,
+.agg-selectHis.agg-selectBtn.active {
   background-color: var(--hispanic-class-4-color);
   color: var(--offwhite);
-  font-weight: bold;
 }
 
 /* Shared styles for the lower containers */
@@ -240,37 +285,6 @@ button:hover {
   background-repeat: no-repeat;
   background-position: right 0 center;
   background-size: 14px 14px;
-}
-
-#factSheetContainer {
-  display: none;                /* hidden by default */
-  flex-direction: column;       /* stack rows vertically */
-  background: var(--offwhite);
-  max-height: 50vh;
-  overflow: hidden;   /* or just remove overflow entirely */
-}
-
-/* Content row: take remaining space */
-#factSheetContainer > .opportunity-row:not(#factsheetTitle) {
-  flex: 1 1 auto;
-  min-height: 0;      /*for nested scrolling */
-}
-
-/* "factsheet for..." */
-#factSheetContainer h2{
-  margin: 0;
-  font-weight: 800;
-}
-
-/* Section Headers (“Latest information”, “District Composition”, etc.) */
-#factSheetContainer h3 {
-  margin: 0.75rem 0 0.25rem 0; /* Tightened top/bottom margin */
-  font-weight: 700;
-  font-family: jaf-bernino-sans-narrow, sans-serif;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  color: var(--almostBlack);;
-  border-bottom: 1px solid var(--lightgrey);
 }
 
 /* Labels (Teachers, Enrollment, AP Enrollment, etc.) */
@@ -395,25 +409,68 @@ button:hover {
   vertical-align: middle;
 }
 
-/* Lower half containers */
-#infoContainer,
-#factSheetContainer{
-  flex: 1;                      /* take up remaining space */
-  overflow: auto;               /* scroll if content is long */
-  background: #f9f9f9;
+/* Base container (hidden by default) */
+#factSheetContainer {
+  display: none;
+  flex-direction: column;
+  background: var(--offwhite);
+  max-height: 50vh;
+  overflow: hidden;
   padding: 10px;
   line-height: 1;
 }
 
-/* whichever is shown will stretch */
-#infoContainer.show,
+/* When shown, becomes a scrollable flex column */
 #factSheetContainer.show {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  height: 100%;       /* important */
+  height: 100%;
+  overflow: auto;
 }
+
+/* Content rows except the title */
+#factSheetContainer > .opportunity-row:not(#factsheetTitle) {
+  flex: 1 1 auto;
+  min-height: 0; /* enables nested scrolling */
+}
+
+/* H2: "Factsheet for..." */
+#factSheetContainer h2 {
+  margin: 0;
+  font-weight: 800;
+}
+
+/* Section headers */
+#factSheetContainer h3 {
+  margin: 0.75rem 0 0.25rem 0;
+  font-weight: 700;
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--almostBlack);
+  border-bottom: 1px solid var(--lightgrey);
+}
+
+/* Info container shares the same scroll + padding rules */
+#infoContainer {
+  flex: 1;
+  overflow: auto;
+  background: #f9f9f9;
+  padding: 10px;
+  line-height: 1;
+}
+
+/* When shown, same flex behavior */
+#infoContainer.show {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: 100%;
+}
+
 
 h2 {
   flex: 0;
@@ -491,21 +548,59 @@ h3 {
 }
 
 /* popup */
-
-.popup-content {
-  font-family: sans-serif;
+.mapboxgl-popup-content {
+  font-family: jaf-bernina-sans, sans-serif;
   font-size: 13px;
   pointer-events: none !important;
+  padding: 8px 10px;
+  line-height: 1.35;
+  max-width: 220px;        /* keeps tooltip narrow */
 }
 
-/* prevent errors with tooltip when moving mouse quickly */
-.mapboxgl-popup, .mapboxgl-popup-tip, .mapboxgl-popup-content{
-  pointer-events: none !important;
+/* Title */
+.popup-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+  text-align: center;      /* center title */
+  color: var(--almostBlack, #222);
+}
+
+/* Row container */
+.popup-row {
+  display: flex;
+  flex-wrap: wrap;         /* allows shrinking */
+  justify-content: center; /* centers content */
+  gap: 4px 6px;            /* spacing between label/value */
+  margin: 3px 0;
+  text-align: center;      /* fallback centering */
+}
+
+/* Label */
+.popup-label {
+  color: #555;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Value */
+.popup-value {
+  color: #000;
+  font-weight: 700;
+  font-size: 12px;
+  word-break: break-word;  /* prevents overflow */
+}
+
+/* Only affect rows that contain an arrow */
+.popup-row.has-arrow {
+  flex-wrap: nowrap;       /* arrow + text stay on one line */
+  justify-content: flex-start; /* arrow always at beginning */
 }
 
 .arrow {
   font-size: 20px;
   line-height: 1;
+  flex: 0 0 auto;
 }
 
 .arrow-down {
@@ -696,11 +791,6 @@ h3 {
   background-color: #4a90e2;
   color: white;
   border-color: #4a90e2;
-}
-
-/* tooltip */
-.mapboxgl-popup {
-  z-index: 11; /*so it appears over the widgets*/
 }
 
 .no-geometry-notice {
