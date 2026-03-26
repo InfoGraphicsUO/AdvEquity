@@ -169,34 +169,12 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 function initFactSheet(stateEntry, fips, fieldName) {
   showGraphs(); // hide the US level details, show the state details
+  
   console.log("building fact sheet ", stateEntry)
+  console.log("building fact sheet ", fips)
   console.log("building fieldName", fieldName)
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
-
-  // const fipsKey = String(fips).padStart(2, '0'); // should already be padded and a string.
-  // const stateEntry = stateData[fipsKey];
-
-  // if (!stateEntry) {
-  //   factSheetContainer.innerHTML = `
-  //     <h2><b>Error: No data found for FIPS ${fips}</b></h2>
-  //     <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
-  //   `;
-  //   // click handler to return button
-  //   setTimeout(() => {
-  //     const returnBtn = document.getElementById('returnToFullView');
-  //     if (returnBtn) {
-  //       returnBtn.addEventListener('click', () => {
-  //         map.fitBounds([[ -126, 24], [-66, 50]]);
-  //         if (typeof setMapView === 'function') setMapView('full');
-  //         hideGraphs();
-  //         const info = document.getElementById('infoContainer');
-  //         if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  //       });
-  //     }
-  //   }, 0);
-  //   return;
-  // }
 
   // State abbreviation and values
   currentAgg = "district"
@@ -213,9 +191,6 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // fieldName given race field e.g. ENR_AP_GAP_BL
   const val2011Raw = stateEntry[0]?.[fieldName];// map value (gap) - assume first year 2011
   const val2021Raw = lastEntry?.[fieldName]; // map value (gap) - assume last year 2021
-
-
-
 
   const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
   const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';

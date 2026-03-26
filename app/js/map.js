@@ -1,13 +1,13 @@
 // data caches 
 let geojsonCache = null;
-let stateDataCache = null;
+let stateDataCache = null; // all state data
 let districtDataCache = null; // all district data
 
 // current selections
 let currentDistrictValueMap = {};
 let firstSymbolId = null;
 let currentMapPaint;
-let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
+// let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
 let currentRaceField  = 'ENR_AP_GAP_BL'; // fields with the data disparity data('ENR_AP_GAP_BL' |  'ENR_AP_GAP_HS')
 let currentRaceCode = 'BL' // ('BL' |  'HI')
 
@@ -139,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(backToStateMapBtn);
   }
 
-
   // click handler - zoom back to the last district's state (stored when factsheet opens)
   backToStateMapBtn.addEventListener('click', () => {
     // Only active when in district view
@@ -156,9 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // try geojsonCache first
+    // locate laste state in the state geojsonCache
     let stateFeature = null;
     if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
+      console.log("locating", stateFP)
       stateFeature = geojsonCache.features.find(f => {
         const p = f.properties || {};
         return String(p.STATEFP) === String(stateFP) || String(p.STATE_ID) === String(stateFP) || String((p.STATE_ABBR || p.STATE)) === String(stateAbbrev);
@@ -179,27 +179,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const props = f.properties || {};
       let fipsToUse = fips;
-      if (!fipsToUse || fipsToUse === null) {
-        if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
-        else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
-        else if (props.STATE_ABBR || props.STATE) {
-          const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
-          try {
-            if (typeof stateDataCache === 'object') {
-              const stateKey = Object.keys(stateDataCache).find(k => {
-                const arr = stateDataCache[k] || [];
-                return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
-              });
-              if (stateKey) fipsToUse = stateKey;
-            }
-          } catch (e) { /* non-fatal */ }
-        }
-      }
+      console.log(fipsToUse)
+      // REMOVING BLOCK AS WE TRUST THE FIPS, PUT BACK IF THE FIPS CAUSES ERRORS
+      // if (!fipsToUse || fipsToUse === null) {
+      //   if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
+      //   else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
+      //   else if (props.STATE_ABBR || props.STATE) {
+      //     const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
+      //     try {
+      //       if (typeof stateDataCache === 'object') {
+      //         const stateKey = Object.keys(stateDataCache).find(k => {
+      //           const arr = stateDataCache[k] || [];
+      //           return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
+      //         });
+      //         if (stateKey) fipsToUse = stateKey;
+      //       }
+      //     } catch (e) { /* non-fatal */ }
+      //   }
+      // }
 
       // If feature has geometry, fit bounds; otherwise skip zoom but still show factsheet
       try {
         if (coords) {
           extendBounds(coords);
+          console.log("zooming to the state")
           map.fitBounds(bounds, { padding: 30 });
         }
       } catch (e) {
@@ -211,7 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
       hideGraphs();
       // show the state factsheet (fips may need padding to match keys)
       try {
-        initFactSheet(stateDataCache, fipsToUse, currentRaceField || 'ENR_AP_GAP_BL');
+        /*should be filerted to the state only at this point */
+        initFactSheet(stateDataCache[fipsToUse], fipsToUse, currentRaceField || 'ENR_AP_GAP_BL');
       } catch (e) { console.warn('initFactSheet failed', e); }
       // scroll state info into view
       const info = document.getElementById('infoContainer');
@@ -323,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // currentAgg = 'state'; // 'state' or 'district'
   // track currently selected race field
   currentRaceField = 'ENR_AP_GAP_BL'; // default to Black students
-  currentMapRace = 'black'
+  // currentMapRace = 'black'
 
   // update map based on race selection from gap chart picker
   window.updateMapForRace = function(raceCode) {
