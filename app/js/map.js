@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   map.on('zoomend', function () {
     console.log('zoom level: ', map.getZoom());
-    resizeQueryBar('qbCollapsed');
+    // resizeQueryBar('qbCollapsed');
     
     console.log('zoomend mapView: ', mapView)
     // if (map.getZoom() > 8) { //if we are zoomed in enough then it is likely because the search bar was used
@@ -723,8 +723,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //   }
     // };
 
-    // // updateControlStates() //not working backToStateBtn not activating
-    // $('#backToStateBtn').removeClass('control-disabled')
+    // // updateControlStates() //not working backToStateMapBtn not activating
+    if (currentAgg=='district' && lastDistrictStateFP != null ){
+      console.log("enableing back to state")
+      $('#backToStateMapBtn').removeClass('control-disabled')
+    }
 
     // set bias on search box
     const center = map.getCenter();
@@ -1169,7 +1172,7 @@ map.on('moveend', () => {
       //   // }
       //   // return;
       
-      // If we are looking at a distict a clicked a neigbor state, view that state in district view
+      // If we are looking at a distict a clicked a neighbor state, view that state in district view
       if (top.layer.id === 'state-fills') {
           onStateClick(top);
       }
