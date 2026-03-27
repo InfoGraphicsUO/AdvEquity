@@ -226,8 +226,10 @@ function initFactSheet(stateEntry, fips, fieldName) {
   <div class="opportunity-row">
     <div class="opportunity-column">
       <h2>Factsheet for <span id="currentState">${states[state_abbrev]}</span></h2>
-      <div>Number of districts: <span id="numDistricts">—</span></div>
-      <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
+      <h3>State Summary</h3>
+      <div><span class="summary-label">Number of districts:</span><span id="numDistricts">—</span></div>
+      <div><span class="summary-label">Modal number of AP classes offered/school<br>
+      <small>(avg of 2021 school-level modes)</small></span>: ${modal_school_APCOURSES}
       </div>
 
       ${oppestHTML}
