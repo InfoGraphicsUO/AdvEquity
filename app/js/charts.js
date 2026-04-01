@@ -244,25 +244,17 @@ function initFactSheet(stateEntry, fips, fieldName) {
       <div class="table-header-wrapper">
         <h2 class="floatText">Districts in ${states[state_abbrev]}</h2>
         <table id="district-table" class="table table-striped">
-          <thead>
-            <tr>
-              <th>District</th>
-              <th>Enrollment</th>
-              <th>Teachers</th>
-              <th>Opp Est 2011</th>
-              <th>Opp Est 2021</th>
-            </tr>
-          </thead>
-          <tbody id="district-table-body"></tbody>
-          <tfoot>
-            <tr>
-              <th>District</th>
-              <th>Enrollment</th>
-              <th>Teachers</th>
-              <th>Opp Est 2011</th>
-              <th>Opp Est 2021</th>
-            </tr>
-          </tfoot>
+        <thead>
+          <tr>
+            <th>District</th>
+            <th class="sorting">Enrollment</th>
+            <th class="sorting">Teachers</th>
+            <th class="sorting">Opp Est 2011</th>
+            <th class="sorting">Opp Est 2021</th>
+          </tr>
+        </thead>
+
+        <tbody id="district-table-body"></tbody>
         </table>
       </div>
   </div>

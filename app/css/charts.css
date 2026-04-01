@@ -18,6 +18,53 @@
   padding: 0 4px;             /* optional spacing */
 }
 
+/* Make header cell a positioning container
+#district-table th.sorting,
+#district-table th.sorting_asc,
+#district-table th.sorting_desc {
+  position: relative;
+  padding-right: 1.4em;   /* ensure room for arrow 
+  white-space: nowrap;    /* keep text + arrow on same line 
+  overflow: visible !important; /* prevent clipping 
+} */
+
+/* Base arrow (neutral) */
+/* #district-table th.sorting::after {
+  content: "⇅";
+  opacity: 0.5;
+  position: absolute;
+  right: 0.4em;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 900;
+} */
+
+/* Ascending arrow */
+/* #district-table th.sorting_asc::after {
+  content: "▲";
+  opacity: 1;
+} */
+
+/* Descending arrow */
+/* #district-table th.sorting_desc::after {
+  content: "▼";
+  opacity: 1;
+} */
+
+
+/* Default: right-align all table cells */
+#district-table th,
+#district-table td {
+  text-align: right;
+}
+
+/* Override: first column left-aligned */
+#district-table th:first-child,
+#district-table td:first-child {
+  text-align: left;
+}
+
 /* top padding to the table below header */
 .district-column table {
   margin-top: 0.5em;
