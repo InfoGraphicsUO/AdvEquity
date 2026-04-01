@@ -1355,7 +1355,20 @@ function sortDistrictData(districtData, col, direction, fieldName) {
 }
 
 function buildDistrictTable(districtData, fieldName) {
-  console.log("Building District Table");
+  console.log("Building District Table")
+  // Custom sort for N/A
+  jQuery.extend(jQuery.fn.dataTable.ext.type.order, {
+    'na-last-asc': (a, b) => {
+      const valA = (a === 'N/A' || a === null || a === '—') ? Infinity : parseFloat(a);
+      const valB = (b === 'N/A' || b === null || b === '—') ? Infinity : parseFloat(b);
+      return valA - valB;
+    },
+    'na-last-desc': (a, b) => {
+      const valA = (a === 'N/A' || a === null || a === '—') ? -Infinity : parseFloat(a);
+      const valB = (b === 'N/A' || b === null || b === '—') ? -Infinity : parseFloat(b);
+      return valB - valA;
+    }
+  });
 
   // Destroy existing table if exists
   if ($.fn.dataTable && $.fn.dataTable.isDataTable('#district-table')) {
@@ -1365,124 +1378,67 @@ function buildDistrictTable(districtData, fieldName) {
     } catch (e) { console.warn(e); }
   }
 
+  const table = new DataTable('#district-table', {
+    paging: false,
+    scrollCollapse: true,
+    scrollY: '300px',
+    order: [[4, 'desc']],
+    columnDefs: [
+      { targets: 5, visible: false }, // hide LEAID/internal
+      { targets: [2, 3, 4, 5], type: 'na-last' } // numeric columns
+    ]
+  });
+
+
   // Group by LEAID
   const grouped = {};
-  console.log('districtData', districtData);
-  for (const d of districtData) {
+//  for (const d of districtDataCache){ // all data?
+  console.log('districtData', districtData)
+  for (const d of districtData) {  // just 2021?
     const id = d.LEAID ?? Math.random();
     if (!grouped[id]) grouped[id] = [];
     grouped[id].push(d);
   }
 
-  console.log('grouped', grouped);
-  const tbody = document.querySelector('#district-table tbody');
+  console.log('grouped', grouped)
 
-  // Build rows (initial unsorted)
   for (const id in grouped) {
     const records = grouped[id];
 
     // Filter by year
     const yr2011 = records.find(r => r.YEAR === 2011);
-    const yr2021 = records.find(r => r.YEAR === 2021);
+    //console.log('yr2011', yr2011)
+    const yr2021 = records.find(r => r.YEAR === 2021); 
+    //console.log('yr2011', yr2021)
 
     const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
+    const stateAbbrev = yr2021?.LEA_STATE ?? yr2011?.LEA_STATE ?? '—';
     const numStudents = yr2021?.ENR ?? yr2011?.ENR ?? '—';
     const numTeachers = yr2021?.SCH_FTETEACH_TOT ?? yr2011?.SCH_FTETEACH_TOT ?? '—';
 
+    // Pull the Opportunity Estimate from your chosen field, filtered by year
     const val2011Raw = yr2011?.[fieldName];
     const val2021Raw = yr2021?.[fieldName];
 
-    const students = sortableCell(numStudents, 0);
-    const teachers = sortableCell(numTeachers, 1);
-    const opp2011 = sortableCell(val2011Raw, 2);
-    const opp2021 = sortableCell(val2021Raw, 2);
+    const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
+    const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
+    const studentsDisplay = typeof numStudents === 'number' ? numStudents.toLocaleString() : '—';
+    const teachersDisplay = typeof numTeachers === 'number' ? numTeachers.toLocaleString() : '—';
 
-    tbody.insertAdjacentHTML(
-      'beforeend',
-      `
-      <tr>
-        <td>${districtName}</td>
-        <td>${students.display}</td>
-        <td>${teachers.display}</td>
-        <td>${opp2011.display}</td>
-        <td>${opp2021.display}</td>
-        <td>${id}</td>
-      </tr>
-      `
-    );
+    table.row.add([
+      districtName,
+      studentsDisplay,
+      teachersDisplay,
+      val2011,
+      val2021,
+      id
+    ]);
   }
 
-  // compute scroll height based on factSheetContainer
-  const factSheetContainer = document.querySelector('#factSheetContainer');
-  const scrollHeight = factSheetContainer ? factSheetContainer.clientHeight - 120 : 300;
-
-  // DataTables for layout only (NO sorting)
-  const table = new DataTable('#district-table', {
-    paging: false,
-    ordering: true, // ← IMPORTANT: OTB sort 
-    ordering: false, // ← IMPORTANT: manually sort
-    scrollCollapse: true,
-    scrollY: `${scrollHeight}px`,
-    columnDefs: [
-      { targets: 5, visible: false } // keep LEAID hidden
-    ]
-  });
-
-  // Header click sorting
-  // $('.dt-column-title').on('click', 'th', function () {
-  //   console.log("click")
-  //   const col = this.cellIndex;
-
-  //   // Only sort numeric columns 1–4
-  //   if (![1, 2, 3, 4].includes(col)) return;
-
-  //   // Toggle ASC/DESC
-  //   districtSortState[col] = districtSortState[col] === 'asc' ? 'desc' : 'asc';
-
-  //   console.log(`Sorting col ${col} ${districtSortState[col]}`);
-
-  //   // Sort the underlying districtData
-  //   sortDistrictData(districtData, col, districtSortState[col], fieldName);
-
-  //   // Rebuild table body
-  //   tbody.innerHTML = '';
-  //   for (const id in grouped) {
-  //     const records = grouped[id];
-  //     const yr2011 = records.find(r => r.YEAR === 2011);
-  //     const yr2021 = records.find(r => r.YEAR === 2021);
-
-  //     const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
-  //     const numStudents = yr2021?.ENR ?? yr2011?.ENR ?? '—';
-  //     const numTeachers = yr2021?.SCH_FTETEACH_TOT ?? yr2011?.SCH_FTETEACH_TOT ?? '—';
-
-  //     const val2011Raw = yr2011?.[fieldName];
-  //     const val2021Raw = yr2021?.[fieldName];
-
-  //     const students = sortableCell(numStudents, 0);
-  //     const teachers = sortableCell(numTeachers, 1);
-  //     const opp2011 = sortableCell(val2011Raw, 2);
-  //     const opp2021 = sortableCell(val2021Raw, 2);
-
-  //     tbody.insertAdjacentHTML(
-  //       'beforeend',
-  //       `
-  //       <tr>
-  //         <td>${districtName}</td>
-  //         <td>${students.display}</td>
-  //         <td>${teachers.display}</td>
-  //         <td>${opp2011.display}</td>
-  //         <td>${opp2021.display}</td>
-  //         <td>${id}</td>
-  //       </tr>
-  //       `
-  //     );
-  //   }
-
-  //   table.draw(false);
-  // });
-
-  // Row click handler 
+  table.order([[4, 'desc']]).draw() 
+  // click handler for district rows
   try {
+    // remove previous handler to avoid duplicates
     $('#district-table tbody').off('click', 'tr');
     $('#district-table tbody').on('click', 'tr', function (e) {
       const tableRef = $('#district-table').DataTable();
@@ -1490,26 +1446,29 @@ function buildDistrictTable(districtData, fieldName) {
       const rowData = row.data();
       if (!rowData) return;
 
+      // ensure click was on the first cell (district name)
       const td = e.target.closest ? e.target.closest('td') : null;
       if (td && typeof td.cellIndex !== 'undefined' && td.cellIndex !== 0) {
-        return;
+        return; // only act on clicks of the name cell
       }
 
       console.log('District table clicked (name):', rowData[0]);
 
+      // LEAID/internal id is stored in column index 5
       const selectedId = String(rowData[5] || '').replace(/^0+/, '');
       if (!selectedId) return;
 
-      const rec = (Array.isArray(districtData) ? districtData : []).find(d =>
-        String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === selectedId
-      );
+      // find matching record in the districtData provided to this function
+      const rec = (Array.isArray(districtData) ? districtData : []).find(d => String(d.LEAID || d.GEOID || '').replace(/^0+/, '') === selectedId);
 
-      if (rec && (rec.GIS === 0 || String(rec.GIS) === '0')) {
+      // If record exists but has no geometry, show the factsheet without zooming
+      if (rec && (rec.GIS === 0 || String(rec.GIS) === '0' || rec.gis === 0 || String(rec.gis) === '0')) {
         const fakeFeature = { properties: { GEOID: String(rec.LEAID || rec.GEOID || '') }, geometry: null };
         try { showDistrictFactsheet(fakeFeature, districtData); } catch (e) { console.warn('showDistrictFactsheet failed for no-geometry district', e); }
         return;
       }
 
+      // Attempt to find the map feature and zoom to it
       let foundFeature = null;
       try {
         const features = map.querySourceFeatures('SCHOOLDIST_TL24', { sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l' }) || [];
@@ -1519,7 +1478,8 @@ function buildDistrictTable(districtData, fieldName) {
           if (fid && fid === selectedId) return true;
           const p = f.properties || {};
           const propLea = String(p.LEAID || p.GEOID || '').replace(/^0+/, '');
-          return propLea && propLea === selectedId;
+          if (propLea && propLea === selectedId) return true;
+          return false;
         });
       } catch (err) {
         console.warn('Could not query district features to find selected district (table click)', err);
@@ -1559,36 +1519,7 @@ function buildDistrictTable(districtData, fieldName) {
         hideNoGeometryNotice();
       } catch (e) { console.warn('Could not open factsheet for selected district (table click):', e); }
     });
-
-  //   $('#district-table thead').on('click', 'th', function () {
-  //   const col = this.cellIndex;
-
-  //   // Only sort numeric columns 1–4
-  //   if (![1, 2, 3, 4].includes(col)) return;
-
-  //   // Toggle ASC/DESC
-  //   districtSortState[col] = districtSortState[col] === 'asc' ? 'desc' : 'asc';
-
-  //   // Update arrow classes
-  //   $('#district-table thead th').removeClass('sorting_asc sorting_desc');
-  //   if (districtSortState[col] === 'asc') {
-  //     $(this).addClass('sorting_asc');
-  //   } else {
-  //     $(this).addClass('sorting_desc');
-  //   }
-
-  //   // Sort the underlying data
-  //   sortDistrictData(districtData, col, districtSortState[col], fieldName);
-
-  //   // Rebuild table body
-  //  rebuildDistrictTable(grouped, fieldName, tbody);
-  //   table.draw(false);
-
-  //   // Redraw DataTables layout
-  //   table.draw(false);
-  // });
-
-  } catch (e) { console.warn('Failed to attach district table click handlers', e); }
+  } catch (e) { console.warn('Failed to attach district table click handler', e); }
 }
 
 function rebuildDistrictTable(grouped, fieldName, tbody) {
