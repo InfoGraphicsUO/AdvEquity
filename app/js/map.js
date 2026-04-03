@@ -121,9 +121,11 @@ const states = {
 // zoom view breaks
 let zoomLevel;
 const districtMinZoom = 8;
-const stateMinZoom = 5; //oregon optimized
+const stateMinZoom = 5.5; //oregon optimized
 // const stateMinZoom = 4.46; //texas optimized
 // const stateMinZoom = 3.37; //alaska optimized
+
+let triggeredByMapClick = false;
 
 
 console.log("MAP JS loaded");
@@ -733,32 +735,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // };
 
 
-
-
-
     // ZOOM BASED VIEW TOGGLE
     // TODO: fix bug - toggling to district viwe via zoom or button doesn't allow district to open with click.  It needs the state to be openfirst before opening the district
 
-    if (zoomLevel > districtMinZoom) {
-      console.log('ZOOM BASED DISTRICT VIEW');
+    if (!triggeredByMapClick) { 
+      console.log('ZOOM BASED VIEW CHANGE')
+      if (zoomLevel > districtMinZoom) {
+        console.log('ZOOM BASED DISTRICT VIEW');
 
-      $('#agg-selectDist').click()
-    } else if (zoomLevel >= stateMinZoom) {
-      console.log('ZOOM BASED STATE VIEW');
-      $('#agg-selectDist').click()
+        $('#agg-selectDist').click()
+      } else if (zoomLevel >= stateMinZoom) {
+        console.log('ZOOM BASED STATE VIEW');
+        $('#agg-selectDist').click()
 
-      //simulate a click on the center of the map - issue with this is that it gets stuck there when trying to zoom in or out
-      // // project map center to screen coords, query for a state feature there
-      // const centerPoint = map.project(map.getCenter());
-      // const features = map.queryRenderedFeatures(centerPoint, { layers: ['state-fills'] });
+        //simulate a click on the center of the map - issue with this is that it gets stuck there when trying to zoom in or out
+        // // project map center to screen coords, query for a state feature there
+        // const centerPoint = map.project(map.getCenter());
+        // const features = map.queryRenderedFeatures(centerPoint, { layers: ['state-fills'] });
 
-      // if (features.length && typeof window.onStateClick === 'function') {
-      //   window.onStateClick(features[0]);
-      // }
-    } else {
-      console.log('ZOOM BASED FULL VIEW');
-      $('#agg-selectState').click()
+        // if (features.length && typeof window.onStateClick === 'function') {
+        //   window.onStateClick(features[0]);
+        // }
+      } else {
+        console.log('ZOOM BASED FULL VIEW');
+        $('#agg-selectState').click()
+      }
+    } else { //don't do zoom-based view if map was clicked, reset global
+      triggeredByMapClick = false;
     }
+
+
 
     
 
@@ -1131,6 +1137,7 @@ map.on('moveend', () => {
 
 
   function onStateClick(e){
+    console.trace('onStateClick()')
     currentAgg = "district"
     //     // don't fire on the districts as well
     //  e.originalEvent.cancelBubble = true;   // stop bubbling
@@ -1200,6 +1207,7 @@ map.on('moveend', () => {
 
   map.off('click')
   map.on('click', e => {
+    triggeredByMapClick = true;
     const features = map.queryRenderedFeatures(e.point, {
       layers: ['district-fills', 'state-fills']
     });
@@ -1211,6 +1219,7 @@ map.on('moveend', () => {
 
     // // --- AGGREGATION LOGIC ---
     if (currentAgg === 'district') {
+      console.log('DISTRICT CLICK')
       console.log(top.layer.id)
       //   // Only respond to district clicks
       //   // if (top.layer.id === 'district-fills') {
@@ -1220,7 +1229,8 @@ map.on('moveend', () => {
       
       // If we are looking at a distict a clicked a neighbor state, view that state in district view
       if (top.layer.id === 'state-fills') {
-          onStateClick(top);
+        console.log('top layer = state-fills. opening district?')
+        onStateClick(top);
       }
     }
 
@@ -2524,6 +2534,7 @@ map.on('mousemove', 'district-fills', e => {
   // --- click to zoom and outline ---
   map.off('click', 'district-fills')
   map.on('click', 'district-fills', e => {
+    triggeredByMapClick = true;
     const feat = e.features[0];
     const fid = feat.id;
 
