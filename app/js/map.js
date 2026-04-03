@@ -16,6 +16,7 @@ let currentRaceCode = 'BL' // ('BL' |  'HI')
 let mapView; // extent of the map ('full' | 'state' | 'district')
 let showAllStates // --- determine if showing all states ---
 let currentAgg = 'state'; // how the data is currently aggregated in display (state | district), laods at state
+let noGeometry = true;
 
 // last site state
 let lastDistrictStateFP = null;
@@ -1463,6 +1464,7 @@ function buildDistrictTable(districtData, fieldName) {
 
       // If record exists but has no geometry, show the factsheet without zooming
       if (rec && (rec.GIS === 0 || String(rec.GIS) === '0' || rec.gis === 0 || String(rec.gis) === '0')) {
+        noGeometry = true;
         const fakeFeature = { properties: { GEOID: String(rec.LEAID || rec.GEOID || '') }, geometry: null };
         try { showDistrictFactsheet(fakeFeature, districtData); } catch (e) { console.warn('showDistrictFactsheet failed for no-geometry district', e); }
         return;
@@ -2700,8 +2702,10 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
     if (noGeoDiv) {
       if (latest.GIS === 0 || String(latest.GIS) === '0' || latest.gis === 0 || String(latest.gis) === '0') {
         noGeoDiv.style.display = 'block';
+        noGeometry = true;
       } else {
         noGeoDiv.style.display = 'none';
+        noGeometry = false;
       }
     }
   } catch (e) { /* non-fatal */ }
@@ -2719,7 +2723,6 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   drawCompositionBar("compBar", compData, compColors);
 
 
-// PASTED TO HERE
   //jump to district
   try {
     const picker = document.getElementById('districtPicker');
@@ -2742,9 +2745,11 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
         if (rec.GIS === 0 || String(rec.GIS) === '0' || rec.gis === 0 || String(rec.gis) === '0') {
           const fakeFeature = { properties: { GEOID: String(rec.LEAID || rec.GEOID || '').replace(/^0+/, ''), STATE_ABBR: rec.LEA_STATE || '', STATEFP: rec.STATEFP || '' }, geometry: null };
           try {
-            showDistrictFactsheet(fakeFeature, districtData);
+            showDistrictFactsheet(fakeFeature, districtData); // THIS IS AN INFINITE LOOP?
           } catch (err) {
             console.warn('Could not open factsheet for no-geometry district:', err);
+            //  TO DO: zoom to state rec.LEA_STATE
+            console.log('should zoom to', rec.LEA_STATE)
           }
           return;
         }

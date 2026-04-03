@@ -72,7 +72,7 @@ body, html {
 }
 
 .mapboxgl-ctrl-bottom-left {
-  bottom: 108px !important;
+  bottom: 4.3rem !important;
 }
 
 #mapWidgetsQuery.qbExpanded {
@@ -141,6 +141,20 @@ button:hover {
   /* keep same background on hover so color doesn't change */
   background-color: var(--bs-border-color); /*!important; */
   cursor: not-allowed;
+}
+
+#search_box_holder{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 11;
+    /* background: var(--lightgrey); */
+    padding: 8px 12px 0 10px;
+    border-radius: 4px;
+    /* box-shadow: 0 1px 4px rgba(0,0,0,0.2); */
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
 }
 
 /* map control buttons */
@@ -592,9 +606,13 @@ h3 {
 /* Value */
 .popup-value {
   color: #000;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 12px;
   word-break: break-word;  /* prevents overflow */
+}
+
+.popup-value-strong {
+  font-weight: 700;
 }
 
 /* Only affect rows that contain an arrow */
