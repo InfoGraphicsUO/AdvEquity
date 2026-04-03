@@ -400,6 +400,14 @@ function drawCompDonutChart(canvasId, data, colors) {
   }
 }
 
+const LABEL_MAP = {
+  WH: "White",
+  HI: "Hispanic",
+  BL: "Black",
+  AS: "Asian",
+  OTH: "Other"
+};
+
 function drawCompositionBar(canvasId, data, colors) {
   const canvas = document.getElementById(canvasId);
   if(!canvas) return;
@@ -417,8 +425,8 @@ function drawCompositionBar(canvasId, data, colors) {
   let x = 0;
   const legendEntries = [];
 
-  const baseFont = "12px sans-serif";
-  const boldFont = "bold 12px sans-serif";
+  const baseFont = "11.5px sans-serif";
+  const boldFont = "bold 11.5px sans-serif";
   ctx.font = baseFont;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -429,10 +437,11 @@ function drawCompositionBar(canvasId, data, colors) {
     ctx.fillStyle = colors[key] || "#000";
     ctx.fillRect(x, startY, width, barHeight);
 
-    if (width > 40) {
+    if (width > 86) {
+      console.log(`${key} width: `, width)
       ctx.fillStyle = "#fff";
       ctx.font = boldFont;
-      ctx.fillText(`${key}: ${formatPercentage(value)}`, x + width / 2, startY + barHeight / 2);
+      ctx.fillText(`${LABEL_MAP[key]}: ${formatPercentage(value)}`, x + width / 2, startY + barHeight / 2);
       ctx.font = baseFont;
     } else {
       legendEntries.push([key, formatPercentage(value)]);
@@ -450,14 +459,14 @@ function drawCompositionBar(canvasId, data, colors) {
   const legendHeight=16;
 
   for(const [key,value] of legendEntries){
-    const text=`${key}: ${value}`;
+    const text=`${LABEL_MAP[key]}: ${value}`;
     const textWidth=ctx.measureText(text).width+18+legendPadding; // 18 for color box
     if(legendX+textWidth>canvas.width){
       legendX=0;
       legendY+=legendHeight;
     }
     ctx.fillStyle = colors[key]||"#000";
-    ctx.fillRect(legendX,legendY-10,12,12);
+    ctx.fillRect(legendX,legendY-6.5,12,12);
     ctx.fillStyle="#000";
     ctx.fillText(text,legendX+18,legendY);
     legendX+=textWidth;
