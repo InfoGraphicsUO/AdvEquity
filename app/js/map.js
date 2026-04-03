@@ -118,6 +118,13 @@ const states = {
   DC: "D.C."
 };
 
+// zoom view breaks
+let zoomLevel;
+const districtMinZoom = 8;
+const stateMinZoom = 5; //oregon optimized
+// const stateMinZoom = 4.46; //texas optimized
+// const stateMinZoom = 3.37; //alaska optimized
+
 
 console.log("MAP JS loaded");
 
@@ -305,15 +312,15 @@ document.addEventListener('DOMContentLoaded', () => {
           backToStateMapBtn.classList.add('control-disabled');
         }
       }
-      if (fullExtentButton) {
-        if (mapView === 'full') {
-          fullExtentButton.disabled = true;
-          fullExtentButton.classList.add('control-disabled');
-        } else {
-          fullExtentButton.disabled = false;
-          fullExtentButton.classList.remove('control-disabled');
-        }
-      }
+      // if (fullExtentButton) {
+      //   if (mapView === 'full') {
+      //     fullExtentButton.disabled = true;
+      //     fullExtentButton.classList.add('control-disabled');
+      //   } else {
+      //     fullExtentButton.disabled = false;
+      //     fullExtentButton.classList.remove('control-disabled');
+      //   }
+      // }
     } catch (e) {
       console.warn('updateControlStates error', e);
     }
@@ -703,7 +710,8 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   map.on('zoomend', function () {
-    console.log('zoom level: ', map.getZoom());
+    zoomLevel = map.getZoom()
+    console.log('zoom level: ', zoomLevel.toFixed(3));
     // resizeQueryBar('qbCollapsed');
     
     console.log('zoomend mapView: ', mapView)
@@ -723,6 +731,36 @@ document.addEventListener('DOMContentLoaded', () => {
     //     activateDistrictView()
     //   }
     // };
+
+
+
+
+
+    // ZOOM BASED VIEW TOGGLE
+    // TODO: fix bug - toggling to district viwe via zoom or button doesn't allow district to open with click.  It needs the state to be openfirst before opening the district
+
+    if (zoomLevel > districtMinZoom) {
+      console.log('ZOOM BASED DISTRICT VIEW');
+
+      $('#agg-selectDist').click()
+    } else if (zoomLevel >= stateMinZoom) {
+      console.log('ZOOM BASED STATE VIEW');
+      $('#agg-selectDist').click()
+
+      //simulate a click on the center of the map - issue with this is that it gets stuck there when trying to zoom in or out
+      // // project map center to screen coords, query for a state feature there
+      // const centerPoint = map.project(map.getCenter());
+      // const features = map.queryRenderedFeatures(centerPoint, { layers: ['state-fills'] });
+
+      // if (features.length && typeof window.onStateClick === 'function') {
+      //   window.onStateClick(features[0]);
+      // }
+    } else {
+      console.log('ZOOM BASED FULL VIEW');
+      $('#agg-selectState').click()
+    }
+
+    
 
     // // updateControlStates() //not working backToStateMapBtn not activating
     if (currentAgg=='district' && lastDistrictStateFP != null ){
@@ -785,6 +823,8 @@ var districtPopup = new mapboxgl.Popup({
 
 map.on('load', () => {
   console.log("MAP LOAD FIRED");
+
+  zoomLevel = map.getZoom()
 
   // // hide basemap layers/labels that we don't want
   // const hiddenLayers = [
@@ -1156,6 +1196,7 @@ map.on('moveend', () => {
     // update canonical map view to 'state' and refresh controls
     if (typeof setMapView === 'function') setMapView('state');
   }
+  window.onStateClick = onStateClick;
 
   map.off('click')
   map.on('click', e => {
