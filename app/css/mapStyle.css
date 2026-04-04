@@ -576,6 +576,11 @@ h3 {
   text-align: center;      /* fallback centering */
 }
 
+.opportunity-column .popup-row {
+  padding-left: 1em;
+  margin: 0;
+}
+
 /* Label */
 .popup-label {
   color: #555;
@@ -584,12 +589,18 @@ h3 {
 }
 
 /* Value */
-.popup-value {
+.popup-value, .popup-value-strong {
   color: #000;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 12px;
   word-break: break-word;  /* prevents overflow */
 }
+
+.popup-value-strong {
+  font-weight: 700;
+}
+
+
 
 /* Only affect rows that contain an arrow */
 .popup-row.has-arrow {
