@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'fill-color': noDataColor,
           'fill-opacity': 0.9
         }
-      }, 'state-borders');
+      }, 'County-Lines_ne-10m-admin-2-counties');
     } else {
       map.setLayoutProperty('district-fills', 'visibility', 'visible');
       map.setLayoutProperty('district-lines', 'visibility', 'visible');
@@ -2277,7 +2277,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         'fill-opacity': 0.9,
         'fill-outline-color': offwhite
       }
-    }, 'state-borders');
+    }, 'County-Lines_ne-10m-admin-2-counties');
   } else {
     map.moveLayer('district-fills', 'state-fills'); // ensure lauer is above state-fill
     map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips]);
@@ -2715,33 +2715,33 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   <h3>Historic/temporal information</h3>
 
   <section class="chart-section">
-    <p class="chart-subheader">AP Participation Gap by Year</p>
+    <p class="chart-subheader">AP Participation (Gap)</p>
     <canvas id="gapChart" width="400" height="160"></canvas>
     <div id="gapLegend" class="chart-legend"></div>
   </section>
 
   <section class="chart-section">
-    <p class="chart-subheader">Students – Percentage of Non‑White Students (by year)</p>
+    <p class="chart-subheader">Percentage of Non‑White Students</p>
     <canvas id="nonwhiteChart" width="400" height="160"></canvas>
     <div id="nonwhiteLegend" class="chart-legend"></div>
   </section>
 
   <section class="chart-section">
-    <p class="chart-subheader">HS Students Taking ≥1 AP (by year)</p>
-    <canvas id="apChart" width="400" height="160"></canvas>
-    <div id="apLegend" class="chart-legend"></div>
-  </section>
-
-  <section class="chart-section">
-    <p class="chart-subheader">Student–Teacher Ratio (by year)</p>
+    <p class="chart-subheader">Student–Teacher Ratio</p>
     <canvas id="stChart" width="400" height="160"></canvas>
     <div id="stLegend" class="chart-legend"></div>
   </section>
 
   <section class="chart-section">
-    <p class="chart-subheader">Number of AP Courses Offered by year (mode)</p>
+    <p class="chart-subheader">Number of AP Courses Offered (mode)</p>
     <canvas id="apCoursesChart" width="400" height="160"></canvas>
     <div id="apCoursesLegend" class="chart-legend"></div>
+  </section>
+
+    <section class="chart-section">
+    <p class="chart-subheader">High School Students Taking ≥1 AP Course</p>
+    <canvas id="apChart" width="400" height="160"></canvas>
+    <div id="apLegend" class="chart-legend"></div>
   </section>
 </div> <!-- end right column -->
 
@@ -3051,7 +3051,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
 
         // Draw sparklines (District + State + National) using helper
         try {
-          prepareAndDrawSparkline({ canvasId: 'nonwhiteChart', legendId: 'nonwhiteLegend', title: 'Percent non-white', field: 'PCT_ENR_NON_WH', records, years, natLookup, stateAbbrev });
+          prepareAndDrawSparkline({ canvasId: 'nonwhiteChart', legendId: 'nonwhiteLegend', title: 'Non-white (%)', field: 'PCT_ENR_NON_WH', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'apChart', legendId: 'apLegend', title: 'AP participation (%)', field: 'PCT_ENR_AP', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'stChart', legendId: 'stLegend', title: 'Student–teacher ratio', field: 'STU_TEACH_RAT', records, years, natLookup, stateAbbrev });
           prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES_MODE', records, years, natLookup, stateAbbrev });

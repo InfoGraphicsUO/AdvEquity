@@ -102,13 +102,15 @@
 
 
 .chart-subheader {
-  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-family: jaf-bernino-sans, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   color: #444;
-  margin: 0.5rem 0 0rem;
+  margin: 1.2rem 0 -10px 0;
+  padding-bottom:-10px;
+  text-align: center;
 }
 
 
