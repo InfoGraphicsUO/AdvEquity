@@ -20,7 +20,7 @@ The project uses HTML, CSS, JavaScript (with libraries like Plotly and Mapbox GL
 - Plotly.js for charts.
 - Python libraries (for data processing): pandas, numpy, json, matplotlib.
 - No internet access for code execution in some tools (as per guidelines).
-- Fonts: jaf-bernina-sans (assumed to be available via CSS).
+- Fonts: jaf-bernino-sans (assumed to be available via CSS).
 
 **Setup Instructions:**
 1. Clone the repository.
@@ -163,7 +163,7 @@ Global CSS styles for the site.
   }
   ```
 - **Key Styles:**
-  - Body: Background rgb(141,141,142), font: jaf-bernina-sans.
+  - Body: Background rgb(141,141,142), font: jaf-bernino-sans.
   - Header: Flex with images, height 130px.
   - Main Container: Centered, 80% width.
   - iFrame: Full-width embed for map.
