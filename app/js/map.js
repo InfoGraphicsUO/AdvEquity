@@ -136,21 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const fullExtentButton = document.querySelector('#full_extent');
 
   // map-level "Back to state" button 
-  const backToStateMapBtn = document.createElement('button');
-  backToStateMapBtn.id = 'backToStateMapBtn';
-  backToStateMapBtn.innerHTML  = '<i class="fa-solid fa-arrow-rotate-left"></i>';
-  backToStateMapBtn.setAttribute('title', 'Back to state');
 
-  // insert BEFORE the fullExtentButton if present
-  if (fullExtentButton && fullExtentButton.parentNode) {
-    fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton);
-  } else {
-    // fallback: append to body
-    document.body.appendChild(backToStateMapBtn);
-  }
+  // backToStateMapBtn.innerHTML  = '<i class="fa-solid fa-arrow-rotate-left"></i>';
+  // backToStateMapBtn.setAttribute('title', 'Back to state');
+
+  // // insert BEFORE the fullExtentButton if present
+  // if (fullExtentButton && fullExtentButton.parentNode) {
+  //   fullExtentButton.parentNode.insertBefore(backToStateMapBtn, fullExtentButton);
+  // } else {
+  //   // fallback: append to body
+  //   document.body.appendChild(backToStateMapBtn);
+  // }
 
   // click handler - zoom back to the last district's state (stored when factsheet opens)
-  backToStateMapBtn.addEventListener('click', () => {
+
+  $('#backToStateMapBtn').click(function(){
     // Only active when in district view
     if (mapView !== 'district') {
       return;
@@ -1985,14 +1985,14 @@ function fillStateMap(map, geojson, stateData, fieldName) {
       Number(String(d.YEAR).trim()) === targetYear
     );
 
-    if (stateId === 56) {
-      console.log("WY merge check:", {
-        stateId,
-        row,
-        mergedValue: row?.[fieldName],
-        geojsonBefore: f.properties[fieldName]
-      });
-    }
+    // if (stateId === 56) {
+    //   console.log("WY merge check:", {
+    //     stateId,
+    //     row,
+    //     mergedValue: row?.[fieldName],
+    //     geojsonBefore: f.properties[fieldName]
+    //   });
+    // }
 
     if (row && typeof row[fieldName] === 'number') {
       f.properties[fieldName] = row[fieldName];
@@ -2000,7 +2000,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   });
 
 
-  console.log("WY final property:", geojsonCopy.features.find(f => f.properties.STATE_ID == 56).properties[fieldName]);
+  // console.log("WY final property:", geojsonCopy.features.find(f => f.properties.STATE_ID == 56).properties[fieldName]);
 
   // Push updated geojson into map source
   if (map.getSource('states')) {

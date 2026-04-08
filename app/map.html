@@ -4,34 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Adv Equity Map</title>
-  <link rel="preconnect" href="https://kit.fontawesome.com" crossorigin>  <!-- can we use fontawesome?? -->
+
+  <!-- Mapbox API -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />  
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <script defer id="search-js" src="https://api.mapbox.com/search-js/v1.5.0/web.js"></script>  <!-- mapbox search -->
   <script src="js/config.js"></script> <!-- Mapbox Token Config-->
 
-  <!--for county labeling -->
-  <script type="module"> import polylabel from "https://esm.run/polylabel";
-    window.polylabel = polylabel; </script>
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-
-
-
   <!-- For sortable data table-->
-   <!-- https://datatables.net/examples/styling/bootstrap5 -->
+  <!-- from  https://datatables.net/examples/styling/bootstrap5 -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
   <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
   <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
 
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script> <!-- for small graphs  -->
+  <!-- <script defer src="https://kit.fontawesome.com/be4ea184d4.js" crossorigin="anonymous"></script> -->
 
-    <!-- AdvancEDEquity Fonts (Berina Sans) hosted on Jmerson's Adobe Typekit -->
-  <link rel="stylesheet" href="https://use.typekit.net/dkj5qyr.css">
+  <!-- for county labeling -->
+  <script type="module"> import polylabel from "https://esm.run/polylabel"; window.polylabel = polylabel; </script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
-  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script> <!--  for charts -->
+
+  <!-- FONTS -->
+  <link rel="stylesheet" href="https://use.typekit.net/dkj5qyr.css">   <!-- AdvancEDEquity Fonts (Berina Sans) hosted on Jmerson's Adobe Typekit -->
+  <link rel="preconnect" href="https://kit.fontawesome.com" crossorigin>  <!-- fontawesome for icons -->
   <script defer src="https://kit.fontawesome.com/be4ea184d4.js" crossorigin="anonymous"></script>
-
-  <!-- style across the site -->
+  
+  <!-- custom styles across the site -->
   <link rel="stylesheet" href="css/mapStyle.css" />
   <link rel="stylesheet" href="css/charts.css" />
   <link rel="stylesheet" href="css/table.css" />
@@ -45,12 +45,8 @@
     <div id="search_box_holder" class="search_query"></div>
        
     <div id="mapWidgetsQuery">
-      <!-- <div id="resizeQueryButton"><i class="fa-solid fa-angles-right"></i></div>        -->
-
-      <!-- <button id="full_extent" class ="mapControlBtn"><i class="fa-regular fa-arrows-maximize fa-xl"></i></button> -->
-      <button id="full_extent" ><i class="fa-regular fa-arrows-maximize fa-xl" title="View full US"></i></button>
-        <!-- <input type="text" placeholder="Search Query Tool..." />
-        <button>Go</button> -->
+      <button id="full_extent"><i class="fa-regular fa-arrows-maximize fa-xl" title="View full US"></i></button>
+      <button id="backToStateMapBtn"><i class="fa-solid fa-arrow-rotate-left" title="Back to state"></i></button>
       </div> 
     </div>
 
