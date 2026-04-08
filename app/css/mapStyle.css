@@ -59,7 +59,7 @@ body, html {
 
 #mapWidgetsQuery {
     position: absolute;
-    bottom: 0;
+    bottom: 0.5rem;
     left: 0;
     z-index: 10;
     /* background: var(--lightgrey); */
@@ -72,7 +72,7 @@ body, html {
 }
 
 .mapboxgl-ctrl-bottom-left {
-  bottom: 4.3rem !important;
+  bottom: 4.7rem !important;
 }
 
 #mapWidgetsQuery.qbExpanded {
