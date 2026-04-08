@@ -616,8 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
           // only sort after an explicit user interaction
           if (userHasInteracted) {
             const table = $('#us-table').DataTable();
-            // order by 2021 column (index 4) descending
-            table.order([[4, 'desc']]).draw();
+            // order by 2021 column (index 3) descending (Data tables count from 0)
+            table.order([[3, 'desc']]).draw();
             console.log(`Table sorted by ${fieldName} (highest to lowest)`);
           }
         } catch (err) {
@@ -1344,7 +1344,7 @@ function buildStateTable(stateData, fieldName) {
     paging: false,
     scrollCollapse: true,
     scrollY: '200px',
-    // initial order- sort by 2021 opp est descending
+    // initial order- sort by 2021 Enrollment Disparity descending
     order: [[4, 'desc']],
     columnDefs: [
       { targets: 4, visible: false }, // hide FIPS
@@ -1373,7 +1373,7 @@ function buildStateTable(stateData, fieldName) {
     table.row.add([states[stateAbbrev], apDisplay, val2011, val2021, fips]);
   }
 
-  table.order([[4, 'desc']]).draw() 
+  table.order([[3, 'desc']]).draw() // 0 indexed
  }
 
 // Global sort state (ASC/DESC per column)
@@ -1481,7 +1481,7 @@ function buildDistrictTable(districtData, fieldName) {
     const numStudents = yr2021?.ENR ?? yr2011?.ENR ?? '—';
     const numTeachers = yr2021?.SCH_FTETEACH_TOT ?? yr2011?.SCH_FTETEACH_TOT ?? '—';
 
-    // Pull the Opportunity Estimate from your chosen field, filtered by year
+    // Pull the Opportunity Estimate from chosen field, filtered by year
     const val2011Raw = yr2011?.[fieldName];
     const val2021Raw = yr2021?.[fieldName];
 
@@ -1589,52 +1589,6 @@ function buildDistrictTable(districtData, fieldName) {
   } catch (e) { console.warn('Failed to attach district table click handler', e); }
 }
 
-function rebuildDistrictTable(grouped, fieldName, tbody) {
-  tbody.innerHTML = '';
-
-  for (const id in grouped) {
-    const records = grouped[id];
-
-    const yr2011 = records.find(r => r.YEAR === 2011);
-    const yr2021 = records.find(r => r.YEAR === 2021);
-
-    const districtName = yr2021?.LEA_NAME ?? yr2011?.LEA_NAME ?? 'Unknown';
-    const numStudents = yr2021?.ENR ?? yr2011?.ENR ?? '—';
-    const numTeachers = yr2021?.SCH_FTETEACH_TOT ?? yr2011?.SCH_FTETEACH_TOT ?? '—';
-
-    const val2011Raw = yr2011?.[fieldName];
-    const val2021Raw = yr2021?.[fieldName];
-
-    const students = sortableCell(numStudents, 0);
-    const teachers = sortableCell(numTeachers, 1);
-    const opp2011 = sortableCell(val2011Raw, 2);
-    const opp2021 = sortableCell(val2021Raw, 2);
-
-    tbody.insertAdjacentHTML(
-      'beforeend',
-      `
-      <tr>
-        <td>${districtName}</td>
-
-        <td data-order="${students.order ?? ''}">
-          ${students.display}
-        </td>
-
-        <td data-order="${teachers.order ?? ''}">
-          ${teachers.display}
-        </td>
-
-        <td data-order="${opp2011.order ?? ''}">
-          ${opp2011.display}
-        </td>
-
-        <td data-order="${opp2021.order ?? ''}">
-          ${opp2021.display}
-        </td>
-
-        <td>${id}</td>
-
-
 function sortableCell(value, decimals = 1) {
   if (typeof value !== 'number' || isNaN(value)) {
     return {
@@ -1653,8 +1607,6 @@ function sortableCell(value, decimals = 1) {
     order: rounded
   };
 }
-
-
 
 function highlightTableByFIPS(fipsCode) {
   const table = $('#us-table').DataTable();
@@ -2407,7 +2359,7 @@ districtPopup.setHTML(`
     </div>
 
     <div class="popup-row">
-      <span class="popup-label">Opp Est:</span>
+      <span class="popup-label">Enrollment Disparity:</span>
       <span class="popup-value">
         <span id="popup_districtOppEst"></span>
         <span id="popup_districtOppEstBullet"></span>
@@ -2437,7 +2389,7 @@ districtPopup.setHTML(`
     </div>
 
     <div class="popup-row">
-      <span class="popup-label">Opp Est:</span>
+      <span class="popup-label">Enrollment Disparity:</span>
       <span class="popup-value">
         <span id="popup_districtOppEst"></span>
         <span id="popup_districtOppEstBullet"></span>
@@ -2516,7 +2468,7 @@ map.on('mousemove', 'district-fills', e => {
     $("#popup_districtName").text(feat.properties.NAME || feat.properties.LEA_NAME || 'District');
 
     const oppEstValue = getDistrictValueByYear(hoveredDistrictData, currentRaceField, 2021);
-    $("#popup_districtOppEst").text(oppEstValue);
+    $("#popup_districtOppEst").text(oppEstValue + "x");
 
     const bulletColor = getColorFromPaintSet(oppEstValue, currentMapPaint);
     $("#popup_districtOppEstBullet").css("background-color", bulletColor).show();
@@ -2981,7 +2933,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
 
           const raceData = gapChartData[currentRaceCode];
           if (raceData) {
-            drawMiniChart('gapChart', years, raceData, sparklineColors, 'AP participation gap');
+            drawMiniChart('gapChart', years, raceData, sparklineColors, 'AP participation gap (x)');
             drawSimpleLegend('gapLegend', { District: 'District', State: 'State', National: 'National' }, sparklineColors, raceData);
           }
         };

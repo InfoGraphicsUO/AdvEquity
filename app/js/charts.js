@@ -114,16 +114,16 @@ function getStateOpportunityEstimates(state,fieldName) {
   // Return formatted HTML
   // TO DO: add a chip after 2021 with the fill color of the hovered state
 const opphtml = `
-  <div class="popup-subheader">Opportunity Gap Estimates</div>
+  <div class="popup-subheader">AP Enrollment Disparity Estimates</div>
 
   <div class="popup-row">
     <span class="popup-label">2011–12:</span>
-    <span class="popup-value">${val2011}</span>
+    <span class="popup-value">${val2011}x</span>
   </div>
 
   <div class="popup-row">
     <span class="popup-label">2021–22:</span>
-    <span class="popup-value-strong">${val2021}</span>
+    <span class="popup-value-strong">${val2021}x</span>
   </div>
 
 <div class="popup-row has-arrow">
@@ -147,12 +147,12 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
   const formattedDiff = Math.abs(diff).toFixed(2);
 
   if (diff > 0) {
-    return `Estimated gap increased by ${formattedDiff}`;
+    return `Estimated gap increased by ${formattedDiff}x`;
   } else if (diff < 0) {
-    return `Estimate gap dropped by ${formattedDiff}`;
+    return `Estimated gap dropped by ${formattedDiff}x`;
   }
 
-  return 'Estimate did not change';
+  return 'Estimated gap did not change';
 }
 
 // // Promise that resolves when ALL breaks are loaded
@@ -227,10 +227,9 @@ function initFactSheet(stateEntry, fips, fieldName) {
     <div class="opportunity-column">
       <h2>Factsheet for <span id="currentState">${states[state_abbrev]}</span></h2>
       <h3>State Summary</h3>
-      <div><span class="summary-label">Number of districts:</span><span id="numDistricts">—</span></div>
-      <div><span class="summary-label">Modal number of AP classes offered/school<br>
-      <small>(avg of 2021 school-level modes)</small></span>: ${modal_school_APCOURSES}
-      </div>
+      <div><span class="summary-label">Number of districts: </span><span id="numDistricts">—</span></div>
+      <div class="summary-label">Modal number of AP classes offered/school</div>
+      <div class="summary-label-2">Average of 2021 school-level modes: <span class='summary-value'> ${modal_school_APCOURSES}</span></div>
 
       ${oppestHTML}
         <!-- State composition bar: placed below the opportunity column -->
@@ -249,8 +248,8 @@ function initFactSheet(stateEntry, fips, fieldName) {
             <th>District</th>
             <th class="sorting">Enrollment</th>
             <th class="sorting">Teachers</th>
-            <th class="sorting">Opp Est 2011</th>
-            <th class="sorting">Opp Est 2021</th>
+            <th class="sorting">Enrollment Disparity 2011 (x)</th>
+            <th class="sorting">Enrollment Disparity 2021 (x)</th>
           </tr>
         </thead>
 

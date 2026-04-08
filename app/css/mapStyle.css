@@ -316,8 +316,16 @@ button:hover {
 .summary-label {
   font-family: jaf-bernino-sans-narrow, sans-serif;
   /* font-weight: 400; */
-  font-size: 1.1rem;
+  font-size: 1rem;
   /* color: #666; */
+}
+
+.summary-label-2 {
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  /* font-weight: 400; */
+  font-size: 0.9rem;
+  /* color: #666; */
+  margin: 0 0 0.5rem 1rem;
 }
 
 .summary-value {
@@ -619,6 +627,7 @@ h3 {
 .popup-row.has-arrow {
   flex-wrap: nowrap;       /* arrow + text stay on one line */
   justify-content: flex-start; /* arrow always at beginning */
+  align-items: center; /*vertical align */
 }
 
 .arrow {

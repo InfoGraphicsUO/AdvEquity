@@ -132,7 +132,7 @@
   font-family: jaf-bernino-sans-narrow, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   color:var(--almostBlack);
   /* border-bottom: 1px solid var(--lightgrey); */
 }
