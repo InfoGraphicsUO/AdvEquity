@@ -131,8 +131,7 @@ let triggeredByMapClick = false;
 console.log("MAP JS loaded");
 
 document.addEventListener('DOMContentLoaded', () => {
-  // const searchInput = document.querySelector('.search_query input');
-  // const searchButton = document.querySelector('.search_query button');
+
   const fullExtentButton = document.querySelector('#full_extent');
 
   // map-level "Back to state" button 
@@ -656,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  fullExtentButton.addEventListener('click', () => {
+$('#full_extentBtn').click(function(){
     districtPopup.remove()
     // document.getElementById('mapLegend').style.display = 'none'; // hide legend
     map.fitBounds([[ -126, 24], [-66, 50]]); // albers

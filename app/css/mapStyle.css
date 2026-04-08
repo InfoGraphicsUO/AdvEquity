@@ -158,7 +158,7 @@ button:hover {
 }
 
 /* map control buttons */
-#mapWidgetsQuery button#full_extent,
+#mapWidgetsQuery button#full_extentBtn,
 #backToStateMapBtn {
   /* display: block; */
   /* margin-top: 6px; */
@@ -170,7 +170,7 @@ button:hover {
   height: 29px;
   width: 29px;
 }
-#mapWidgetsQuery button#full_extent {
+#mapWidgetsQuery button#full_extentBtn {
   /* padding: .3rem; */
   font-size: 0.8rem;
   /* min-width: 5.5rem; */
