@@ -437,7 +437,7 @@ function drawCompositionBar(canvasId, data, colors) {
     ctx.fillRect(x, startY, width, barHeight);
 
     if (width > 86) {
-      console.log(`${key} width: `, width)
+      // console.log(`${key} width: `, width)
       ctx.fillStyle = "#fff";
       ctx.font = boldFont;
       ctx.fillText(`${LABEL_MAP[key]}: ${formatPercentage(value)}`, x + width / 2, startY + barHeight / 2);

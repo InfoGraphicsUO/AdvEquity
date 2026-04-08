@@ -1137,21 +1137,43 @@ map.on('moveend', () => {
 
   function onStateClick(e){
     console.trace('onStateClick()')
-    currentAgg = "district"
+    currentAgg = "district" // change to agg to district after clicking on a state
     //     // don't fire on the districts as well
     //  e.originalEvent.cancelBubble = true;   // stop bubbling
     //  e.originalEvent.stopPropagation?.();   // extra safety
 
-    // const clickedFeature = e.features[0];
+    // setting global, local, and shared values //
     const clickedFeature = e;//
-    console.log('clickedFeature: ', clickedFeature)
-    // document.getElementById('mapLegend').style.display = 'block'; // display legend
+    // console.log('clickedFeature: ', clickedFeature)
+    // store currently viewed state info globally for race switching
+    window.currentStateFIPS = clickedFeature.id;
+    // get state abbreviation from the clicked feature or from stateDataCache
+    const fipsKey = String(clickedFeature.id).padStart(2, '0'); // pads with 0, if not two digits
+    // console.log("fipsKey", fipsKey)
+    let stateEntry = stateDataCache[fipsKey]; // data for this state
+    window.currentStateAbbrev = stateEntry?.[0]?.state_abbrev ?? stateEntry?.[0]?.LEA_STATE ?? null;
 
-      // zoom to state
+
+    // clear last selected state from map
+    if (selectedPolygonId !== null) {
+      map.setFeatureState(
+        { source: 'states', id: selectedPolygonId },
+        { selected: false }
+      );
+    }
+    // set new selection from new FIPS
+    selectedPolygonId = currentStateFIPS
+    // console.log("clicked feature id", selectedPolygonId)
+    map.setFeatureState(
+      { source: 'states', id: selectedPolygonId },
+      { selected: true }
+    );
+
+
+    // zoom to state
     const coords = clickedFeature.geometry.coordinates;
     // console.log(JSON.stringify(coords, null, 1));
     const bounds = new mapboxgl.LngLatBounds();
-
     function extendBounds(coordinates) {
       if (typeof coordinates[0][0] === 'number') {
         // coordinates is an array of [lng, lat]
@@ -1161,48 +1183,19 @@ map.on('moveend', () => {
         coordinates.forEach(extendBounds);
       }
     }
-
     extendBounds(coords);
-
     map.fitBounds(bounds, { padding: 30 });
-
-      // clear old selection
-    if (selectedPolygonId !== null) {
-      map.setFeatureState(
-        { source: 'states', id: selectedPolygonId },
-        { selected: false }
-      );
-    }
-
-    // set new selection
-    selectedPolygonId = clickedFeature.id;
-    console.log("clicked feature id", selectedPolygonId)
-    map.setFeatureState(
-      { source: 'states', id: selectedPolygonId },
-      { selected: true }
-    );
-
-
-    // store currently viewed state info globally for race switching
-    window.currentStateFIPS = clickedFeature.id;
-    // get state abbreviation from the clicked feature or from stateDataCache
-    const fipsKey = String(clickedFeature.id).padStart(2, '0'); // pads with 0, if not two digits
-    console.log("fipsKey", fipsKey)
-
-    const stateEntry = stateDataCache[fipsKey]; // 
-    window.currentStateAbbrev = stateEntry?.[0]?.state_abbrev ?? stateEntry?.[0]?.LEA_STATE ?? null;
-    
 
     // fill fact sheet
     const fieldName = currentRaceField || 'ENR_AP_GAP_BL';
-    console.log("stateEntry", stateEntry)
-    console.log("clickedFeature.id", clickedFeature.id)
-    console.log("fieldName", fieldName)
+    console.log("stateEntry", stateEntry) // expect all data for this state
+    // console.log("clickedFeature.id", clickedFeature.id)
+    // console.log("fieldName", fieldName) 
     initFactSheet(stateEntry, clickedFeature.id, fieldName);
     // update canonical map view to 'state' and refresh controls
     if (typeof setMapView === 'function') setMapView('state');
-  }
-  window.onStateClick = onStateClick;
+  } // end onStateClick
+  // window.onStateClick = onStateClick;
 
   map.off('click')
   map.on('click', e => {
