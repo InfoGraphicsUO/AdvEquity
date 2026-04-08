@@ -51,7 +51,7 @@
 
         
   <div id="mapWidgetsRace">
-    <b>Opportunity estimates, 2021</b><br>
+    <b>AP Enrollment Disparity, 2021</b><br>
     Data for
     <div class="race-toggle">
       <button id="race-selectBlk" class="race-selectBtn active" data-field="ENR_AP_GAP_BL">
@@ -74,37 +74,55 @@
     <!-- Legend -->
     <div id="mapLegend" class="map-legend legend-blk">
       <div class="legend-main">
+        <div class="legend-columns">
+          <!-- Column 1: No data -->
+          <div class="legend-col">
+            <div class="legend-swatch na">No data</div>
+            <div class="legendBreakVal" id="legendMin">min</div>
+          </div>
 
+          <!-- Column 2: <1 -->
+          <div class="legend-col">
+            <div class="legend-swatch nd">No gap</div>
+            <div class="legendBreakVal" id="legend1">1x</div>
+          </div>
 
-            <!-- Color chips -->
-        <div class="legend-chips">
-          <div class="legend-swatch na">No data</div>
-          <div class="legend-swatch nd legendBreakVal"> 1</div>
-          <div class="legend-swatch class-1"><div id="legendb1" class="legendBreakVal">-</div></div>
-          <div class="legend-swatch class-2"><div id="legendb2" class="legendBreakVal">-</div></div>
-          <div class="legend-swatch class-3"><div id="legendb3" class="legendBreakVal">-</div></div>
-          <div class="legend-swatch class-4"><div id="legendb4" class="legendBreakVal">-</div></div>
-          <div class="legend-swatch class-5"><div id="legendHigh" class="legendBreakVal">-</div></div>
+          <!-- Column 3: Q1 -->
+          <div class="legend-col">
+            <div class="legend-swatch class-1"></div>
+            <div class="legendBreakVal" id="legendb1">-</div>
+          </div>
+
+          <!-- Column 4: Q2 -->
+          <div class="legend-col">
+            <div class="legend-swatch class-2"></div>
+            <div class="legendBreakVal" id="legendb2">-</div>
+          </div>
+
+          <!-- Column 5: Q3 -->
+          <div class="legend-col">
+            <div class="legend-swatch class-3"></div>
+            <div class="legendBreakVal" id="legendb3">-</div>
+          </div>
+
+          <!-- Column 6: Q4 -->
+          <div class="legend-col">
+            <div class="legend-swatch class-4"></div>
+            <div class="legendBreakVal" id="legendb4">-</div>
+          </div>
+
+          <!-- Column 7: Q5 -->
+          <div class="legend-col">
+            <div class="legend-swatch class-5 bg">Largest gap</div>
+            <div class="legendBreakVal" id="legendHigh">high</div>
+          </div>
+
         </div>
-        <!-- Low / High labels -->
-        <div class="legend-labels-top">
+
+        <div class="legend-note">
           <div class="legend-label"></i>Quantiles 20% of <span id="quantLabel">state</span>s <i class="fa-regular fa-circle-info"></i></div>
         </div>
-
-
-        <!-- Class breaks
-        <div id="legendBreaks" class="legend-breaks">
-          <div class="legend-labels">No data</div>
-          <div class="legend-labels">No dis 1.0</div>
-          <div class="legend-labels">Low dis >1</div>
-          <div class="legend-labels">__________</div>
-          <div class="legend-labels">Medium</div>
-          <div class="legend-labels">__________</div>
-          <div class="legend-labels">High <span id="legendHigh">-</span></div>
-          <div class="legend-labels"></div>
-        </div> -->
-      </div>
-    </div>
+    </div><!-- ! map legend -->
   </div><!-- ! map widget -->
 
 

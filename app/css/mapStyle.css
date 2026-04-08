@@ -192,7 +192,7 @@ button:hover {
 }
 
 #aggregation-label{
-  margin-left: 1.9rem;
+  margin-left: 2.3rem;
 }
 
 .race-selectBtn, .agg-selectBtn {
@@ -675,6 +675,7 @@ h3 {
 
 .map-legend {
   /* display: flex; */
+  margin-top: 4px;
   flex-direction: column;
   font-size: 13px;
   font-family: sans-serif;
@@ -694,30 +695,41 @@ h3 {
   width: 1rem;
   height: 1rem;
   flex-grow: 1;
-  text-align: start;
-  font-size: 0.7rem;
+  text-align: center;
+  align-content: center; /* vertical center */
+  font-size: 0.6rem;
   /* border-radius: 3px; */
 }
 
-.legend-chips {
+.legend-columns {
   display: flex;
-  overflow: hidden; 
-  border-radius: 3px;
-  align-items: stretch;
-  /* gap: 4px; */
-  /* position: relative; */
+  width: 100%;
 }
 
-.legendBreakVal{
-  /* align-self: flex-start; */
-  text-align: end;
-  /* position: absolute;
-  left: 50%;
-  transform: translateX(-50%);  */
+.legend-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Top labels */
-.legend-labels-top {
+.legend-swatch {
+  width: 100%;
+  height: 1.5rem;
+}
+
+.legendBreakVal {
+  font-size: 0.65rem;
+  margin-top: 2px;
+  position: relative;
+  left: 50%;    /* cetner between bins */           
+}
+
+.placeholder {
+  visibility: hidden;
+}
+
+.legend-note{
   display: flex;
   justify-content: end;
   width: 100%;       /* make it stretch the full legend width */
@@ -725,28 +737,7 @@ h3 {
   font-size: 0.7rem;
 }
 
-#legendHigh{
-  /* color: var(--offwhite) */
-}
 
-/* .legend-label {
-  font-size: 12px;
-  white-space: nowrap;
-} */
-/* Class breaks below */
-.legend-breaks {
-  display: flex;
-  text-align: end;
-  flex-direction: row;
-  align-items: stretch;
-  font-size: 0.55rem;
-}
-
-
-.legend-labels {
-  transform: rotate(-70deg); /* angle text */
-  margin-bottom: 2px;
-}
 /* ---------- Black legend ---------- */
 .legend-blk .class-5 { background: var(--black-class-5-color); }
 .legend-blk .class-4 { background: var(--black-class-4-color); }
@@ -765,10 +756,17 @@ h3 {
 .legend-swatch.na {
   background: var(--no-data-color);
   min-width: 2.5rem;
+  margin-right: 0.5rem;
 }
 .legend-swatch.nd {
+  min-width: 2.5rem;
   background: var(--no-disparity-color);
 }
+
+.legend-swatch.bg {
+  min-width: 2.8rem;
+}
+
 
 /* .legend-ticks {
   position: absolute;

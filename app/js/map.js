@@ -1633,13 +1633,6 @@ function rebuildDistrictTable(grouped, fieldName, tbody) {
         </td>
 
         <td>${id}</td>
-      </tr>
-      `
-    );
-
-  }
-}
-
 
 
 function sortableCell(value, decimals = 1) {
@@ -1661,15 +1654,6 @@ function sortableCell(value, decimals = 1) {
   };
 }
 
-
-
-// Helper to apply numeric sorting to multiple columns
-function applyNumericSort(columnIndexes) {
-  return columnIndexes.map(i => ({
-    targets: i,
-    orderDataType: 'num-null-last'
-  }));
-}
 
 
 function highlightTableByFIPS(fipsCode) {
@@ -1994,12 +1978,13 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     return;
   }
   
-  $('#legendb1').text(formatLegendVal(breaks.b1));
-  $('#legendb2').text(formatLegendVal(breaks.b2));
-  $('#legendb3').text(formatLegendVal(breaks.b3));
-  $('#legendb4').text(formatLegendVal(breaks.b4));
-  $('#legendb5').text(formatLegendVal(breaks.b5));
-  $('#legendHigh').text(formatLegendVal(breaks.max));
+  $('#legendMin').text(formatLegendVal(breaks.min)+'x');
+  $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
+  $('#legendb2').text(formatLegendVal(breaks.b2)+'x');
+  $('#legendb3').text(formatLegendVal(breaks.b3)+'x');
+  $('#legendb4').text(formatLegendVal(breaks.b4)+'x');
+  $('#legendb5').text(formatLegendVal(breaks.b5)+'x');
+  $('#legendHigh').text(formatLegendVal(breaks.max)+'x');
 
   // --------------------------------------------------
   // Make a copy of geojson so we don't mutate the original
@@ -2268,11 +2253,11 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   }
 
     // --- update legend ---
-  $('#legendb1').text(formatLegendVal(breaks.b1));
-  $('#legendb2').text(formatLegendVal(breaks.b2));
-  $('#legendb3').text(formatLegendVal(breaks.b3));
-  $('#legendb4').text(formatLegendVal(breaks.b4));
-  $('#legendHigh').text(formatLegendVal(breaks.max));
+  $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
+  $('#legendb2').text(formatLegendVal(breaks.b2)+'x');
+  $('#legendb3').text(formatLegendVal(breaks.b3)+'x');
+  $('#legendb4').text(formatLegendVal(breaks.b4)+'x');
+  $('#legendHigh').text(formatLegendVal(breaks.max)+'x');
 
   $(quantLabel).text("district")
 
@@ -3106,7 +3091,7 @@ function getDistrictValueByYear(hoveredDistrictData, field, preferredYear = 2021
   const val = thisYearData[field];
   const year = thisYearData.YEAR;
 
-  // your original formatting logic
+  // original formatting logic
   if (val == null || isNaN(val)) return "N/A";
 
   let formatted;
@@ -3133,7 +3118,7 @@ function formatLegendVal(v) {
 
     const options = Number.isInteger(v)
         ? { minimumFractionDigits: 0, maximumFractionDigits: 0 }
-        : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+        : { minimumFractionDigits: 1, maximumFractionDigits: 1 };
 
     return new Intl.NumberFormat(undefined, options).format(v);
 }
