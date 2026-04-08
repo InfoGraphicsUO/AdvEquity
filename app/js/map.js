@@ -1436,8 +1436,22 @@ function buildDistrictTable(districtData, fieldName) {
     order: [[4, 'desc']],
     columnDefs: [
       { targets: 5, visible: false }, // hide LEAID/internal
-      { targets: [2, 3, 4, 5], type: 'na-last' } // numeric columns
-    ]
+      // { targets: [2, 3, 4, 5], type: 'na-last' } // numeric columns
+    ],
+    createdRow: function (row, data) {
+      const fmt = (n, d=1) =>
+        typeof n === 'number'
+          ? n.toLocaleString(undefined, {
+              minimumFractionDigits: d,
+              maximumFractionDigits: d
+            })
+          : '—';
+
+      $('td:eq(1)', row).text(fmt(data[1], 0)); // students
+      $('td:eq(2)', row).text(fmt(data[2], 1)); // teachers
+      $('td:eq(3)', row).text(fmt(data[3], 2)); // 2011 opp
+      $('td:eq(4)', row).text(fmt(data[4], 2)); // 2021 opp
+    }
   });
 
 
@@ -1471,17 +1485,18 @@ function buildDistrictTable(districtData, fieldName) {
     const val2011Raw = yr2011?.[fieldName];
     const val2021Raw = yr2021?.[fieldName];
 
-    const val2011 = typeof val2011Raw === 'number' ? val2011Raw.toFixed(2) : '—';
-    const val2021 = typeof val2021Raw === 'number' ? val2021Raw.toFixed(2) : '—';
-    const studentsDisplay = typeof numStudents === 'number' ? numStudents.toLocaleString() : '—';
-    const teachersDisplay = typeof numTeachers === 'number' ? numTeachers.toLocaleString() : '—';
+    const students = sortableCell(numStudents, 0);
+    const teachers = sortableCell(numTeachers, 1);
+    const opp2011 = sortableCell(val2011Raw, 2);
+    const opp2021 = sortableCell(val2021Raw, 2);
+
 
     table.row.add([
       districtName,
-      studentsDisplay,
-      teachersDisplay,
-      val2011,
-      val2021,
+      students.order,
+      teachers.order,
+      opp2011.order,
+      opp2021.order,
       id
     ]);
   }
@@ -1600,16 +1615,31 @@ function rebuildDistrictTable(grouped, fieldName, tbody) {
       `
       <tr>
         <td>${districtName}</td>
-        <td>${students.display}</td>
-        <td>${teachers.display}</td>
-        <td>${opp2011.display}</td>
-        <td>${opp2021.display}</td>
+
+        <td data-order="${students.order ?? ''}">
+          ${students.display}
+        </td>
+
+        <td data-order="${teachers.order ?? ''}">
+          ${teachers.display}
+        </td>
+
+        <td data-order="${opp2011.order ?? ''}">
+          ${opp2011.display}
+        </td>
+
+        <td data-order="${opp2021.order ?? ''}">
+          ${opp2021.display}
+        </td>
+
         <td>${id}</td>
       </tr>
       `
     );
+
   }
 }
+
 
 
 function sortableCell(value, decimals = 1) {
