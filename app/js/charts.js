@@ -114,16 +114,16 @@ function getStateOpportunityEstimates(state,fieldName) {
   // Return formatted HTML
   // TO DO: add a chip after 2021 with the fill color of the hovered state
 const opphtml = `
-  <div class="popup-subheader">Opportunity Gap Estimates</div>
+  <div class="popup-subheader">AP Enrollment Disparity Estimates</div>
 
   <div class="popup-row">
     <span class="popup-label">2011–12:</span>
-    <span class="popup-value">${val2011}</span>
+    <span class="popup-value">${val2011}x</span>
   </div>
 
   <div class="popup-row">
     <span class="popup-label">2021–22:</span>
-    <span class="popup-value-strong">${val2021}</span>
+    <span class="popup-value-strong">${val2021}x</span>
   </div>
 
 <div class="popup-row has-arrow">
@@ -147,12 +147,12 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
   const formattedDiff = Math.abs(diff).toFixed(2);
 
   if (diff > 0) {
-    return `Estimated gap increased by ${formattedDiff}`;
+    return `Disparity increased by ${formattedDiff}x`;
   } else if (diff < 0) {
-    return `Estimate gap dropped by ${formattedDiff}`;
+    return `Disparity dropped by ${formattedDiff}x`;
   }
 
-  return 'Estimate did not change';
+  return 'Disparity did not change';
 }
 
 // // Promise that resolves when ALL breaks are loaded
@@ -178,11 +178,11 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 
 function initFactSheet(stateEntry, fips, fieldName) {
-  showGraphs(); // hide the US level details, show the state details
+  showDistrictFactSheetContainer(); // hide the US level details, show the state details
   
-  console.log("building fact sheet ", stateEntry)
-  console.log("building fact sheet ", fips)
-  console.log("building fieldName", fieldName)
+  console.log("building fact sheet ", stateEntry) // expect data for this state, all years
+  // console.log("building fact sheet ", fips)
+  console.log("building fieldName", fieldName) // field name we'll be using. Usually race (e,g, 'ENR_AP_GAP_BL')
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
 
@@ -226,9 +226,10 @@ function initFactSheet(stateEntry, fips, fieldName) {
   <div class="opportunity-row">
     <div class="opportunity-column">
       <h2>Factsheet for <span id="currentState">${states[state_abbrev]}</span></h2>
-      <div>Number of districts: <span id="numDistricts">—</span></div>
-      <div>Modal number of AP classes offered/school<br><small>(avg of 2021 school-level modes)</small>: ${modal_school_APCOURSES}
-      </div>
+      <h3>State Summary</h3>
+      <div><span class="summary-label">Number of districts: </span><span id="numDistricts">—</span></div>
+      <div class="summary-label">Modal number of AP classes offered/school</div>
+      <div class="summary-label-2">Average of 2021 school-level modes: <span class='summary-value'> ${modal_school_APCOURSES}</span></div>
 
       ${oppestHTML}
         <!-- State composition bar: placed below the opportunity column -->
@@ -242,25 +243,17 @@ function initFactSheet(stateEntry, fips, fieldName) {
       <div class="table-header-wrapper">
         <h2 class="floatText">Districts in ${states[state_abbrev]}</h2>
         <table id="district-table" class="table table-striped">
-          <thead>
-            <tr>
-              <th>District</th>
-              <th>Enrollment</th>
-              <th>Teachers</th>
-              <th>Opp Est 2011</th>
-              <th>Opp Est 2021</th>
-            </tr>
-          </thead>
-          <tbody id="district-table-body"></tbody>
-          <tfoot>
-            <tr>
-              <th>District</th>
-              <th>Enrollment</th>
-              <th>Teachers</th>
-              <th>Opp Est 2011</th>
-              <th>Opp Est 2021</th>
-            </tr>
-          </tfoot>
+        <thead>
+          <tr>
+            <th>District</th>
+            <th class="sorting">Enrollment</th>
+            <th class="sorting">Teachers</th>
+            <th class="sorting">Enrollment Disparity 2011 (x)</th>
+            <th class="sorting">Enrollment Disparity 2021 (x)</th>
+          </tr>
+        </thead>
+
+        <tbody id="district-table-body"></tbody>
         </table>
       </div>
   </div>
@@ -288,8 +281,8 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
     //note and display state level view
     currentAgg = 'district';
-    console.log('currentAgg',currentAgg)
-    $(quantLabel).text("district")
+    // console.log('currentAgg',currentAgg)
+    // $(quantLabel).text("district")
     $('#agg-selectState').removeClass('active');
     $('#agg-selectDist').addClass('active');
 
@@ -310,7 +303,6 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
 
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
-    //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
     buildDistrictTable(filteredDistrictTableData, fieldName) // actually fills the table, given the data are loaded
     // populate # districts in the factsheet by counting unique LEAID (might be changed later)
     try {
@@ -345,14 +337,14 @@ const yellow = getComputedStyle(_root).getPropertyValue('--yellow').trim();
 const almostBlack = getComputedStyle(_root).getPropertyValue('--almostBlack').trim();
 const offwhite = getComputedStyle(_root).getPropertyValue('--offwhite').trim();
 
-function showGraphs(){
+function showDistrictFactSheetContainer(){
   try { document.querySelector('#infoContainer').style.display = 'none' } catch(e) {}
   try { 
       document.querySelector('#factSheetContainer').style.display = 'flex'
    } catch(e) {}
 }
 
-function hideGraphs(){
+function hideDistrictFactSheetContainer(){
   try { document.querySelector('#infoContainer').style.display = 'block' } catch(e) {}
   try { 
     document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
@@ -444,7 +436,7 @@ function drawCompositionBar(canvasId, data, colors) {
     ctx.fillRect(x, startY, width, barHeight);
 
     if (width > 86) {
-      console.log(`${key} width: `, width)
+      // console.log(`${key} width: `, width)
       ctx.fillStyle = "#fff";
       ctx.font = boldFont;
       ctx.fillText(`${LABEL_MAP[key]}: ${formatPercentage(value)}`, x + width / 2, startY + barHeight / 2);

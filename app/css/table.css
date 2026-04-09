@@ -132,18 +132,18 @@
   font-family: jaf-bernino-sans-narrow, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   color:var(--almostBlack);
   /* border-bottom: 1px solid var(--lightgrey); */
 }
 
 /* Table body cells */
 #district-table tbody td {
-  font-family: sans-serif;     /* matches your numeric values everywhere else */
+  font-family: sans-serif;     /* matches numeric values everywhere else */
   font-size: 0.85rem;
   color: var(--almostBlack);
   line-height: 1.2;
-  padding: 6px 8px;            /* tighter rows, but still usable */
+  padding: 6px 8px;
 }
 
 /** style for mini graphs **/
@@ -153,4 +153,4 @@ div.opportunity-column:nth-child(2) > p{
   
 }
 
-/* to move move inine CSS for charts from JS to here */
+/* to do: move move inine CSS for charts from JS to here */
