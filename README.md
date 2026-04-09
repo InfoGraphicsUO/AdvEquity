@@ -134,7 +134,7 @@ Core JavaScript file for map functionality using Mapbox GL JS.
     - `fillStateMap(map, geojson, stateData, fieldName)`: Colors map based on fields like 'ENR_AP_GAP_BL' (Black gap).
     - `buildOpportunityTable(geojson, stateData)`: Builds state table (stubbed; uses DataTables in full).
     - `fillDistricts(map, ...)`: Colors districts with dummy urban scores.
-    - `showGraphs()` / `hideGraphs()`: Toggles info/graph containers.
+    - `showDistrictFactSheetContainer()` / `hideDistrictFactSheetContainer()`: Toggles info/graph containers.
 - **Data Notes:** Uses FIPS codes, sorts Oregon first in tables.
 
 ### charts.css

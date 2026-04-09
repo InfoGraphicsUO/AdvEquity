@@ -149,6 +149,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // click handler - zoom back to the last district's state (stored when factsheet opens)
 
+ $('#legend-note').click(() => {
+  console.log("legend-note CLICKED");
+  openInfoModal();
+  });
+
   $('#backToStateMapBtn').click(function(){
     // Only active when in district view
     if (mapView !== 'district') {
@@ -220,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // switch to state view UI
       if (typeof setMapView === 'function') setMapView('state');
-      hideGraphs();
+      hideDistrictFactSheetContainer();
       // show the state factsheet (fips may need padding to match keys)
       try {
         /*should be filerted to the state only at this point */
@@ -284,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // final fallback to full US extent and show nothing specific
     map.fitBounds([[ -126, 24], [-66, 50]]);
     if (typeof setMapView === 'function') setMapView('full');
-    hideGraphs();
+    hideDistrictFactSheetContainer();
     const info3 = document.getElementById('infoContainer');
     if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
   });
@@ -671,7 +676,7 @@ $('#full_extentBtn').click(function(){
       map.setLayoutProperty('state-fills', 'visibility', 'visible');
     }
     
-    hideGraphs();
+    hideDistrictFactSheetContainer();
     
     // clear stored state info
     window.currentStateFIPS = null;
@@ -1197,6 +1202,39 @@ map.on('moveend', () => {
   } // end onStateClick
   // window.onStateClick = onStateClick;
 
+    // --- click to zoom and outline ---
+  // map.off('click', 'district-fills')
+  function onDistrictClick(e){
+    triggeredByMapClick = true;
+    const feat = e.features[0];
+    const fid = feat.id;
+
+    // highlight clicked district outline in black
+    if (map.getLayer('district-lines')) {
+      map.setPaintProperty('district-lines', 'line-color', [
+        'case',
+        ['==', ['id'], fid],
+        '#000',
+        offwhite
+      ]);
+    }
+
+    console.log(showAllStates)
+    if (!showAllStates) {
+      const bounds = new mapboxgl.LngLatBounds();
+      function extendBounds(coords) {
+        if (typeof coords[0][0] === 'number') coords.forEach(c => bounds.extend(c));
+        else coords.forEach(extendBounds);
+      }
+      extendBounds(feat.geometry.coordinates);
+      map.fitBounds(bounds, { padding: 30 });
+      showDistrictFactsheet(feat, districtData, state_abbrev);
+      hideNoGeometryNotice();
+    }
+  }
+
+
+
   map.off('click')
   map.on('click', e => {
     triggeredByMapClick = true;
@@ -1209,21 +1247,29 @@ map.on('moveend', () => {
     const top = features[0];
     const bottom = features[1];
 
+    console.log(top.id)
+
+
     // // --- AGGREGATION LOGIC ---
     if (currentAgg === 'district') {
       console.log('DISTRICT CLICK')
       console.log(top.layer.id)
-      //   // Only respond to district clicks
-      //   // if (top.layer.id === 'district-fills') {
-      //     onDistrictClick(top);
-      //   // }
-      //   // return;
-      
-      // If we are looking at a distict a clicked a neighbor state, view that state in district view
-      if (top.layer.id === 'state-fills') {
-        console.log('top layer = state-fills. opening district?')
+      // Only respond to district clicks
+      if (top.layer.id == currentStateFIPS) {
+        // in the current state, seelct the neighbor district
+        onDistrictClick(bottom);
+        return;
+      } else {
+        // in a different state open that state
         onStateClick(top);
+
       }
+      
+      // // If we are looking at a distict and clicked a neighbor state, view that state in district view
+      // if (top.layer.id === 'state-fills') {
+      //   console.log('top layer = state-fills. opening district?')
+      //   onStateClick(top);
+      // }
     }
 
     if (currentAgg === 'state') {
@@ -1369,34 +1415,34 @@ function buildStateTable(stateData, fieldName) {
   table.order([[3, 'desc']]).draw() // 0 indexed
  }
 
-// Global sort state (ASC/DESC per column)
-let districtSortState = {};
+// // Global sort state (ASC/DESC per column)
+// let districtSortState = {};
 
-// Helper: extract numeric sort value for a given record + column index
-function extractSortValue(record, col, fieldName) {
-  switch (col) {
-    case 1: return record.ENR ?? null;
-    case 2: return record.SCH_FTETEACH_TOT ?? null;
-    case 3: return record[fieldName] && record.YEAR === 2011 ? record[fieldName] : null;
-    case 4: return record[fieldName] && record.YEAR === 2021 ? record[fieldName] : null;
-    default: return null;
-  }
-}
+// // Helper: extract numeric sort value for a given record + column index
+// function extractSortValue(record, col, fieldName) {
+//   switch (col) {
+//     case 1: return record.ENR ?? null;
+//     case 2: return record.SCH_FTETEACH_TOT ?? null;
+//     case 3: return record[fieldName] && record.YEAR === 2011 ? record[fieldName] : null;
+//     case 4: return record[fieldName] && record.YEAR === 2021 ? record[fieldName] : null;
+//     default: return null;
+//   }
+// }
 
-// Manual sorting of districtData
-function sortDistrictData(districtData, col, direction, fieldName) {
-  districtData.sort((a, b) => {
-    const va = extractSortValue(a, col, fieldName);
-    const vb = extractSortValue(b, col, fieldName);
+// // Manual sorting of districtData
+// function sortDistrictData(districtData, col, direction, fieldName) {
+//   districtData.sort((a, b) => {
+//     const va = extractSortValue(a, col, fieldName);
+//     const vb = extractSortValue(b, col, fieldName);
 
-    // nulls last
-    if (va == null && vb == null) return 0;
-    if (va == null) return 1;
-    if (vb == null) return -1;
+//     // nulls last
+//     if (va == null && vb == null) return 0;
+//     if (va == null) return 1;
+//     if (vb == null) return -1;
 
-    return direction === 'asc' ? va - vb : vb - va;
-  });
-}
+//     return direction === 'asc' ? va - vb : vb - va;
+//   });
+// }
 
 function buildDistrictTable(districtData, fieldName) {
   console.log("Building District Table")
@@ -1451,14 +1497,14 @@ function buildDistrictTable(districtData, fieldName) {
   // Group by LEAID
   const grouped = {};
 //  for (const d of districtDataCache){ // all data?
-  console.log('districtData', districtData)
+  // console.log('districtData', districtData)
   for (const d of districtData) {  // just 2021?
     const id = d.LEAID ?? Math.random();
     if (!grouped[id]) grouped[id] = [];
     grouped[id].push(d);
   }
 
-  console.log('grouped', grouped)
+  // console.log('grouped', grouped)
 
   for (const id in grouped) {
     const records = grouped[id];
@@ -2489,36 +2535,6 @@ map.on('mousemove', 'district-fills', e => {
     }
   });
 
-
-  // --- click to zoom and outline ---
-  map.off('click', 'district-fills')
-  map.on('click', 'district-fills', e => {
-    triggeredByMapClick = true;
-    const feat = e.features[0];
-    const fid = feat.id;
-
-    // highlight clicked district outline in black
-    if (map.getLayer('district-lines')) {
-      map.setPaintProperty('district-lines', 'line-color', [
-        'case',
-        ['==', ['id'], fid],
-        '#000',
-        offwhite
-      ]);
-    }
-
-    if (!showAllStates) {
-      const bounds = new mapboxgl.LngLatBounds();
-      function extendBounds(coords) {
-        if (typeof coords[0][0] === 'number') coords.forEach(c => bounds.extend(c));
-        else coords.forEach(extendBounds);
-      }
-      extendBounds(feat.geometry.coordinates);
-      map.fitBounds(bounds, { padding: 30 });
-      showDistrictFactsheet(feat, districtData, state_abbrev);
-      hideNoGeometryNotice();
-    }
-  });
 }
 
 
@@ -2558,7 +2574,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
         returnBtn.addEventListener('click', () => {
           map.fitBounds([[ -126, 24], [-66, 50]]);
           if (typeof setMapView === 'function') setMapView('full');
-          hideGraphs();
+          hideDistrictFactSheetContainer();
           const info = document.getElementById('infoContainer');
           if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
         });

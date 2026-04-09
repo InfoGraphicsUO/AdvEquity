@@ -35,7 +35,22 @@
   <link rel="stylesheet" href="css/charts.css" />
   <link rel="stylesheet" href="css/table.css" />
 </head>
-<body>  
+<body>
+  <!-- modal for info about metric -->
+  <div id="infoModal">
+    <div class="modal-content">
+      <div class="modal-image-wrap">
+        <span class="modal-close">&times;</span>
+
+        <img 
+          src="img/classed_gaps_4-8-26_v4.jpg" 
+          alt="Image describing map classification"
+          class="modal-image"
+        >
+      </div>
+    </div>
+  </div>
+
   <div id="map">
     <div id="mapLoadingOverlay" class="map-loading-overlay" style="display: none;">
       <div class="loading-spinner"></div>
@@ -51,6 +66,9 @@
 
         
   <div id="mapWidgetsRace">
+    <div id="legend-note">
+      <div class="legend-label"><i class="fa-regular fa-circle-info"></i></div>
+    </div>
     <b>AP Enrollment Disparity, 2021</b><br>
     Data for
     <div class="race-toggle">
@@ -113,14 +131,10 @@
 
           <!-- Column 7: Q5 -->
           <div class="legend-col">
-            <div class="legend-swatch class-5 bg">Largest gap</div>
+            <div class="legend-swatch class-5 bg"></div>
             <div class="legendBreakVal" id="legendHigh">high</div>
           </div>
 
-        </div>
-
-        <div class="legend-note">
-          <div class="legend-label"></i>Quantiles 20% of <span id="quantLabel">state</span>s <i class="fa-regular fa-circle-info"></i></div>
         </div>
     </div><!-- ! map legend -->
   </div><!-- ! map widget -->
@@ -168,6 +182,7 @@
 
   <script src="js/map.js"></script>
   <script src="js/charts.js"></script>
+  <script src="js/modal.js"></script>
 
 </body>
 </html>

@@ -147,12 +147,12 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
   const formattedDiff = Math.abs(diff).toFixed(2);
 
   if (diff > 0) {
-    return `Estimated gap increased by ${formattedDiff}x`;
+    return `Disparity increased by ${formattedDiff}x`;
   } else if (diff < 0) {
-    return `Estimated gap dropped by ${formattedDiff}x`;
+    return `Disparity dropped by ${formattedDiff}x`;
   }
 
-  return 'Estimated gap did not change';
+  return 'Disparity did not change';
 }
 
 // // Promise that resolves when ALL breaks are loaded
@@ -178,11 +178,11 @@ function getOpEstChangeText(val2011Raw, val2021Raw) {
 
 
 function initFactSheet(stateEntry, fips, fieldName) {
-  showGraphs(); // hide the US level details, show the state details
+  showDistrictFactSheetContainer(); // hide the US level details, show the state details
   
-  console.log("building fact sheet ", stateEntry)
-  console.log("building fact sheet ", fips)
-  console.log("building fieldName", fieldName)
+  console.log("building fact sheet ", stateEntry) // expect data for this state, all years
+  // console.log("building fact sheet ", fips)
+  console.log("building fieldName", fieldName) // field name we'll be using. Usually race (e,g, 'ENR_AP_GAP_BL')
   const factSheetContainer = document.getElementById('factSheetContainer');
   if (!factSheetContainer) return;
 
@@ -281,7 +281,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
     //note and display state level view
     currentAgg = 'district';
-    console.log('currentAgg',currentAgg)
+    // console.log('currentAgg',currentAgg)
     $(quantLabel).text("district")
     $('#agg-selectState').removeClass('active');
     $('#agg-selectDist').addClass('active');
@@ -303,7 +303,6 @@ function initFactSheet(stateEntry, fips, fieldName) {
 
 
     console.log('Filtered districts for', state_abbrev, filteredDistrictData.length, 'of', districtDataCache.length);
-    //buildDistrictTable(filtered, fieldName); // pass fieldName to fill Opp Est
     buildDistrictTable(filteredDistrictTableData, fieldName) // actually fills the table, given the data are loaded
     // populate # districts in the factsheet by counting unique LEAID (might be changed later)
     try {
@@ -338,14 +337,14 @@ const yellow = getComputedStyle(_root).getPropertyValue('--yellow').trim();
 const almostBlack = getComputedStyle(_root).getPropertyValue('--almostBlack').trim();
 const offwhite = getComputedStyle(_root).getPropertyValue('--offwhite').trim();
 
-function showGraphs(){
+function showDistrictFactSheetContainer(){
   try { document.querySelector('#infoContainer').style.display = 'none' } catch(e) {}
   try { 
       document.querySelector('#factSheetContainer').style.display = 'flex'
    } catch(e) {}
 }
 
-function hideGraphs(){
+function hideDistrictFactSheetContainer(){
   try { document.querySelector('#infoContainer').style.display = 'block' } catch(e) {}
   try { 
     document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
