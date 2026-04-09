@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("activateStateView")
     //note and display state level view
     currentAgg = 'state';
-    $(quantLabel).text("state")
+    // $(quantLabel).text("state")
     $('#agg-selectState').addClass('active')
     $('#agg-selectDist').removeClass('active')
 
@@ -448,14 +448,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function activateDistrictView() {
     //note and display state level view
     currentAgg = 'district';
-    $(quantLabel).text("district")
+    // $(quantLabel).text("district")
     $('#agg-selectState').removeClass('active');
     $('#agg-selectDist').addClass('active');
     if (typeof setMapView === 'function') setMapView('district');
     if (typeof updateControlStates === 'function') updateControlStates();
 
 
-    $(quantLabel).text("district")
+    // $(quantLabel).text("district")
     map.setLayoutProperty('state-fills', 'visibility', 'none');
 
     // Create the layer ONLY if it doesn't exist
@@ -1206,7 +1206,7 @@ map.on('moveend', () => {
   // map.off('click', 'district-fills')
   function onDistrictClick(e){
     triggeredByMapClick = true;
-    const feat = e.features[0];
+    const feat = e; // now just passing a single feature
     const fid = feat.id;
 
     // highlight clicked district outline in black
@@ -1228,7 +1228,7 @@ map.on('moveend', () => {
       }
       extendBounds(feat.geometry.coordinates);
       map.fitBounds(bounds, { padding: 30 });
-      showDistrictFactsheet(feat, districtData, state_abbrev);
+      showDistrictFactsheet(feat, currentDistrictData, currentStateAbbrev);
       hideNoGeometryNotice();
     }
   }
@@ -1253,10 +1253,12 @@ map.on('moveend', () => {
     // // --- AGGREGATION LOGIC ---
     if (currentAgg === 'district') {
       console.log('DISTRICT CLICK')
-      console.log(top.layer.id)
+      console.log(top.id)
       // Only respond to district clicks
-      if (top.layer.id == currentStateFIPS) {
-        // in the current state, seelct the neighbor district
+      console.log(top)
+      if (top.id == currentStateFIPS) {
+        console.log("current state")
+        // in the current state, select the neighbor district
         onDistrictClick(bottom);
         return;
       } else {
@@ -2250,7 +2252,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   $('#legendb4').text(formatLegendVal(breaks.b4)+'x');
   $('#legendHigh').text(formatLegendVal(breaks.max)+'x');
 
-  $(quantLabel).text("district")
+  // $(quantLabel).text("district")
 
   const legend = $('#mapLegend');
   legend.toggleClass('legend-blk', fieldName === 'ENR_AP_GAP_BL')
