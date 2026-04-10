@@ -922,9 +922,19 @@ map.on('load', () => {
       paint: {
           'fill-color': 'transparent',
       },
-      layout: {
-        visibility: 'none'
-      }
+      filter:  ["==", ["get", "GEOID"], -99] // initially, show no districts
+  });
+
+    map.addLayer({
+      id: 'selected-district',
+      type: 'line', 
+      source: 'SCHOOLDIST_TL24', 
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
+      paint: {
+          'line-color': 'black',
+          'line-width': 3
+      },
+      filter:  ["==", ["get", "GEOID"], -99] // initially, show no districts
   });
 
   // map.addLayer({
@@ -1174,6 +1184,9 @@ map.on('moveend', () => {
       { selected: true }
     );
 
+    //clear selected district from map
+    map.setFilter('selected-district',  ["==", ["get", "GEOID"], 99] );
+
 
     // zoom to state
     const coords = clickedFeature.geometry.coordinates;
@@ -1208,19 +1221,16 @@ map.on('moveend', () => {
     triggeredByMapClick = true;
     const feat = e; // now just passing a single feature
     const fid = feat.id;
+    console.log(e)
 
     // highlight clicked district outline in black
     if (map.getLayer('district-lines')) {
-      map.setPaintProperty('district-lines', 'line-color', [
-        'case',
-        ['==', ['id'], fid],
-        '#000',
-        offwhite
-      ]);
+      // outline the currently selected feature
+      map.setFilter('selected-district',  ["==", ["get", "GEOID"], fid] );
     }
 
-    console.log(showAllStates)
-    if (!showAllStates) {
+    // console.log(showAllStates)
+    // if (!showAllStates) {
       const bounds = new mapboxgl.LngLatBounds();
       function extendBounds(coords) {
         if (typeof coords[0][0] === 'number') coords.forEach(c => bounds.extend(c));
@@ -1228,9 +1238,9 @@ map.on('moveend', () => {
       }
       extendBounds(feat.geometry.coordinates);
       map.fitBounds(bounds, { padding: 30 });
-      showDistrictFactsheet(feat, currentDistrictData, currentStateAbbrev);
+      showDistrictFactsheet(feat, currentDistrictData, currentStateAbbrev || "");
       hideNoGeometryNotice();
-    }
+    // }
   }
 
 
@@ -1238,52 +1248,46 @@ map.on('moveend', () => {
   map.off('click')
   map.on('click', e => {
     triggeredByMapClick = true;
+
     const features = map.queryRenderedFeatures(e.point, {
       layers: ['district-fills', 'state-fills']
     });
 
     if (!features.length) return;
 
-    const top = features[0];
-    const bottom = features[1];
+    // Identify which feature is which
+    let districtFeature = null;
+    let stateFeature = null;
 
-    console.log(top.id)
-
-
-    // // --- AGGREGATION LOGIC ---
-    if (currentAgg === 'district') {
-      console.log('DISTRICT CLICK')
-      console.log(top.id)
-      // Only respond to district clicks
-      console.log(top)
-      if (top.id == currentStateFIPS) {
-        console.log("current state")
-        // in the current state, select the neighbor district
-        onDistrictClick(bottom);
-        return;
-      } else {
-        // in a different state open that state
-        onStateClick(top);
-
-      }
-      
-      // // If we are looking at a distict and clicked a neighbor state, view that state in district view
-      // if (top.layer.id === 'state-fills') {
-      //   console.log('top layer = state-fills. opening district?')
-      //   onStateClick(top);
-      // }
+    for (const f of features) {
+      if (f.layer.id === 'district-fills') districtFeature = f;
+      if (f.layer.id === 'state-fills') stateFeature = f;
     }
 
+    // If neither is present, nothing to do
+    if (!districtFeature && !stateFeature) return;
+
+    // --- AGGREGATION LOGIC ---
+    if (currentAgg === 'district') {
+      // If the clicked district is inside the current state of there is no current state feature
+      if (districtFeature && (stateFeature ==null || stateFeature.id == currentStateFIPS )) {
+        // Clicked inside current state → select neighbor district
+        onDistrictClick(districtFeature);
+        return;
+      }
+
+      // Otherwise, clicked a different state → open that state
+      if (stateFeature) onStateClick(stateFeature);
+      return;
+    }
+
+    // If aggregation is state-level
     if (currentAgg === 'state') {
-      // Only respond to state clicks
-      // if (top.layer.id === 'state-fills') {
-        onStateClick(top);
-      // }
-      // return;
+      if (stateFeature) onStateClick(stateFeature);
     }
   });
-
 });
+
 
 
 const popup = new mapboxgl.Popup({
