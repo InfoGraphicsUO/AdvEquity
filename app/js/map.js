@@ -935,7 +935,7 @@ map.on('load', () => {
       filter:  ["==", ["get", "GEOID"], -99] // initially, show no districts
   });
 
-    map.addLayer({
+  map.addLayer({
       id: 'selected-district',
       type: 'line', 
       source: 'SCHOOLDIST_TL24', 
@@ -944,8 +944,12 @@ map.on('load', () => {
           'line-color': 'black',
           'line-width': 3
       },
+      layout:{
+        'line-join': 'round', // Rounds corners at junctions
+        'line-cap': 'round'   // Rounds endpoints
+      },
       filter:  ["==", ["get", "GEOID"], -99] // initially, show no districts
-  });
+  }, 'settlement-major-label');
 
   // map.addLayer({
   //     id: 'district-lines',
@@ -1054,7 +1058,7 @@ map.on('moveend', () => {
           0   // default border no shift
         ]
     }
-  }, 'Country-Labels_ne-10m-admin-2-counties');
+  }, 'settlement-major-label');
 
 
   map.on('mousemove', 'state-fills', (e) => {
@@ -2305,7 +2309,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       }
     }, 'County-Lines_ne-10m-admin-2-counties');
   } else {
-    map.moveLayer('district-fills', 'state-fills'); // ensure lauer is above state-fill
+    map.moveLayer('district-fills', 'state-fills'); // ensure layer is above state-fill
+    // show all district-fills for "showAllStates", show only this states districts-fills for a single state
     map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips]);
     map.setLayoutProperty('district-fills', 'visibility', 'visible');
   }
@@ -2320,14 +2325,21 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         'line-color': offwhite,
         // 'line-width': 0, // set by feature state
         'line-opacity': 0.9
+      },
+      layout: {
+        'line-join': 'round', // Rounds corners at junctions
+        'line-cap': 'round'   // Rounds endpoints
       }
     };
+
+    // ADDING DISTRICTLINES
 
     if (!showAllStates) {
       districtLinesLayerDef.filter = ['==', ['get', 'STATEFP'], statefips];
     }
 
-    map.addLayer(districtLinesLayerDef, 'Country-Labels_ne-10m-admin-2-counties');
+    // add district lines under the selected-district layer (may be filtered by the state).
+    map.addLayer(districtLinesLayerDef, 'selected-district');
   } else {
     if (showAllStates) {
       // remove filter entirely
