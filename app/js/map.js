@@ -5,7 +5,7 @@ let districtDataCache = null; // all district data
 
 // current selections
 let currentDistrictValueMap = {};
-let firstSymbolId = null;
+// let firstSymbolId = null;
 let currentMapPaint;
 // let currentMapRace = 'black'; // race data in map ('black' |  'hispanic')
 let currentRaceField  = 'ENR_AP_GAP_BL'; // fields with the data disparity data('ENR_AP_GAP_BL' |  'ENR_AP_GAP_HS')
@@ -120,12 +120,13 @@ const states = {
 
 // zoom view breaks
 let zoomLevel;
-const districtMinZoom = 8;
-const stateMinZoom = 5.5; //oregon optimized
+const districtMinZoom = 5.5;
+const stateMinZoom = 4.0; //oregon optimized
 // const stateMinZoom = 4.46; //texas optimized
 // const stateMinZoom = 3.37; //alaska optimized
 
 let triggeredByMapClick = false;
+let triggeredByBackToState = false;
 
 
 console.log("MAP JS loaded");
@@ -155,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#backToStateMapBtn').click(function(){
+    triggeredByBackToState = true;
     // Only active when in district view
     if (mapView !== 'district') {
       return;
@@ -168,6 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('Back to state: No state info available');
       return;
     }
+
+    // remove outline from selected district
+    map.setFilter('selected-district',  ["==", ["get", "GEOID"], -99] );
 
     // locate laste state in the state geojsonCache
     let stateFeature = null;
@@ -742,13 +747,15 @@ $('#full_extentBtn').click(function(){
     // ZOOM BASED VIEW TOGGLE
     // TODO: fix bug - toggling to district viwe via zoom or button doesn't allow district to open with click.  It needs the state to be openfirst before opening the district
 
-    if (!triggeredByMapClick) { 
+    if (!triggeredByMapClick && !triggeredByBackToState) { 
       console.log('ZOOM BASED VIEW CHANGE')
+      console.log("currentAgg",currentAgg)
       if (zoomLevel > districtMinZoom) {
         console.log('ZOOM BASED DISTRICT VIEW');
 
         $('#agg-selectDist').click()
-      } else if (zoomLevel >= stateMinZoom) {
+      } else if (zoomLevel >= stateMinZoom && currentAgg != 'state') {
+        // zoom in by mouse, switch to district view
         console.log('ZOOM BASED STATE VIEW');
         $('#agg-selectDist').click()
 
@@ -760,12 +767,15 @@ $('#full_extentBtn').click(function(){
         // if (features.length && typeof window.onStateClick === 'function') {
         //   window.onStateClick(features[0]);
         // }
+      // } else {
+      //   console.log('ZOOM BASED FULL VIEW');
+      //   $('#agg-selectState').click()
       } else {
-        console.log('ZOOM BASED FULL VIEW');
-        $('#agg-selectState').click()
+        console.log('NO ZOOM BASED AGG CHANGE ');
       }
-    } else { //don't do zoom-based view if map was clicked, reset global
+    } else { //don't do zoom-based view if map or "return to state" clicked, reset globals
       triggeredByMapClick = false;
+      triggeredByBackToState = false;
     }
 
 
@@ -882,14 +892,14 @@ map.on('load', () => {
 //   });
 
  const layers = map.getStyle().layers;
-        // Find the index of the first symbol layer in the map style.
-        let firstSymbolId;
-        for (const layer of layers) {
-            if (layer.type === 'symbol') {
-                firstSymbolId = layer.id;
-                break;
-            }
-        }
+        // // Find the index of the first symbol layer in the map style.
+        // let firstSymbolId;
+        // for (const layer of layers) {
+        //     if (layer.type === 'symbol') {
+        //         firstSymbolId = layer.id;
+        //         break;
+        //     }
+        // }
 
 
   // SOURCES
@@ -1031,15 +1041,20 @@ map.on('moveend', () => {
         yellow,   // when hover = true
         verydarkgrey       // default
       ],
-      'line-width': 0.5,
+      'line-width': [
+      'case',
+        ['boolean', ['feature-state', 'hover'], false],
+          2, // thickerr highlighted border
+          0.5   // default border 1px
+      ],
       'line-offset': [
       'case',
-      ['boolean', ['feature-state', 'hover'], false],
-        2, // shift only highlighted border inward
-        0   // default border no shift
-      ]
+        ['boolean', ['feature-state', 'hover'], false],
+          2, // shift only highlighted border inward
+          0   // default border no shift
+        ]
     }
-  }, firstSymbolId);
+  }, 'Country-Labels_ne-10m-admin-2-counties');
 
 
   map.on('mousemove', 'state-fills', (e) => {
