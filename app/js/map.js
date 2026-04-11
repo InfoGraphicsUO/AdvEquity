@@ -314,11 +314,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateControlStates() {
     try {
       if (backToStateMapBtn) {
+        console.log("backToStateMapBtn", backToStateMapBtn)
+        console.log("lastDistrictStateFP", lastDistrictStateFP)
+        console.log("lastDistrictStateAbbrev", lastDistrictStateAbbrev)
+
         const hasValidStateInfo = !!(lastDistrictStateFP || lastDistrictStateAbbrev);
         if (mapView === 'district' && hasValidStateInfo) {
+          console.log("enable backToStateMapBtn")
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
         } else {
+          console.log("disable backToStateMapBtn")
           backToStateMapBtn.disabled = true;
           backToStateMapBtn.classList.add('control-disabled');
         }
@@ -441,6 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     map.setLayoutProperty('state-fills', 'visibility', 'visible');
     if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'none');
     if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'none');
+    if (map.getLayer('selected-district')) map.setLayoutProperty('selected-district', 'visibility', 'none');
     // redraw state map with currently selected race field
     if (geojsonCache && stateDataCache && currentRaceField) {
       fillStateMap(map, geojsonCache, stateDataCache, currentRaceField);
@@ -478,6 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       map.setLayoutProperty('district-fills', 'visibility', 'visible');
       map.setLayoutProperty('district-lines', 'visibility', 'visible');
+      map.setLayoutProperty('selected-district', 'visibility', 'visible');
     }
 
     // Load district data and then apply the paint
@@ -586,6 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         map.setLayoutProperty('state-fills', 'visibility', 'none');
         if (map.getLayer('district-fills')) map.setLayoutProperty('district-fills', 'visibility', 'visible');
         if (map.getLayer('district-lines')) map.setLayoutProperty('district-lines', 'visibility', 'visible');
+        map.setLayoutProperty('selected-district', 'visibility', 'visible');
         
         // get district data and filter for the currently viewed state
         getDistrictData('all').then(districtData => {
@@ -767,10 +776,10 @@ $('#full_extentBtn').click(function(){
         // if (features.length && typeof window.onStateClick === 'function') {
         //   window.onStateClick(features[0]);
         // }
-      // } else {
-      //   console.log('ZOOM BASED FULL VIEW');
-      //   $('#agg-selectState').click()
-      } else {
+      } else if (zoomLevel < stateMinZoom){
+        console.log('ZOOM BASED FULL VIEW');
+        $('#agg-selectState').click()
+      } else if (zoomLevel < stateMinZoom){
         console.log('NO ZOOM BASED AGG CHANGE ');
       }
     } else { //don't do zoom-based view if map or "return to state" clicked, reset globals
@@ -782,11 +791,11 @@ $('#full_extentBtn').click(function(){
 
     
 
-    // // updateControlStates() //not working backToStateMapBtn not activating
-    if (currentAgg=='district' && lastDistrictStateFP != null ){
-      console.log("enableing back to state")
-      $('#backToStateMapBtn').removeClass('control-disabled')
-    }
+    updateControlStates() //not working backToStateMapBtn not activating
+    // if (currentAgg=='district' && lastDistrictStateFP != null ){
+    //   console.log("enableing back to state")
+    //   $('#backToStateMapBtn').removeClass('control-disabled')
+    // }
 
     // set bias on search box
     const center = map.getCenter();
@@ -2346,7 +2355,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       map.setFilter('district-lines', ['all']); // or rebuild layer without filter
     } else {
       map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips]);
+     
     }
+    map.setLayoutProperty('district-lines', 'visibility', 'visible');
+    map.setLayoutProperty('selected-district', 'visibility', 'visible');
   }
 
   // feature state color on hover
@@ -2415,6 +2427,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
     applyFeatureStates();
     map.setPaintProperty('district-fills', 'fill-color', currentMapPaint);
+    map.setLayoutProperty('district-lines', 'visibility', 'visible');
     console.log("updated district feature paint")
   }
 
@@ -2589,6 +2602,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   if (typeof setMapView === 'function') setMapView('district');
   const geoId = String(clickedFeature.properties.GEOID);
   console.log(geoId)
+  map.setFilter('selected-district',  ["==", ["get", "GEOID"], geoId] );
 
   // records uses the global cache, not the data passed that is only 2021, could remove that all together to steamline
   const records = districtDataCache.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
@@ -2866,6 +2880,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
         // zoom to the found feature's bounds 
         try {
           const coords = foundFeature.geometry && foundFeature.geometry.coordinates;
+          console.log(foundFeature.id)
           if (coords) {
             const bounds = new mapboxgl.LngLatBounds();
             function extendBounds(coordinates) {
