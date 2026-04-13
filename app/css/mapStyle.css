@@ -40,7 +40,7 @@ body, html {
 
 #map {
   width: 100%;
-  min-height: 300px;
+  min-height: 350px;
   max-height: 600px;
   height: 50vh;
   flex: 0 0 auto; /* fixed at min height, no shrinking */
