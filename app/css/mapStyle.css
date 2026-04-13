@@ -892,11 +892,7 @@ h3 {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.modal-image-wrap {
-  position: relative;
-  display: inline-block;
+  background-color: #f9f9f9;
 }
 
 .modal-close {
@@ -910,10 +906,15 @@ h3 {
   z-index: 10;
 }
 
+.modal-image-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 2rem;
+}
+
 /* Image scaling without stretching */
 .modal-image {
-  margin: 2rem;
-  max-width: 90vw;
+  max-width: 100%;
   max-height: 90vh;
   width: auto;
   height: auto;
