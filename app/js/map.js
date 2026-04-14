@@ -2725,13 +2725,16 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
           <div class="summary-line">
             <span class="summary-label">Schools:</span>
             <span class="summary-value">${formatLegendVal(latest.SCHOOLS)}</span>
-            <span class="spacer"></span>
+            <span class="spacer"></span></span>
+            <span class="summary-label">Average AP Courses (per school):</span>
+            <span class="summary-value">${formatLegendVal(latest.SCH_APCOURSES_MODE)}</span>
+          </div>
 
+          <div class="summary-line">
             <span class="summary-label">Enrollment:</span>
-            <span class="summary-value">${formatLegendVal(latest.ENR)}</span>
-            <span class="summary-subtext">HS: ${formatLegendVal(latest.ENR_HS_TOT)}            <span class="spacer"></span></span>
-
-            <span class="summary-subtext">AP: ${formatLegendVal(latest.ENR_AP)}</span>
+            <span class="summary-label">${formatLegendVal(latest.ENR_HS_TOT)} (High School)
+            <span class="spacer"></span></span>
+            <span class="summary-label">${formatLegendVal(latest.ENR_AP)} (AP)</span>
           </div>
 
           <div class="summary-line">
@@ -2739,12 +2742,9 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
             <span class="summary-value">${formatLegendVal(latest.SCH_FTETEACH_TOT)}</span>
             <span class="spacer"></span>
             
-            <span class="summary-label">S/T Ratio:</span>
+            <span class="summary-label">Student-Teacher Ratio:</span>
             <span class="summary-value">${formatLegendVal(latest.STU_TEACH_RAT)}</span>
-            <span class="spacer"></span>
-            
-            <span class="summary-label">AP Courses (mode):</span>
-            <span class="summary-value">${formatLegendVal(latest.SCH_APCOURSES_MODE)}</span>
+           
           </div>
         </div>
 
