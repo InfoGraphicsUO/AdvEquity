@@ -730,9 +730,28 @@ $('#full_extentBtn').click(function(){
     resizeQueryBar('qbExpanded')
   })
 
+  let previousZoom = map.getZoom();
   map.on('zoomend', function () {
     zoomLevel = map.getZoom()
+    let zoomDirection
     console.log('zoom level: ', zoomLevel.toFixed(3));
+
+    // determine zoom direction (in or out)
+    if (zoomLevel > previousZoom) {
+        console.log("Direction: Zooming IN");
+        zoomDirection = "IN"
+    } else if (zoomLevel < previousZoom) {
+        console.log("Direction: Zooming OUT");
+        zoomDirection = "OUT"
+    } else {
+        console.log("Direction: No change (likely panned)");
+        zoomDirection = "PAN"
+    }
+
+    // 3. Update the tracker for the next event
+    previousZoom = zoomLevel;
+
+
     // resizeQueryBar('qbCollapsed');
     
     console.log('zoomend mapView: ', mapView)
@@ -755,7 +774,7 @@ $('#full_extentBtn').click(function(){
 
 
     // ZOOM BASED VIEW TOGGLE
-    // TODO: fix bug - toggling to district viwe via zoom or button doesn't allow district to open with click.  It needs the state to be openfirst before opening the district
+    // TODO: fix bug - toggling to district view via zoom or button doesn't allow district to open with click.  It needs the state to be openfirst before opening the district
 
     if (!triggeredByMapClick && !triggeredByBackToState) { 
       console.log('ZOOM BASED VIEW CHANGE')
@@ -764,7 +783,7 @@ $('#full_extentBtn').click(function(){
         console.log('ZOOM BASED DISTRICT VIEW');
 
         $('#agg-selectDist').click()
-      } else if (zoomLevel >= stateMinZoom && currentAgg != 'state') {
+      } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoom) {
         // zoom in by mouse, switch to district view
         console.log('ZOOM BASED STATE VIEW');
         $('#agg-selectDist').click()
@@ -777,7 +796,7 @@ $('#full_extentBtn').click(function(){
         // if (features.length && typeof window.onStateClick === 'function') {
         //   window.onStateClick(features[0]);
         // }
-      } else if (zoomLevel < stateMinZoom){
+      } else if (zoomLevel < stateMinZoom && zoomDirection == "OUT"){
         console.log('ZOOM BASED FULL VIEW');
         $('#agg-selectState').click()
       } else if (zoomLevel < stateMinZoom){
@@ -789,10 +808,9 @@ $('#full_extentBtn').click(function(){
     }
 
 
+    //updateControlStates() 
 
-    
 
-    updateControlStates() //not working backToStateMapBtn not activating
     // if (currentAgg=='district' && lastDistrictStateFP != null ){
     //   console.log("enableing back to state")
     //   $('#backToStateMapBtn').removeClass('control-disabled')
@@ -1111,7 +1129,7 @@ map.on('moveend', () => {
         // get new data
         description = `
         <div>
-          <div class="popup-title">${props.STATE_NAME}</div>
+          <div class="popup-title">${props.NAME}</div>
 
           <div class="popup-row">
             <span class="popup-value">
@@ -2031,8 +2049,8 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // Merge selected field's 2021 values into copy
   geojsonCopy.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
-    console.log(f)
-    console.log(stateId)
+    // console.log(f)
+    // console.log(stateId)
 
     // Normalize YEAR before comparing
     const row = stateData[stateId]?.find(d =>
