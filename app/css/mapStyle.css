@@ -873,7 +873,7 @@ h3 {
 
 /* Fullscreen grey background */
 #infoModal{
- position: fixed;
+  position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
   display: none;
@@ -934,16 +934,27 @@ h3 {
 
 #modalTitle {
   font-weight: bolder;
+  font-size: 1.6em;
 }
 
 .modalSubHeader {
   font-weight: bold;
+  font-size: 1.4em;
 }
 
 .modalText{
   align-self: baseline;
+  font-size: 1.25em;
 }
 
 .modalOrange{
-  color: orangered;
+  color: #C0540C;
+}
+
+.modalGreen{
+  color: #5B7A42;
+}
+
+.modalBold {
+  font-weight: bold;
 }
