@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log("enable backToStateMapBtn")
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
+          $('#backToStateMapLabel').html("View " + states[currentStateAbbrev]);
         } else {
           console.log("disable backToStateMapBtn")
           backToStateMapBtn.disabled = true;
@@ -912,11 +913,27 @@ map.on('load', () => {
 
 
   // SOURCES
+  // States - Mapbox hosted state layer
+  // map.addSource('states', {
+  //   type: 'geojson',
+  // data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson',
+
+  //   promoteId: 'STATE_ID'  // use STATE_ID as the unique ID
+  // });
+
+  // States -  JSON in repo
   map.addSource('states', {
     type: 'geojson',
-    data: 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson',
+    data: '/assets/data/geojson/STATE_SCHOOLDIST_Dissolve_Simpl100m.geojson',
     promoteId: 'STATE_ID'  // use STATE_ID as the unique ID
   });
+
+  // States - IGL hosted tileset - dissolved school districts
+  // map.addSource('states', {
+  //   type: 'vector',
+  //   data: 'mapbox://infographics.c0awjtve',
+  //   promoteId: 'GEOID'  // use GEOID as the unique ID
+  // });
 
   // // oregon districts only - JSON in repo
   // map.addSource('oregon_districts', {
@@ -976,13 +993,9 @@ map.on('load', () => {
   id: 'state-fills',
   type: 'fill',
   source: 'states',
+  // 'source-layer': 'STATE_SCHOOLDIST_Dissolve_Sim-bvhhsy', // for IGL tileset
   paint: {
-      'fill-color': [
-        'case',
-        ['boolean', ['feature-state', 'selected'], false],
-        'rgba(1, 1, 0, 1)',                   // <-- solid yellow when selected (hovered)
-        'rgba(0, 0, 0, 0)'          // transparent otherwise
-      ],
+      'fill-color': 'red',
       'fill-opacity': 0.8
     }
   }, 'road-simple');
@@ -1046,24 +1059,24 @@ map.on('moveend', () => {
     id: 'state-borders',
     type: 'line',
     source: 'states',
-    layout: {},
+    // 'source-layer': 'STATE_SCHOOLDIST_Dissolve_Sim-bvhhsy', // for IGL tileset
     paint: {
       'line-color': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
-        yellow,   // when hover = true
+        'yellow',   // when hover = true
         verydarkgrey       // default
       ],
       'line-width': [
       'case',
         ['boolean', ['feature-state', 'hover'], false],
-          2, // thickerr highlighted border
-          0.5   // default border 1px
+          2.5, // thicker highlighted border
+          1   // thinner default border 
       ],
       'line-offset': [
       'case',
         ['boolean', ['feature-state', 'hover'], false],
-          2, // shift only highlighted border inward
+          2.5, // shift only highlighted border inward
           0   // default border no shift
         ]
     }
@@ -1326,7 +1339,7 @@ const popup = new mapboxgl.Popup({
 // Fetch data
 function getStateData(){
 
-  const geojsonUrl = 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson';
+  const geojsonUrl = '../assets/data/geojson/STATE_SCHOOLDIST_Dissolve_Simpl100m.geojson';
   const stateDataUrl = '../assets/data/json/ap_equity_states.json';
 
   return Promise.all([
@@ -2018,6 +2031,8 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // Merge selected field's 2021 values into copy
   geojsonCopy.features.forEach(f => {
     const stateId = f.properties.STATE_ID;
+    console.log(f)
+    console.log(stateId)
 
     // Normalize YEAR before comparing
     const row = stateData[stateId]?.find(d =>
@@ -2033,8 +2048,19 @@ function fillStateMap(map, geojson, stateData, fieldName) {
     //   });
     // }
 
+    // if (stateId === 1) {
+    //   console.log("AL merge check:", {
+    //     stateId,
+    //     row,
+    //     mergedValue: row?.[fieldName],
+    //     geojsonBefore: f.properties[fieldName]
+    //   });
+    // }
+
     if (row && typeof row[fieldName] === 'number') {
+      // console.log("merged")
       f.properties[fieldName] = row[fieldName];
+      // console.log(f.properties[fieldName]);
     }
   });
 
@@ -2124,9 +2150,6 @@ function buildGapPaintDistrict(breaksObj, colors) {
   const getter = ["coalesce", ["feature-state", "value"], -9999];
   return buildGapStep(getter, breaksObj, colors);
 }
-
-
-
 
 
 // not used (?)

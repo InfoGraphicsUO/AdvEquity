@@ -34,13 +34,13 @@ body, html {
   overflow: hidden;
   font-family: jaf-bernino-sans, sans-serif;
   line-height:1.2;
-  max-width: 1000px;
+  max-width: 1164px;
   font-size:90%;
 }
 
 #map {
   width: 100%;
-  min-height: 300px;
+  min-height: 350px;
   max-height: 600px;
   height: 50vh;
   flex: 0 0 auto; /* fixed at min height, no shrinking */
@@ -68,11 +68,11 @@ body, html {
     /* box-shadow: 0 1px 4px rgba(0,0,0,0.2); */
     display: flex;
     gap: 6px;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .mapboxgl-ctrl-bottom-left {
-  bottom: 4.7rem !important;
+  bottom: 2.4rem !important;
 }
 
 #mapWidgetsQuery.qbExpanded {
@@ -81,7 +81,7 @@ body, html {
 }
 #mapWidgetsQuery.qbCollapsed {
   width: var(--collapsed-width);
-  padding: .5rem 1rem;
+  padding: .5rem 2rem;
   /* overflow? */
 }
 
@@ -168,20 +168,20 @@ button:hover {
   border-radius: 4px;
   font-size: 1rem;
   height: 29px;
-  width: 29px;
+  
+
 }
 #mapWidgetsQuery button#full_extentBtn {
-  /* padding: .3rem; */
   font-size: 0.8rem;
-  /* min-width: 5.5rem; */
+  width: 29px;
 }
 #mapWidgetsQuery button#backToStateMapBtn {
-  /* min-width: 6.75rem; */
+  min-width: 29px;
+  padding: 0 0.5rem;
 }
 
 .control-disabled {
-  /* opacity: 0.5; */
-  cursor: not-allowed;
+  display:none !important;
 }
 
 .race-toggle, .aggregation-toggle{
@@ -886,23 +886,21 @@ h3 {
 /* Modal content wrapper */
 .modal-content {
   position: relative;
+  padding-top: 2rem;
   width: 90vw;
   height: 90vh;
-  max-width: 500px;
+  max-width: 800px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-image-wrap {
-  position: relative;
-  display: inline-block;
+  justify-content: baseline;
+  align-items: baseline;
+  background-color: #f9f9f9;
+  gap:1;
 }
 
 .modal-close {
   position: absolute;
-  top: 2rem;
-  right: 3rem;
+  top: 1rem;
+  right: 2rem;
   font-size: 2rem;
   color: black;
   cursor: pointer;
@@ -910,14 +908,38 @@ h3 {
   z-index: 10;
 }
 
+.modal-image-wrap {
+  position: relative;
+  display: inline-block;
+  margin: 2rem;
+}
+
 /* Image scaling without stretching */
 .modal-image {
-  margin: 2rem;
-  max-width: 90vw;
+  max-width: 100%;
   max-height: 90vh;
   width: auto;
   height: auto;
   object-fit: contain;
   border-radius: 4px;
   display: block;
+}
+
+#infoModal hr {
+  align-self: baseline;
+  width: 50%;               
+  height: 2px;              
+  background-image:linear-gradient(to right, green,transparent)
+}
+
+#modalTitle {
+  font-weight: bolder;
+}
+
+.modalSubHeader {
+  font-weight: bold;
+}
+
+.modalText{
+  align-self: baseline;
 }

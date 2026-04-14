@@ -39,15 +39,24 @@
   <!-- modal for info about metric -->
   <div id="infoModal">
     <div class="modal-content">
-      <div class="modal-image-wrap">
         <span class="modal-close">&times;</span>
+        <div id="modalTitle">AP Enrollment Disparity</div>
+        <div class="modalText">Enrollment disparity in AP courses is calulated by analyzing the racial composition of AP courses relative to the racial composition of the district or state.  The higher the value, the greater the disparity.</div>
+        <div class="modal-image-wrap">
+          <img 
+            src="img/classed_gaps_primer.jpg" 
+            alt="Image describing map classification"
+            class="modal-image"
+          >
+        </div>
+        <hr>
+        <div class="modalSubHeader">How it's calculated</div>
+        <div class="modalText">The enrollment disparity in AP courses is calculated by... [asdfghfj more detail here asdlkfj]</div>
+        <div id="disparityFormula">Disparity = % of white students enrolled in AP course / % of minorty students enrolled in AP courses</div>
+        <hr>
+        <div class="modalSubHeader">How it's classed</div>
+        <div class="modalText">The enrollment disparity in AP courses is calculated by... [asdfghfj more detail here asdlkfj]</div>
 
-        <img 
-          src="img/classed_gaps_primer.jpg" 
-          alt="Image describing map classification"
-          class="modal-image"
-        >
-      </div>
     </div>
   </div>
 
@@ -59,85 +68,84 @@
     <div id="search_box_holder" class="search_query"></div>
        
     <div id="mapWidgetsQuery">
-      <button id="full_extentBtn"><i class="fa-regular fa-arrows-maximize fa-xl" title="View full US"></i></button>
-      <button id="backToStateMapBtn"><i class="fa-solid fa-arrow-rotate-left" title="Back to state"></i></button>
-      </div> 
+      <button id="full_extentBtn" title="View full US"><i class="fa-regular fa-arrows-maximize fa-xl" ></i></button>
+      <button id="backToStateMapBtn" title="View state"><span id="backToStateMapLabel"></span></button>
     </div>
-
         
-  <div id="mapWidgetsRace">
-    <div id="legend-note">
-      <div class="legend-label"><i class="fa-regular fa-circle-info"></i></div>
-    </div>
-    <b>AP Enrollment Disparity, 2021</b><br>
-    Data for
-    <div class="race-toggle">
-      <button id="race-selectBlk" class="race-selectBtn active" data-field="ENR_AP_GAP_BL">
-        Black
-      </button>
-      <button id="race-selectHis" class="race-selectBtn" data-field="ENR_AP_GAP_HI">
-        Hispanic
-      </button> 
-    </div> Students<br>
-    <span id="aggregation-label">by</span>
-    <div class="aggregation-toggle">
-      <button id="agg-selectState" class="agg-selectBtn agg-selectBlk active">
-        State
-      </button>
-      <button id="agg-selectDist" class="agg-selectBtn agg-selectBlk">
-        District
-      </button>
-    </div>
+    <div id="mapWidgetsRace">
+      <div id="legend-note">
+        <div class="legend-label"><i class="fa-regular fa-circle-info"></i></div>
+      </div>
+      <b>AP Enrollment Disparity, 2021</b><br>
+      Data for
+      <div class="race-toggle">
+        <button id="race-selectBlk" class="race-selectBtn active" data-field="ENR_AP_GAP_BL">
+          Black
+        </button>
+        <button id="race-selectHis" class="race-selectBtn" data-field="ENR_AP_GAP_HI">
+          Hispanic
+        </button> 
+      </div> Students<br>
+      <span id="aggregation-label">by</span>
+      <div class="aggregation-toggle">
+        <button id="agg-selectState" class="agg-selectBtn agg-selectBlk active">
+          State
+        </button>
+        <button id="agg-selectDist" class="agg-selectBtn agg-selectBlk">
+          District
+        </button>
+      </div>
 
-    <!-- Legend -->
-    <div id="mapLegend" class="map-legend legend-blk">
-      <div class="legend-main">
-        <div class="legend-columns">
-          <!-- Column 1: No data -->
-          <div class="legend-col">
-            <div class="legend-swatch na">No data</div>
-            <div class="legendBreakVal" id="legendMin">min</div>
-          </div>
+      <!-- Legend -->
+      <div id="mapLegend" class="map-legend legend-blk">
+        <div class="legend-main">
+          <div class="legend-columns">
+            <!-- Column 1: No data -->
+            <div class="legend-col">
+              <div class="legend-swatch na">No data</div>
+              <div class="legendBreakVal" id="legendMin">min</div>
+            </div>
 
-          <!-- Column 2: <1 -->
-          <div class="legend-col">
-            <div class="legend-swatch nd">No gap</div>
-            <div class="legendBreakVal" id="legend1">1x</div>
-          </div>
+            <!-- Column 2: <1 -->
+            <div class="legend-col">
+              <div class="legend-swatch nd">No gap</div>
+              <div class="legendBreakVal" id="legend1">1x</div>
+            </div>
 
-          <!-- Column 3: Q1 -->
-          <div class="legend-col">
-            <div class="legend-swatch class-1"></div>
-            <div class="legendBreakVal" id="legendb1">-</div>
-          </div>
+            <!-- Column 3: Q1 -->
+            <div class="legend-col">
+              <div class="legend-swatch class-1"></div>
+              <div class="legendBreakVal" id="legendb1">-</div>
+            </div>
 
-          <!-- Column 4: Q2 -->
-          <div class="legend-col">
-            <div class="legend-swatch class-2"></div>
-            <div class="legendBreakVal" id="legendb2">-</div>
-          </div>
+            <!-- Column 4: Q2 -->
+            <div class="legend-col">
+              <div class="legend-swatch class-2"></div>
+              <div class="legendBreakVal" id="legendb2">-</div>
+            </div>
 
-          <!-- Column 5: Q3 -->
-          <div class="legend-col">
-            <div class="legend-swatch class-3"></div>
-            <div class="legendBreakVal" id="legendb3">-</div>
-          </div>
+            <!-- Column 5: Q3 -->
+            <div class="legend-col">
+              <div class="legend-swatch class-3"></div>
+              <div class="legendBreakVal" id="legendb3">-</div>
+            </div>
 
-          <!-- Column 6: Q4 -->
-          <div class="legend-col">
-            <div class="legend-swatch class-4"></div>
-            <div class="legendBreakVal" id="legendb4">-</div>
-          </div>
+            <!-- Column 6: Q4 -->
+            <div class="legend-col">
+              <div class="legend-swatch class-4"></div>
+              <div class="legendBreakVal" id="legendb4">-</div>
+            </div>
 
-          <!-- Column 7: Q5 -->
-          <div class="legend-col">
-            <div class="legend-swatch class-5 bg"></div>
-            <div class="legendBreakVal" id="legendHigh">high</div>
-          </div>
+            <!-- Column 7: Q5 -->
+            <div class="legend-col">
+              <div class="legend-swatch class-5 bg"></div>
+              <div class="legendBreakVal" id="legendHigh">high</div>
+            </div>
 
-        </div>
-    </div><!-- ! map legend -->
-  </div><!-- ! map widget -->
+          </div> <!-- ! legend-columns -->
+        </div> <!-- ! legend-main -->
+      </div><!-- ! mapLegend -->
+    </div><!-- ! mapWidgetsRace -->
 
 
   
