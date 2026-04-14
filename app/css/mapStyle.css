@@ -68,11 +68,11 @@ body, html {
     /* box-shadow: 0 1px 4px rgba(0,0,0,0.2); */
     display: flex;
     gap: 6px;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .mapboxgl-ctrl-bottom-left {
-  bottom: 4.7rem !important;
+  bottom: 2.4rem !important;
 }
 
 #mapWidgetsQuery.qbExpanded {
@@ -81,7 +81,7 @@ body, html {
 }
 #mapWidgetsQuery.qbCollapsed {
   width: var(--collapsed-width);
-  padding: .5rem 1rem;
+  padding: .5rem 2rem;
   /* overflow? */
 }
 
@@ -168,20 +168,20 @@ button:hover {
   border-radius: 4px;
   font-size: 1rem;
   height: 29px;
-  width: 29px;
+  
+
 }
 #mapWidgetsQuery button#full_extentBtn {
-  /* padding: .3rem; */
   font-size: 0.8rem;
-  /* min-width: 5.5rem; */
+  width: 29px;
 }
 #mapWidgetsQuery button#backToStateMapBtn {
-  /* min-width: 6.75rem; */
+  min-width: 29px;
+  padding: 0 0.5rem;
 }
 
 .control-disabled {
-  /* opacity: 0.5; */
-  cursor: not-allowed;
+  display:none !important;
 }
 
 .race-toggle, .aggregation-toggle{
