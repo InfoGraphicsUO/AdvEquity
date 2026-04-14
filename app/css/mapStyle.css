@@ -943,3 +943,7 @@ h3 {
 .modalText{
   align-self: baseline;
 }
+
+.modalOrange{
+  color: orangered;
+}
