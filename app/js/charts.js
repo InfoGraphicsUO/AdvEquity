@@ -846,14 +846,31 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 }
 
 function toTitleCase(str) {
-  return str.replace(/\w\S*/g, txt => {
-    return txt.length <= 2 ? txt : txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
+  const lowerExceptions = new Set(["of", "and", "let"]);
+  const upperExceptions = new Set(["esd", "sd"]);
 
-    // or substring is Isd 
-    // let "of" be lower
-    //
-  });
+  return str
+    // Title-case each word with exceptions
+    .replace(/\b\w+\b/g, word => {
+      const lower = word.toLowerCase();
+
+      // Lowercase exceptions
+      if (lowerExceptions.has(lower)) return lower;
+
+      // Uppercase exceptions (ESD, SD)
+      if (upperExceptions.has(lower)) return lower.toUpperCase();
+
+      // Number + J pattern (e.g., 4J, 12J)
+      if (/^\d+j$/i.test(word)) return word.toUpperCase();
+
+      // Default Title Case
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    // Capitalize letter after slash or dash
+    .replace(/([\/-])([a-z])/g, (m, sep, char) => sep + char.toUpperCase());
 }
+
+
 
 function formatPercentage(num) {
   if (num * 100 < 1) {
