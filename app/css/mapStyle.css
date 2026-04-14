@@ -886,19 +886,21 @@ h3 {
 /* Modal content wrapper */
 .modal-content {
   position: relative;
+  padding-top: 2rem;
   width: 90vw;
   height: 90vh;
-  max-width: 500px;
+  max-width: 800px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: baseline;
+  align-items: baseline;
   background-color: #f9f9f9;
+  gap:1;
 }
 
 .modal-close {
   position: absolute;
-  top: 2rem;
-  right: 3rem;
+  top: 1rem;
+  right: 2rem;
   font-size: 2rem;
   color: black;
   cursor: pointer;
@@ -921,4 +923,23 @@ h3 {
   object-fit: contain;
   border-radius: 4px;
   display: block;
+}
+
+#infoModal hr {
+  align-self: baseline;
+  width: 50%;               
+  height: 2px;              
+  background-image:linear-gradient(to right, green,transparent)
+}
+
+#modalTitle {
+  font-weight: bolder;
+}
+
+.modalSubHeader {
+  font-weight: bold;
+}
+
+.modalText{
+  align-self: baseline;
 }
