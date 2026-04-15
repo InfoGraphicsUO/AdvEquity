@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'fill-color': noDataColor,
           'fill-opacity': 0.9
         }
-      }, 'County-Lines_ne-10m-admin-2-counties');
+      }, 'state-fills');
     } else {
       map.setLayoutProperty('district-fills', 'visibility', 'visible');
       map.setLayoutProperty('district-lines', 'visibility', 'visible');
@@ -977,7 +977,22 @@ map.on('load', () => {
           'fill-color': 'transparent',
       },
       filter:  ["==", ["get", "GEOID"], -99] // initially, show no districts
-  });
+  }, 'road-simple');
+
+  map.addLayer({
+      id: 'district-lines',
+      type: 'line',
+      source: 'SCHOOLDIST_TL24',
+      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
+      paint: {
+        'line-color': 'transparent',
+        'line-width': 0, // set by feature state
+      },
+      layout: {
+        'line-join': 'round', // Rounds corners at junctions
+        'line-cap': 'round'   // Rounds endpoints
+      }
+  }, 'road-simple');
 
   map.addLayer({
       id: 'selected-district',
@@ -995,17 +1010,7 @@ map.on('load', () => {
       filter:  ["==", ["get", "GEOID"], -99] // initially, show no districts
   }, 'settlement-major-label');
 
-  // map.addLayer({
-  //     id: 'district-lines',
-  //     type: 'line', // or line
-  //     source: 'SCHOOLDIST_TL24', 
-  //     'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l', 
-  //     paint: {
-  //       'line-color': darkGreen,
-  //       'line-width': 1
-  //     }
 
-  // });
 
   map.addLayer({
   id: 'state-fills',
