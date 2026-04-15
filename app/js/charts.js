@@ -189,6 +189,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // State abbreviation and values
   currentAgg = "district"
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown'; // get from first entry
+  lastDistrictStateAbbrev = state_abbrev; // set the global lastDistrictStateAbbrev
   const lastEntry = stateEntry[stateEntry.length - 1]; // whole row. Assume last year = 2021 
 
   // number of students enrolled in AP classes
