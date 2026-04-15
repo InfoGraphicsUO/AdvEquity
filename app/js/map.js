@@ -2625,6 +2625,7 @@ function hideNoGeometryNotice() {
 
 function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   console.log(districtData) // currently, this was just filtered to 2021 for the map
+  
 
 
   // ensure canonical view reflects district view (this will update controls)
@@ -2634,7 +2635,16 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   map.setFilter('selected-district',  ["==", ["get", "GEOID"], geoId] );
 
   // records uses the global cache, not the data passed that is only 2021, could remove that all together to steamline
-  const records = districtDataCache.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
+  // const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
+  console.log(districtDataCache)
+  let records
+  if(districtDataCache === null){
+    records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
+  } else {
+    records = districtDataCache.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
+  }
+  
+  
   const factSheetContainer = document.getElementById("factSheetContainer");
 
   if (!records.length) {
@@ -3109,6 +3119,8 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
           prepareAndDrawSparkline({ canvasId: 'apCoursesChart', legendId: 'apCoursesLegend', title: 'Modal AP courses', field: 'SCH_APCOURSES_MODE', records, years, natLookup, stateAbbrev });
         } catch (e) { console.warn('Could not draw detail sparklines', e); }
       });
+
+      showDistrictFactSheetContainer();
 }
 
 
@@ -3219,6 +3231,19 @@ function resizeQueryBar(targetClass) {
   //           mapButtons.style.display = (targetClass === 'qbExpanded') ? '' : 'none';
   //       });
   //   }
+}
+
+function showDistrictFactSheetContainer(){
+  try { document.querySelector('#infoContainer').style.display = 'none' } catch(e) {}
+  try { 
+      document.querySelector('#factSheetContainer').style.display = 'flex'
+   } catch(e) {}
+}
+
+function hideDistrictFactSheetContainer(){
+  try { document.querySelector('#infoContainer').style.display = 'block' } catch(e) {}
+  try { 
+    document.querySelector('#factSheetContainer').style.display = 'none' } catch(e) {}
 }
 
 function buildCountyPolylabels() {
