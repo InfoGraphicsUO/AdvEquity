@@ -42,34 +42,100 @@
       <span class="modal-close">&times;</span>
       <div class="scrollable-div">
         <div id="modalTitle">AP Enrollment Disparity</div>
-        <div class="modalText">Enrollment disparity in AP courses is calulated by analyzing the racial composition of AP courses relative to the racial composition of the district or state. <span class="modalBold">The higher the value, the greater the disparity.</span></div>
-        <div class="modal-image-wrap">
-          <img 
-            src="img/classed_gaps_primer3.jpg" 
-            alt="Image describing map classification"
-            class="modal-image"
-          >
-        </div>
+        <br>
+          <div class="modalText">Enrollment disparity in AP courses is calulated by analyzing the racial composition of AP courses relative to the racial composition of the district or state. <span class="modalBold">The higher the value, the greater the disparity.</span></div>
+          <div class="modal-image-wrap">
+            <img 
+              src="img/classed_gaps_primer3.jpg" 
+              alt="Image describing map classification"
+              class="modal-image"
+            >
+          </div>
         <hr>
-        <div class="modalSubHeader">How it's calculated</div>
-        <div class="modalText">The disparity value is a ratio of the percent of white students in AP courses to the percent of minority students in AP courses. A proportionally higher percentage of white students yields a value <span class="modalOrange">greater than 1</span>, and a proportionally higher percentage of minority students yields a value <span class="modalGreen">less than 1</span>.</div>
-        <div class="modal-image-wrap">
-          <img 
-            src="img/disparity_fraction.jpg" 
-            alt="Image of the fraction to calculate disparity"
-            class="modal-image"
-          >
-        </div>
+        <details>
+            <summary><div class="modalSubHeader">How it's calculated</div></summary>
+            <br>  
+            <div class="modalText">The disparity value is a ratio of the percent of white students in AP courses to the percent of minority students in AP courses. A proportionally higher percentage of white students yields a value <span class="modalOrange">greater than 1</span>, and a proportionally higher percentage of minority students yields a value <span class="modalGreen">less than 1</span>.</div>
+              <div class="modal-image-wrap">
+                <img 
+                  src="img/disparity_fraction.jpg" 
+                  alt="Image of the fraction to calculate disparity"
+                  class="modal-image"
+                >
+              </div>
+          </details>
         <hr>
-        <div class="modalSubHeader">How it's classed</div>
-        <div class="modalText">Once the disparity values are calculated, the no-data and no-disparity areas are omitted, leaving only areas with a value greater than 1 (areas with disparity). These remaining areas are then sorted into 5 classes by putting 20% of areas into each bin. The 20% of areas with the lowest disparity go into the first class, the 20% of areas with the next lowest disparity go in the second class, and so on.</div>
-        <div class="modal-image-wrap">
-          <img 
-            src="img/classed_bins_primer.jpg" 
-            alt="Image describing data classification"
-            class="modal-image"
-          >
-        </div>
+        <details>
+            <summary><div class="modalSubHeader">How it's classed</div></summary>
+            <br>  
+            <div class="modalText">Once the disparity values are calculated, the no-data and no-disparity areas are omitted, leaving only areas with a value greater than 1 (areas with disparity). These remaining areas are then sorted into 5 classes by putting 20% of areas into each bin. The 20% of areas with the lowest disparity go into the first class, the 20% of areas with the next lowest disparity go in the second class, and so on.</div>
+              <div class="modal-image-wrap">
+                <img 
+                  src="img/classed_bins_primer.jpg" 
+                  alt="Image describing data classification"
+                  class="modal-image"
+                >
+              </div>
+        </details>
+        <hr>
+        <details>
+            <summary><div class="modalSubHeader">Analysis & Metrics</div></summary>
+            <br>  
+            <div class="modalText">All datasets are harmonized to a common district-year structure and aligned using NCES district identifiers where available for the years 2011, 2013, 2015, 2017, 2020, and 2021. School-level information is summarized at the district, state, and national levels to show aggregate AP Enrollment Disparities and compare averages over time. Our metrics are defined as follows: </div>
+              <br>
+              <div class="modalText"><span class="modalBold">High school enrollment: </span>Total enrollment across all high schools (grades 9-12).</div>
+              <br>
+              <div class="modalText"><span class="modalBold">AP participation: </span> Total number of students enrolled in at least one AP course.</div>
+              <br>
+              <div class="modalText"><span class="modalBold">AP participation rate: </span> Percentage of the total enrolled high school students enrolled in at least one AP course.</div>
+              <br>
+              <div class="modalText"><span class="modalBold">Racial/ethnic composition: </span> Percentage of the total enrolled high school students identifying in each racial group. For the purposes of this interactive, we focus on Black and Hispanic students.</div>
+              <br>
+              <div class="modalText"><span class="modalBold">Percent non-white: </span> Percentage of the total enrolled high school students not identifying as white (i.e., 1 – percent white).</div>
+              <br>
+              <div class="modalText"><span class="modalBold">Teachers (FTE): </span> Total number of full-time equivalent teachers.</div>
+              <br>
+              <div class="modalText"><span class="modalBold">Students per teacher: </span> The number of students per full-time equivalent teacher.</div>
+              <br>
+              <div class="modalText"><span class="modalBold">AP course availability: </span> Typical number of AP courses offered by schools in a district/state. This is calculated as the statistical mode of AP courses across schools.</div>
+        </details>
+        <hr>
+        <details>
+            <summary><div class="modalSubHeader">Limitations</div></summary>
+            <br>
+            <div class="modalText">There are several important limitations to this analysis:</div>
+            <br>
+            <ul>
+              <li class="modalText">These measures are designed to highlight systemic differences in AP participation, not individual outcomes. A high disparity does not necessarily indicate an intent or policy that systematically limits access, but it does indicate unequal participation rates that warrant further investigation.</li>
+              <br>
+              <li class="modalText">Aggregated data at the district-level or state-level averages may mask substantial within-district variation.</li>
+              <br>
+              <li class="modalText">A significant number of “No Data” values at the district level limits the interpretability of state-level aggregate values.</li>
+              <br>
+              <li class="modalText">All data are self-reported; schools or districts may report inaccurate or incomplete values.</li>
+              <br>
+              <li class="modalText">Some subgroup estimates may be small or unstable, which may lead to unreliable or inflated disparity metrics.</li>
+              <br>
+              <li class="modalText">In some cases, total district enrollment is used instead of high school enrollment.</li>
+            <ul>
+        </details>
+        <hr>
+        <details>
+          <summary><div class="modalSubHeader">Data Sources</div></summary>
+          <br>
+            <div class="modalText">The data in this interactive is derived from the following:</div>
+            <br>
+            <ul>
+              <li class="modalText"><a class="modalLink" href="https://civilrightsdata.ed.gov/data" target="_blank">Civil Rights Data Collection (CRDC)</a><br>
+              Provides school- and district-level data on student enrollment, AP participation, and demographic breakdowns by race and ethnicity.</li>
+              <br>
+              <li class="modalText"><a class="modalLink" href="https://nces.ed.gov/ccd/files.asp#Fiscal:2,LevelId:5" target="_blank">Common Core of Data (CCD)</a><br>
+              Supplies contextual district information, including enrollment totals and staffing (e.g., teachers).</li>
+              <br>
+              <li class="modalText"><a class="modalLink" href="https://data-nces.opendata.arcgis.com/search?groupIds=6fa82692c79042a8b0e6dd222001a41b&tags=Polygon%2CSchool%2520District" target="_blank">Geographic Boundaries (EDGE / NCES)</a><br>
+              Provides geographic boundaries for districts. For the purposes of this interactive, 2022 boundaries were used. Many districts in NCES datasets do not have a geographic boundary identified; these districts are included in the analysis but do not appear on the map.</li>
+            <ul>
+        </details>
       </div>
     </div>
   </div>
@@ -179,8 +245,8 @@
             <tr>
                 <th>State</th>
                 <th>Modal AP Classes</th>
-                <th>Enrollment Disparity 2011 (x)</th>
-                <th>Enrollment Disparity 2021 (x)</th>
+                <th>Enrollment Disparity 2011</th>
+                <th>Enrollment Disparity 2021</th>
             </tr>
         </thead>
         <tbody id = "us-table-body">

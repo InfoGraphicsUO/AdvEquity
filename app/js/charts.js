@@ -138,6 +138,7 @@ const opphtml = `
   return opphtml;
 }
 
+
 function getOpEstChangeText(val2011Raw, val2021Raw) {
   if (typeof val2011Raw !== 'number' || typeof val2021Raw !== 'number') {
     return 'Data error';
@@ -189,6 +190,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
   // State abbreviation and values
   currentAgg = "district"
   const state_abbrev = stateEntry[0]?.state_abbrev ?? 'Unknown'; // get from first entry
+  lastDistrictStateAbbrev = state_abbrev; // set the global lastDistrictStateAbbrev
   const lastEntry = stateEntry[stateEntry.length - 1]; // whole row. Assume last year = 2021 
 
   // number of students enrolled in AP classes
@@ -227,11 +229,12 @@ function initFactSheet(stateEntry, fips, fieldName) {
     <div class="opportunity-column">
       <h2>Factsheet for <span id="currentState">${states[state_abbrev]}</span></h2>
       <h3>State Summary</h3>
-      <div><span class="summary-label">Number of districts: </span><span id="numDistricts">—</span></div>
-      <div class="summary-label">Modal number of AP classes offered/school</div>
-      <div class="summary-label-2">Average of 2021 school-level modes: <span class='summary-value'> ${modal_school_APCOURSES}</span></div>
-
-      ${oppestHTML}
+      <div class="state-summary-block">
+        <div><span class="summary-label">Number of districts: </span><span id="numDistricts">—</span></div>
+        <div class="summary-label">Modal number of AP classes offered/school</div>
+        <div class="summary-label-2">Average of 2021 school-level modes: <span class='summary-value'> ${modal_school_APCOURSES}</span></div>
+        ${oppestHTML}
+      </div>
         <!-- State composition bar: placed below the opportunity column -->
         <div style="margin-bottom:8px;">
           <h3>State Composition</h3><br>
@@ -248,8 +251,8 @@ function initFactSheet(stateEntry, fips, fieldName) {
             <th>District</th>
             <th class="sorting">Enrollment</th>
             <th class="sorting">Teachers</th>
-            <th class="sorting">Enrollment Disparity 2011 (x)</th>
-            <th class="sorting">Enrollment Disparity 2021 (x)</th>
+            <th class="sorting">Enrollment Disparity 2011</th>
+            <th class="sorting">Enrollment Disparity 2021</th>
           </tr>
         </thead>
 
@@ -326,6 +329,7 @@ function initFactSheet(stateEntry, fips, fieldName) {
       .catch(err => console.error('Error loading district data:', err));
   }
 }
+
 // Pull CSS variables used by the canvas chart utilities
 // const _root = document.documentElement;
 const verydarkgrey = getComputedStyle(_root).getPropertyValue('--verydarkgrey').trim();
@@ -333,7 +337,6 @@ const darkgrey = getComputedStyle(_root).getPropertyValue('--darkgrey').trim();
 const lightgrey = getComputedStyle(_root).getPropertyValue('--lightgrey').trim();
 const green = getComputedStyle(_root).getPropertyValue('--green').trim();
 const darkGreen = getComputedStyle(_root).getPropertyValue('--darkGreen').trim();
-const yellow = getComputedStyle(_root).getPropertyValue('--yellow').trim();
 const almostBlack = getComputedStyle(_root).getPropertyValue('--almostBlack').trim();
 const offwhite = getComputedStyle(_root).getPropertyValue('--offwhite').trim();
 
@@ -424,8 +427,8 @@ function drawCompositionBar(canvasId, data, colors) {
 
     if (width > 86) {
       // console.log(`${key} width: `, width)
-      ctx.fillStyle = "#fff";
-      ctx.font = boldFont;
+      ctx.fillStyle = "#000";
+      ctx.font = baseFont;
       ctx.fillText(`${LABEL_MAP[key]}: ${formatPercentage(value)}`, x + width / 2, startY + barHeight / 2);
       ctx.font = baseFont;
     } else {
@@ -833,8 +836,8 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 }
 
 function toTitleCase(str) {
-  const lowerExceptions = new Set(["of", "and", "let"]);
-  const upperExceptions = new Set(["esd", "sd"]);
+  const lowerExceptions = new Set(["of", "and", "let"]); // force lowercase
+  const upperExceptions = new Set(["esd", "sd", "isd"]); // keep upercase
 
   return str
     // Title-case each word with exceptions
@@ -844,7 +847,7 @@ function toTitleCase(str) {
       // Lowercase exceptions
       if (lowerExceptions.has(lower)) return lower;
 
-      // Uppercase exceptions (ESD, SD)
+      // Uppercase exceptions (e.g. ESD, SD)
       if (upperExceptions.has(lower)) return lower.toUpperCase();
 
       // Number + J pattern (e.g., 4J, 12J)
