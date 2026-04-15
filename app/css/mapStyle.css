@@ -1,14 +1,15 @@
 :root {
   --verydarkgrey: #686c6c;
-  --darkgrey: #a1a1a1;
-  --lightgrey: #bdbfbf;
-  --green: #808c73;
-  --greenBlk: #718168;
-  --yellow: #e5de54;
+  --darkgrey: #a1a1a1;  /* Advanced Equity brand color */
+  --lightgrey: #bdbfbf;   /* Advanced Equity brand color */
+  --green: #808c73;   /* Advanced Equity brand color */
+  /* --greenBlk: #718168; */
+  --yellow: #e5de54;    /* Advanced Equity brand color */
   --yellowHis: #e6da9b;
-  --almostBlack: #303333;
+  --almostBlack: #303333;   /* Advanced Equity brand color */
   --offwhite: #f4f4f4;
-  --darkGreen: #224722;
+  --darkGreen: #5B7A42;   /* hyperlinks, dark green text */
+  --darkOrange: #C0540C;  /* dark orange text */
   --no-data-color: #dddddd;
   --no-disparity-color:#b3ceb1;
   --hispanic-class-1-color:#e3edf7;
@@ -54,7 +55,7 @@ body, html {
 
 #currentRaceDesc{
   font-weight: bold;
-  color: var(--black-class-4-color)
+  color: var(--black-class-4-color);
 }
 
 #mapWidgetsQuery {
@@ -889,7 +890,6 @@ h3 {
   max-width: 900px;
   height: 90vh;
   background: white; 
-   /* background-color: #f9f9f9; put color back when images use this background color */      
   border-radius: 8px;       
   padding: 2rem;            
   overflow: hidden;    
@@ -931,9 +931,9 @@ h3 {
 #infoModal hr {
    border: none;  
   align-self: baseline;
-  width: 50%;               
-  height: 2px;              
-  background-image:linear-gradient(to right, green,transparent)
+  width: 40%;               
+  height: 3px;              
+  background-image:linear-gradient(to right, var(--darkGreen), var(--no-disparity-color))
 }
 
 #modalTitle {
@@ -944,6 +944,7 @@ h3 {
 .modalSubHeader {
   font-weight: bold;
   font-size: 1.5em;
+  display: inline;
 }
 
 .modalText{
@@ -951,12 +952,16 @@ h3 {
   font-size: 1.25em;
 }
 
-.modalOrange{
-  color: #C0540C;
+.modalLink {
+  color: var(--darkGreen);
 }
 
-.modalGreen{
-  color: #5B7A42;
+.modalOrange{
+  color: var(--darkOrange);
+}
+
+.modalGreen {
+  color: var(--darkGreen);
 }
 
 .modalBold {
