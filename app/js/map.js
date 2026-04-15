@@ -751,6 +751,10 @@ $('#full_extentBtn').click(function(){
     // 3. Update the tracker for the next event
     previousZoom = zoomLevel;
 
+    //district filter tells whether the user toggled the view or if it was toggled by a click on a state
+    var districtFilter = map.getFilter('district-fills')
+    if (districtFilter) districtFilter = true;
+    console.log('districtFilter', districtFilter)
 
     // resizeQueryBar('qbCollapsed');
     
@@ -778,15 +782,19 @@ $('#full_extentBtn').click(function(){
 
     if (!triggeredByMapClick && !triggeredByBackToState) { 
       console.log('ZOOM BASED VIEW CHANGE')
-      console.log("currentAgg",currentAgg)
+      console.log("currentAgg: ",currentAgg)
       if (zoomLevel > districtMinZoom) {
         console.log('ZOOM BASED DISTRICT VIEW');
-
-        $('#agg-selectDist').click()
-      } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoom) {
+        activateDistrictView()
+        // $('#agg-selectDist').click()
+      } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoomDirection == 'IN') {
         // zoom in by mouse, switch to district view
         console.log('ZOOM BASED STATE VIEW');
-        $('#agg-selectDist').click()
+        activateDistrictView()
+        // $('#agg-selectDist').click()
+
+
+
 
         //simulate a click on the center of the map - issue with this is that it gets stuck there when trying to zoom in or out
         // // project map center to screen coords, query for a state feature there
@@ -796,7 +804,7 @@ $('#full_extentBtn').click(function(){
         // if (features.length && typeof window.onStateClick === 'function') {
         //   window.onStateClick(features[0]);
         // }
-      } else if (zoomLevel < stateMinZoom && zoomDirection == "OUT"){
+      } else if (zoomLevel < stateMinZoom && zoomDirection == "OUT" &! districtFilter){ //don't switch back if user selected district view
         console.log('ZOOM BASED FULL VIEW');
         $('#agg-selectState').click()
       } else if (zoomLevel < stateMinZoom){
@@ -1281,6 +1289,7 @@ map.on('moveend', () => {
 
     // --- click to zoom and outline ---
   // map.off('click', 'district-fills')
+
   function onDistrictClick(e){
     triggeredByMapClick = true;
     const feat = e; // now just passing a single feature
@@ -1302,7 +1311,7 @@ map.on('moveend', () => {
       }
       extendBounds(feat.geometry.coordinates);
       map.fitBounds(bounds, { padding: 30 });
-      showDistrictFactsheet(feat, currentDistrictData, currentStateAbbrev || "");
+      showDistrictFactsheet(feat, currentDistrictData, window.currentStateAbbrev || "");
       hideNoGeometryNotice();
     // }
   }
