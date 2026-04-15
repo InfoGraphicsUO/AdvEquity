@@ -47,6 +47,11 @@ body, html {
   flex: 0 0 auto; /* fixed at min height, no shrinking */
   background-color: var(--verydarkgrey);
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: jaf-bernino-sans, sans-serif;
+}
+
+.mapboxgl-map{
+  font-family: jaf-bernino-sans, sans-serif !important;
 }
 
 /* .mapboxgl-ctrl-top-left{
