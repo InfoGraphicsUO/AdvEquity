@@ -330,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function activateDistrictView() {
+    console.log('activateDistrictView')
     //note and display state level view
     currentAgg = 'district';
     // $(quantLabel).text("district")
@@ -338,28 +339,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof setMapView === 'function') setMapView('district');
     if (typeof updateControlStates === 'function') updateControlStates();
 
+    // zoom in if needed due to data cap
+    if (map.getZoom() < 3.0) map.setZoom(3.0)
 
     // $(quantLabel).text("district")
     map.setLayoutProperty('state-fills', 'visibility', 'none');
 
-    // Create the layer ONLY if it doesn't exist
-    if (!map.getLayer('district-fills')) {
-      map.addLayer({
-        id: 'district-fills',
-        type: 'fill',
-        source: 'SCHOOLDIST_TL24',
-        'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-        paint: {
-          'fill-color': noDataColor,
-          'fill-opacity': 0.9
-        }
-      }, 'state-fills');
-    } else {
-      map.setLayoutProperty('district-fills', 'visibility', 'visible');
-      map.setLayoutProperty('district-lines', 'visibility', 'visible');
-      map.setLayoutProperty('district-lines-hover', 'visibility', 'visible');
-      map.setLayoutProperty('selected-district', 'visibility', 'visible');
-    }
+    map.setLayoutProperty('district-fills', 'visibility', 'visible');
+    map.setLayoutProperty('district-lines', 'visibility', 'visible');
+    map.setLayoutProperty('district-lines-hover', 'visibility', 'visible');
+    map.setLayoutProperty('selected-district', 'visibility', 'visible');
 
     // Load district data and then apply the paint
     getDistrictData('all').then(districtData => {
