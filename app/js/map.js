@@ -449,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     map.setLayoutProperty('district-fills', 'visibility', 'none');
     map.setLayoutProperty('district-lines', 'visibility', 'none')
     if (map.getLayer('selected-district')) map.setLayoutProperty('selected-district', 'visibility', 'none');
+
     // redraw state map with currently selected race field
     if (geojsonCache && stateDataCache && currentRaceField) {
       fillStateMap(map, geojsonCache, stateDataCache, currentRaceField);
@@ -2157,6 +2158,8 @@ function fillStateMap(map, geojson, stateData, fieldName) {
       legend.removeClass('legend-blk').addClass('legend-his');
       map.setPaintProperty('state-fills', 'fill-color', paintSet.hispanic);
     }
+
+    hideDistrictFactSheetContainer();
 
   } else {
     console.warn("Layer 'state-fills' does not exist yet");
