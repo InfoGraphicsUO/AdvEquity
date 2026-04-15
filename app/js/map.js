@@ -528,26 +528,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // });
 
   const searchBox = new MapboxSearchBox();
-  searchBox.placeholder = 'Zoom to a location...';
     searchBox.accessToken = mapboxgl.accessToken
+    searchBox.mapboxgl = mapboxgl;
     searchBox.options = {
         types: 'city,district,region,place,locality',
         proximity: map.getCenter(), // bias to current map center 
         country: 'US', // limit to United States
     };
-    searchBox.mapboxgl = mapboxgl;
     searchBox.componentOptions = { allowReverse: true, flipCoordinates: true };
     console.log('loaded search box')
-    // searchBox.addEventListener('onretrieve', (event) => {
-    //   console.log('set to district view')
-    //   window.setMapView('district')
-    // })
-    //map.addControl(searchBox, 'top-right');
     document.getElementById('search_box_holder').appendChild(searchBox);
-    searchBox.bindMap(map);
-
-
-
+    searchBox.bindMap(map);    
+    searchBox.placeholder = 'Zoom to a location...';
+    searchBox.marker = {
+      color: almostBlack,
+      draggable: true
+    };
 
 $('#full_extentBtn').click(function(){
     districtPopup.remove()
