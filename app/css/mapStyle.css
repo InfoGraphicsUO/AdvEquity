@@ -45,6 +45,7 @@ body, html {
   max-height: 600px;
   height: 50vh;
   flex: 0 0 auto; /* fixed at min height, no shrinking */
+  background-color: var(--verydarkgrey);
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -97,12 +98,20 @@ body, html {
     top: 5px;
     left: 10px;
     z-index: 10;
-    background: #f5f5f5de; /* a little transparent  */
+    background: #fdfdfdde; /* a little transparent  */
     padding: 8px 12px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     /* display: flex; */
     gap: 6px;
+    line-height: 1.35;
+}
+
+#mapWidgetsRace > b {
+  font-size: 1.08rem;
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  padding-right: 1.4rem;
 }
 
 
@@ -147,7 +156,7 @@ button:hover {
 #search_box_holder{
     position: absolute;
     top: 0;
-    right: 0;
+    right: 10px;
     z-index: 11;
     /* background: var(--lightgrey); */
     padding: 8px 2px 0 10px;
@@ -189,7 +198,7 @@ button:hover {
   display: inline-flex;
   border-radius: 4px;
   overflow: visible;
-  margin-bottom: 2px;
+  margin: 4px 0;
 }
 
 #aggregation-label{
@@ -304,6 +313,45 @@ button:hover {
 }
 
 /* District Summary - (Teachers, Enrollment, AP Enrollment, etc.) */
+.state-summary-block {
+  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4rem;
+}
+
+.state-summary-block .summary-label,
+.state-summary-block .summary-label-2,
+.state-summary-block .summary-value,
+.state-summary-block #numDistricts,
+.state-summary-block .popup-subheader,
+.state-summary-block .popup-label,
+.state-summary-block .popup-value,
+.state-summary-block .popup-value-strong {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.state-summary-block .summary-label,
+.state-summary-block .summary-label-2,
+.state-summary-block .summary-value,
+.state-summary-block #numDistricts,
+.state-summary-block .popup-subheader,
+.state-summary-block .popup-label,
+.state-summary-block .popup-value {
+  font-weight: 400;
+}
+
+.state-summary-block .popup-value-strong {
+  font-weight: 600;
+  color: #555;
+}
+
+.state-summary-block .popup-row.has-arrow .popup-label {
+  font-weight: 600;
+}
+
 .summary-line {
   display: flex;
   flex-wrap: wrap;
@@ -317,23 +365,23 @@ button:hover {
 .summary-label {
   font-family: jaf-bernino-sans-narrow, sans-serif;
   /* font-weight: 400; */
-  font-size: 1rem;
+  font-size: 0.95rem;
   /* color: #666; */
 }
 
 .summary-label-2 {
   font-family: jaf-bernino-sans-narrow, sans-serif;
   /* font-weight: 400; */
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   /* color: #666; */
-  margin: 0 0 0.5rem 1rem;
+  margin: 0 0 0.5rem 0.75rem;
 }
 
 .summary-value {
   /* font-weight: 500; */
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #111;
-  font-family: sans-serif; /* Cleaner for numbers */
+  font-family: inherit;
 }
 
 .summary-subtext {
@@ -577,8 +625,8 @@ h3 {
   font-family: jaf-bernino-sans, sans-serif;
   font-size: 13px;
   pointer-events: none !important;
-  padding: 8px 10px;
-  line-height: 1.35;
+  padding: 6px 8px;
+  line-height: 1.25;
   max-width: 220px;        /* keeps tooltip narrow */
 }
 
@@ -586,7 +634,7 @@ h3 {
 .popup-title {
   font-weight: 700;
   font-size: 14px;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
   text-align: center;      /* center title */
   color: var(--almostBlack, #222);
 }
@@ -596,8 +644,8 @@ h3 {
   display: flex;
   flex-wrap: wrap;         /* allows shrinking */
   justify-content: center; /* centers content */
-  gap: 4px 6px;            /* spacing between label/value */
-  margin: 3px 0;
+  gap: 2px 4px;            /* spacing between label/value */
+  margin: 1px 0;
   text-align: center;      /* fallback centering */
 }
 /* used for gap esimates in factsheet */
@@ -610,6 +658,7 @@ h3 {
   color: #555;
   font-weight: 600;
   font-size: 12px;
+  line-height: 1.15;
 }
 
 /* Value */
@@ -617,6 +666,7 @@ h3 {
   color: #000;
   font-weight: 500;
   font-size: 12px;
+  line-height: 1.15;
   word-break: break-word;  /* prevents overflow */
 }
 
@@ -685,11 +735,11 @@ h3 {
 
 .map-legend {
   /* display: flex; */
-  margin-top: 4px;
+  margin-top: 8px;
   flex-direction: column;
   font-size: 13px;
   font-family: sans-serif;
-  gap: 4px;
+  gap: 6px;
   width: 100%; 
 }
 
@@ -698,7 +748,7 @@ h3 {
   display: flex;
   flex-direction: column; /* stack chips, labels, breaks */
   width: 100%;             /* fill parent width */
-  gap: 4px;
+  gap: 6px;
 }
 
 .legend-swatch {
@@ -714,6 +764,7 @@ h3 {
 .legend-columns {
   display: flex;
   width: 100%;
+  gap: 2px;
 }
 
 .legend-col {
@@ -730,7 +781,7 @@ h3 {
 
 .legendBreakVal {
   font-size: 0.65rem;
-  margin-top: 2px;
+  margin-top: 4px;
   position: relative;
   left: 50%;    /* cetner between bins */           
 }

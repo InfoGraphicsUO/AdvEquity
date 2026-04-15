@@ -7,6 +7,12 @@
   line-height: 1;
 }
 
+#us-table,
+#district-table,
+.dataTables_wrapper {
+  font-family: jaf-bernino-sans, sans-serif;
+}
+
 .row {
   display: flex;
   border-bottom: 1px solid #ccc;
@@ -129,7 +135,7 @@
 
 /* Table headers */
 .dt-column-title, #district-table thead th {
-  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-family: jaf-bernino-sans, sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
   /* text-transform: uppercase; */
@@ -139,7 +145,7 @@
 
 /* Table body cells */
 #district-table tbody td {
-  font-family: sans-serif;     /* matches numeric values everywhere else */
+  font-family: jaf-bernino-sans, sans-serif;
   font-size: 0.85rem;
   color: var(--almostBlack);
   line-height: 1.2;
