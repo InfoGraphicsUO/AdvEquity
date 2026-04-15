@@ -833,8 +833,8 @@ function drawSimpleLegend(containerId, labelMap, colors = {}, series = {}) {
 }
 
 function toTitleCase(str) {
-  const lowerExceptions = new Set(["of", "and", "let"]);
-  const upperExceptions = new Set(["esd", "sd"]);
+  const lowerExceptions = new Set(["of", "and", "let"]); // force lowercase
+  const upperExceptions = new Set(["esd", "sd", "isd"]); // keep upercase
 
   return str
     // Title-case each word with exceptions
@@ -844,7 +844,7 @@ function toTitleCase(str) {
       // Lowercase exceptions
       if (lowerExceptions.has(lower)) return lower;
 
-      // Uppercase exceptions (ESD, SD)
+      // Uppercase exceptions (e.g. ESD, SD)
       if (upperExceptions.has(lower)) return lower.toUpperCase();
 
       // Number + J pattern (e.g., 4J, 12J)
