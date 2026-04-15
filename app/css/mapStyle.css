@@ -883,35 +883,38 @@ h3 {
   display: none;
 }
 
-/* Modal content wrapper */
 .modal-content {
   position: relative;
-  padding-top: 2rem;
   width: 90vw;
+  max-width: 900px;
   height: 90vh;
-  max-width: 800px;
-  display: flex;
-  justify-content: baseline;
-  align-items: baseline;
-  background-color: #f9f9f9;
-  gap:1;
+  background: white; 
+   /* background-color: #f9f9f9; put color back when images use this background color */      
+  border-radius: 8px;       
+  padding: 2rem;            
+  overflow: hidden;    
+}
+
+.scrollable-div {
+  height: calc(100% - 2rem);
+  overflow-y: auto;
+  padding-right: 1rem; /* avoids text under scrollbar */
 }
 
 .modal-close {
   position: absolute;
-  top: 1rem;
-  right: 2rem;
+  top: 0.5rem;
+  right: 1rem;
   font-size: 2rem;
-  color: black;
   cursor: pointer;
-  user-select: none;
   z-index: 10;
+  color: black;
 }
 
 .modal-image-wrap {
-  position: relative;
-  display: inline-block;
-  margin: 2rem;
+  display: block;
+  margin: 2rem auto;
+  max-width: 100%;
 }
 
 /* Image scaling without stretching */
@@ -926,6 +929,7 @@ h3 {
 }
 
 #infoModal hr {
+   border: none;  
   align-self: baseline;
   width: 50%;               
   height: 2px;              
