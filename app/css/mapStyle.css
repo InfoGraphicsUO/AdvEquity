@@ -944,6 +944,7 @@ h3 {
 .modalSubHeader {
   font-weight: bold;
   font-size: 1.5em;
+  display: inline;
 }
 
 .modalText{
