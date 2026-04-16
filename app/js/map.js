@@ -214,6 +214,23 @@ document.addEventListener('DOMContentLoaded', () => {
   setMapView('full');
   const raceSelectionButton = document.querySelectorAll('.race-selectBtn');
   const aggSelectionButton = document.querySelectorAll('.agg-selectBtn');
+  const mapLoadingOverlay = document.getElementById('mapLoadingOverlay');
+
+  function setMapToggleLoadingState(isLoading) {
+    [...raceSelectionButton, ...aggSelectionButton].forEach(btn => {
+      btn.disabled = isLoading;
+    });
+  }
+
+  function showMapToggleLoading() {
+    if (mapLoadingOverlay) mapLoadingOverlay.style.display = 'flex';
+    setMapToggleLoadingState(true);
+  }
+
+  function hideMapToggleLoading() {
+    if (mapLoadingOverlay) mapLoadingOverlay.style.display = 'none';
+    setMapToggleLoadingState(false);
+  }
   // flag to determine whether user interaction has happened (don't sort on initial load)
   let userHasInteracted = false;
   // track aggregation selection separately from canonical map view
@@ -224,8 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // update map based on race selection from gap chart picker
   window.updateMapForRace = function(raceCode) {
-    const loadingOverlay = document.getElementById('mapLoadingOverlay');
-    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    showMapToggleLoading();
 
     const fieldName = raceCode === 'BL' ? 'ENR_AP_GAP_BL' : 'ENR_AP_GAP_HI';
     currentRaceField = fieldName;
@@ -270,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fillStateMap(map, geojsonCache, stateDataCache, fieldName);
       
       map.once('idle', () => {
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        hideMapToggleLoading();
       });
     } else if (mapView === 'state' || mapView === 'district') {
       map.setLayoutProperty('state-fills', 'visibility', 'none');
@@ -293,17 +309,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         map.once('idle', () => {
-          if (loadingOverlay) loadingOverlay.style.display = 'none';
+          hideMapToggleLoading();
         });
       }).catch(err => {
         console.error('Error updating map for race:', err);
-        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        hideMapToggleLoading();
       });
     }
   };
 
   function activateStateView(){
     console.log("activateStateView")
+    showMapToggleLoading();
     //note and display state level view
     currentAgg = 'state';
     // $(quantLabel).text("state")
@@ -327,10 +344,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // update control states if function exists
     if (typeof updateControlStates === 'function') updateControlStates();
+
+    map.once('idle', () => {
+      hideMapToggleLoading();
+    });
   }
 
   function activateDistrictView() {
     console.log('activateDistrictView')
+    showMapToggleLoading();
     //note and display state level view
     currentAgg = 'district';
     // $(quantLabel).text("district")
@@ -359,6 +381,13 @@ document.addEventListener('DOMContentLoaded', () => {
         'all',
         currentRaceField 
       );
+
+      map.once('idle', () => {
+        hideMapToggleLoading();
+      });
+    }).catch(err => {
+      console.error('Error updating map for aggregation:', err);
+      hideMapToggleLoading();
     });
   }
 
@@ -366,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // data
   aggSelectionButton.forEach(btn => {
     btn.addEventListener('click', function() {
+      showMapToggleLoading();
       // Remove active class from all buttons
       aggSelectionButton.forEach(b => b.classList.remove('active'));
 
@@ -385,8 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   raceSelectionButton.forEach(btn => {
     btn.addEventListener('click', function() {
-      const loadingOverlay = document.getElementById('mapLoadingOverlay');
-      if (loadingOverlay) loadingOverlay.style.display = 'flex';
+      showMapToggleLoading();
       
       // Remove active class from all buttons
       raceSelectionButton.forEach(b => b.classList.remove('active'));
@@ -450,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.currentStateAbbrev = null;
         
         map.once('idle', () => {
-          if (loadingOverlay) loadingOverlay.style.display = 'none';
+          hideMapToggleLoading();
         });
       } else if (mapView === 'state' || mapView === 'district') {
         //zoomed into a state showing districts OR clicked on a district
@@ -482,8 +511,11 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           
           map.once('idle', () => {
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            hideMapToggleLoading();
           });
+        }).catch(err => {
+          console.error('Error updating map for race:', err);
+          hideMapToggleLoading();
         });
       }
 
@@ -1964,6 +1996,9 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // --------------------------------------------------
   // update legend values
   // select the current breaks object based on the field
+  const legend = $('#mapLegend');
+  legend.removeClass('legend-single-district legend-no-district');
+
   const breaks =
     fieldName === 'ENR_AP_GAP_BL'
       ? breaksSet.ENR_AP_GAP_BL
@@ -2033,8 +2068,6 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // --------------------------------------------------
   // Update map coloring
   if (map.getLayer('state-fills')) {
-    const legend = $('#mapLegend');
-
     if (fieldName === 'ENR_AP_GAP_BL') { // black
       console.log('Using BLACK state paint');
       legend.removeClass('legend-his').addClass('legend-blk');
@@ -2164,6 +2197,9 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   console.log('fillDistrictMap:', fieldName);
   currentDistrictData = districtData;
 
+  const filtered = districtData.filter(d => Number(String(d.YEAR).trim()) === targetYear);
+  const districtCount = filtered.length;
+
   // --- get district paints and breaks ---
   const natPaintSet  = paints.District_National_Breaks;
   const statePaintSet  = paints.District_State_Breaks;
@@ -2268,60 +2304,25 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   currentMapPaint = convertPaintToFeatureState(basePaint, fieldName);
 
   if (!breaks) {
+    if (districtCount < 1) {
+      updateDistrictLegendDisplay(fieldName, {
+        min: 0,
+        b1: 0,
+        b2: 0,
+        b3: 0,
+        b4: 0,
+        b5: 0,
+        max: 0
+      }, districtCount);
+    }
     console.warn('District breaks missing for', fieldName);
     return;
   } else {
     console.log("breaks", breaks)
   }
 
-    // --- update legend ---
-  if(breaks.b1 == breaks.b2){
-    console.log("handle only one legend class")
-    if(breaks.b1 > 1){ // one class with disparity
-          // option 1: blanks
-          $('#legendMin').html("&nbsp;");
-          $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
-          $('#legendb2').html("&nbsp;");
-          $('#legendb3').html("&nbsp;");
-          $('#legendb4').html("&nbsp;");
-          $('#legendb5').html("&nbsp;");
-          $('#legendHigh').html("&nbsp;");
-          // option 2: hyphens
-          // $('#legendMin').text(formatLegendVal(""));
-          // $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
-          // $('#legendb2').text(formatLegendVal(""));
-          // $('#legendb3').text(formatLegendVal(""));
-          // $('#legendb4').text(formatLegendVal(""));
-          // $('#legendb5').text(formatLegendVal(""));
-          // $('#legendHigh').text(formatLegendVal(""));
-
-      } else if (breaks.b1 < 1){ // one class NO disparity
-        // option 1: blanks
-          $('#legendMin').text(formatLegendVal(breaks.min)+'x');
-          $('#legendb1').html("&nbsp;");
-          $('#legendb2').html("&nbsp;");
-          $('#legendb3').html("&nbsp;");
-          $('#legendb4').html("&nbsp;");
-          $('#legendb5').html("&nbsp;");
-          $('#legendHigh').html("&nbsp;");
-          // option 2: hyphens
-          // $('#legendMin').text(formatLegendVal(breaks.b1)+'x');
-          // $('#legendb1').text(formatLegendVal(""));
-          // $('#legendb2').text(formatLegendVal(""));
-          // $('#legendb3').text(formatLegendVal(""));
-          // $('#legendb4').text(formatLegendVal(""));
-          // $('#legendb5').text(formatLegendVal(""));
-          // $('#legendHigh').text(formatLegendVal(""));
-      }
-  } else { // more than one class
-      $('#legendMin').text(formatLegendVal(breaks.min)+'x');
-      $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
-      $('#legendb2').text(formatLegendVal(breaks.b2)+'x');
-      $('#legendb3').text(formatLegendVal(breaks.b3)+'x');
-      $('#legendb4').text(formatLegendVal(breaks.b4)+'x');
-      $('#legendb5').text(formatLegendVal(breaks.b5)+'x');
-      $('#legendHigh').text(formatLegendVal(breaks.max)+'x');
-  }
+  // --- update legend ---
+  updateDistrictLegendDisplay(fieldName, breaks, districtCount);
 
   // $(quantLabel).text("district")
 
@@ -2330,7 +2331,6 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
         .toggleClass('legend-his', fieldName !== 'ENR_AP_GAP_BL');
 
   // --- filter to target year and build LEAID -> value map ---
-  const filtered = districtData.filter(d => Number(String(d.YEAR).trim()) === targetYear);
   const valueMap = {};
   for (const d of filtered) {
     const raw = d[fieldName];
@@ -3105,6 +3105,48 @@ function formatLegendVal(v) {
         : { minimumFractionDigits: 1, maximumFractionDigits: 1 };
 
     return new Intl.NumberFormat(undefined, options).format(v);
+}
+
+function formatLegendValTwoDecimals(v) {
+    if (typeof v !== 'number' || !isFinite(v)) {
+        return '—';
+    }
+
+    return new Intl.NumberFormat(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(v);
+}
+
+function updateDistrictLegendDisplay(fieldName, breaks, districtCount) {
+  const legend = $('#mapLegend');
+  const isBlack = fieldName === 'ENR_AP_GAP_BL';
+  const allBreakLabels = $('#legendMin, #legend1, #legendb1, #legendb2, #legendb3, #legendb4, #legendb5, #legendHigh');
+
+  legend.toggleClass('legend-blk', isBlack)
+        .toggleClass('legend-his', !isBlack)
+        .toggleClass('legend-single-district', districtCount === 1)
+        .toggleClass('legend-no-district', districtCount < 1);
+
+  if (districtCount < 1) {
+    allBreakLabels.html('&nbsp;');
+    return;
+  }
+
+  if (districtCount === 1) {
+    allBreakLabels.html('&nbsp;');
+    $('#legendMin').text(`0.00x`);
+    $('#legendHigh').text(`${formatLegendValTwoDecimals(breaks.max)}x`);
+    return;
+  }
+
+  $('#legendMin').text(`${formatLegendVal(breaks.min)}x`);
+  $('#legendb1').text(`${formatLegendVal(breaks.b1)}x`);
+  $('#legendb2').text(`${formatLegendVal(breaks.b2)}x`);
+  $('#legendb3').text(`${formatLegendVal(breaks.b3)}x`);
+  $('#legendb4').text(`${formatLegendVal(breaks.b4)}x`);
+  $('#legendb5').text(`${formatLegendVal(breaks.b5)}x`);
+  $('#legendHigh').text(`${formatLegendVal(breaks.max)}x`);
 }
 
 

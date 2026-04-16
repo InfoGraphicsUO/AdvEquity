@@ -241,6 +241,18 @@ button:hover {
   background-color: rgba(42, 42, 42, 0.1);
 }
 
+/* Loading/disabled state for the race and aggregation toggles */
+.race-selectBtn:disabled,
+.agg-selectBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.race-selectBtn:disabled:hover,
+.agg-selectBtn:disabled:hover {
+  background-color: transparent;
+}
+
 /* ACTIVE BUTTON — no border, but keep outer corners rounded */
 .race-selectBtn.active,
 .agg-selectBtn.active {
@@ -280,6 +292,53 @@ button:hover {
 .agg-selectHis.agg-selectBtn.active {
   background-color: var(--hispanic-class-4-color);
   color: var(--offwhite);
+}
+
+#race-selectBlk.race-selectBtn.active:disabled,
+.agg-selectBlk.agg-selectBtn.active:disabled,
+#race-selectHis.race-selectBtn.active:disabled,
+.agg-selectHis.agg-selectBtn.active:disabled {
+  cursor: not-allowed;
+}
+
+#race-selectBlk.race-selectBtn.active:disabled,
+.agg-selectBlk.agg-selectBtn.active:disabled {
+  background-color: var(--black-class-4-color);
+  color: var(--almostBlack);
+}
+
+#race-selectHis.race-selectBtn.active:disabled,
+.agg-selectHis.agg-selectBtn.active:disabled {
+  background-color: var(--hispanic-class-4-color);
+  color: var(--offwhite);
+}
+
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-1,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-2,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-3,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-4,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-5 {
+  background: var(--black-class-3-color);
+}
+
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-1,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-2,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-3,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-4,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-5 {
+  background: var(--hispanic-class-3-color);
+}
+
+#mapLegend.legend-no-district .legend-swatch.class-1,
+#mapLegend.legend-no-district .legend-swatch.class-2,
+#mapLegend.legend-no-district .legend-swatch.class-3,
+#mapLegend.legend-no-district .legend-swatch.class-4,
+#mapLegend.legend-no-district .legend-swatch.class-5 {
+  background: var(--no-data-color);
+}
+
+#mapLegend.legend-no-district .legendBreakVal {
+  visibility: hidden;
 }
 
 /* Shared styles for the lower containers */
