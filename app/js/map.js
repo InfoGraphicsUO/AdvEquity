@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateControlStates() {
     try {
-      if (backToStateMapBtn) {
-        console.log("backToStateMapBtn", backToStateMapBtn)
+      if (!backToStateMapBtn.disabled) {
+        console.log("backToStateMapBtn")
         console.log("lastDistrictStateFP", lastDistrictStateFP)
         console.log("lastDistrictStateAbbrev", lastDistrictStateAbbrev)
 
@@ -1212,7 +1212,7 @@ map.on('moveend', () => {
     // update canonical map view to 'state' and refresh controls
     if (typeof setMapView === 'function') setMapView('state');
   } // end onStateClick
-  // window.onStateClick = onStateClick;
+  window.onStateClick = onStateClick;
 
     // --- click to zoom and outline ---
   // map.off('click', 'district-fills')
@@ -2057,32 +2057,43 @@ function fillStateMap(map, geojson, stateData, fieldName) {
 function buildGapStep(getter, breaks, colors) {
   const { b1, b2, b3, b4, max,min } = breaks;
 
-  if(min < 1){
-  return [
-    "step",
-    getter,
-    colors.noData,          // < min
-    min,  colors.noDisparity, // min ≤ value < 1
-    1.0,  colors.class1,      // 1 ≤ value < b1
-    b1,   colors.class2,      // b1 ≤ value < b2
-    b2,   colors.class3,      // b2 ≤ value < b3
-    b3,   colors.class4,      // b3 ≤ value < b4
-    b4,   colors.class5       // ≥ b4 (and < next stop, if any)
-  ];
-} else {
-  // break values must be in order. So, if not values < 1, don't have a no-disparity bin
-  return [
-    "step",
-    getter,
-    colors.noData,          // < min
-    min,  colors.class1,      // min ≤ value < b1
-    b1,   colors.class2,      // b1 ≤ value < b2
-    b2,   colors.class3,      // b2 ≤ value < b3
-    b3,   colors.class4,      // b3 ≤ value < b4
-    b4,   colors.class5       // ≥ b4 (and < next stop, if any)
-  ];
+  if(min == b1){
+    if(min > 1){ //"ONE PAINT CLASS, has disparity"
+      console.log("ONE PAINT CLASS, has disparity")
+      return colors.class1 // class1 is only color
 
-}
+    } else if(min < 1){ "ONE PAINT CLASS, NO disparity"
+      console.log("ONE PAINT CLASS, NO disparity")
+      return colors.noDisparity // noDisparity is only color
+ 
+
+    }
+  } else if(min < 1){
+    return [
+      "step",
+      getter,
+      colors.noData,          // < min
+      min,  colors.noDisparity, // min ≤ value < 1
+      1.0,  colors.class1,      // 1 ≤ value < b1
+      b1,   colors.class2,      // b1 ≤ value < b2
+      b2,   colors.class3,      // b2 ≤ value < b3
+      b3,   colors.class4,      // b3 ≤ value < b4
+      b4,   colors.class5       // ≥ b4 (and < next stop, if any)
+    ];
+  } else {
+    // break values must be in order. So, if not values < 1, don't have a no-disparity bin
+    return [
+      "step",
+      getter,
+      colors.noData,          // < min
+      min,  colors.class1,      // min ≤ value < b1
+      b1,   colors.class2,      // b1 ≤ value < b2
+      b2,   colors.class3,      // b2 ≤ value < b3
+      b3,   colors.class4,      // b3 ≤ value < b4
+      b4,   colors.class5       // ≥ b4 (and < next stop, if any)
+    ];
+
+  }
 
 
 
@@ -2198,14 +2209,17 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   if (!showAllStates) {
     // We are zoomed into a single state → use state‑specific breaks
     console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
-    console.log(breaksByAggregation.District_State_Breaks);
+    console.log(breaksByAggregation.District_State_Breaks); // all break data
     console.log("fieldName", fieldName);
 
     breaks = breaksByAggregation.District_State_Breaks[state_abbrev]?.[fieldName];
     console.log(breaks);
 
     if (breaks) {
-      console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
+      if(breaks.b1==breaks.b2){
+          console.log("only one class")
+      }
+
       paintSet = buildGapPaintDistrict(
         breaks,
         fieldName === 'ENR_AP_GAP_BL' ? blackColors : hispanicColors
@@ -2261,11 +2275,53 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   }
 
     // --- update legend ---
-  $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
-  $('#legendb2').text(formatLegendVal(breaks.b2)+'x');
-  $('#legendb3').text(formatLegendVal(breaks.b3)+'x');
-  $('#legendb4').text(formatLegendVal(breaks.b4)+'x');
-  $('#legendHigh').text(formatLegendVal(breaks.max)+'x');
+  if(breaks.b1 == breaks.b2){
+    console.log("handle only one legend class")
+    if(breaks.b1 > 1){ // one class with disparity
+          // option 1: blanks
+          $('#legendMin').html("&nbsp;");
+          $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
+          $('#legendb2').html("&nbsp;");
+          $('#legendb3').html("&nbsp;");
+          $('#legendb4').html("&nbsp;");
+          $('#legendb5').html("&nbsp;");
+          $('#legendHigh').html("&nbsp;");
+          // option 2: hyphens
+          // $('#legendMin').text(formatLegendVal(""));
+          // $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
+          // $('#legendb2').text(formatLegendVal(""));
+          // $('#legendb3').text(formatLegendVal(""));
+          // $('#legendb4').text(formatLegendVal(""));
+          // $('#legendb5').text(formatLegendVal(""));
+          // $('#legendHigh').text(formatLegendVal(""));
+
+      } else if (breaks.b1 < 1){ // one class NO disparity
+        // option 1: blanks
+          $('#legendMin').text(formatLegendVal(breaks.min)+'x');
+          $('#legendb1').html("&nbsp;");
+          $('#legendb2').html("&nbsp;");
+          $('#legendb3').html("&nbsp;");
+          $('#legendb4').html("&nbsp;");
+          $('#legendb5').html("&nbsp;");
+          $('#legendHigh').html("&nbsp;");
+          // option 2: hyphens
+          // $('#legendMin').text(formatLegendVal(breaks.b1)+'x');
+          // $('#legendb1').text(formatLegendVal(""));
+          // $('#legendb2').text(formatLegendVal(""));
+          // $('#legendb3').text(formatLegendVal(""));
+          // $('#legendb4').text(formatLegendVal(""));
+          // $('#legendb5').text(formatLegendVal(""));
+          // $('#legendHigh').text(formatLegendVal(""));
+      }
+  } else { // more than one class
+      $('#legendMin').text(formatLegendVal(breaks.min)+'x');
+      $('#legendb1').text(formatLegendVal(breaks.b1)+'x');
+      $('#legendb2').text(formatLegendVal(breaks.b2)+'x');
+      $('#legendb3').text(formatLegendVal(breaks.b3)+'x');
+      $('#legendb4').text(formatLegendVal(breaks.b4)+'x');
+      $('#legendb5').text(formatLegendVal(breaks.b5)+'x');
+      $('#legendHigh').text(formatLegendVal(breaks.max)+'x');
+  }
 
   // $(quantLabel).text("district")
 
@@ -2286,26 +2342,12 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   currentDistrictValueMap = valueMap;
   console.log(`ValueMap built: ${Object.keys(valueMap).length} districts`);
 
-  // --- add / update district layers ---
-  if (!map.getLayer('district-fills')) {
-    map.addLayer({
-      id: 'district-fills',
-      type: 'fill',
-      source: 'SCHOOLDIST_TL24',
-      'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
-      filter: showAllStates ? ['all'] : ['==', ['get', 'STATEFP'], statefips],
-      paint: {
-        'fill-color': noDataColor,
-        'fill-opacity': 0.9,
-        'fill-outline-color': offwhite
-      }
-    }, 'County-Lines_ne-10m-admin-2-counties');
-  } else {
-    map.moveLayer('district-fills', 'state-fills'); // ensure layer is above state-fill
-    // show all district-fills for "showAllStates", show only this states districts-fills for a single state
-    map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips]);
-    map.setLayoutProperty('district-fills', 'visibility', 'visible');
-  }
+
+  map.moveLayer('district-fills', 'state-fills'); // ensure layer is above state-fill
+  // show all district-fills for "showAllStates", show only this states districts-fills for a single state
+  map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips]);
+  map.setLayoutProperty('district-fills', 'visibility', 'visible');
+
 
 
   // filter district lines to the selected state or show for the whole country
@@ -3233,7 +3275,7 @@ function buildCountyPolylabels() {
     // remove outline from selected district
     map.setFilter('selected-district',  ["==", ["get", "GEOID"], -99] );
 
-    // locate laste state in the state geojsonCache
+    // locate state in the state geojsonCache
     let stateFeature = null;
     if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
       console.log("locating", stateFP)
@@ -3243,112 +3285,70 @@ function buildCountyPolylabels() {
       });
     }
 
-    function fitFeatureBoundsAndShowFacts(f, fips) {
-      if (!f) return false;
-      const coords = f.geometry && f.geometry.coordinates;
-      const bounds = new mapboxgl.LngLatBounds();
+    console.log(stateFeature)
+    window.onStateClick(stateFeature)
 
-      function extendBounds(coordinates) {
-        if (typeof coordinates[0][0] === 'number') {
-          coordinates.forEach(coord => bounds.extend(coord));
-        } else {
-          coordinates.forEach(extendBounds);
-        }
-      }
-      const props = f.properties || {};
-      let fipsToUse = fips;
-      console.log(fipsToUse)
-      // REMOVING BLOCK AS WE TRUST THE FIPS, PUT BACK IF THE FIPS CAUSES ERRORS
-      // if (!fipsToUse || fipsToUse === null) {
-      //   if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
-      //   else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
-      //   else if (props.STATE_ABBR || props.STATE) {
-      //     const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
-      //     try {
-      //       if (typeof stateDataCache === 'object') {
-      //         const stateKey = Object.keys(stateDataCache).find(k => {
-      //           const arr = stateDataCache[k] || [];
-      //           return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
-      //         });
-      //         if (stateKey) fipsToUse = stateKey;
-      //       }
-      //     } catch (e) { /* non-fatal */ }
-      //   }
-      // }
 
-      // If feature has geometry, fit bounds; otherwise skip zoom but still show factsheet
-      try {
-        if (coords) {
-          extendBounds(coords);
-          console.log("zooming to the state")
-          map.fitBounds(bounds, { padding: 30 });
-        }
-      } catch (e) {
-        console.warn('Could not compute bounds for state feature', e);
-      }
 
-      // switch to state view UI
-      if (typeof setMapView === 'function') setMapView('state');
-      hideDistrictFactSheetContainer();
-      // show the state factsheet (fips may need padding to match keys)
-      try {
-        /*should be filerted to the state only at this point */
-        initFactSheet(stateDataCache[fipsToUse], fipsToUse, currentRaceField || 'ENR_AP_GAP_BL');
-      } catch (e) { console.warn('initFactSheet failed', e); }
-      // scroll state info into view
-      const info = document.getElementById('infoContainer');
-      if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      return true;
-    }
+    // function fitFeatureBoundsAndShowFacts(f, fips) {
+    //   if (!f) return false;
+    //   const coords = f.geometry && f.geometry.coordinates;
+    //   const bounds = new mapboxgl.LngLatBounds();
 
-    if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateFP)) return;
+    //   function extendBounds(coordinates) {
+    //     if (typeof coordinates[0][0] === 'number') {
+    //       coordinates.forEach(coord => bounds.extend(coord));
+    //     } else {
+    //       coordinates.forEach(extendBounds);
+    //     }
+    //   }
+    //   const props = f.properties || {};
+    //   let fipsToUse = fips;
+    //   console.log(fipsToUse)
+    //   // REMOVING BLOCK AS WE TRUST THE FIPS, PUT BACK IF THE FIPS CAUSES ERRORS
+    //   // if (!fipsToUse || fipsToUse === null) {
+    //   //   if (props.STATEFP !== undefined && props.STATEFP !== null && String(props.STATEFP).trim() !== '') fipsToUse = props.STATEFP;
+    //   //   else if (props.STATE_ID !== undefined && props.STATE_ID !== null && String(props.STATE_ID).trim() !== '') fipsToUse = props.STATE_ID;
+    //   //   else if (props.STATE_ABBR || props.STATE) {
+    //   //     const abbr = String(props.STATE_ABBR || props.STATE).toUpperCase();
+    //   //     try {
+    //   //       if (typeof stateDataCache === 'object') {
+    //   //         const stateKey = Object.keys(stateDataCache).find(k => {
+    //   //           const arr = stateDataCache[k] || [];
+    //   //           return arr.some(d => String(d.state_abbrev || '').toUpperCase() === abbr);
+    //   //         });
+    //   //         if (stateKey) fipsToUse = stateKey;
+    //   //       }
+    //   //     } catch (e) { /* non-fatal */ }
+    //   //   }
+    //   // }
 
-    // fallback to querySourceFeatures
-    try {
-      const matches = map.querySourceFeatures('states', {
-        filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateFP || '')]
-      });
-      if (matches && matches.length) {
-        const f = matches[0];
-        if (fitFeatureBoundsAndShowFacts(f, stateFP)) return;
-      }
-    } catch (e) {
-      console.warn('querySourceFeatures fallback failed', e);
-    }
-    // this should fix issue with non geometry districts still being able to use Back to state button
-    try {
-      if ((!stateFeature || !stateFP) && stateAbbrev && typeof stateDataCache === 'object') {
-        const upperAbbrev = String(stateAbbrev).toUpperCase();
-        const stateKey = Object.keys(stateDataCache).find(k => {
-          const arr = stateDataCache[k] || [];
-          return arr.some(d => String(d.state_abbrev || '').toUpperCase() === upperAbbrev);
-        });
-        if (stateKey) {
-          // try to find feature in geojsonCache using known keys/properties
-          if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
-            stateFeature = geojsonCache.features.find(f => {
-              const p = f.properties || {};
-              return String(p.STATEFP) === String(stateKey) || String(p.STATE_ID) === String(stateKey) || String((p.STATE_ABBR || p.STATE || '')).toUpperCase() === upperAbbrev;
-            });
-          }
+    //   // If feature has geometry, fit bounds; otherwise skip zoom but still show factsheet
+    //   try {
+    //     if (coords) {
+    //       extendBounds(coords);
+    //       console.log("zooming to the state")
+    //       map.fitBounds(bounds, { padding: 30 });
+    //     }
+    //   } catch (e) {
+    //     console.warn('Could not compute bounds for state feature', e);
+    //   }
 
-          if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateKey)) return;
+    //   // switch to state view UI
+    //   if (typeof setMapView === 'function') setMapView('state');
+    //   hideDistrictFactSheetContainer();
+    //   // show the state factsheet (fips may need padding to match keys)
+    //   try {
+    //     /*should be filerted to the state only at this point */
+    //     initFactSheet(stateDataCache[fipsToUse], fipsToUse, currentRaceField || 'ENR_AP_GAP_BL');
+    //   } catch (e) { console.warn('initFactSheet failed', e); }
+    //   // scroll state info into view
+    //   const info = document.getElementById('infoContainer');
+    //   if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    //   return true;
+    // }
 
-          // try querySourceFeatures using the discovered stateKey
-          try {
-            const matches2 = map.querySourceFeatures('states', {
-              filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateKey || '')]
-            });
-            if (matches2 && matches2.length) {
-              const f2 = matches2[0];
-              if (fitFeatureBoundsAndShowFacts(f2, stateKey)) return;
-            }
-          } catch (e) {
-            // non-fatal
-          }
-        }
-      }
-    } catch (e) { console.warn('stateAbbrev fallback failed', e); }
+    // if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateFP)) return;
 
     // final fallback to full US extent and show nothing specific
     map.fitBounds([[ -126, 24], [-66, 50]]);
@@ -3356,4 +3356,58 @@ function buildCountyPolylabels() {
     hideDistrictFactSheetContainer();
     const info3 = document.getElementById('infoContainer');
     if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
+ 
+    // // fallback to querySourceFeatures
+    // try {
+    //   const matches = map.querySourceFeatures('states', {
+    //     filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateFP || '')]
+    //   });
+    //   if (matches && matches.length) {
+    //     const f = matches[0];
+    //     if (fitFeatureBoundsAndShowFacts(f, stateFP)) return;
+    //   }
+    // } catch (e) {
+    //   console.warn('querySourceFeatures fallback failed', e);
+    // }
+    // // this should fix issue with non geometry districts still being able to use Back to state button
+    // try {
+    //   if ((!stateFeature || !stateFP) && stateAbbrev && typeof stateDataCache === 'object') {
+    //     const upperAbbrev = String(stateAbbrev).toUpperCase();
+    //     const stateKey = Object.keys(stateDataCache).find(k => {
+    //       const arr = stateDataCache[k] || [];
+    //       return arr.some(d => String(d.state_abbrev || '').toUpperCase() === upperAbbrev);
+    //     });
+    //     if (stateKey) {
+    //       // try to find feature in geojsonCache using known keys/properties
+    //       if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
+    //         stateFeature = geojsonCache.features.find(f => {
+    //           const p = f.properties || {};
+    //           return String(p.STATEFP) === String(stateKey) || String(p.STATE_ID) === String(stateKey) || String((p.STATE_ABBR || p.STATE || '')).toUpperCase() === upperAbbrev;
+    //         });
+    //       }
+
+    //       if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateKey)) return;
+
+    //       // try querySourceFeatures using the discovered stateKey
+    //       try {
+    //         const matches2 = map.querySourceFeatures('states', {
+    //           filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateKey || '')]
+    //         });
+    //         if (matches2 && matches2.length) {
+    //           const f2 = matches2[0];
+    //           if (fitFeatureBoundsAndShowFacts(f2, stateKey)) return;
+    //         }
+    //       } catch (e) {
+    //         // non-fatal
+    //       }
+    //     }
+    //   }
+    // } catch (e) { console.warn('stateAbbrev fallback failed', e); }
+
+    // // final fallback to full US extent and show nothing specific
+    // map.fitBounds([[ -126, 24], [-66, 50]]);
+    // if (typeof setMapView === 'function') setMapView('full');
+    // hideDistrictFactSheetContainer();
+    // const info3 = document.getElementById('infoContainer');
+    // if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
