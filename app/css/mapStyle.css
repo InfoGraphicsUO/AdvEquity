@@ -985,9 +985,9 @@ h3 {
 }
 
 #infoModal hr {
-   border: none;  
+  border: none;  
   align-self: baseline;
-  width: 40%;               
+  width: 65%;               
   height: 3px;              
   background-image:linear-gradient(to right, var(--darkGreen), var(--no-disparity-color))
 }
