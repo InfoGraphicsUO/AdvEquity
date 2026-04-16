@@ -987,7 +987,7 @@ h3 {
 
 
 /* Fullscreen grey background */
-#infoModal{
+#infoModal, #creditModal{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
@@ -1007,6 +1007,11 @@ h3 {
   border-radius: 8px;       
   padding: 2rem;            
   overflow: hidden;    
+}
+
+#creditModalContent{
+  max-height: 90vh;
+  height: auto;
 }
 
 .scrollable-div {
