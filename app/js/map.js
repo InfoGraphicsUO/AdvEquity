@@ -2710,7 +2710,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
   <h3>Historic Data</h3>
 
   <section class="chart-section">
-    <p class="chart-subheader">AP Participation (Gap)</p>
+    <p class="chart-subheader">AP Enrollment Disparity</p>
     <canvas id="gapChart" width="400" height="160"></canvas>
     <div id="gapLegend" class="chart-legend"></div>
   </section>
