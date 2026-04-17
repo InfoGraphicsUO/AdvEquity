@@ -701,6 +701,7 @@ $('#full_extentBtn').click(function(){
         $('#agg-selectState').click()
       } else if (zoomLevel < stateMinZoom){
         console.log('NO ZOOM BASED AGG CHANGE ');
+
       }
     } else { //don't do zoom-based view if map or "return to state" clicked, reset globals
       console.log('RESET GLOBALS');
@@ -1171,8 +1172,8 @@ map.on('moveend', () => {
     console.log("Zooming to FIPS:", fips);
 
     // Call your existing zoom function
-    if(lastDistrictStateFP != fips){
-      lastDistrictStateFP = fips 
+    if(window.currentStateFIPS != fips){
+      window.currentStateFIPS = fips 
       lastDistrictStateAbbrev = 'XX' // TO DO, SET!
       ZoomToState();
     }
@@ -1193,26 +1194,27 @@ map.on('moveend', () => {
     const clickedFeature = e;//
     // console.log('clickedFeature: ', clickedFeature)
     // store currently viewed state info globally for race switching
-    window.currentStateFIPS = clickedFeature.id;
+    window.currentStateFIPS = clickedFeature.properties.STATEFP;
     // get state abbreviation from the clicked feature or from stateDataCache
-    const fipsKey = String(clickedFeature.id).padStart(2, '0'); // pads with 0, if not two digits
+    const fipsKey = String(clickedFeature.properties.STATEFP).padStart(2, '0'); // pads with 0, if not two digits
     console.log("fipsKey", fipsKey)
     let stateEntry = stateDataCache[fipsKey]; // data for this state
     window.currentStateAbbrev = stateEntry?.[0]?.state_abbrev ?? stateEntry?.[0]?.LEA_STATE ?? null;
+    console.log(window.currentStateAbbrev)
 
 
     // clear last selected state from map
     if (selectedPolygonId !== null) {
       map.setFeatureState(
-        { source: 'states', id: selectedPolygonId },
+        { source: 'states', id: window.currentStateFIPS },
         { selected: false }
       );
     }
     // set new selection from new FIPS
-    selectedPolygonId = currentStateFIPS
+    selectedPolygonId = window.currentStateFIPS
     // console.log("clicked feature id", selectedPolygonId)
     map.setFeatureState(
-      { source: 'states', id: selectedPolygonId },
+      { source: 'states', id: window.currentStateFIPS },
       { selected: true }
     );
 
@@ -2193,7 +2195,6 @@ function getColorFromPaintSet(val, paintArray) {
   return color;
 }
 
-
 function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, targetYear = 2021) {
   console.log('fillDistrictMap:', fieldName);
   currentDistrictData = districtData;
@@ -2233,7 +2234,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- determine if showing all states ---
   showAllStates = !statefips || statefips === 'all' || statefips === 'any';
-  // console.log(showAllStates);
+  console.log(showAllStates);
+  const fipsString = currentStateFIPS.toString().padStart(2,'0');
+  console.log(fipsString);
+
 
 
 
@@ -2347,8 +2351,9 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   map.moveLayer('district-fills', 'state-fills'); // ensure layer is above state-fill
   // show all district-fills for "showAllStates", show only this states districts-fills for a single state
-  console.log(statefips)
-  map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips.toString()]);
+  console.log(fipsString)
+  console.log(showAllStates)
+  map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], fipsString]);
   map.setLayoutProperty('district-fills', 'visibility', 'visible');
 
 
@@ -2359,8 +2364,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     map.setFilter('district-lines', ['all']); // 
     map.setFilter('district-lines-hover', ['all']);
   } else {
-    map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips.toString()]);
-    map.setFilter('district-lines-hover', ['==', ['get', 'STATEFP'], statefips.toString()]);
+    map.setFilter('district-lines', ['==', ['get', 'STATEFP'], fipsString]);
+    map.setFilter('district-lines-hover', ['==', ['get', 'STATEFP'], fipsString]);
   }
   map.setLayoutProperty('district-lines', 'visibility', 'visible');
   map.setLayoutProperty('district-lines-hover', 'visibility', 'visible');
@@ -3312,8 +3317,8 @@ function buildCountyPolylabels() {
     //   return;
     // }
 
-    const stateFP = lastDistrictStateFP || null;
-    const stateAbbrev = lastDistrictStateAbbrev || null;
+    let stateFP = window.currentStateFIPS || null;
+    const stateAbbrev = window.currentStateAbbrev || null;
     
     // If no valid state info exists, do nothing (prevents error on initial load)
     if (!stateFP && !stateAbbrev) {
@@ -3330,9 +3335,9 @@ function buildCountyPolylabels() {
       console.log("locating", stateFP)
       stateFeature = geojsonCache.features.find(f => {
         const p = f.properties || {};
-        return String(p.STATEFP) === String(stateFP) || String(p.STATE_ID) === String(stateFP) || String((p.STATE_ABBR || p.STATE)) === String(stateAbbrev);
+        return String(p.STATEFP) === String(stateFP) || parseInt(p.STATEFP) === parseInt(stateFP) || String(p.STATE_ID) === String(stateFP) || String((p.STATE_ABBR || p.STATE)) === String(stateAbbrev);
       });
-    }
+    } 
 
     console.log(stateFeature)
     window.onStateClick(stateFeature)
@@ -3399,64 +3404,64 @@ function buildCountyPolylabels() {
 
     // if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateFP)) return;
 
-    // final fallback to full US extent and show nothing specific
-    map.fitBounds([[ -126, 24], [-66, 50]]);
-    if (typeof setMapView === 'function') setMapView('full');
-    hideDistrictFactSheetContainer();
-    const info3 = document.getElementById('infoContainer');
-    if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
- 
-    // // fallback to querySourceFeatures
-    // try {
-    //   const matches = map.querySourceFeatures('states', {
-    //     filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateFP || '')]
-    //   });
-    //   if (matches && matches.length) {
-    //     const f = matches[0];
-    //     if (fitFeatureBoundsAndShowFacts(f, stateFP)) return;
-    //   }
-    // } catch (e) {
-    //   console.warn('querySourceFeatures fallback failed', e);
-    // }
-    // // this should fix issue with non geometry districts still being able to use Back to state button
-    // try {
-    //   if ((!stateFeature || !stateFP) && stateAbbrev && typeof stateDataCache === 'object') {
-    //     const upperAbbrev = String(stateAbbrev).toUpperCase();
-    //     const stateKey = Object.keys(stateDataCache).find(k => {
-    //       const arr = stateDataCache[k] || [];
-    //       return arr.some(d => String(d.state_abbrev || '').toUpperCase() === upperAbbrev);
-    //     });
-    //     if (stateKey) {
-    //       // try to find feature in geojsonCache using known keys/properties
-    //       if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
-    //         stateFeature = geojsonCache.features.find(f => {
-    //           const p = f.properties || {};
-    //           return String(p.STATEFP) === String(stateKey) || String(p.STATE_ID) === String(stateKey) || String((p.STATE_ABBR || p.STATE || '')).toUpperCase() === upperAbbrev;
-    //         });
-    //       }
-
-    //       if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateKey)) return;
-
-    //       // try querySourceFeatures using the discovered stateKey
-    //       try {
-    //         const matches2 = map.querySourceFeatures('states', {
-    //           filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateKey || '')]
-    //         });
-    //         if (matches2 && matches2.length) {
-    //           const f2 = matches2[0];
-    //           if (fitFeatureBoundsAndShowFacts(f2, stateKey)) return;
-    //         }
-    //       } catch (e) {
-    //         // non-fatal
-    //       }
-    //     }
-    //   }
-    // } catch (e) { console.warn('stateAbbrev fallback failed', e); }
-
     // // final fallback to full US extent and show nothing specific
     // map.fitBounds([[ -126, 24], [-66, 50]]);
     // if (typeof setMapView === 'function') setMapView('full');
     // hideDistrictFactSheetContainer();
     // const info3 = document.getElementById('infoContainer');
     // if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
+ 
+    // // // fallback to querySourceFeatures
+    // // try {
+    // //   const matches = map.querySourceFeatures('states', {
+    // //     filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateFP || '')]
+    // //   });
+    // //   if (matches && matches.length) {
+    // //     const f = matches[0];
+    // //     if (fitFeatureBoundsAndShowFacts(f, stateFP)) return;
+    // //   }
+    // // } catch (e) {
+    // //   console.warn('querySourceFeatures fallback failed', e);
+    // // }
+    // // // this should fix issue with non geometry districts still being able to use Back to state button
+    // // try {
+    // //   if ((!stateFeature || !stateFP) && stateAbbrev && typeof stateDataCache === 'object') {
+    // //     const upperAbbrev = String(stateAbbrev).toUpperCase();
+    // //     const stateKey = Object.keys(stateDataCache).find(k => {
+    // //       const arr = stateDataCache[k] || [];
+    // //       return arr.some(d => String(d.state_abbrev || '').toUpperCase() === upperAbbrev);
+    // //     });
+    // //     if (stateKey) {
+    // //       // try to find feature in geojsonCache using known keys/properties
+    // //       if (typeof geojsonCache === 'object' && Array.isArray(geojsonCache.features)) {
+    // //         stateFeature = geojsonCache.features.find(f => {
+    // //           const p = f.properties || {};
+    // //           return String(p.STATEFP) === String(stateKey) || String(p.STATE_ID) === String(stateKey) || String((p.STATE_ABBR || p.STATE || '')).toUpperCase() === upperAbbrev;
+    // //         });
+    // //       }
+
+    // //       if (stateFeature && fitFeatureBoundsAndShowFacts(stateFeature, stateKey)) return;
+
+    // //       // try querySourceFeatures using the discovered stateKey
+    // //       try {
+    // //         const matches2 = map.querySourceFeatures('states', {
+    // //           filter: ['==', ['to-string', ['get', 'STATEFP']], String(stateKey || '')]
+    // //         });
+    // //         if (matches2 && matches2.length) {
+    // //           const f2 = matches2[0];
+    // //           if (fitFeatureBoundsAndShowFacts(f2, stateKey)) return;
+    // //         }
+    // //       } catch (e) {
+    // //         // non-fatal
+    // //       }
+    // //     }
+    // //   }
+    // // } catch (e) { console.warn('stateAbbrev fallback failed', e); }
+
+    // // // final fallback to full US extent and show nothing specific
+    // // map.fitBounds([[ -126, 24], [-66, 50]]);
+    // // if (typeof setMapView === 'function') setMapView('full');
+    // // hideDistrictFactSheetContainer();
+    // // const info3 = document.getElementById('infoContainer');
+    // // if (info3) info3.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
