@@ -1236,7 +1236,7 @@ map.on('moveend', () => {
       }
     }
     extendBounds(coords);
-    map.fitBounds(bounds, { padding: 30 });
+    map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
 
     // fill fact sheet
     const fieldName = currentRaceField || 'ENR_AP_GAP_BL';
@@ -1269,7 +1269,7 @@ map.on('moveend', () => {
         else coords.forEach(extendBounds);
       }
       extendBounds(feat.geometry.coordinates);
-      map.fitBounds(bounds, { padding: 30 });
+      map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
       showDistrictFactsheet(feat, currentDistrictData, window.currentStateAbbrev || "");
       hideNoGeometryNotice();
     // }
@@ -1653,7 +1653,7 @@ function buildDistrictTable(districtData, fieldName) {
             }
           }
           extendBounds(coords);
-          map.fitBounds(bounds, { padding: 30 });
+          map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
         }
       } catch (err) {
         console.warn('Could not compute bounds for selected district (table click):', err);
@@ -2872,7 +2872,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
               }
             }
             extendBounds(coords);
-            map.fitBounds(bounds, { padding: 30 });
+            map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
           }
         } catch (err) {
           console.warn('Could not compute bounds for selected district:', err);
