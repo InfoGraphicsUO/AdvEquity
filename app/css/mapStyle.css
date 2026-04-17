@@ -47,6 +47,11 @@ body, html {
   flex: 0 0 auto; /* fixed at min height, no shrinking */
   background-color: var(--verydarkgrey);
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: jaf-bernino-sans, sans-serif;
+}
+
+.mapboxgl-map{
+  font-family: jaf-bernino-sans, sans-serif !important;
 }
 
 /* .mapboxgl-ctrl-top-left{
@@ -236,6 +241,18 @@ button:hover {
   background-color: rgba(42, 42, 42, 0.1);
 }
 
+/* Loading/disabled state for the race and aggregation toggles */
+.race-selectBtn:disabled,
+.agg-selectBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.race-selectBtn:disabled:hover,
+.agg-selectBtn:disabled:hover {
+  background-color: transparent;
+}
+
 /* ACTIVE BUTTON — no border, but keep outer corners rounded */
 .race-selectBtn.active,
 .agg-selectBtn.active {
@@ -276,6 +293,53 @@ button:hover {
   background-color: var(--hispanic-class-4-color);
   color: var(--offwhite);
 }
+
+#race-selectBlk.race-selectBtn.active:disabled,
+.agg-selectBlk.agg-selectBtn.active:disabled,
+#race-selectHis.race-selectBtn.active:disabled,
+.agg-selectHis.agg-selectBtn.active:disabled {
+  cursor: not-allowed;
+}
+
+#race-selectBlk.race-selectBtn.active:disabled,
+.agg-selectBlk.agg-selectBtn.active:disabled {
+  background-color: var(--black-class-4-color);
+  color: var(--almostBlack);
+}
+
+#race-selectHis.race-selectBtn.active:disabled,
+.agg-selectHis.agg-selectBtn.active:disabled {
+  background-color: var(--hispanic-class-4-color);
+  color: var(--offwhite);
+}
+
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-1,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-2,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-3,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-4,
+#mapLegend.legend-single-district.legend-blk .legend-swatch.class-5 {
+  background: var(--black-class-3-color);
+}
+
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-1,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-2,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-3,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-4,
+#mapLegend.legend-single-district.legend-his .legend-swatch.class-5 {
+  background: var(--hispanic-class-3-color);
+}
+
+#mapLegend.legend-no-disparity .legend-swatch.class-1,
+#mapLegend.legend-no-disparity .legend-swatch.class-2,
+#mapLegend.legend-no-disparity .legend-swatch.class-3,
+#mapLegend.legend-no-disparity .legend-swatch.class-4,
+#mapLegend.legend-no-disparity .legend-swatch.class-5 {
+  background: var(--no-data-color);
+}
+
+/* #mapLegend.legend-no-district .legendBreakVal {
+  visibility: hidden;
+} */
 
 /* Shared styles for the lower containers */
 #factsheetTitle .factsheet-label,
@@ -764,7 +828,6 @@ h3 {
 .legend-columns {
   display: flex;
   width: 100%;
-  gap: 2px;
 }
 
 .legend-col {
@@ -924,7 +987,7 @@ h3 {
 
 
 /* Fullscreen grey background */
-#infoModal{
+#infoModal, #creditModal{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
@@ -944,6 +1007,11 @@ h3 {
   border-radius: 8px;       
   padding: 2rem;            
   overflow: hidden;    
+}
+
+#creditModalContent{
+  max-height: 90vh;
+  height: auto;
 }
 
 .scrollable-div {
@@ -980,9 +1048,9 @@ h3 {
 }
 
 #infoModal hr {
-   border: none;  
+  border: none;  
   align-self: baseline;
-  width: 40%;               
+  width: 63%;               
   height: 3px;              
   background-image:linear-gradient(to right, var(--darkGreen), var(--no-disparity-color))
 }

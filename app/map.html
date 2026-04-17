@@ -43,7 +43,7 @@
       <div class="scrollable-div">
         <div id="modalTitle">AP Enrollment Disparity</div>
         <br>
-          <div class="modalText">Enrollment disparity in AP courses is calulated by analyzing the racial composition of AP courses relative to the racial composition of the district or state. <span class="modalBold">The higher the value, the greater the disparity.</span></div>
+          <div class="modalText">Enrollment disparity is calculated by analyzing the racial composition of AP courses relative to the general racial composition of enrolled students. This shows whether a group is enrolled in AP at higher or lower rates than expected based on its share of students. <span class="modalBold">The higher the value, the greater the disparity.</span></div>
           <div class="modal-image-wrap">
             <img 
               src="img/classed_gaps_primer3.jpg" 
@@ -68,10 +68,10 @@
         <details>
             <summary><div class="modalSubHeader">How it's classed</div></summary>
             <br>  
-            <div class="modalText">Once the disparity values are calculated, the no-data and no-disparity areas are omitted, leaving only areas with a value greater than 1 (areas with disparity). These remaining areas are then sorted into 5 classes by putting 20% of areas into each bin. The 20% of areas with the lowest disparity go into the first class, the 20% of areas with the next lowest disparity go in the second class, and so on.</div>
+            <div class="modalText">Once the disparity values are calculated, the no-data and no-disparity areas are omitted, leaving only areas with a value <span class="modalOrange">greater than 1</span> (areas with disparity). These remaining areas are then sorted into 5 classes by putting 20% of areas into each bin. The 20% of areas with the lowest disparity go into the first class, the 20% of areas with the next lowest disparity go in the second class, and so on.</div>
               <div class="modal-image-wrap">
                 <img 
-                  src="img/classed_bins_primer.jpg" 
+                  src="img/classed_bins_primer2.jpg" 
                   alt="Image describing data classification"
                   class="modal-image"
                 >
@@ -140,6 +140,27 @@
     </div>
   </div>
 
+  <!-- about/credit modal -->
+   <div id="creditModal"> <!-- grey background -->
+    <div id="creditModalContent" class="modal-content"> <!-- white box-->
+      <span class="modal-close">&times;</span>
+      <div id="creditModalScrollContent">
+      <h1>About</h1>
+      <p>
+        This proof-of-concept interactive data platform is designed to make racial disparities in educational opportunity visible and comparable across U.S. school districts and states. Building on earlier efforts such as ProPublica’s Miseducation, the platform harmonizes federal education data from 2011-2021 to examine how access to Advanced Placement (AP) coursework varies by race and place over time.
+        By emphasizing longitudinal trends and district-level context, the platform seeks to help educators, policymakers, advocates, and communities identify patterns, track progress, and better understand where inequities persist or where policy interventions have made positive impacts. The goal is to provide a clear, accessible foundation for more informed decision-making and accountability in expanding access to rigorous academic pathways.
+      </p>
+      <h1>Credits</h1>
+      <p>
+        Developed and Designed by InfoGraphics Lab, University of Oregon
+        Joanna Merson, Erik Steiner, Izak Boardman, Clare Otcasek, Owen Ferguson, Nicole Manning Lorino, Naim Ferris
+      </p>
+      </div>
+    </div>
+   </div>
+
+
+  <!-- start map -->
   <div id="map">
     <div id="mapLoadingOverlay" class="map-loading-overlay" style="display: none;">
       <div class="loading-spinner"></div>
@@ -233,7 +254,6 @@
 
   <div id="infoContainer">
     <!-- <h2>Information</h2> -->
-    <p>Place holder text for descriptive info at US level trends or other information. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin odio dui. Integer ornare mi sed feugiat tincidunt. Morbi dignissim augue lectus..</p>
     
     <!-- TABLE -->
      <h2>School districts where White students are more likely to be in an Advanced Placement class, compared with <span id="currentRaceDesc">Black</span> students, <small>by state in 2011-12 and 2021-22</small></h2>
