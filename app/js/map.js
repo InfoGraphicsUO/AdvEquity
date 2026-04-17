@@ -188,9 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasValidStateInfo = !!(lastDistrictStateFP || lastDistrictStateAbbrev);
         if (mapView === 'district' && hasValidStateInfo) {
           console.log("enable backToStateMapBtn")
+
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
-          $('#backToStateMapLabel').html("View " + states[currentStateAbbrev]);
+          $('#backToStateMapLabel').html("View " + states[lastDistrictStateAbbrev]);
+          window.currentStateAbbrev = lastDistrictStateAbbrev
         } else {
           console.log("disable backToStateMapBtn")
           backToStateMapBtn.disabled = true;
@@ -286,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       getDistrictData('all').then(districtData => {
         const stateAbbrev = window.currentStateAbbrev;
-        const stateFIPS = window.currentStateFIPS;
+        const stateFIPS = '99';
         
         if (stateAbbrev && stateFIPS) {
           const filteredDistrictData = districtData.filter(d => 
@@ -1826,6 +1828,7 @@ async function loadPaintsForAggregation(aggregationLevel) {
     // SPECIAL HANDLING FOR STATE‑SPECIFIC BREAKS
     breaksByAggregation.District_State_Breaks = parseDistrictStateBreaks(csvData);
     console.log("Loaded state‑specific district breaks");
+    $('#mapLocale').text(currentStateAbbrev)
     return;   // IMPORTANT: STOP HERE — DO NOT BUILD PAINTS
   }
 
@@ -2225,12 +2228,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   // --- determine if showing all states ---
   showAllStates = !statefips || statefips === 'all' || statefips === 'any';
   console.log(showAllStates);
-  const fipsString = currentStateFIPS.toString().padStart(2,'0');
-  console.log(fipsString);
-
-
-
-
+  let fipsString
 
   //  SELECT BREAKS (NATIONAL vs STATE‑SPECIFIC) 
   let breaks;
@@ -2238,8 +2236,11 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   let basePaint;
 
   if (!showAllStates) {
+    fipsString = currentStateFIPS.toString().padStart(2,'0');
+    console.log(fipsString);
     // We are zoomed into a single state → use state‑specific breaks
     console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
+    $('#mapLocale').text(state_abbrev)
     // console.log(breaksByAggregation.District_State_Breaks); // all break data
     // console.log("fieldName", fieldName);
 
@@ -2292,6 +2293,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       : paintSet.hispanic;
 
     console.log("Using NATIONAL district breaks");
+    $('#mapLocale').text("US")
   }
   //  END BREAK SELECTION 
 
