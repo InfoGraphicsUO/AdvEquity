@@ -148,13 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
   //   document.body.appendChild(backToStateMapBtn);
   // }
 
-  // click handler - zoom back to the last district's state (stored when factsheet opens)
+
 
  $('#legend-note').click(() => {
   console.log("legend-note CLICKED");
   openInfoModal();
   });
 
+// click handler - zoom back to the last district's state (stored when factsheet opens)
  $('#backToStateMapBtn').click(ZoomToState);
 
   // canonical view setter: 'full' | 'state' | 'district'
@@ -180,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateControlStates() {
     try {
-      if (!backToStateMapBtn.disabled) {
         console.log("backToStateMapBtn")
         console.log("lastDistrictStateFP", lastDistrictStateFP)
         console.log("lastDistrictStateAbbrev", lastDistrictStateAbbrev)
@@ -196,16 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
           backToStateMapBtn.disabled = true;
           backToStateMapBtn.classList.add('control-disabled');
         }
-      }
-      // if (fullExtentButton) {
-      //   if (mapView === 'full') {
-      //     fullExtentButton.disabled = true;
-      //     fullExtentButton.classList.add('control-disabled');
-      //   } else {
-      //     fullExtentButton.disabled = false;
-      //     fullExtentButton.classList.remove('control-disabled');
-      //   }
-      // }
     } catch (e) {
       console.warn('updateControlStates error', e);
     }
@@ -710,7 +700,7 @@ $('#full_extentBtn').click(function(){
     }
 
 
-    //updateControlStates() 
+    updateControlStates() 
 
 
     // if (currentAgg=='district' && lastDistrictStateFP != null ){
@@ -2579,7 +2569,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
 
   // records uses the global cache, not the data passed that is only 2021, could remove that all together to steamline
   // const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
-  console.log(districtDataCache)
+  //console.log(districtDataCache)
   let records
   if(districtDataCache === null){
     records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
@@ -2596,20 +2586,6 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
       <div class="opportunity-column">No district data available.</div>
       <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
     `;
-    // click handler to return button
-    setTimeout(() => {
-      const returnBtn = document.getElementById('returnToFullView');
-      if (returnBtn) {
-        returnBtn.addEventListener('click', () => {
-          map.fitBounds([[ -126, 24], [-66, 50]]);
-          if (typeof setMapView === 'function') setMapView('full');
-          hideDistrictFactSheetContainer();
-          const info = document.getElementById('infoContainer');
-          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        });
-      }
-    }, 0);
-    return;
   }
 
   // Sort by YEAR ascending
