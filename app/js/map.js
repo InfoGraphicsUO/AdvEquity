@@ -2093,7 +2093,7 @@ function buildGapStep(getter, breaks, colors) {
   if(min == b1){
     if(min > 1){ //"ONE PAINT CLASS, has disparity"
       console.log("ONE PAINT CLASS, has disparity")
-      return colors.class1 // class1 is only color
+      return colors.class3 // class3 is only color (middle color)
 
     } else if(min < 1){ "ONE PAINT CLASS, NO disparity"
       console.log("ONE PAINT CLASS, NO disparity")
@@ -2207,7 +2207,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   const natBreaksSet = breaksByAggregation.District_National_Breaks;
   const stateBreaksAll = breaksByAggregation.District_State_Breaks;
 
-  console.log(stateBreaksAll)
+  // console.log(stateBreaksAll)
 
   if (!natPaintSet || !natPaintSet.black || !natPaintSet.hispanic) {
     console.warn('Paints not ready yet (District_National_Breaks)');
@@ -2232,7 +2232,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   // --- determine if showing all states ---
   showAllStates = !statefips || statefips === 'all' || statefips === 'any';
-  console.log(showAllStates);
+  // console.log(showAllStates);
 
 
 
@@ -2245,9 +2245,10 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   if (!showAllStates) {
     // We are zoomed into a single state → use state‑specific breaks
     console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
-    console.log(breaksByAggregation.District_State_Breaks); // all break data
-    console.log("fieldName", fieldName);
+    // console.log(breaksByAggregation.District_State_Breaks); // all break data
+    // console.log("fieldName", fieldName);
 
+    // breaks for the current state, and current field only
     breaks = breaksByAggregation.District_State_Breaks[state_abbrev]?.[fieldName];
     console.log(breaks);
 
@@ -3136,11 +3137,13 @@ function updateDistrictLegendDisplay(fieldName, breaks, districtCount) {
   if (districtCount === 1) {
     allBreakLabels.html('&nbsp;');
     $('#legendMin').text(`0.00x`);
+    $('#legend1').text(`1.00x`);
     $('#legendHigh').text(`${formatLegendValTwoDecimals(breaks.max)}x`);
     return;
   }
 
   $('#legendMin').text(`${formatLegendVal(breaks.min)}x`);
+  $('#legend1').text(`1.0x`);
   $('#legendb1').text(`${formatLegendVal(breaks.b1)}x`);
   $('#legendb2').text(`${formatLegendVal(breaks.b2)}x`);
   $('#legendb3').text(`${formatLegendVal(breaks.b3)}x`);
