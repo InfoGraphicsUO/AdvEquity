@@ -329,17 +329,17 @@ button:hover {
   background: var(--hispanic-class-3-color);
 }
 
-#mapLegend.legend-no-district .legend-swatch.class-1,
-#mapLegend.legend-no-district .legend-swatch.class-2,
-#mapLegend.legend-no-district .legend-swatch.class-3,
-#mapLegend.legend-no-district .legend-swatch.class-4,
-#mapLegend.legend-no-district .legend-swatch.class-5 {
+#mapLegend.legend-no-disparity .legend-swatch.class-1,
+#mapLegend.legend-no-disparity .legend-swatch.class-2,
+#mapLegend.legend-no-disparity .legend-swatch.class-3,
+#mapLegend.legend-no-disparity .legend-swatch.class-4,
+#mapLegend.legend-no-disparity .legend-swatch.class-5 {
   background: var(--no-data-color);
 }
 
-#mapLegend.legend-no-district .legendBreakVal {
+/* #mapLegend.legend-no-district .legendBreakVal {
   visibility: hidden;
-}
+} */
 
 /* Shared styles for the lower containers */
 #factsheetTitle .factsheet-label,

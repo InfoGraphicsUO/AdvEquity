@@ -1997,7 +1997,7 @@ function fillStateMap(map, geojson, stateData, fieldName) {
   // update legend values
   // select the current breaks object based on the field
   const legend = $('#mapLegend');
-  legend.removeClass('legend-single-district legend-no-district');
+  legend.removeClass('legend-single-district legend-no-disparity');
 
   const breaks =
     fieldName === 'ENR_AP_GAP_BL'
@@ -3126,24 +3126,26 @@ function updateDistrictLegendDisplay(fieldName, breaks, districtCount) {
 
   legend.toggleClass('legend-blk', isBlack)
         .toggleClass('legend-his', !isBlack)
-        .toggleClass('legend-single-district', districtCount === 1)
-        .toggleClass('legend-no-district', districtCount < 1);
+        .toggleClass('legend-single-district', districtCount === 1 && breaks.b1 > 1)
+        .toggleClass('legend-no-disparity', districtCount === 1 && breaks.b1 < 1)
 
-  if (districtCount < 1) {
-    allBreakLabels.html('&nbsp;');
-    return;
-  }
-
-  if (districtCount === 1) {
-    allBreakLabels.html('&nbsp;');
-    $('#legendMin').text(`0.00x`);
-    $('#legend1').text(`1.00x`);
-    $('#legendHigh').text(`${formatLegendValTwoDecimals(breaks.max)}x`);
-    return;
+  if (districtCount === 1) { // single district
+    if (breaks.b1 > 1){ // single district with disparity
+      allBreakLabels.html('&nbsp;');
+      $('#legendMin').text(`0.00x`);
+      $('#legend1').text(`1.00x`);
+      $('#legendHigh').text(`${formatLegendValTwoDecimals(breaks.max)}x`);
+      return;
+    } else { // single district NO disparity
+      allBreakLabels.html('&nbsp;');
+      $('#legendMin').text(`${formatLegendValTwoDecimals(breaks.max)}x`);
+      $('#legend1').text(`1.00x`);
+      return;
+    }
   }
 
   $('#legendMin').text(`${formatLegendVal(breaks.min)}x`);
-  $('#legend1').text(`1.0x`);
+  $('#legend1').text(`${formatLegendVal(1.0)}x`);
   $('#legendb1').text(`${formatLegendVal(breaks.b1)}x`);
   $('#legendb2').text(`${formatLegendVal(breaks.b2)}x`);
   $('#legendb3').text(`${formatLegendVal(breaks.b3)}x`);
