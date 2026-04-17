@@ -1828,7 +1828,7 @@ async function loadPaintsForAggregation(aggregationLevel) {
     // SPECIAL HANDLING FOR STATE‑SPECIFIC BREAKS
     breaksByAggregation.District_State_Breaks = parseDistrictStateBreaks(csvData);
     console.log("Loaded state‑specific district breaks");
-    $('#mapLocale').text(currentStateAbbrev)
+    $('#legendLocale').text(`(${currentStateAbbrev})`)
     return;   // IMPORTANT: STOP HERE — DO NOT BUILD PAINTS
   }
 
@@ -2240,7 +2240,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     console.log(fipsString);
     // We are zoomed into a single state → use state‑specific breaks
     console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
-    $('#mapLocale').text(state_abbrev)
+    $('#legendLocale').text(`(${state_abbrev})`)
     // console.log(breaksByAggregation.District_State_Breaks); // all break data
     // console.log("fieldName", fieldName);
 
@@ -2293,7 +2293,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       : paintSet.hispanic;
 
     console.log("Using NATIONAL district breaks");
-    $('#mapLocale').text("US")
+    $('#legendLocale').text("(US)")
   }
   //  END BREAK SELECTION 
 

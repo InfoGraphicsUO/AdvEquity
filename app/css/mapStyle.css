@@ -807,6 +807,10 @@ h3 {
   width: 100%; 
 }
 
+#legendLocale{
+  font-weight: normal !important;
+}
+
 /* Wrap chips + labels together */
 .legend-main {
   display: flex;
@@ -886,22 +890,6 @@ h3 {
   min-width: 2.5rem;
   background: var(--no-disparity-color);
 }
-
-/* .legend-swatch.bg {
-  min-width: 2.8rem;
-} */
-
-
-/* .legend-ticks {
-  position: absolute;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #333;
-  line-height: 1.1;
-} */
-
 
 /* end legend */
 
