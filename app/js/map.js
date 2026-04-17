@@ -703,6 +703,7 @@ $('#full_extentBtn').click(function(){
         console.log('NO ZOOM BASED AGG CHANGE ');
       }
     } else { //don't do zoom-based view if map or "return to state" clicked, reset globals
+      console.log('RESET GLOBALS');
       triggeredByMapClick = false;
       triggeredByBackToState = false;
     }
@@ -908,7 +909,7 @@ map.on('load', () => {
       source: 'SCHOOLDIST_TL24',
       'source-layer': 'SCHOOLDIST_TL24_Simpl100m-2kf22l',
       paint: {
-        'line-color': '#000',
+        'line-color': colorYellow,
         'line-opacity': [
           'case',
           ['boolean', ['feature-state', 'hover'], false],
@@ -919,8 +920,8 @@ map.on('load', () => {
           'interpolate', ['linear'], ['zoom'],
           0, 0,
           5, 2.5,
-          8, 2.5,
-          22, 2.5
+          8, 4,
+          22, 5
         ]
       },
       layout: {
@@ -1182,7 +1183,7 @@ map.on('moveend', () => {
 
   function onStateClick(e){
     console.trace('onStateClick()')
-    currentAgg = "state" // clicking a state should keep the map in state mode
+    currentAgg = "distrct" // change to agg to district after clicking on a state
     triggeredByMapClick = true;
     //     // don't fire on the districts as well
     //  e.originalEvent.cancelBubble = true;   // stop bubbling
@@ -1195,7 +1196,7 @@ map.on('moveend', () => {
     window.currentStateFIPS = clickedFeature.id;
     // get state abbreviation from the clicked feature or from stateDataCache
     const fipsKey = String(clickedFeature.id).padStart(2, '0'); // pads with 0, if not two digits
-    // console.log("fipsKey", fipsKey)
+    console.log("fipsKey", fipsKey)
     let stateEntry = stateDataCache[fipsKey]; // data for this state
     window.currentStateAbbrev = stateEntry?.[0]?.state_abbrev ?? stateEntry?.[0]?.LEA_STATE ?? null;
 
@@ -2346,7 +2347,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
 
   map.moveLayer('district-fills', 'state-fills'); // ensure layer is above state-fill
   // show all district-fills for "showAllStates", show only this states districts-fills for a single state
-  map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips]);
+  console.log(statefips)
+  map.setFilter('district-fills', showAllStates ? null : ['==', ['get', 'STATEFP'], statefips.toString()]);
   map.setLayoutProperty('district-fills', 'visibility', 'visible');
 
 
@@ -2357,8 +2359,8 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
     map.setFilter('district-lines', ['all']); // 
     map.setFilter('district-lines-hover', ['all']);
   } else {
-    map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips]);
-    map.setFilter('district-lines-hover', ['==', ['get', 'STATEFP'], statefips]);
+    map.setFilter('district-lines', ['==', ['get', 'STATEFP'], statefips.toString()]);
+    map.setFilter('district-lines-hover', ['==', ['get', 'STATEFP'], statefips.toString()]);
   }
   map.setLayoutProperty('district-lines', 'visibility', 'visible');
   map.setLayoutProperty('district-lines-hover', 'visibility', 'visible');
