@@ -768,51 +768,6 @@ map.on('load', () => {
 
   zoomLevel = map.getZoom()
 
-  // // hide basemap layers/labels that we don't want
-  // const hiddenLayers = [
-  //   'country-label',
-  //   'continent-label',
-  //   'waterway-label',
-  //   'water-line-label',
-  //   'water-point-label'
-  // ];
-
-  // hiddenLayers.forEach(layerId => {
-  //   if (map.getLayer(layerId)) {
-  //     map.setLayoutProperty(layerId, 'visibility', 'none');
-  //   }
-  // });
-
-
-  // // hide labels that we don't want
-  // // List of label layers that use the worldview property
-  // const labelLayers = [
-  // 'state-label',
-  // 'settlement-label',
-  // 'settlement-subdivision-label',
-  // 'airport-label',
-  // 'road-label-simple',
-  // 'natural-line-label',
-  // 'natural-point-label',
-  // 'poi-label',
-  // 'settlement-minor-label',
-  // 'settlement-major-label',
-  // ];
-
-  // Filter to show only US 
-// labelLayers.forEach(layerId => {
-//     // Check if the layer exists before applying the filter
-//     if (map.getLayer(layerId)) {
-//       // Use the 'any' expression to check multiple possible country code properties
-//       map.setFilter(layerId, [
-//         'any',
-//         ['==', ['get', 'iso_3166_1'], 'US'], // For country-level features
-//         ['==', ['get', 'iso_3166_2'], 'US'], // For state/province-level features (may not apply)
-//         ['==', ['get', 'country_code'], 'USA'], // Another common property name
-//       ]);
-//     }
-//   });
-
  const layers = map.getStyle().layers;
         // // Find the index of the first symbol layer in the map style.
         // let firstSymbolId;
@@ -832,6 +787,19 @@ map.on('load', () => {
 
   //   promoteId: 'STATE_ID'  // use STATE_ID as the unique ID
   // });
+
+  // add button for map credit
+  $('.mapboxgl-ctrl-logo').each(function () {
+    const btn = $('<div class="credit-btn">Map credits</div>');
+    btn.on('click', function () {
+      openCreditModal();
+    });
+    $(this).before(btn);
+  });
+
+  $('.modal-close').on('click', function () {
+      closeCreditModal();
+  });
 
   // States -  JSON in repo
   map.addSource('states', {
