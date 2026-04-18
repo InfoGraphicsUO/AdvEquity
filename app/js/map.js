@@ -148,13 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
   //   document.body.appendChild(backToStateMapBtn);
   // }
 
-  // click handler - zoom back to the last district's state (stored when factsheet opens)
+
 
  $('#legend-note').click(() => {
   console.log("legend-note CLICKED");
   openInfoModal();
   });
 
+// click handler - zoom back to the last district's state (stored when factsheet opens)
  $('#backToStateMapBtn').click(ZoomToState);
 
   // canonical view setter: 'full' | 'state' | 'district'
@@ -180,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateControlStates() {
     try {
-      if (!backToStateMapBtn.disabled) {
         console.log("backToStateMapBtn")
         console.log("lastDistrictStateFP", lastDistrictStateFP)
         console.log("lastDistrictStateAbbrev", lastDistrictStateAbbrev)
@@ -188,24 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasValidStateInfo = !!(lastDistrictStateFP || lastDistrictStateAbbrev);
         if (mapView === 'district' && hasValidStateInfo) {
           console.log("enable backToStateMapBtn")
+
           backToStateMapBtn.disabled = false;
           backToStateMapBtn.classList.remove('control-disabled');
-          $('#backToStateMapLabel').html("View " + states[currentStateAbbrev]);
+          $('#backToStateMapLabel').html("View " + states[lastDistrictStateAbbrev]);
+          window.currentStateAbbrev = lastDistrictStateAbbrev
         } else {
           console.log("disable backToStateMapBtn")
           backToStateMapBtn.disabled = true;
           backToStateMapBtn.classList.add('control-disabled');
         }
-      }
-      // if (fullExtentButton) {
-      //   if (mapView === 'full') {
-      //     fullExtentButton.disabled = true;
-      //     fullExtentButton.classList.add('control-disabled');
-      //   } else {
-      //     fullExtentButton.disabled = false;
-      //     fullExtentButton.classList.remove('control-disabled');
-      //   }
-      // }
     } catch (e) {
       console.warn('updateControlStates error', e);
     }
@@ -296,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       getDistrictData('all').then(districtData => {
         const stateAbbrev = window.currentStateAbbrev;
-        const stateFIPS = window.currentStateFIPS;
+        const stateFIPS = '99';
         
         if (stateAbbrev && stateFIPS) {
           const filteredDistrictData = districtData.filter(d => 
@@ -710,7 +702,7 @@ $('#full_extentBtn').click(function(){
     }
 
 
-    //updateControlStates() 
+    updateControlStates() 
 
 
     // if (currentAgg=='district' && lastDistrictStateFP != null ){
@@ -1236,7 +1228,7 @@ map.on('moveend', () => {
       }
     }
     extendBounds(coords);
-    map.fitBounds(bounds, { padding: 30 });
+    map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
 
     // fill fact sheet
     const fieldName = currentRaceField || 'ENR_AP_GAP_BL';
@@ -1248,9 +1240,6 @@ map.on('moveend', () => {
     if (typeof setMapView === 'function') setMapView('state');
   } // end onStateClick
   window.onStateClick = onStateClick;
-
-    // --- click to zoom and outline ---
-  // map.off('click', 'district-fills')
 
   function onDistrictClick(e){
     triggeredByMapClick = true;
@@ -1269,7 +1258,7 @@ map.on('moveend', () => {
         else coords.forEach(extendBounds);
       }
       extendBounds(feat.geometry.coordinates);
-      map.fitBounds(bounds, { padding: 30 });
+      map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
       showDistrictFactsheet(feat, currentDistrictData, window.currentStateAbbrev || "");
       hideNoGeometryNotice();
     // }
@@ -1653,7 +1642,7 @@ function buildDistrictTable(districtData, fieldName) {
             }
           }
           extendBounds(coords);
-          map.fitBounds(bounds, { padding: 30 });
+          map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
         }
       } catch (err) {
         console.warn('Could not compute bounds for selected district (table click):', err);
@@ -1690,10 +1679,10 @@ function buildDistrictTable(districtData, fieldName) {
         { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
         { hover: true }
       );
-      
   });
 
   $('#district-table-body').on('mouseleave', 'tr', function() {
+    console.log('mouseleave fired');
     // Remove highlight if it's the same one
       map.setFeatureState(
         { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
@@ -1873,6 +1862,7 @@ async function loadPaintsForAggregation(aggregationLevel) {
     // SPECIAL HANDLING FOR STATE‑SPECIFIC BREAKS
     breaksByAggregation.District_State_Breaks = parseDistrictStateBreaks(csvData);
     console.log("Loaded state‑specific district breaks");
+    $('#legendLocale').text(`(${currentStateAbbrev})`)
     return;   // IMPORTANT: STOP HERE — DO NOT BUILD PAINTS
   }
 
@@ -2272,12 +2262,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   // --- determine if showing all states ---
   showAllStates = !statefips || statefips === 'all' || statefips === 'any';
   console.log(showAllStates);
-  const fipsString = currentStateFIPS.toString().padStart(2,'0');
-  console.log(fipsString);
-
-
-
-
+  let fipsString
 
   //  SELECT BREAKS (NATIONAL vs STATE‑SPECIFIC) 
   let breaks;
@@ -2285,8 +2270,11 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
   let basePaint;
 
   if (!showAllStates) {
+    fipsString = currentStateFIPS.toString().padStart(2,'0');
+    console.log(fipsString);
     // We are zoomed into a single state → use state‑specific breaks
     console.log("Using STATE‑SPECIFIC district breaks for", state_abbrev);
+    $('#legendLocale').text(`(${state_abbrev})`)
     // console.log(breaksByAggregation.District_State_Breaks); // all break data
     // console.log("fieldName", fieldName);
 
@@ -2339,6 +2327,7 @@ function fillDistrictMap(map, districtData, state_abbrev, statefips, fieldName, 
       : paintSet.hispanic;
 
     console.log("Using NATIONAL district breaks");
+    $('#legendLocale').text("(US)")
   }
   //  END BREAK SELECTION 
 
@@ -2616,7 +2605,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
 
   // records uses the global cache, not the data passed that is only 2021, could remove that all together to steamline
   // const records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
-  console.log(districtDataCache)
+  //console.log(districtDataCache)
   let records
   if(districtDataCache === null){
     records = districtData.filter(d => String(d.LEAID).replace(/^0+/, '') === geoId.replace(/^0+/, '')); //JSON LEADID with leading 0 removed
@@ -2633,20 +2622,6 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
       <div class="opportunity-column">No district data available.</div>
       <button id="returnToFullView" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;">Return to full US view</button>
     `;
-    // click handler to return button
-    setTimeout(() => {
-      const returnBtn = document.getElementById('returnToFullView');
-      if (returnBtn) {
-        returnBtn.addEventListener('click', () => {
-          map.fitBounds([[ -126, 24], [-66, 50]]);
-          if (typeof setMapView === 'function') setMapView('full');
-          hideDistrictFactSheetContainer();
-          const info = document.getElementById('infoContainer');
-          if (info) info.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        });
-      }
-    }, 0);
-    return;
   }
 
   // Sort by YEAR ascending
@@ -2909,7 +2884,7 @@ function showDistrictFactsheet(clickedFeature, districtData, state_abbrev) {
               }
             }
             extendBounds(coords);
-            map.fitBounds(bounds, { padding: 30 });
+            map.fitBounds(bounds, {padding: { top: 80, bottom: 80, left: 40, right: 30 }});
           }
         } catch (err) {
           console.warn('Could not compute bounds for selected district:', err);
