@@ -1241,9 +1241,6 @@ map.on('moveend', () => {
   } // end onStateClick
   window.onStateClick = onStateClick;
 
-    // --- click to zoom and outline ---
-  // map.off('click', 'district-fills')
-
   function onDistrictClick(e){
     triggeredByMapClick = true;
     const feat = e; // now just passing a single feature
@@ -1658,6 +1655,43 @@ function buildDistrictTable(districtData, fieldName) {
       } catch (e) { console.warn('Could not open factsheet for selected district (table click):', e); }
     });
   } catch (e) { console.warn('Failed to attach district table click handler', e); }
+
+
+    $('#district-table-body').on('mouseenter', 'tr', function() {
+    const table = $('#district-table').DataTable();
+    const rowData = table.row(this).data();
+    if (!rowData) return;
+
+    const fips = rowData[5]; // the last column
+    //console.log(fips)
+
+    // Clear previous highlight
+    if (hoveredDistrictPolygonID !== null) {
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { hover: false }
+      );
+    }
+
+    // Highlight new feature
+    hoveredDistrictPolygonID = fips;
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { hover: true }
+      );
+  });
+
+  $('#district-table-body').on('mouseleave', 'tr', function() {
+    console.log('mouseleave fired');
+    // Remove highlight if it's the same one
+      map.setFeatureState(
+        { source: 'SCHOOLDIST_TL24', sourceLayer: 'SCHOOLDIST_TL24_Simpl100m-2kf22l', id: hoveredDistrictPolygonID },
+        { hover: false }
+      );
+      hoveredPolygonId = null;
+  });
+
+
 }
 
 function sortableCell(value, decimals = 1) {
