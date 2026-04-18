@@ -378,7 +378,7 @@ button:hover {
 
 /* District Summary - (Teachers, Enrollment, AP Enrollment, etc.) */
 .state-summary-block {
-  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-family: jaf-bernino-sans, sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.4rem;
@@ -427,14 +427,14 @@ button:hover {
 }
 
 .summary-label {
-  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-family: jaf-bernino-sans, sans-serif;
   /* font-weight: 400; */
   font-size: 0.95rem;
   /* color: #666; */
 }
 
 .summary-label-2 {
-  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-family: jaf-bernino-sans, sans-serif;
   /* font-weight: 400; */
   font-size: 0.95rem;
   /* color: #666; */
@@ -583,7 +583,7 @@ button:hover {
 #factSheetContainer h3 {
   margin: 0.75rem 0 0.25rem 0;
   font-weight: 700;
-  font-family: jaf-bernino-sans-narrow, sans-serif;
+  font-family: jaf-bernino-sans, sans-serif;
   font-size: 1rem;
   text-transform: uppercase;
   color: var(--almostBlack);
@@ -606,6 +606,16 @@ button:hover {
   align-items: stretch;
   justify-content: flex-start;
   height: 100%;
+}
+
+.credit-btn{
+  text-align: end;
+  font-size:0.95rem;
+  font-weight: bold;
+  color:white;
+  text-shadow: 0px 0px 2px #000000;
+  cursor: pointer; 
+  padding-bottom:0.2rem;
 }
 
 
@@ -647,7 +657,7 @@ h3 {
   align-items: flex-start;      /* left-align text and charts */
   min-width: 0;             
   gap: 0.5em;
-  flex: 0 1 400px; /* grow, shrink, base width */
+  flex: 0 1 500px; /* grow, shrink, base width */
 }
 
 /* Make RIGHT column scroll inside the capped container */
