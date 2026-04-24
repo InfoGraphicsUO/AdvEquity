@@ -662,20 +662,19 @@ $('#full_extentBtn').click(function(){
 
 
     // ZOOM BASED VIEW TOGGLE
-    // TODO: fix bug - toggling to district view via zoom or button doesn't allow district to open with click.  It needs the state to be openfirst before opening the district
-
     if (!triggeredByMapClick && !triggeredByBackToState) { 
       console.log('ZOOM BASED VIEW CHANGE')
       console.log("currentAgg: ",currentAgg)
-      if (zoomLevel > districtMinZoom) {
+      if (currentAgg == 'district' && mapView == 'state' &&zoomDirection == 'IN') { //one state is selected
+        // console.log('maintain map view when on state-selected zoom in')
+        return
+      } else if (zoomLevel > districtMinZoom) {
         console.log('ZOOM BASED DISTRICT VIEW');
         activateDistrictView()
-        // $('#agg-selectDist').click()
       } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoomDirection == 'IN') {
         // zoom in by mouse, switch to district view
         console.log('ZOOM BASED STATE VIEW');
         activateDistrictView()
-        // $('#agg-selectDist').click()
 
 
 
