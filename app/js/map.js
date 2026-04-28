@@ -1707,6 +1707,23 @@ function highlightTableByFIPS(fipsCode) {
   });
 }
 
+// function highlightDistrictTable(geoId) {
+//   const table = $('#district-table').DataTable();
+
+//   // clear old selection
+//   table.$('tr.selected').removeClass('selected');
+
+//   table.rows().every(function() {
+//     const rowData = this.data();
+
+//     const rowGeoId = String(rowData[5]);
+
+//     if (rowGeoId === String(geoId)) {
+//       $(this.node()).addClass('selected');
+//     }
+//   });
+// }
+
 function clearTableHighlights() {
   const table = $('#us-table').DataTable();
   table.$('tr.selected').removeClass('selected');
@@ -2537,6 +2554,8 @@ map.on('mousemove', 'district-fills', e => {
 
     lastPopupDistrictId = fid;
     districtPopup.setLngLat(e.lngLat);
+
+    // highlightDistrictTable(geoId)
   });
 
 
@@ -2553,6 +2572,8 @@ map.on('mousemove', 'district-fills', e => {
       hoveredDistrictPolygonID = null;
       lastPopupDistrictId = null
     }
+
+    // clearTableHighlights();
   });
 
 }
