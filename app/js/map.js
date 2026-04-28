@@ -1697,6 +1697,7 @@ function highlightTableByFIPS(fipsCode) {
     } else {
       rowDataToCompare = String(rowData[4])
     }
+
     if (rowDataToCompare === String(fipsCode)) { // column index 4 = FIPS
       // console.log('MATCH')
       $(this.node()).addClass('selected');
@@ -1707,26 +1708,28 @@ function highlightTableByFIPS(fipsCode) {
   });
 }
 
-// function highlightDistrictTable(geoId) {
-//   const table = $('#district-table').DataTable();
+function highlightDistrictTable(geoId) {
+  const table = $('#district-table').DataTable();
 
-//   // clear old selection
-//   table.$('tr.selected').removeClass('selected');
+  // clear old selection
+  table.$('tr.selected').removeClass('selected');
 
-//   table.rows().every(function() {
-//     const rowData = this.data();
+  table.rows().every(function() {
+    const rowData = this.data();
 
-//     const rowGeoId = String(rowData[5]);
+    const rowGeoId = String(rowData[5]);
 
-//     if (rowGeoId === String(geoId)) {
-//       $(this.node()).addClass('selected');
-//     }
-//   });
-// }
+    if (rowGeoId === String(geoId)) {
+      $(this.node()).addClass('selected');
+    }
+  });
+}
 
 function clearTableHighlights() {
-  const table = $('#us-table').DataTable();
-  table.$('tr.selected').removeClass('selected');
+  const usTable = $('#us-table').DataTable();
+  const districtTable = $('#district-table').DataTable();
+  usTable.$('tr.selected').removeClass('selected');
+  districtTable.$('tr.selected').removeClass('selected');
 }
 
 
@@ -2555,7 +2558,7 @@ map.on('mousemove', 'district-fills', e => {
     lastPopupDistrictId = fid;
     districtPopup.setLngLat(e.lngLat);
 
-    // highlightDistrictTable(geoId)
+    highlightDistrictTable(geoId)
   });
 
 
@@ -2573,7 +2576,7 @@ map.on('mousemove', 'district-fills', e => {
       lastPopupDistrictId = null
     }
 
-    // clearTableHighlights();
+    clearTableHighlights();
   });
 
 }
