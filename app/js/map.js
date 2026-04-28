@@ -1624,7 +1624,7 @@ function buildDistrictTable(districtData, fieldName) {
   } catch (e) { console.warn('Failed to attach district table click handler', e); }
 
 
-    $('#district-table-body').on('mouseenter', 'tr', function() {
+  $('#district-table-body').on('mouseenter', 'tr', function() {
     const table = $('#district-table').DataTable();
     const rowData = table.row(this).data();
     if (!rowData) return;
@@ -1681,6 +1681,8 @@ function sortableCell(value, decimals = 1) {
 }
 
 function highlightTableByFIPS(fipsCode) {
+  // console.log('hightlight FIPS code: ', fipsCode)
+  // console.log(typeof(fipsCode)) //codes < 10 are type string, greater than 10 are type number
   const table = $('#us-table').DataTable();
 
   // clear old selection
@@ -1689,7 +1691,14 @@ function highlightTableByFIPS(fipsCode) {
   // loop rows and find match in hidden FIPS column
   table.rows().every(function() {
     const rowData = this.data();
-    if (String(rowData[4]) === String(fipsCode)) { // column index 4 = FIPS
+    let rowDataToCompare;
+    if(rowData[4] < 10) {
+      rowDataToCompare = '0' + String(rowData[4]) //add leading zero to single digit entries
+    } else {
+      rowDataToCompare = String(rowData[4])
+    }
+    if (rowDataToCompare === String(fipsCode)) { // column index 4 = FIPS
+      // console.log('MATCH')
       $(this.node()).addClass('selected');
       
       // to do: scroll into view
