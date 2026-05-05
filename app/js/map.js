@@ -677,13 +677,32 @@ $('#full_extentBtn').click(function(){
         //user clicked the state button
         //desired behavior is that click on a state zooms to that state, only that state's districts are visible
         //  zoom in does nothing to change map view
+        if (zoomDirection == 'IN'){
+          console.log('aggregated by state, only clicking a state will change mapview')
+          return
+        }
         //  zoom out changes view back to full
+        else { // zoomDirection == 'OUT'
+          if (zoomLevel < districtMinZoom){
+            console.log('zooming out from district view to state view')
+            activateStateView()
+            setMapView('full')
+          } else if (zoomLevel > districtMinZoom) {
+            console.log('zooming out but not enough to change mapview')
+            return
+          } else {
+            //  console.log('fallback case for STATE - why are we here?')
+             return
+          }
+        }
         
       } else if (desiredNationalAgg == 'DISTRICT') {
         //user clicked the district button
         //desired behavior is to maintain that aggregation
         //  zoom in does nothing to change map view
         //  zoom out does nothing to change map view
+        console.log('no zoom based change when desiredNationalAgg is district')
+        return
 
       } else { //desiredNationalAgg == 'null'
         //map view will be driven by zoom thresholds
@@ -750,6 +769,7 @@ $('#full_extentBtn').click(function(){
           if (currentAgg == 'district') {
             console.log('zooming out, activateStateView')
             activateStateView()
+            setMapView('full')
           } else { //currentAgg == 'state'
             console.log('zooming out, no change required')
             // activateStateView()

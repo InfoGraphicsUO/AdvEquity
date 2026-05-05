@@ -194,6 +194,7 @@
   font-weight: normal;
   cursor: pointer;
   font-size: 13px;
+  display: none;
 }
 /* #gapRaceBlk.gap-race-btn{
   background-color: transparent;
