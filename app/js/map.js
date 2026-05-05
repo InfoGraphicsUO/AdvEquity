@@ -127,6 +127,7 @@ const stateMinZoom = 4.0; //oregon optimized
 
 let triggeredByMapClick = false;
 let triggeredByBackToState = false;
+let desiredNationalAgg = null //tracks user selection from agg-buttons, if null, map view is determined by zoom level
 
 
 console.log("MAP JS loaded");
@@ -397,8 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // display State level data
       if (this.id === 'agg-selectState'){
+        desiredNationalAgg = 'STATE'
         activateStateView()
       } else if (this.id === 'agg-selectDist'){
+        desiredNationalAgg = 'DISTRICT'
         activateDistrictView()
       }
 
@@ -661,39 +664,148 @@ $('#full_extentBtn').click(function(){
     // };
 
 
-    // ZOOM BASED VIEW TOGGLE
+    // ZOOM BASED VIEW LOGIC
+
     if (!triggeredByMapClick && !triggeredByBackToState) { 
-      console.log('ZOOM BASED VIEW CHANGE')
+      console.log('****ZOOM BASED VIEW LOGIC****')
+      console.log('desiredNationalAgg: ', desiredNationalAgg)
       console.log("currentAgg: ",currentAgg)
-      if (currentAgg == 'district' && mapView == 'state' &&zoomDirection == 'IN') { //one state is selected
-        // console.log('maintain map view when on state-selected zoom in')
-        return
-      } else if (zoomLevel > districtMinZoom) {
-        console.log('ZOOM BASED DISTRICT VIEW');
-        activateDistrictView()
-      } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoomDirection == 'IN') {
-        // zoom in by mouse, switch to district view
-        console.log('ZOOM BASED STATE VIEW');
-        activateDistrictView()
 
 
 
+      if (desiredNationalAgg == 'STATE'){
+        //user clicked the state button
+        //desired behavior is that click on a state zooms to that state, only that state's districts are visible
+        //  zoom in does nothing to change map view
+        //  zoom out changes view back to full
+        
+      } else if (desiredNationalAgg == 'DISTRICT') {
+        //user clicked the district button
+        //desired behavior is to maintain that aggregation
+        //  zoom in does nothing to change map view
+        //  zoom out does nothing to change map view
 
-        //simulate a click on the center of the map - issue with this is that it gets stuck there when trying to zoom in or out
-        // // project map center to screen coords, query for a state feature there
-        // const centerPoint = map.project(map.getCenter());
-        // const features = map.queryRenderedFeatures(centerPoint, { layers: ['state-fills'] });
+      } else { //desiredNationalAgg == 'null'
+        //map view will be driven by zoom thresholds
+        //  fill with existing logic
 
-        // if (features.length && typeof window.onStateClick === 'function') {
-        //   window.onStateClick(features[0]);
-        // }
-      } else if (zoomLevel < stateMinZoom && zoomDirection == "OUT" && !districtFilter){ //don't switch back if user selected district view
-        console.log('ZOOM BASED FULL VIEW');
-        $('#agg-selectState').click()
-      } else if (zoomLevel < stateMinZoom){
-        console.log('NO ZOOM BASED AGG CHANGE ');
+        // ending zoomLevel > districtMinZoom. map view should be 'district'
+        if (zoomLevel > districtMinZoom && zoomDirection =='IN') {
+          console.log('zooming in past district threshold')
+          if (currentAgg == 'district') {
+            console.log('zooming in, district view already enabled')
+            return
+          } else { //currentAgg == 'state
+            console.log('zooming in, activateDistrictView')
+            activateDistrictView()
+          }
+
+        } else if ((zoomLevel > districtMinZoom) && zoomDirection == 'OUT') {
+          console.log('zooming out, but still past district view threshold')
+          if (currentAgg == 'district' && !districtFilter) {
+            console.log('zooming out, activateDistrictView')
+            activateDistrictView()
+          } else { //currentAgg == 'state
+            console.log('zooming out, no change to view')
+            return
+          }
+
+        }
+        // districtMinZoom > ending zoomLevel > stateMinZoom
+        else if ((zoomLevel <= districtMinZoom && zoomLevel > stateMinZoom) && zoomDirection == 'IN') {
+          console.log('zooming into stateMinZoom threshold')
+          if (currentAgg == 'district') {
+            console.log('zooming in, districts already visible, no change required')
+            return
+          } else { //currentAgg == 'state'
+            console.log('zooming in, activateDistrictView')
+            activateDistrictView()
+          }
+
+        } else if ((zoomLevel <= districtMinZoom && zoomLevel > stateMinZoom) && zoomDirection == 'OUT') {
+          console.log('zooming out to stateMinZoom threshold')
+          if (currentAgg == 'district' && !districtFilter) {
+            console.log('zooming out, activateDistrictView to refresh tiles')
+            activateDistrictView()
+          } else { //currentAgg == 'state'
+            console.log('zooming out, no change required')
+            // activateStateView()
+            return
+          }
+
+        }
+        // stateMinZoom > ending zoomLevel
+        else if ((stateMinZoom > zoomLevel) && zoomDirection =='IN') {
+          console.log('zooming in but still below state threshold')
+          if (currentAgg == 'district') {
+            console.log('zooming in, districts already visible, no change required')
+            return
+          } else { //currentAgg == 'state'
+            console.log('zooming in, states already visible, no change required')
+            return
+          }
+
+        } else if ((stateMinZoom > zoomLevel) && zoomDirection == 'OUT') {
+          console.log('zooming out, below state view threshold')
+          if (currentAgg == 'district') {
+            console.log('zooming out, activateStateView')
+            activateStateView()
+          } else { //currentAgg == 'state'
+            console.log('zooming out, no change required')
+            // activateStateView()
+            return
+          }
+
+        } else {
+          console.log('fallback case - how did we get here?')
+          console.log('currentAgg: ', currentAgg)
+          console.log('zoomDirection: ', zoomDirection)
+          console.log('zoomLevel: ', zoomLevel)
+          console.log(districtMinZoom, stateMinZoom)
+        }
 
       }
+
+
+
+
+
+
+      // disable for now
+      if (0) {
+        if (currentAgg == 'district' && mapView == 'state') { //one state is selected
+          console.log('maintain map view when on state-selected zoom in')
+          return
+        } else if (zoomLevel > districtMinZoom) {
+          console.log('ZOOM BASED DISTRICT VIEW');
+          activateDistrictView()
+        } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoomDirection == 'IN') {
+          // zoom in by mouse, switch to district view
+          // console.log('ZOOM BASED STATE VIEW');
+          // console.log('activate district view?')
+          // activateDistrictView()
+
+
+          //simulate a click on the center of the map - issue with this is that it gets stuck there when trying to zoom in or out
+          // // project map center to screen coords, query for a state feature there
+          // const centerPoint = map.project(map.getCenter());
+          // const features = map.queryRenderedFeatures(centerPoint, { layers: ['state-fills'] });
+
+          // if (features.length && typeof window.onStateClick === 'function') {
+          //   window.onStateClick(features[0]);
+          // }
+        } else if (zoomLevel < stateMinZoom && zoomDirection == "OUT" && !districtFilter){ //don't switch back if user selected district view
+          console.log('ZOOM BASED FULL VIEW');
+          // $('#agg-selectState').click()
+          activateStateView()
+        } else if (zoomLevel < stateMinZoom){
+          console.log('NO ZOOM BASED AGG CHANGE ');
+
+        } else {
+          console.log('fallback case, do nothing')
+        }
+      }
+
     } else { //don't do zoom-based view if map or "return to state" clicked, reset globals
       console.log('RESET GLOBALS');
       triggeredByMapClick = false;
