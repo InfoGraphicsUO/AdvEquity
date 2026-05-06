@@ -102,6 +102,14 @@
   outline: none !important;
 }
 
+#district-table.dataTable tbody tr.selected td {
+  color:var(--almostBlack);
+  background-color: var(--yellow) !important;
+  transition: background-color 0.3s ease;
+  box-shadow: none !important;   /* remove blue inset highlight */ 
+  outline: none !important;
+}
+
 .table-header-wrapper{
   max-width:100%; /*keep table in its column*/
 }
