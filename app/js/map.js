@@ -671,20 +671,6 @@ $('#full_extentBtn').click(function(){
       console.log('desiredNationalAgg: ', desiredNationalAgg)
       console.log("currentAgg: ",currentAgg)
 
-      // if (currentAgg == 'district' && mapView == 'state' &&zoomDirection == 'IN') { //one state is selected
-      //   // console.log('maintain map view when on state-selected zoom in')
-      //   return
-      // } else if (zoomLevel > districtMinZoom) {
-      //   console.log('ZOOM BASED DISTRICT VIEW');
-      //   activateDistrictView()
-      // } else if (zoomLevel >= stateMinZoom && currentAgg != 'state' && zoomDirection == 'IN') {
-      //   // zoom in by mouse, switch to district view
-      //   console.log('ZOOM BASED STATE VIEW');
-      //   activateDistrictView()
-
-
-
-
       if (desiredNationalAgg == 'STATE'){
         //user clicked the state button
         //desired behavior is that click on a state zooms to that state, only that state's districts are visible
