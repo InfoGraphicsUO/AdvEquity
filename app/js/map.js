@@ -623,6 +623,14 @@ $('#full_extentBtn').click(function(){
     let zoomDirection
     console.log('zoom level: ', zoomLevel.toFixed(3));
 
+    // set bias on search box
+    const center = map.getCenter();
+    searchBox.options = {
+      ...searchBox.options,
+      proximity: [center.lng, center.lat]
+    };
+    console.log("set bias")
+
     // determine zoom direction (in or out)
     if (zoomLevel > previousZoom) {
         console.log("Direction: Zooming IN");
@@ -838,15 +846,6 @@ $('#full_extentBtn').click(function(){
     //   console.log("enableing back to state")
     //   $('#backToStateMapBtn').removeClass('control-disabled')
     // }
-
-    // set bias on search box
-    const center = map.getCenter();
-    searchBox.options = {
-      ...searchBox.options,
-      proximity: [center.lng, center.lat]
-    };
-    console.log("set bias")
-
 
   });
 });
